@@ -19,12 +19,12 @@ import {
   Sun,
   ChevronDown,
   Globe,
-  Lock,
   Users,
   Music,
   Car,
   UtensilsCrossed,
   Languages,
+  Ghost,
 } from "lucide-react"
 
 const translations = {
@@ -164,6 +164,12 @@ const translations = {
       address: "Adresa",
       phone: "Telefon",
       availability: "Dostupnost",
+      availabilityItems: [
+        "10 min do centra Domažlic",
+        "10 min na německé hranice",
+        "Vlakové spojení Praha-Mnichov",
+        "1h 45min z Prague Airport",
+      ],
     },
     about: {
       title: "Mlýn Šnajberk Studios",
@@ -230,6 +236,55 @@ const translations = {
           q: "Mluvíte anglicky/německy?",
           a: "Vícejazyčný tým: Čeština - rodilí mluvčí, Angličtina - plynule (Jindřich, Andrea, tech tým), Němčina - konverzační úroveň (regionální výhoda), překladatelské služby pro smlouvy.",
         },
+      ],
+      historyTimeline: [
+        {
+          year: "1653 - Založení",
+          desc: "Založení rybníků a postavení vysoké pece a hamru Lamingeny",
+        },
+        {
+          year: "1810 - Přestavba na mlýn",
+          desc: "Mlýn s pilou poháněnou vodní silou",
+        },
+        {
+          year: "1990 - Pila",
+          desc: "Vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice",
+        },
+        {
+          year: "2024 - Nový začátek",
+          desc: "Transformace na prémiové kreativní retreat studio",
+        },
+      ],
+      accommodationRooms: "Pokoje (až 8 hostů)",
+      masterSuite: "Master Suite",
+      masterSuiteDesc: "Terasa s výhledem na rybník, vintage nábytek, vlastní koupelna",
+      fourRooms: "4 pokoje",
+      fourRoomsDesc: "Každý pokoj s unikátním charakterem, moderní komfort, inspirativní design",
+      commonSpaces: "Společné prostory",
+      commonSpacesItems: [
+        "Jídelna pro 8 osob",
+        "Plně vybavená kuchyň",
+        "Malá knihovna",
+        "Domácí kino",
+        "Zimní zahrada 63m²",
+      ],
+      finnishSauna: "Finská sauna",
+      finnishSaunaItems: ["Finská sauna", "Tenisové kurty, koupaliště (2,2 km)"],
+      parkOutdoor: "Park & Outdoor (6527m²)",
+      parkOutdoorItems: [
+        "Dva živé potůčky",
+        "Vzrostlé stromy",
+        "Multiple terraces",
+        "BBQ & pizza oven (8 pizz)",
+        "Walking paths",
+        "Private parking + Tesla charging",
+      ],
+      catering: "Catering & Stravování",
+      cateringItems: [
+        { title: "In-house catering", desc: "s lokálními ingrediencemi" },
+        { title: "Pizza oven", desc: "pro community dinners (až 8 pizz)" },
+        { title: "Fully equipped kitchen", desc: "pro self-catering" },
+        { title: "Local restaurant delivery", desc: "z Domažlic" },
       ],
     },
   },
@@ -374,6 +429,12 @@ const translations = {
       address: "Address",
       phone: "Phone",
       availability: "Availability",
+      availabilityItems: [
+        "10 min to Domažlice center",
+        "10 min to German border",
+        "Prague-Munich train connection",
+        "1h 45min from Prague Airport",
+      ],
     },
     about: {
       title: "Mlýn Šnajberk Studios",
@@ -439,6 +500,55 @@ const translations = {
           q: "Do you speak English/German?",
           a: "Multilingual team: Czech - native, English - fluent (Jindřich, Andrea, tech team), German - conversational (regional advantage), translation services for contracts.",
         },
+      ],
+      historyTimeline: [
+        {
+          year: "1653 - Foundation",
+          desc: "Establishment of ponds and construction of blast furnace and hammer mill by Lamingen",
+        },
+        {
+          year: "1810 - Conversion to mill",
+          desc: "Mill with sawmill powered by water",
+        },
+        {
+          year: "1990 - Sawmill",
+          desc: "Established on November 24, 1990 as part of Trhanov municipality in Domažlice district",
+        },
+        {
+          year: "2024 - New Beginning",
+          desc: "Transformation into premium creative retreat studio",
+        },
+      ],
+      accommodationRooms: "Rooms (up to 8 guests)",
+      masterSuite: "Master Suite",
+      masterSuiteDesc: "Terrace overlooking the pond, vintage furniture, private bathroom",
+      fourRooms: "4 rooms",
+      fourRoomsDesc: "Each room with unique character, modern comfort, inspiring design",
+      commonSpaces: "Common Spaces",
+      commonSpacesItems: [
+        "Dining room for 8 people",
+        "Fully equipped kitchen",
+        "Small library",
+        "Home cinema",
+        "Winter garden 63m²",
+      ],
+      finnishSauna: "Finnish Sauna",
+      finnishSaunaItems: ["Finnish sauna", "Tennis courts, swimming pool (2.2 km)"],
+      parkOutdoor: "Park & Outdoor (6527m²)",
+      parkOutdoorItems: [
+        "Two live streams",
+        "Mature trees",
+        "Multiple terraces",
+        "BBQ & pizza oven (8 pizzas)",
+        "Walking paths",
+        "Private parking + Tesla charging",
+      ],
+      catering: "Catering & Dining",
+      cateringItems: [
+        { title: "In-house catering", desc: "with local ingredients" },
+        { title: "Pizza oven", desc: "for community dinners (up to 8 pizzas)" },
+        { title: "Fully equipped kitchen", desc: "for self-catering" },
+        { title: "Local restaurant delivery", desc: "from Domažlice" },
       ],
     },
   },
@@ -579,7 +689,13 @@ const translations = {
       info: "Kontaktinformationen",
       address: "Adresse",
       phone: "Telefon",
-      availability: "Erreichbarkeit",
+      availability: "Verfügbarkeit",
+      availabilityItems: [
+        "10 Min. zum Zentrum von Domažlice",
+        "10 Min. zur deutschen Grenze",
+        "Zugverbindung Prag-München",
+        "1h 45min vom Prager Flughafen",
+      ],
     },
     about: {
       title: "Mlýn Šnajberk Studios",
@@ -646,6 +762,55 @@ const translations = {
           q: "Sprechen Sie Englisch/Deutsch?",
           a: "Mehrsprachiges Team: Tschechisch - Muttersprachler, Englisch - fließend (Jindřích, Andrea, Tech-Team), Deutsch - Konversationsniveau (regionaler Vorteil), Übersetzungsdienste für Verträge.",
         },
+      ],
+      historyTimeline: [
+        {
+          year: "1653 - Gründung",
+          desc: "Anlage von Teichen und Bau eines Hochofens und Hammerwerks durch Lamingen",
+        },
+        {
+          year: "1810 - Umbau zur Mühle",
+          desc: "Mühle mit wasserbetriebener Sägemühle",
+        },
+        {
+          year: "1990 - Sägewerk",
+          desc: "Am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice gegründet",
+        },
+        {
+          year: "2024 - Neubeginn",
+          desc: "Umwandlung in ein Premium-Kreativ-Retreat-Studio",
+        },
+      ],
+      accommodationRooms: "Zimmer (bis zu 8 Gäste)",
+      masterSuite: "Master Suite",
+      masterSuiteDesc: "Terrasse mit Blick auf den Teich, Vintage-Möbel, eigenes Bad",
+      fourRooms: "4 Zimmer",
+      fourRoomsDesc: "Jedes Zimmer mit einzigartigem Charakter, modernem Komfort, inspirierendem Design",
+      commonSpaces: "Gemeinschaftsräume",
+      commonSpacesItems: [
+        "Esszimmer für 8 Personen",
+        "Voll ausgestattete Küche",
+        "Kleine Bibliothek",
+        "Heimkino",
+        "Wintergarten 63m²",
+      ],
+      finnishSauna: "Finnische Sauna",
+      finnishSaunaItems: ["Finnische Sauna", "Tennisplätze, Schwimmbad (2,2 km)"],
+      parkOutdoor: "Park & Outdoor (6527m²)",
+      parkOutdoorItems: [
+        "Zwei lebendige Bäche",
+        "Ausgewachsene Bäume",
+        "Mehrere Terrassen",
+        "BBQ & Pizzaofen (8 Pizzen)",
+        "Spazierwege",
+        "Privater Parkplatz + Tesla-Ladestation",
+      ],
+      catering: "Catering & Verpflegung",
+      cateringItems: [
+        { title: "In-house Catering", desc: "mit lokalen Zutaten" },
+        { title: "Pizzaofen", desc: "für Gemeinschaftsessen (bis zu 8 Pizzen)" },
+        { title: "Voll ausgestattete Küche", desc: "für Selbstversorgung" },
+        { title: "Lokale Restaurant-Lieferung", desc: "aus Domažlice" },
       ],
     },
   },
@@ -2117,10 +2282,9 @@ export default function MlynNaPilePage() {
                       <h3 className="text-2xl font-bold text-white mb-6">{t.contact.availability}</h3>
                       <div className="space-y-4">
                         <ul className="text-white/80 text-sm space-y-1">
-                          <li>• 10 min do centra Domažlic</li>
-                          <li>• 10 min na německé hranice</li>
-                          <li>• Vlakové spojení Praha-Mnichov</li>
-                          <li>• 1h 45min z Prague Airport</li>
+                          {t.contact.availabilityItems.map((item, index) => (
+                            <li key={index}>• {item}</li>
+                          ))}
                         </ul>
                       </div>
                     </CardContent>
@@ -2145,24 +2309,12 @@ export default function MlynNaPilePage() {
                       <CardContent className="p-8">
                         <h3 className="text-2xl font-bold text-white mb-6">{t.about.history}</h3>
                         <div className="space-y-4 text-white/80">
-                          <div className="border-l-2 border-secondary pl-4">
-                            <p className="font-semibold text-white">1653 - Založení</p>
-                            <p className="text-sm">Založení rybníků a postavení vysoké pece a hamru Lamingeny</p>
-                          </div>
-                          <div className="border-l-2 border-secondary pl-4">
-                            <p className="font-semibold text-white">1810 - Přestavba na mlýn</p>
-                            <p className="text-sm">Mlýn s pilou poháněnou vodní silou</p>
-                          </div>
-                          <div className="border-l-2 border-secondary pl-4">
-                            <p className="font-semibold text-white">1990 - Pila</p>
-                            <p className="text-sm">
-                              Vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice
-                            </p>
-                          </div>
-                          <div className="border-l-2 border-secondary pl-4">
-                            <p className="font-semibold text-white">2024 - Nový začátek</p>
-                            <p className="text-sm">Transformace na prémiové kreativní retreat studio</p>
-                          </div>
+                          {t.about.historyTimeline.map((item, index) => (
+                            <div key={index} className="border-l-2 border-secondary pl-4">
+                              <p className="font-semibold text-white">{item.year}</p>
+                              <p className="text-sm">{item.desc}</p>
+                            </div>
+                          ))}
                         </div>
                       </CardContent>
                     </Card>
@@ -2176,87 +2328,66 @@ export default function MlynNaPilePage() {
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                           <div>
-                            <h4 className="text-xl font-bold text-white mb-4">Pokoje (až 8 hostů)</h4>
+                            <h4 className="text-xl font-bold text-white mb-4">{t.about.accommodationRooms}</h4>
                             <div className="space-y-4">
                               <div className="bg-white/5 p-4 rounded-lg">
-                                <h5 className="font-semibold text-white mb-2">Master Suite</h5>
-                                <p className="text-white/80 text-sm">
-                                  Terasa s výhledem na rybník, vintage nábytek, vlastní koupelna
-                                </p>
+                                <h5 className="font-semibold text-white mb-2">{t.about.masterSuite}</h5>
+                                <p className="text-white/80 text-sm">{t.about.masterSuiteDesc}</p>
                               </div>
                               <div className="bg-white/5 p-4 rounded-lg">
-                                <h5 className="font-semibold text-white mb-2">4 pokoje</h5>
-                                <p className="text-white/80 text-sm">
-                                  Každý pokoj s unikátním charakterem, moderní komfort, inspirativní design
-                                </p>
+                                <h5 className="font-semibold text-white mb-2">{t.about.fourRooms}</h5>
+                                <p className="text-white/80 text-sm">{t.about.fourRoomsDesc}</p>
                               </div>
                             </div>
                           </div>
 
                           <div>
-                            <h4 className="text-xl font-bold text-white mb-4">Společné prostory</h4>
+                            <h4 className="text-xl font-bold text-white mb-4">{t.about.commonSpaces}</h4>
                             <ul className="text-white/80 space-y-2">
-                              <li>• Jídelna pro 8 osob</li>
-                              <li>• Plně vybavená kuchyň</li>
-                              <li>• Malá knihovna</li>
-                              <li>• Domácí kino</li>
-                              <li>• Zimní zahrada 63m²</li>
+                              {t.about.commonSpacesItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
                             </ul>
                           </div>
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                           <div>
-                            <h4 className="text-xl font-bold text-white mb-4">Finská sauna</h4>
+                            <h4 className="text-xl font-bold text-white mb-4">{t.about.finnishSauna}</h4>
                             <ul className="text-white/80 space-y-2">
-                              <li>• Finská sauna</li>
-                              <li>• Tenisové kurty, koupaliště (2,2 km)</li>
+                              {t.about.finnishSaunaItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
                             </ul>
                           </div>
 
                           <div>
-                            <h4 className="text-xl font-bold text-white mb-4">Park & Outdoor (6527m²)</h4>
+                            <h4 className="text-xl font-bold text-white mb-4">{t.about.parkOutdoor}</h4>
                             <ul className="text-white/80 space-y-2">
-                              <li>• Dva živé potůčky</li>
-                              <li>• Vzrostlé stromy</li>
-                              <li>• Multiple terraces</li>
-                              <li>• BBQ & pizza oven (8 pizz)</li>
-                              <li>• Walking paths</li>
-                              <li>• Private parking + Tesla charging</li>
+                              {t.about.parkOutdoorItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
                             </ul>
                           </div>
                         </div>
 
                         <div>
-                          <h4 className="text-xl font-bold text-white mb-4">Catering & Stravování</h4>
+                          <h4 className="text-xl font-bold text-white mb-4">{t.about.catering}</h4>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="bg-white/5 p-4 rounded-lg">
-                              <p className="text-white/80 text-sm">
-                                <strong className="text-white">In-house catering</strong> s lokálními ingrediencemi
-                              </p>
-                            </div>
-                            <div className="bg-white/5 p-4 rounded-lg">
-                              <p className="text-white/80 text-sm">
-                                <strong className="text-white">Pizza oven</strong> pro community dinners (až 8 pizz)
-                              </p>
-                            </div>
-                            <div className="bg-white/5 p-4 rounded-lg">
-                              <p className="text-white/80 text-sm">
-                                <strong className="text-white">Fully equipped kitchen</strong> pro self-catering
-                              </p>
-                            </div>
-                            <div className="bg-white/5 p-4 rounded-lg">
-                              <p className="text-white/80 text-sm">
-                                <strong className="text-white">Local restaurant delivery</strong> z Domažlic
-                              </p>
-                            </div>
+                            {t.about.cateringItems.map((item, index) => (
+                              <div key={index} className="bg-white/5 p-4 rounded-lg">
+                                <p className="text-white/80 text-sm">
+                                  <strong className="text-white">{item.title}</strong> {item.desc}
+                                </p>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </CardContent>
                     </Card>
                   </div>
 
-                  {/* Section 3: Zakladatelé */}
+                  {/* Section 3: Founders */}
                   <div className="max-w-6xl mx-auto">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
@@ -2369,8 +2500,8 @@ export default function MlynNaPilePage() {
                         <h3 className="text-2xl font-bold text-white mb-6">{t.about.faq}</h3>
                         <div className="space-y-3">
                           {t.about.faqItems.map((faq, index) => {
-                            const icons = [Lock, Home, Users, Music, Car, UtensilsCrossed, Languages]
-                            const IconComponent = icons[index] || Lock
+                            const icons = [Ghost, Home, Users, Music, Car, UtensilsCrossed, Languages]
+                            const IconComponent = icons[index] || Ghost
                             return (
                               <div key={index} className="border-b border-white/10 pb-3">
                                 <button
