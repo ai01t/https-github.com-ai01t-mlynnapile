@@ -83,7 +83,7 @@ const translations = {
     },
     location: {
       title: "Lokalita",
-      subtitle: "Klidné místo v srdci Čech, blízko všeho důležitého",
+      subtitle: "Klidné místo v srdci Evropy, blízko všeho důležitého",
       nature: "Krásná příroda - rekreační oblast, soukromí a vlastní park",
       naturePara1:
         "Pila u Trhanova je ideální lokalitou pro milovníky krásné přírody, soukromí a aktivního odpočinku. Pozemek má rozlohu přes 6500 m² a nabízí klidné prostředí s několika poseděními a dvěma potůčky, které dotvářejí harmonickou atmosféru.",
@@ -191,7 +191,7 @@ const translations = {
       bonusesItems: [
         "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
         "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
-        "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a početné. Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
+        "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
         "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
         "U sousedky Dády si můžete projet na koních. 🐴",
         "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
@@ -274,17 +274,17 @@ const translations = {
       parkOutdoorItems: [
         "Dva živé potůčky",
         "Vzrostlé stromy",
-        "Multiple terraces",
-        "BBQ & pizza oven (8 pizz)",
-        "Walking paths",
-        "Private parking + Tesla charging",
+        "Několik teras",
+        "Gril a pizza pec (8 pizz)",
+        "Procházkové stezky",
+        "Soukromé parkování + Tesla nabíjení",
       ],
       catering: "Catering & Stravování",
       cateringItems: [
-        { title: "In-house catering", desc: "s lokálními ingrediencemi" },
-        { title: "Pizza oven", desc: "pro community dinners (až 8 pizz)" },
-        { title: "Fully equipped kitchen", desc: "pro self-catering" },
-        { title: "Local restaurant delivery", desc: "z Domažlic" },
+        { title: "Vlastní catering", desc: "s lokálními ingrediencemi" },
+        { title: "Pizza pec", desc: "pro společné večeře (až 8 pizz)" },
+        { title: "Plně vybavená kuchyň", desc: "pro vlastní vaření" },
+        { title: "Rozvoz z místních restaurací", desc: "z Domažlic" },
       ],
     },
   },
@@ -343,7 +343,7 @@ const translations = {
     },
     location: {
       title: "Location",
-      subtitle: "Peaceful place in the heart of Bohemia, close to everything important",
+      subtitle: "Peaceful place in the heart of Europe, close to everything important",
       nature: "Beautiful nature - recreational area, privacy and own park",
       naturePara1:
         "Pila 100 near Trhanov is an ideal location for lovers of beautiful nature, privacy and active recreation. The property covers over 6500 m² and offers a peaceful environment with several seating areas and two streams that create a harmonious atmosphere.",
@@ -607,7 +607,7 @@ const translations = {
     },
     location: {
       title: "Standort",
-      subtitle: "Ruhiger Ort im Herzen Böhmens, nah an allem Wichtigen",
+      subtitle: "Ruhiger Ort im Herzen Europas, nah an allem Wichtigen",
       nature: "Schöne Natur - Erholungsgebiet, Privatsphäre und eigener Park",
       naturePara1:
         "Pila 100 bei Trhanov ist ein idealer Ort für Liebhaber schöner Natur, Privatsphäre und aktiver Erholung. Das Grundstück umfasst über 6500 m² und bietet eine ruhige Umgebung mit mehreren Sitzgelegenheiten und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
