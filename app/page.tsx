@@ -74,7 +74,7 @@ const translations = {
         "Pristine acoustics pro critical listening. Vybaveno cutting-edge technologií pro mixing a mastering na nejvyšší úrovni.",
       technology: "Technologie",
       millstoneStudio: "Millstone studio",
-      millstoneSize: "30 m² - Bývalá mlýnice",
+      millstoneSize: "25 m² - Bývalá mlýnice",
       millstoneDesc:
         "Vysoké stropy a unikátní akustika historické mlýnice. Ideální pro akustické nahrávky a experimentální projekty.",
       ctaTitle: "Připraveni vytvořit něco úžasného?",
@@ -82,11 +82,11 @@ const translations = {
       ctaButton: "Kontaktovat",
     },
     location: {
-      title: "Kde se rodí inspirace",
-      subtitle: "Krásná příroda - rekreační oblast v srdci Evropy",
+      title: "Lokalita",
+      subtitle: "Klidné místo v srdci Čech, blízko všeho důležitého",
       nature: "Krásná příroda - rekreační oblast, soukromí a vlastní park",
       naturePara1:
-        "Pila 100 u Trhanova je ideální lokalitou pro milovníky krásné přírody, soukromí a aktivního odpočinku. Pozemek má rozlohu přes 6500 m² a nabízí klidné prostředí s několika poseděními a dvěma potůčky, které dotvářejí harmonickou atmosféru.",
+        "Pila u Trhanova je ideální lokalitou pro milovníky krásné přírody, soukromí a aktivního odpočinku. Pozemek má rozlohu přes 6500 m² a nabízí klidné prostředí s několika poseděními a dvěma potůčky, které dotvářejí harmonickou atmosféru.",
       naturePara2:
         "Z Pily se pohodlně dostanete pěšky jak do Domažlic, tak na vrchol nejvyšší hory Českého lesa, Čerchov (1042 m), která láká turisty rozhlednou a nádhernými výhledy. Okolí je bohaté na značené cyklotrasy i pěší stezky vedoucí malebnou krajinou, ideální pro vyznavače přírody a historie.",
       naturePara3:
@@ -99,6 +99,40 @@ const translations = {
       byPlane: "Letecky",
       surroundings: "Okolí a zajímavá místa",
       events: "Zajímavé akce v okolí",
+      domazliceTitle: "Domažlice (cca 7 km)",
+      domazliceItems: [
+        "Historickým centrem města",
+        "Domažlická šikmá věž",
+        "Domažlický pivovar",
+        "Kulturní akce a koncerty v místních hudebních klubech",
+        "Návštěva Muzea Chodska s etnografickou expozicí",
+      ],
+      horsovskytynTitle: "Horšovský Týn (cca 25 km)",
+      horsovskytynItems: ["Renesanční zámek Horšovský Týn"],
+      babylonTitle: "Babylon (část obce Trhanov, cca 5 km)",
+      babylonItems: [
+        "Přírodní koupaliště, beach volejbal",
+        "Tenisové kurty, fotbalové hřiště",
+        "Mnoho značených cyklotras",
+      ],
+      germanyTitle: "Německo (hranice cca 15 km)",
+      germanyItems: ["Furth im Wald s hradem Drachenburg", "Místní trhy a kulturní akce"],
+      domazliceEvents: [
+        { month: "Červenec", event: "Mezinárodní jazzový festival – letní hudební festival s umělci z celého světa" },
+        {
+          month: "Srpen",
+          event: "Chodské slavnosti a Vavřinecká pouť – tradiční folklorní slavnosti s hudbou, divadlem a gastronomií",
+        },
+        { month: "Červenec", event: "Hudba pod hradem – koncerty v historickém prostředí Domažlic" },
+      ],
+      horsovskytynEvents: [{ month: "Červenec", event: "Anenská pouť" }],
+      babylonEvents: [
+        { month: "Srpen", event: "Babylonské léto – série kulturních a sportovních akcí v přírodním prostředí" },
+      ],
+      chamTitle: "Cham (Německo, cca 40 km)",
+      chamClub: "Klub L.A.Cham",
+      chamDescription:
+        "Skvělý klub kde se pravidelně pořádají akce i velkých amerických kapel! (Sepultura, Dog Eat Dog, Blaze Bayley, ...)",
     },
     equipment: {
       title: "Technické vybavení",
@@ -132,7 +166,7 @@ const translations = {
       availability: "Dostupnost",
     },
     about: {
-      title: "Mlýn na Pile",
+      title: "Mlýn Šnajberk Studios",
       subtitle: "Kde se rodí inspirace v srdci Evropy",
       tagline: "Vintage duše, moderní technologie",
       history: "Historie mlýna",
@@ -164,7 +198,7 @@ const translations = {
       ],
       faq: "Často kladené otázky",
       faqItems: [
-      {
+        {
           q: "Straší na mlýně?",
           a: "Ne ;-)",
         },
@@ -253,8 +287,8 @@ const translations = {
       ctaButton: "Contact",
     },
     location: {
-      title: "Where inspiration is born",
-      subtitle: "Beautiful nature - recreational area in the heart of Europe",
+      title: "Location",
+      subtitle: "Peaceful place in the heart of Bohemia, close to everything important",
       nature: "Beautiful nature - recreational area, privacy and own park",
       naturePara1:
         "Pila 100 near Trhanov is an ideal location for lovers of beautiful nature, privacy and active recreation. The property covers over 6500 m² and offers a peaceful environment with several seating areas and two streams that create a harmonious atmosphere.",
@@ -270,6 +304,44 @@ const translations = {
       byPlane: "By plane",
       surroundings: "Surroundings and points of interest",
       events: "Interesting events nearby",
+      domazliceTitle: "Domažlice (approx. 7 km)",
+      domazliceItems: [
+        "Historic city center",
+        "Domažlice Leaning Tower",
+        "Domažlice Brewery",
+        "Cultural events and concerts in local music clubs",
+        "Visit to the Chodsko Museum with ethnographic exhibition",
+      ],
+      horsovskytynTitle: "Horšovský Týn (approx. 25 km)",
+      horsovskytynItems: ["Renaissance Horšovský Týn Castle"],
+      babylonTitle: "Babylon (part of Trhanov, approx. 5 km)",
+      babylonItems: [
+        "Natural swimming pool, beach volleyball",
+        "Tennis courts, football field",
+        "Many marked cycling trails",
+      ],
+      germanyTitle: "Germany (border approx. 15 km)",
+      germanyItems: ["Furth im Wald with Drachenburg Castle", "Local markets and cultural events"],
+      domazliceEvents: [
+        {
+          month: "July",
+          event: "International Jazz Festival – summer music festival with artists from around the world",
+        },
+        {
+          month: "August",
+          event:
+            "Chod Festival and St. Lawrence Fair – traditional folklore festival with music, theater and gastronomy",
+        },
+        { month: "July", event: "Music under the Castle – concerts in the historic setting of Domažlice" },
+      ],
+      horsovskytynEvents: [{ month: "July", event: "St. Anne's Fair" }],
+      babylonEvents: [
+        { month: "August", event: "Babylon Summer – series of cultural and sports events in natural surroundings" },
+      ],
+      chamTitle: "Cham (Germany, approx. 40 km)",
+      chamClub: "Club L.A.Cham",
+      chamDescription:
+        "Great club that regularly hosts events with major American bands! (Sepultura, Dog Eat Dog, Blaze Bayley, ...)",
     },
     equipment: {
       title: "Technical Equipment",
@@ -330,12 +402,15 @@ const translations = {
         "You might also meet a fat squirrel that digs up planks - animals have it great here :-) We also have herons and neighbors have a puppy and a few friendly cats (also from various neighbors) :-) 🐿️🐕🐈",
         "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for future years and will replace with more modern technologies. (No hornets were harmed – we let them live out their lives in peace. 🐝) Thank you. ⚡",
         "Fresh organic vegetables, excellent grapes, hops. Overall, the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
-        "Everything is underlined by silence and peace, yet it's as close to Domažlice as from Národní to Palmovka. 🤫🌳",
         "Last but not least, nice neighbors from all sides and the Bidlo pub with friendly staff and a beautiful view of the pond and mill from the other side. Here you can have a Pilsner and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlická desítka, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
         "In the morning you can also jump into the pond, but nobody does... but you can :-) 🏊‍♂️",
       ],
       faq: "Frequently Asked Questions",
       faqItems: [
+        {
+          q: "Is the mill haunted?",
+          a: "No ;-)",
+        },
         {
           q: "Are you VAT payers?",
           a: "Yes, we are VAT payers. All prices on the website include VAT. For business clients we issue invoices with VAT, for foreign clients we handle reverse charge according to EU regulations.",
@@ -421,8 +496,8 @@ const translations = {
       ctaButton: "Kontakt",
     },
     location: {
-      title: "Wo Inspiration entsteht",
-      subtitle: "Schöne Natur - Erholungsgebiet im Herzen Europas",
+      title: "Standort",
+      subtitle: "Ruhiger Ort im Herzen Böhmens, nah an allem Wichtigen",
       nature: "Schöne Natur - Erholungsgebiet, Privatsphäre und eigener Park",
       naturePara1:
         "Pila 100 bei Trhanov ist ein idealer Ort für Liebhaber schöner Natur, Privatsphäre und aktiver Erholung. Das Grundstück umfasst über 6500 m² und bietet eine ruhige Umgebung mit mehreren Sitzgelegenheiten und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
@@ -431,13 +506,49 @@ const translations = {
       naturePara3:
         "Die gesamte Region ist bekannt für ihr Grün, frische Luft und Ruhe und schafft perfekte Bedingungen für alle, die eine Flucht aus der Hektik der Stadt suchen und gleichzeitig eine qualitativ hochwertige Basis für Ausflüge und die Erkundung der kulturellen und natürlichen Sehenswürdigkeiten der Region.",
       quote:
-        "Wir haben den perfekten Ort und ein wunderschönes historisches altes Mühlengebäude gefunden, das wir teilen möchten. Wir möchten diesen Ort weiter aufwerten - mit kreativen Menschen, die hier offene Türen haben werden und wo großartige Dinge entstehen werden.",
+        "Wir haben den perfekten Ort und ein wunderschönes historisches altes Mühlengebäude gefunden, das wir teilen möchten. Wir wollen diesen Ort weiter aufwerten - mit kreativen Menschen, die hier offene Türen haben und wo großartige Dinge entstehen werden.",
       transport: "Verkehrsanbindung",
       byCar: "Mit dem Auto",
       byTrain: "Mit dem Zug",
       byPlane: "Mit dem Flugzeug",
       surroundings: "Umgebung und Sehenswürdigkeiten",
       events: "Interessante Veranstaltungen in der Nähe",
+      domazliceTitle: "Domažlice (ca. 7 km)",
+      domazliceItems: [
+        "Historisches Stadtzentrum",
+        "Domažlice Schiefer Turm",
+        "Domažlice Brauerei",
+        "Kulturelle Veranstaltungen und Konzerte in lokalen Musikclubs",
+        "Besuch des Chodsko Museums mit ethnografischer Ausstellung",
+      ],
+      horsovskytynTitle: "Horšovský Týn (ca. 25 km)",
+      horsovskytynItems: ["Renaissance-Schloss Horšovský Týn"],
+      babylonTitle: "Babylon (Teil von Trhanov, ca. 5 km)",
+      babylonItems: ["Naturschwimmbad, Beachvolleyball", "Tennisplätze, Fußballfeld", "Viele markierte Radwege"],
+      germanyTitle: "Deutschland (Grenze ca. 15 km)",
+      germanyItems: ["Furth im Wald mit Burg Drachenburg", "Lokale Märkte und kulturelle Veranstaltungen"],
+      domazliceEvents: [
+        {
+          month: "Juli",
+          event: "Internationales Jazzfestival – Sommermusikfestival mit Künstlern aus der ganzen Welt",
+        },
+        {
+          month: "August",
+          event: "Chod-Fest und Laurentiuskirmes – traditionelles Folklorefest mit Musik, Theater und Gastronomie",
+        },
+        { month: "Juli", event: "Musik unter der Burg – Konzerte in der historischen Kulisse von Domažlice" },
+      ],
+      horsovskytynEvents: [{ month: "Juli", event: "Annenkirmes" }],
+      babylonEvents: [
+        {
+          month: "August",
+          event: "Babylon Sommer – Reihe von kulturellen und sportlichen Veranstaltungen in natürlicher Umgebung",
+        },
+      ],
+      chamTitle: "Cham (Deutschland, ca. 40 km)",
+      chamClub: "Club L.A.Cham",
+      chamDescription:
+        "Toller Club, der regelmäßig Veranstaltungen mit großen amerikanischen Bands veranstaltet! (Sepultura, Dog Eat Dog, Blaze Bayley, ...)",
     },
     equipment: {
       title: "Technische Ausstattung",
@@ -504,6 +615,10 @@ const translations = {
       faq: "Häufig gestellte Fragen",
       faqItems: [
         {
+          q: "Spukt es in der Mühle?",
+          a: "Nein ;-)",
+        },
+        {
           q: "Sind Sie MwSt-pflichtig?",
           a: "Ja, wir sind MwSt-pflichtig. Alle Preise auf der Website verstehen sich inklusive MwSt. Für Geschäftskunden stellen wir Rechnungen mit MwSt aus, für ausländische Kunden regeln wir Reverse Charge gemäß EU-Vorschriften.",
         },
@@ -556,6 +671,8 @@ export default function MlynNaPilePage() {
   const [onasScrollProgress, setOnasScrollProgress] = useState(0)
   const onasSectionRef = useRef<HTMLDivElement>(null)
 
+  const [scrolled, setScrolled] = useState(false)
+
   const t = translations[language]
 
   const [showEndMessage, setShowEndMessage] = React.useState(false)
@@ -569,6 +686,44 @@ export default function MlynNaPilePage() {
     // @ts-ignore
     window.onYouTubeIframeAPIReady = () => {
       console.log("[v0] YouTube IFrame API ready")
+    }
+  }, [])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Check scroll position on any scrollable element
+      const mlynSection = mlynSectionRef.current
+      const onasSection = onasSectionRef.current
+
+      let isScrolled = false
+
+      if (mlynSection && mlynSection.scrollTop > 50) {
+        isScrolled = true
+      }
+      if (onasSection && onasSection.scrollTop > 50) {
+        isScrolled = true
+      }
+
+      setScrolled(isScrolled)
+    }
+
+    const mlynSection = mlynSectionRef.current
+    const onasSection = onasSectionRef.current
+
+    if (mlynSection) {
+      mlynSection.addEventListener("scroll", handleScroll)
+    }
+    if (onasSection) {
+      onasSection.addEventListener("scroll", handleScroll)
+    }
+
+    return () => {
+      if (mlynSection) {
+        mlynSection.removeEventListener("scroll", handleScroll)
+      }
+      if (onasSection) {
+        onasSection.removeEventListener("scroll", handleScroll)
+      }
     }
   }, [])
 
@@ -787,7 +942,9 @@ export default function MlynNaPilePage() {
 
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 p-6">
+        <nav
+          className={`fixed top-0 left-0 right-0 z-50 p-6 transition-all duration-300 ${scrolled ? "bg-black/60 backdrop-blur-md" : "bg-transparent"}`}
+        >
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             {/* Main menu - centered on desktop, full width on mobile */}
             <div className="flex-1 flex justify-center">
@@ -881,6 +1038,8 @@ export default function MlynNaPilePage() {
             </div>
           </div>
         </nav>
+
+        <div className="fixed top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none z-40" />
 
         {/* Mobile control buttons - fixed at bottom center */}
         <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-[9999] bg-black/40 backdrop-blur-md rounded-full p-2 border border-white/20">
@@ -1254,14 +1413,12 @@ export default function MlynNaPilePage() {
                       <CardContent className="p-6">
                         <div className="flex items-center gap-3 mb-4">
                           <MapPin className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">Domažlice (cca 7 km)</h3>
+                          <h3 className="text-2xl font-bold text-white">{t.location.domazliceTitle}</h3>
                         </div>
                         <ul className="text-white/80 space-y-2 text-sm">
-                          <li>• Historickým centrem města</li>
-                          <li>• Domažlická šikmá věž</li>
-                          <li>• Domažlický pivovar</li>
-                          <li>• Kulturní akce a koncerty v místních hudebních klubech</li>
-                          <li>• Návštěva Muzea Chodska s etnografickou expozicí</li>
+                          {t.location.domazliceItems.map((item, i) => (
+                            <li key={i}>• {item}</li>
+                          ))}
                         </ul>
                       </CardContent>
                     </Card>
@@ -1271,10 +1428,12 @@ export default function MlynNaPilePage() {
                       <CardContent className="p-6">
                         <div className="flex items-center gap-3 mb-4">
                           <MapPin className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">Horšovský Týn (cca 25 km)</h3>
+                          <h3 className="text-2xl font-bold text-white">{t.location.horsovskytynTitle}</h3>
                         </div>
                         <ul className="text-white/80 space-y-2 text-sm">
-                          <li>• Renesanční zámek Horšovský Týn</li>
+                          {t.location.horsovskytynItems.map((item, i) => (
+                            <li key={i}>• {item}</li>
+                          ))}
                         </ul>
                       </CardContent>
                     </Card>
@@ -1284,12 +1443,12 @@ export default function MlynNaPilePage() {
                       <CardContent className="p-6">
                         <div className="flex items-center gap-3 mb-4">
                           <MapPin className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">Babylon (část obce Trhanov, cca 5 km)</h3>
+                          <h3 className="text-2xl font-bold text-white">{t.location.babylonTitle}</h3>
                         </div>
                         <ul className="text-white/80 space-y-2 text-sm">
-                          <li>• Přírodní koupaliště, beach volejbal</li>
-                          <li>• Tenisové kurty, fotbalové hřiště</li>
-                          <li>• Mnoho značených cyklotras</li>
+                          {t.location.babylonItems.map((item, i) => (
+                            <li key={i}>• {item}</li>
+                          ))}
                         </ul>
                       </CardContent>
                     </Card>
@@ -1299,11 +1458,12 @@ export default function MlynNaPilePage() {
                       <CardContent className="p-6">
                         <div className="flex items-center gap-3 mb-4">
                           <MapPin className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">Německo (hranice cca 15 km)</h3>
+                          <h3 className="text-2xl font-bold text-white">{t.location.germanyTitle}</h3>
                         </div>
                         <ul className="text-white/80 space-y-2 text-sm">
-                          <li>• Furth im Wald s hradem Drachenburg</li>
-                          <li>• Místní trhy a kulturní akce</li>
+                          {t.location.germanyItems.map((item, i) => (
+                            <li key={i}>• {item}</li>
+                          ))}
                         </ul>
                       </CardContent>
                     </Card>
@@ -1322,18 +1482,11 @@ export default function MlynNaPilePage() {
                           <h3 className="text-2xl font-bold text-white">Domažlice</h3>
                         </div>
                         <ul className="text-white/80 space-y-3 text-sm">
-                          <li>
-                            <strong className="text-white">Červenec:</strong> Mezinárodní jazzový festival – letní
-                            hudební festival s umělci z celého světa
-                          </li>
-                          <li>
-                            <strong className="text-white">Srpen:</strong> Chodské slavnosti a Vavřinecká pouť –
-                            tradiční folklorní slavnosti s hudbou, divadlem a gastronomií
-                          </li>
-                          <li>
-                            <strong className="text-white">Červenec:</strong> Hudba pod hradem – koncerty v historickém
-                            prostředí Domažlic
-                          </li>
+                          {t.location.domazliceEvents.map((item, i) => (
+                            <li key={i}>
+                              <strong className="text-white">{item.month}:</strong> {item.event}
+                            </li>
+                          ))}
                         </ul>
                       </CardContent>
                     </Card>
@@ -1346,9 +1499,11 @@ export default function MlynNaPilePage() {
                           <h3 className="text-2xl font-bold text-white">Horšovský Týn</h3>
                         </div>
                         <ul className="text-white/80 space-y-3 text-sm">
-                          <li>
-                            <strong className="text-white">Červenec:</strong> Anenská pouť
-                          </li>
+                          {t.location.horsovskytynEvents.map((item, i) => (
+                            <li key={i}>
+                              <strong className="text-white">{item.month}:</strong> {item.event}
+                            </li>
+                          ))}
                         </ul>
                       </CardContent>
                     </Card>
@@ -1358,14 +1513,37 @@ export default function MlynNaPilePage() {
                       <CardContent className="p-6">
                         <div className="flex items-center gap-3 mb-4">
                           <Calendar className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">Babylon (část Trhanova)</h3>
+                          <h3 className="text-2xl font-bold text-white">Babylon</h3>
                         </div>
                         <ul className="text-white/80 space-y-3 text-sm">
-                          <li>
-                            <strong className="text-white">Srpen:</strong> Babylonské léto – série kulturních a
-                            sportovních akcí v přírodním prostředí
-                          </li>
+                          {t.location.babylonEvents.map((item, i) => (
+                            <li key={i}>
+                              <strong className="text-white">{item.month}:</strong> {item.event}
+                            </li>
+                          ))}
                         </ul>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <Calendar className="h-6 w-6 text-secondary" />
+                          <h3 className="text-2xl font-bold text-white">{t.location.chamTitle}</h3>
+                        </div>
+                        <div className="text-white/80 space-y-3 text-sm">
+                          <p>
+                            <a
+                              href="https://la-cham.de/"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-secondary hover:text-secondary/80 underline font-semibold"
+                            >
+                              {t.location.chamClub}
+                            </a>
+                          </p>
+                          <p>{t.location.chamDescription}</p>
+                        </div>
                       </CardContent>
                     </Card>
                   </div>
@@ -1439,11 +1617,11 @@ export default function MlynNaPilePage() {
                         <div>
                           <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.amps}</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
+                            <li>• Fender 64 Custom Deluxe Reverb</li>
+                            <li>• Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)</li>
                             <li>• Mesa Boogie Dual Rectifier®Head, 3 Channels / 8 Modes, 100W</li>
                             <li>• Marshall AFD 100</li>
-                            <li>• Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)</li>
                             <li>• AMPEG V-4B Bass Head</li>
-                            <li>• Fender 64 Custom Deluxe Reverb</li>
                             <li>• Roland JC-22 (2x)</li>
                           </ul>
                         </div>
@@ -1976,8 +2154,10 @@ export default function MlynNaPilePage() {
                             <p className="text-sm">Mlýn s pilou poháněnou vodní silou</p>
                           </div>
                           <div className="border-l-2 border-secondary pl-4">
-                            <p className="font-semibold text-white">1838 - Martin Pavlík</p>
-                            <p className="text-sm">Spalná budova s jedním kolem</p>
+                            <p className="font-semibold text-white">1990 - Pila</p>
+                            <p className="text-sm">
+                              Vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice
+                            </p>
                           </div>
                           <div className="border-l-2 border-secondary pl-4">
                             <p className="font-semibold text-white">2024 - Nový začátek</p>
@@ -2001,7 +2181,7 @@ export default function MlynNaPilePage() {
                               <div className="bg-white/5 p-4 rounded-lg">
                                 <h5 className="font-semibold text-white mb-2">Master Suite</h5>
                                 <p className="text-white/80 text-sm">
-                                  Terasa s výhledem na rybník, king bed, vintage nábytek, vlastní koupelna
+                                  Terasa s výhledem na rybník, vintage nábytek, vlastní koupelna
                                 </p>
                               </div>
                               <div className="bg-white/5 p-4 rounded-lg">
@@ -2017,7 +2197,7 @@ export default function MlynNaPilePage() {
                             <h4 className="text-xl font-bold text-white mb-4">Společné prostory</h4>
                             <ul className="text-white/80 space-y-2">
                               <li>• Jídelna pro 8 osob</li>
-                              <li>• Plně vybavená kuchyně</li>
+                              <li>• Plně vybavená kuchyň</li>
                               <li>• Malá knihovna</li>
                               <li>• Domácí kino</li>
                               <li>• Zimní zahrada 63m²</li>
