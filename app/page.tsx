@@ -58,7 +58,7 @@ const translations = {
       modernTechDesc: "76 UAD pluginů, Universal Audio Apollo, Logic Pro X, Apple Pro Display XDR 6K",
       benefits: "Další benefity",
       benefitsDesc: "Zapůjčení elektromobilu, kol, nabíjecí stanice, bateriový backup, zabezpečené prostory",
-      endMessage: "Užijete si prezentaci!",
+      endMessage: "Užijte si prezentaci!",
       menuHint: "Nebo procházejte přes menu nahoře",
     },
     studio: {
@@ -242,7 +242,7 @@ const translations = {
       historyTimeline: [
         {
           year: "1653 - Založení",
-          desc: "Založení rybníků a postavení vysoké pece a hamru Lamingeny",
+          desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena",
         },
         {
           year: "1810 - Přestavba na mlýn",
