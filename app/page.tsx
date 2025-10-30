@@ -189,6 +189,24 @@ const translations = {
       andreaDesc:
         "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na Svět inspirovat.",
       collaboration: "Spolupráce a podpora",
+      collaborationPara1:
+        "Hledáme partnery, ne pouze dodavatele. Věříme v long-term relationships založené na shared passion pro music a quality.",
+      collaborationPara1Strong: "Hledáme partnery, ne pouze dodavatele.",
+      collaborationPara2:
+        "Ve studiu se snažíme mít co nejlepší vybavení - průběžně upravujeme setup a stále hledáme to nejlepší na trhu.",
+      collaborationPara2Strong: "Stavíte kytary, efektové krabičky, zesilovače?",
+      collaborationPara2End: "Chcete, aby se k vašim produktům dostali zajímaví zákazníci?",
+      collaborationPara3:
+        "Přijeďte se za námi podívat a nezávazně si popovídat - rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si chceme nejdříve důkladně vyzkoušet.",
+      collaborationPara3Strong: "Neváhejte nás kontaktovat!",
+      collaborationFormsTitle: "Formy spolupráce:",
+      collaborationForms: [
+        "Artist Residencies - long-term creative partnerships",
+        "Equipment Testing - real-world evaluation s feedback",
+        "Content Creation - dokumentární projekty a tutorials",
+        "Educational Programs - masterclasses a workshops",
+        "Brand Integration - authentic product placement",
+      ],
       bonuses: "Další bonusy",
       bonusesItems: [
         "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
@@ -454,6 +472,24 @@ const translations = {
       andreaDesc:
         "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindra :)) But seriously: we complement each other and try to inspire each other from our different perspectives on the World.",
       collaboration: "Collaboration and Support",
+      collaborationPara1:
+        "We're looking for partners, not just suppliers. We believe in long-term relationships based on shared passion for music and quality.",
+      collaborationPara1Strong: "We're looking for partners, not just suppliers.",
+      collaborationPara2:
+        "We strive to have the best equipment in the studio - we continuously update our setup and are always looking for the best on the market.",
+      collaborationPara2Strong: "Do you build guitars, effect pedals, amplifiers?",
+      collaborationPara2End: "Do you want your products to reach interesting customers?",
+      collaborationPara3:
+        "Come visit us and have a casual chat - we love meeting interesting people who create. We want to thoroughly test everything first.",
+      collaborationPara3Strong: "Don't hesitate to contact us!",
+      collaborationFormsTitle: "Forms of Collaboration:",
+      collaborationForms: [
+        "Artist Residencies - long-term creative partnerships",
+        "Equipment Testing - real-world evaluation with feedback",
+        "Content Creation - documentary projects and tutorials",
+        "Educational Programs - masterclasses and workshops",
+        "Brand Integration - authentic product placement",
+      ],
       bonuses: "Other Bonuses",
       bonusesItems: [
         "You can lift the mill gate and let water flow to the mill. 😄💧",
@@ -465,6 +501,7 @@ const translations = {
         "You might also meet a fat squirrel that digs up planks - animals have it great here :-) We also have herons and neighbors have a puppy and a few friendly cats (also from various neighbors) :-) 🐿️🐕🐈",
         "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for future years and will replace with more modern technologies. (No hornets were harmed – we let them live out their lives in peace. 🐝) Thank you. ⚡",
         "Fresh organic vegetables, excellent grapes, hops. Overall, the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
+        "Everything is underlined by silence and peace, yet it's as close to Domažlice as from Národní to Palmovka (8 minutes). 🤫🌳",
         "Last but not least, nice neighbors from all sides and the Bidlo pub with friendly staff and a beautiful view of the pond and mill from the other side. Here you can have a Pilsner and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlická desítka, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
         "In the morning you can also jump into the pond, but nobody does... but you can :-) 🏊‍♂️",
       ],
@@ -715,6 +752,24 @@ const translations = {
       andreaDesc:
         "Sängerin und Bassistin der Band Anteater und auch Archäologin. Gerade in der Umgebung der alten Mühle verbinden sich all diese Leidenschaften natürlich. Andrea schafft die heimelige und inspirierende Atmosphäre des Studios. Wenn Sie um Mitternacht Kakao kochen möchten (oder Backing Vocals singen), zögern Sie nicht, sich an Andrea zu wenden (bei technischen Problemen dann an Jindra :)) Aber im Ernst: Wir ergänzen uns und versuchen oft, uns aus unseren unterschiedlichen Perspektiven auf die Welt zu inspirieren.",
       collaboration: "Zusammenarbeit und Unterstützung",
+      collaborationPara1:
+        "Wir suchen Partner, nicht nur Lieferanten. Wir glauben an langfristige Beziehungen, die auf gemeinsamer Leidenschaft für Musik und Qualität basieren.",
+      collaborationPara1Strong: "Wir suchen Partner, nicht nur Lieferanten.",
+      collaborationPara2:
+        "Wir bemühen uns, die beste Ausrüstung im Studio zu haben - wir aktualisieren kontinuierlich unser Setup und suchen immer nach dem Besten auf dem Markt.",
+      collaborationPara2Strong: "Bauen Sie Gitarren, Effektpedale, Verstärker?",
+      collaborationPara2End: "Möchten Sie, dass Ihre Produkte interessante Kunden erreichen?",
+      collaborationPara3:
+        "Besuchen Sie uns und unterhalten Sie sich unverbindlich - wir lernen gerne interessante Menschen kennen, die etwas schaffen. Wir möchten zuerst alles gründlich testen.",
+      collaborationPara3Strong: "Zögern Sie nicht, uns zu kontaktieren!",
+      collaborationFormsTitle: "Formen der Zusammenarbeit:",
+      collaborationForms: [
+        "Artist Residencies - langfristige kreative Partnerschaften",
+        "Equipment Testing - Praxistest mit Feedback",
+        "Content Creation - Dokumentarprojekte und Tutorials",
+        "Educational Programs - Masterclasses und Workshops",
+        "Brand Integration - authentische Produktplatzierung",
+      ],
       bonuses: "Weitere Boni",
       bonusesItems: [
         "Sie können das Mühlenwehr anheben und Wasser zur Mühle fließen lassen. 😄💧",
@@ -2434,54 +2489,48 @@ export default function MlynNaPilePage() {
                   </div>
 
                   {/* Section 4: Collaboration */}
-                  <div>
-                    <Card id="spoluprace" className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.collaboration}</h3>
-                        <div className="space-y-4 text-white/80">
-                          <p className="leading-relaxed">
-                            <strong className="text-white">Hledáme partnery, ne pouze dodavatele.</strong> Věříme v
-                            long-term relationships založené na shared passion pro music a quality.
-                          </p>
-                          <p className="leading-relaxed">
-                            Ve studiu se snažíme mít co nejlepší vybavení - průběžně upravujeme setup a stále hledáme to
-                            nejlepší na trhu.
-                            <strong className="text-white"> Stavíte kytary, efektové krabičky, zesilovače?</strong>{" "}
-                            Chcete, aby se k vašim produktům dostali zajímaví zákazníci?
-                          </p>
-                          <p className="leading-relaxed">
-                            <strong className="text-white">Neváhejte nás kontaktovat!</strong> Přijeďte se za námi
-                            podívat a nezávazně si popovídat - rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si
-                            chceme nejdříve důkladně vyzkoušet.
-                          </p>
-                          <div className="mt-6">
-                            <h4 className="font-semibold text-white mb-2">Formy spolupráce:</h4>
-                            <ul className="space-y-1 text-sm">
-                              <li>• Artist Residencies - long-term creative partnerships</li>
-                              <li>• Equipment Testing - real-world evaluation s feedback</li>
-                              <li>• Content Creation - dokumentární projekty a tutorials</li>
-                              <li>• Educational Programs - masterclasses a workshops</li>
-                              <li>• Brand Integration - authentic product placement</li>
-                            </ul>
-                          </div>
-                          <div className="mt-6 pt-6 border-t border-white/20">
-                            <p className="text-sm text-white/80 leading-relaxed">
-                              <strong className="text-secondary">{t.equipment.thankYouNote}:</strong>{" "}
-                              {t.equipment.noraCollaboration}{" "}
-                              <a
-                                href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-secondary hover:text-secondary/80 underline font-semibold"
-                              >
-                                Nora
-                              </a>
-                              .
-                            </p>
-                          </div>
+                  <div id="collaboration" className="py-24">
+                    <div className="max-w-4xl mx-auto px-4">
+                      <h3 className="text-2xl font-bold text-white mb-6">{t.about.collaboration}</h3>
+                      <div className="space-y-4 text-white/80">
+                        <p className="leading-relaxed">
+                          <strong className="text-white">{t.about.collaborationPara1Strong}</strong>{" "}
+                          {t.about.collaborationPara1.replace(t.about.collaborationPara1Strong + " ", "")}
+                        </p>
+                        <p className="leading-relaxed">
+                          {t.about.collaborationPara2}
+                          <strong className="text-white"> {t.about.collaborationPara2Strong}</strong>{" "}
+                          {t.about.collaborationPara2End}
+                        </p>
+                        <p className="leading-relaxed">
+                          <strong className="text-white">{t.about.collaborationPara3Strong}</strong>{" "}
+                          {t.about.collaborationPara3}
+                        </p>
+                        <div className="mt-6">
+                          <h4 className="font-semibold text-white mb-2">{t.about.collaborationFormsTitle}</h4>
+                          <ul className="space-y-1 text-sm">
+                            {t.about.collaborationForms.map((form, index) => (
+                              <li key={index}>• {form}</li>
+                            ))}
+                          </ul>
                         </div>
-                      </CardContent>
-                    </Card>
+                        <div className="mt-6 pt-6 border-t border-white/20">
+                          <p className="text-sm text-white/80 leading-relaxed">
+                            <strong className="text-secondary">{t.equipment.thankYouNote}:</strong>{" "}
+                            {t.equipment.noraCollaboration}{" "}
+                            <a
+                              href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-secondary hover:text-secondary/80 underline font-semibold"
+                            >
+                              Nora
+                            </a>
+                            .
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div>
