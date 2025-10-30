@@ -40,11 +40,11 @@ const translations = {
       contact: "Kontakt",
     },
     mlyn: {
-      title: "Mlýn na Pile",
+      title: "Mlýn Šnajberk Studios",
       subtitle: "Retreat Studio",
       tagline: "Kde se rodí inspirace",
-      description: "Unikátní prostor s genius loci v krásné přírodě",
-      scrollHint: "Scrollujte dolů pro objevení našich prostorů",
+      description: "Unikátní prostor s Genius Loci v krásné přírodě",
+      scrollHint: "Scrollujte dolů pro nerušené prohlédnutí prezentací",
       threeSpaces: "Tři unikátní prostory pro vaši kreativitu",
       vintageInstruments: "Vintage Nástroje",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
@@ -88,176 +88,250 @@ const translations = {
       subtitle: "Klidné místo v srdci Evropy, blízko všeho důležitého",
       nature: "Krásná příroda - rekreační oblast, soukromí a vlastní park",
       naturePara1:
-        "Pila u Trhanova je ideální lokalitou pro milovníky krásné přírody, soukromí a aktivního odpočinku. Pozemek má rozlohu přes 6500 m² a nabízí klidné prostředí s několika poseděními a dvěma potůčky, které dotvářejí harmonickou atmosféru.",
+        "Pila 100 u Trhanova je ideální lokalita pro milovníky krásné přírody, soukromí a aktivní rekreace. Pozemek o rozloze přes 6500 m² nabízí klidné prostředí s několika posezením a dvěma potoky, které vytvářejí harmonickou atmosféru.",
       naturePara2:
-        "Z Pily se pohodlně dostanete pěšky jak do Domažlic, tak na vrchol nejvyšší hory Českého lesa, Čerchov (1042 m), která láká turisty rozhlednou a nádhernými výhledy. Okolí je bohaté na značené cyklotrasy i pěší stezky vedoucí malebnou krajinou, ideální pro vyznavače přírody a historie.",
+        "Z Pily se můžete pohodlně pěšky dostat do Domažlic nebo na vrchol nejvyšší hory Českého lesa, Čerchova (1042 m), který láká turisty svou rozhlednou a nádherným výhledem. Oblast je bohatá na značené cyklotrasy a turistické stezky malebnou krajinou, ideální pro milovníky přírody a historie.",
       naturePara3:
-        "Celý kraj je známý svou zelení, čerstvým vzduchem a klidem, což vytváří perfektní podmínky pro všechny hledající únik z ruchu města a zároveň kvalitní základnu pro výlety a poznávání kulturních i přírodních zajímavostí regionu.",
+        "Celý region je známý svou zelení, čerstvým vzduchem a klidem, což vytváří dokonalé podmínky pro každého, kdo hledá únik z ruchu města a zároveň poskytuje kvalitní základnu pro výlety a poznávání kulturních a přírodních zajímavostí regionu.",
       quote:
-        "Našli jsme za mě dokonalou lokalitu a nádherný historický objekt starého mlýna o který se chceme podělit. Chceme toto místo ještě pozvednout dál - o kreativní lidi, kteří zde budou mít otevřené dveře a kde budou vznikat skvělé věci.",
+        "Našli jsme perfektní lokalitu a krásnou historickou budovu starého mlýna, kterou chceme sdílet. Chceme toto místo dále povznést - s kreativními lidmi, kteří tu budou mít otevřené dveře a kde budou vznikat skvělé věci.",
       transport: "Dopravní dostupnost",
       byCar: "Autem",
+      byCarItems: [
+        "10 min do centra Domažlic",
+        "10 min na německé hranice",
+        "Přímý přístup, soukromé parkoviště",
+        "Tesla nabíjecí stanice",
+      ],
       byTrain: "Vlakem",
-      byPlane: "Letecky",
-      surroundings: "Okolí a zajímavá místa",
+      byTrainItems: ["Vlaková zastávka přímo na Pile", "10 min pěšky ze stanice Trhanov"],
+      byPlane: "Letadlem",
+      byPlaneItems: ["1h 45min z Pražského letiště", "2h z Mnichovského letiště", "Zajištěn odvoz"],
+      surroundings: "Okolí a zajímavosti",
       events: "Zajímavé akce v okolí",
       domazliceTitle: "Domažlice (cca 7 km)",
       domazliceItems: [
-        "Historickým centrem města",
+        "Historické centrum města",
         "Domažlická šikmá věž",
-        "Domažlický pivovar",
+        "Pivovar Domažlice",
         "Kulturní akce a koncerty v místních hudebních klubech",
         "Návštěva Muzea Chodska s etnografickou expozicí",
       ],
       horsovskytynTitle: "Horšovský Týn (cca 25 km)",
       horsovskytynItems: ["Renesanční zámek Horšovský Týn"],
-      babylonTitle: "Babylon (část obce Trhanov, cca 5 km)",
+      babylonTitle: "Babylon (část Trhanova, cca 5 km)",
       babylonItems: [
-        "Přírodní koupaliště, beach volejbal",
+        "Přírodní koupaliště, plážový volejbal",
         "Tenisové kurty, fotbalové hřiště",
         "Mnoho značených cyklotras",
       ],
       germanyTitle: "Německo (hranice cca 15 km)",
       germanyItems: ["Furth im Wald s hradem Drachenburg", "Místní trhy a kulturní akce"],
       domazliceEvents: [
-        { month: "Červenec", event: "Mezinárodní jazzový festival – letní hudební festival s umělci z celého světa" },
+        {
+          month: "Červenec",
+          event: "Mezinárodní jazzový festival – letní hudební festival s umělci z celého světa",
+        },
         {
           month: "Srpen",
-          event: "Chodské slavnosti a Vavřinecká pouť – tradiční folklorní slavnosti s hudbou, divadlem a gastronomií",
+          event: "Chodské slavnosti a Vavřinecká pouť – tradiční folklorní festival s hudbou, divadlem a gastronomií",
         },
         { month: "Červenec", event: "Hudba pod hradem – koncerty v historickém prostředí Domažlic" },
       ],
-      horsovskytynEvents: [{ month: "Červenec", event: "Anenská pouť" }],
+      horsovskytynEvents: [{ month: "Červenec", event: "Anežská pouť" }],
       babylonEvents: [
         { month: "Srpen", event: "Babylonské léto – série kulturních a sportovních akcí v přírodním prostředí" },
       ],
       chamTitle: "Cham (Německo, cca 40 km)",
       chamClub: "Klub L.A.Cham",
       chamDescription:
-        "Skvělý klub kde se pravidelně pořádají akce i velkých amerických kapel! (Sepultura, Dog Eat Dog, Blaze Bayley, ...)",
+        "Skvělý klub, který pravidelně pořádá akce s velkými americkými kapelami! (Sepultura, Dog Eat Dog, Blaze Bayley, ...)",
     },
     equipment: {
       title: "Technické vybavení",
       subtitle: "Vintage duše × Moderní technologie",
-      collectionNote: "Sbírka se průběžně aktualizuje i o zapůjčené věci viz.",
+      collectionNote: "Sbírka je průběžně doplňována zapůjčenými kusy, viz",
       collaborationLink: "sekce spolupráce",
       detailsNote:
-        "Nástroje jsou profesionálně seřízeny, preferujeme klasické lampové zesilovače a myslíme na každý detail, aby se ve zvuku nic neztratilo - většina krabiček je TRUE BYPASS nebo je přes jiné řešení ošetřeno aby true bypass byla (např. G-LAB), propojení je přes kvalitní kabely Mogami Platinum a Evidence",
-      vintageInstruments: "Vintage Nástroje",
+        "Nástroje jsou profesionálně nastaveny, preferujeme klasické lampové zesilovače a myslíme na každý detail, aby se ve zvuku nic neztratilo - většina pedálů je TRUE BYPASS nebo má jiná řešení zajišťující true bypass (např. G-LAB), propojení jsou realizována kvalitními kabely Mogami Platinum a Evidence",
+      vintageInstruments: "Vintage nástroje",
       guitars: "Kytary",
+      guitarsItems: [
+        "Fender Custom Shop - Jeff Beck (Surf Green)",
+        "Fender Custom Shop - LTD 67 HSS Strat AB HR",
+        "Fender Jaguar Kurt Cobain (s Graph Tech Bridge Saddles)",
+        "Gibson Les Paul Studio (1993) (s Graph Tech Bridge Saddles)",
+        "Gibson Explorer",
+        "Martin Guitar D-15E (Upgrade s Martin Guitar Bridge Pin Liquid Metal DG)",
+      ],
       basses: "Baskytary",
-      ampsAndCabs: "Zesilovače a Boxy",
+      bassesItems: ["Fender Precision (1993)", "Squier short scale bass"],
+      ampsAndCabs: "Zesilovače a reproboxy",
       amps: "Zesilovače",
-      cabs: "Boxy",
-      effects: "Efekty (rozsáhlá kolekce) a další efekty",
+      ampsItems: [
+        "Fender 64 Custom Deluxe Reverb",
+        "Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)",
+        "Mesa Boogie Dual Rectifier®Head, 3 Channels / 8 Modes, 100W",
+        "Marshall AFD 100",
+        "AMPEG V-4B Bass Head",
+        "Roland JC-22 (2x)",
+      ],
+      cabs: "Reproboxy",
+      cabsItems: ["Marshall 1960 BX", "Coffe custom CLASSIC 212", "Ampeg SVT-112AV Cabinet"],
+      effects: "Efekty (rozsáhlá sbírka) a další efekty",
       mics: "Mikrofony",
+      micsItems: ["Sennheiser e 906", "Shure Beta 58", "Shure SM 7 B", "2x SHURE SM57"],
       drums: "Bicí",
-      cables: "Kabely a Stojany",
+      drumsItems: ["Mapex Saturn", "K-Zildjian činely"],
+      cables: "Kabely a stojany",
       modernTech: "Moderní technologie",
       uaPlugins: "Universal Audio Pluginy (76)",
-      workflow: "Workflow doporučení",
-      infrastructure: "Další technické vybavení",
+      uaPluginsItems: [
+        "Universal Audio Apollo Interface",
+        "UAD-2 Satellite (extra DSP výkon)",
+        "76 UAD pluginů (kompletní kolekce)",
+        "Unison Technology",
+        "Téměř nulová latence při nahrávání",
+      ],
+      workflow: "Doporučení workflow",
+      workflowItems: ["Logic Pro X", "UA LUNA"],
+      infrastructure: "Ostatní technické vybavení",
+      infrastructureTitle: "Infrastruktura",
+      infrastructureItems: ["Přepěťové ochrany", "Tesla nabíjecí stanice", "Off-grid schopnost", "Bezpečnostní systém"],
       thankYouNote: "Poděkování",
-      noraCollaboration: "Sbírka nástrojů je obohacena o unikátní kusy od Radka Fořta, kytaristy kapely",
+      noraCollaboration: "Sbírku nástrojů obohacují unikátní kusy od Radka Fořta, kytaristy kapely",
+      vintageHighlights: [
+        "Vintage Fender Custom Shop kytary",
+        "Gibson Les Paul Studio (1993) (s Graph Tech Bridge Saddles)",
+        "Gibson Explorer",
+        "Marshall AFD 100, Mesa Boogie",
+        "Rozsáhlá kolekce efektů",
+        "Mapex Saturn bicí s K-Zildjian činely",
+      ],
+      modernHighlights: [
+        "MAC + Apple Pro Display XDR 6K monitor",
+        "Universal Audio Apollo Interface",
+        "76 UAD pluginů (kompletní kolekce)",
+        "Logic Pro X + UA LUNA",
+        "4K projektor pro screening",
+      ],
+      videoItems: [
+        "Apple Pro XDR 6K monitor pro přesné barevné úpravy",
+        "Profesionální videokamery pro dokumentaci session",
+        "DJI Gimbal stabilizátor pro plynulé pohyby kamery",
+        "4K projektor pro screening a prezentace",
+        "Osvětlovací zařízení pro profesionální video natáčení",
+      ],
+      videoSoftwareItems: ["Final Cut Pro X"],
     },
     contact: {
       title: "Kontakt",
-      info: "Kontaktní informace",
+      info: "Kontaktní údaje",
       address: "Adresa",
+      addressLine1: "Pila 100 - Mlýn",
+      addressLine2: "Trhanov 34401",
+      addressLine3: "Česká republika",
       phone: "Telefon",
       availability: "Dostupnost",
       availabilityItems: [
         "10 min do centra Domažlic",
         "10 min na německé hranice",
         "Vlaková zastávka přímo na Pile",
-        "1h 45min z Prague Airport",
+        "1h 45min z Pražského letiště",
       ],
     },
     about: {
       title: "Mlýn Šnajberk Studios",
-      subtitle: "Kde se rodí inspirace v srdci Evropy",
+      subtitle: "Kde inspirace vzniká v srdci Evropy",
       tagline: "Vintage duše, moderní technologie",
       history: "Historie mlýna",
       accommodation: "Stylové ubytování",
       founders: "Zakladatelé",
       foundersIntro:
-        "Za Mlýnem stojí dva hudebníci, kteří spojili lásku k hudbě, přírodě v jedinečné místo pro tvorbu a odpočinek.",
+        "Za Mlýnem stojí dva hudebníci, kteří spojili svou lásku k hudbě, přírodě a moderním technologiím do jedinečného místa pro tvorbu a odpočinek.",
       jindrichDesc:
-        "Kytarista kapely Anteater, nadšenec do moderních technologií, který nedá dopustit na klasické vintage nástroje a aparáty.",
+        "Kytarista kapely Anteater, nadšenec do moderních technologií, který nedá dopustit na klasické vintage nástroje a vybavení.",
       jindrichQuote:
-        "Pracujeme na tom, aby u nás muzikanti našli inspirativní prostor dokonale připravený pro tvorbu. Mlýn má svůj genius loci a duši – a stejnou energii nesou i nástroje a vintage aparáty, které jsou zde k dispozici. V harmonii s nimi zde moderní technologie nenápadně podporují pohodlí a profesionální podmínky pro zachycení každého hudebního nápadu. Naším cílem je vytvořit krásné, klidné a pohodové prostředí, kam se lidé budou rádi vracet. Dveře máme otevřené všem kreativním lidem, nejen hudebníkům. Věříme, že právě tato kombinace – prostor s duší, nástroje s příběhem a moderní technologie v pozadí – se stane motorem a synergií pro vznik úžasných věcí.",
+        "Pracujeme na tom, aby hudebníci našli inspirativní prostor perfektně připravený pro tvorbu. Mlýn má svůj genius loci a duši – a stejnou energii v sobě nesou i nástroje a vintage vybavení, které jsou zde k dispozici. V harmonii s nimi moderní technologie nenápadně podporuje komfort a profesionální podmínky pro zachycení každé hudební nápady. Naším cílem je vytvořit krásné, klidné a pohodlné prostředí, kam se lidé budou chtít vracet. Máme otevřené dveře pro všechny kreativní lidi, nejen hudebníky. Věříme, že tato kombinace – prostor s duší, nástroje s historií a moderní technologie v pozadí – se stane motorem a synergií pro tvorbu úžasných věcí.",
       andreaDesc:
-        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na svět inspirovat.",
+        "Zpěvačka a baskytaristka kapely Anteater a zároveň archeoložka. Právě v prostředí starého mlýna se všechny tyto vášně přirozeně spojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud si chcete o půlnoci dát kakao (nebo zazpívat vokal), neváhejte se obrátit na Andreu (v případě technických problémů pak na Jindra :)) Ale vážně: doplňujeme se a snažíme se často inspirovat z našich odlišných pohledů na svět.",
       collaboration: "Spolupráce a podpora",
       collaborationIntro:
-        "Hledáme partnery, ne pouze dodavatele. Věříme v dlouhodobé vztahy založené na společné vášni pro hudbu a kvalitu.",
+        "Hledáme partnery, nejen dodavatele. Věříme v dlouhodobé vztahy založené na sdílené vášni pro hudbu a kvalitu.",
       collaborationEquipment:
-        "Ve studiu se snažíme mít co nejlepší vybavení - průběžně upravujeme setup a stále hledáme to nejlepší na trhu. Stavíte kytary, efektové krabičky, zesilovače? Chcete, aby se k vašim produktům dostali zajímaví zákazníci?",
+        "Ve studiu se snažíme mít to nejlepší vybavení – neustále aktualizujeme náš setup a hledáme to nejlepší na trhu. Stavíte kytary, efektové pedály, zesilovače? Chcete, aby se k vašim produktům dostali zajímaví zákazníci?",
       collaborationContact:
-        "Neváhejte nás kontaktovat! Přijeďte se za námi podívat a nezávazně si popovídat - rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si chceme nejdříve důkladně vyzkoušet.",
+        "Neváhejte nás kontaktovat! Přijďte nás navštívit a nezávazně si popovídat – rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše chceme nejprve důkladně otestovat.",
       collaborationForms: "Formy spolupráce:",
+      collaborationFormsItems: [
+        "Artist Residencies - dlouhodobé kreativní partnerství",
+        "Testování vybavení - reálné hodnocení s zpětnou vazbou",
+        "Tvorba obsahu - dokumentární projekty a tutoriály",
+        "Vzdělávací programy - masterclassy a workshopy",
+        "Integrace značky - autentické umístění produktu",
+      ],
       bonuses: "Další bonusy",
       bonusesItems: [
-        "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
-        "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
-        "Pro milovníky přírody: Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
-        "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
-        "U sousedky Dády si můžete projet na koních. 🐴",
-        "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
-        "Můžete potkat i tlustou veverku, co vyvrací plaňky - zvířata se zde mají skvěle :-) Máme i volavky a u sousedů štěně a pár kamarádských koček (také od různých sousedů), žáby a krtky (naše) :-) 🐿️🐕🐈",
-        "Žijeme se zvířaty v symbióze a spolupracujeme, tento rok byl vstup do studia navíc zabezpečen i sršním hnízdem hned nad vstupem, které pro příští roky už neplánujeme a nahradíme ho modernějšími technologiemi. Děkujeme. (Žádní sršni nepřišli k úhoně – nechali jsme je dožít v klidu. 🐝) ⚡",
-        "Čerstvá bio zelenina, výborné hroznové víno, chmel. Celkově je tady tráva zelenější a díky krtkům je vidět krásná černozem. :-D 🥬🍇🌿",
-        "Vše podtrhuje ticho a klid, přitom do Domažlic je to jak z Národní na Palmovku (8 minut). 🤫🌳",
-        "V neposlední řadě, fajn sousedi ze všech stran a hospůdka Bidlo se sympatickou obsluhou a krásným výhledem na rybník a mlýn z druhé strany. Tady si můžete dát Plzeň a kdyby jste chtěli si dát víc piv a druhý den fungovat ve studiu, doporučujeme výlet do pivovaru v Domažlicích a držet se pouze Domažlické desítky, po které můžete bez problémů druhý den fungovat (Doporučeno paní sládkovou a několikrát pro vás otestováno, že je to pravda :-) 🍺🏡",
-        "Ráno můžete skočit i do rybníka, ale nikdo to nedělá... ale jako můžete :-) 🏊‍♂️",
+        "Můžete zvednout mlýnské kolo a nechat protékat vodu do mlýna. 😄💧",
+        "V noci je nebe jako na Severní Koreji – naprostá tma, hvězdy kam jen dohlédnete. ✨🌟",
+        "Pro milovníky přírody: Jsou zde vážky, krásné a početné. 🦋 Létají až do zimní zahrady a jsou natolik chytré, že po své inspekci odlétají zpět ven, aniž by narazily do skla. Kromě nich najdete invazivní rostliny, proti kterým statečně bojujeme. 🌿⚔️ Roste zde však i obří sekvoje, které – přiznáváme – nemáme srdce kácet. 🌲💚",
+        "Pod okny studia se často nacházejí labutě s mláďaty, které se nechají krmit. 🦢",
+        "U souseda Dády se můžete svézt na koni. 🐴",
+        "I za plného dne můžete v zahradě potkat ježky, kuny i srnky. Když se Dádově koně ujdou, můžete si s nimi dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
+        "Potkat můžete i tlusté veverky, co vyhrabávají prkna – zvířata zde mají skvělý život :-) Máme tu i volavky a sousedé mají štěně a pár přátelských koček (také od různých sousedů) :-) 🐿️🐕🐈",
+        "Žijeme v symbióze se zvířaty a spolupracujeme, letos byl vstup do studia dodatečně zajištěn včelím hnízdem přímo nad vchodem, které pro příští roky neplánujeme a nahradíme modernějšími technologiemi. (Včely neutrpěly – nechali jsme je v klidu dožít. 🐝) Děkujeme. ⚡",
+        "Čerstvá bio zelenina, vynikající hroznové víno, chmel. Celkově je zdejší tráva zelenější a díky krtkům vidíte krásnou černou půdu. :-D 🥬🍇🌿",
+        "Vše umocňuje ticho a klid, přesto je to tak blízko Domažlic jako z Národní na Palmovku. 🤫🌳",
+        "V neposlední řadě příjemní sousedé ze všech stran a hospoda Bidlo s přátelským personálem a krásným výhledem na rybník a mlýn z druhé strany. Zde si můžete dát Pilsner a pokud chcete dát více piv a druhý den fungovat ve studiu, doporučujeme výlet do pivovaru v Domažlicích a držet se pouze Domažlické desítky, po které můžete druhý den fungovat bez problémů (Doporučeno sládkem a pro vás několikrát otestováno, že je to pravda :-) 🍺🏡",
+        "Ráno se můžete také skočit do rybníka, ale nikdo to nedělá... ale můžete :-) 🏊‍♂️",
       ],
       faq: "Často kladené otázky",
       faqItems: [
         {
-          q: "Straší na mlýně?",
+          q: "Je mlýn strašidelný?",
           a: "Ne ;-)",
         },
         {
-          q: "Jste plátci DPH?",
-          a: "Ano, jsme plátci DPH. Všechny ceny na webu jsou uvedeny včetně DPH. Pro business klienty vystavujeme faktury s DPH, pro zahraniční klienty řešíme reverse charge podle EU regulations.",
+          q: "Jsme plátci DPH?",
+          a: "Ano, jsme plátci DPH. Veškeré ceny na webu jsou včetně DPH. Pro firemní klienty vystavujeme faktury s DPH, pro zahraniční klienty zajišťujeme reverzní charge dle evropských regulací.",
         },
         {
-          q: "Lze pronajmout celý objekt?",
-          a: "Samozřejmě! Preferujeme exkluzivní rezervace pro maximální soukromí a kreativní flow. Celý komplex lze rezervovat minimálně na 3 dny. Cena zahrnuje všechny prostory, catering možnosti a 24/7 podporu.",
+          q: "Mohu si pronajmout celý areál?",
+          a: "Ano, samozřejmě! Preferujeme exkluzivní bookingy pro maximální soukromí a kreativní flow. Celý komplex lze rezervovat na minimálně 3 dny. Cena zahrnuje veškeré prostory, cateringové možnosti a 24/7 podporu.",
         },
         {
-          q: "Mohu si přivést vlastní tým, nebo mohu jen dorazit sám?",
-          a: "Obě možnosti jsou v pořádku! Pro sólové umělce máme připravený looper Plethora X5 s pěti loopy. S týmem: ubytování pro až 8 lidí, více pracovních prostorů.",
+          q: "Mohu přijet s vlastním týmem, nebo mohu přijet sám?",
+          a: "Obě možnosti jsou naprosto v pořádku! Pro sólo umělce máme připravený Looper Plethora X5 s pěti smyčkami. S týmem: ubytování pro až 8 osob, více pracovních prostor.",
         },
         {
-          q: "Jaké žánry u vás můžu nahrávat?",
-          a: "Všechny žánry vítány! Rock/Metal - autentický lampový zvuk, Electronic - precizní digitální zpracování, Acoustic/Folk - přirozená akustika místnosti, Hip-Hop/Rap - přesný monitoring, Classical/Jazz - prostorné nahrávací plochy.",
+          q: "Jaké žánry zde mohu nahrávat?",
+          a: "Všechny žánry vítány! Rock/Metal – autentický zvuk lampových zesilovačů, Elektronická hudba – čisté digitální zpracování, Akustická/Folk – přirozená akustika místnosti, Hip-Hop/Rap – precizní monitoring, Klasická/Jazz – prostorné nahrávací plochy.",
         },
         {
-          q: "Jak se k nám dostanu?",
-          a: "Autem: přímý přístup, soukromé parkování, Tesla nabíjení. Vlakem: 10 min pěšky ze stanice Trhanov. Letecky: 1h 45min z letiště Praha, 2h z letiště Mnichov, pick-up služba k dispozici.",
+          q: "Jak se k vám dostanu?",
+          a: "Autem: přímý příjezd, soukromé parkoviště, Tesla nabíjení. Vlakem: 10 min pěšky ze stanice Trhanov. Letadlem: 1h 45min z Pražského letiště, 2h z Mnichovského letiště, zajištěn odvoz.",
         },
         {
-          q: "Máte catering, nebo si musím řešit jídlo sám?",
-          a: "Flexibilní možnosti stravování: In-house catering s lokálními ingrediencemi, pizza pec pro společné večeře (až 8 pizz), plně vybavená kuchyň pro vlastní vaření, rozvoz z místních restaurací z Domažlic.",
+          q: "Máte catering, nebo si musím jídlo zajistit sám?",
+          a: "Flexibilní možnosti stravování: Vlastní catering s lokálními surovinami, pizza pec pro společné večeře (až 8 pizz), plně vybavená kuchyně pro vlastní vaření, dovoz z lokální restaurace z Domažlic.",
         },
         {
           q: "Mluvíte anglicky/německy?",
-          a: "Vícejazyčný tým: Čeština - rodilí mluvčí, Angličtina - plynule (Jindřich, Andrea, tech tým), Němčina - konverzační úroveň (regionální výhoda), překladatelské služby pro smlouvy.",
+          a: "Vícejazyčný tým: Čeština – rodilý jazyk, Angličtina – plynule (Jindřich, Andrea, technický tým), Němčina – konverzační (regionální výhoda), zajištění překladatelských služeb pro smlouvy.",
         },
       ],
       historyTimeline: [
         {
           year: "1653 - Založení",
-          desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena",
+          desc: "Založení rybníků a výstavba vysoké pece a hamru rodem z Lamingen",
         },
         {
           year: "1810 - Přestavba na mlýn",
-          desc: "Mlýn s pilou poháněnou vodní silou",
+          desc: "Mlýn s pilou poháněný vodou",
         },
         {
           year: "1990 - Pila",
-          desc: "Vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice",
+          desc: "Založena 24. listopadu 1990 jako součást obce Trhanov v okrese Domažlice",
         },
         {
           year: "2024 - Nový začátek",
@@ -266,34 +340,34 @@ const translations = {
       ],
       accommodationRooms: "Pokoje (až 8 hostů)",
       masterSuite: "Master Suite",
-      masterSuiteDesc: "Terasa s výhledem na rybník, vintage nábytek, vlastní koupelna",
+      masterSuiteDesc: "Terasa s výhledem na rybník, vintage nábytek, soukromá koupelna",
       fourRooms: "4 pokoje",
-      fourRoomsDesc: "Každý pokoj s unikátním charakterem, moderní komfort, inspirativní design",
+      fourRoomsDesc: "Každý pokoj s jedinečným charakterem, moderním komfortem, inspirativním designem",
       commonSpaces: "Společné prostory",
       commonSpacesItems: [
         "Jídelna pro 8 osob",
-        "Plně vybavená kuchyň",
+        "Plně vybavená kuchyně",
         "Malá knihovna",
         "Domácí kino",
         "Zimní zahrada 63m²",
       ],
       finnishSauna: "Finská sauna",
       finnishSaunaItems: ["Finská sauna", "Tenisové kurty, koupaliště (2,2 km)"],
-      parkOutdoor: "Park & Outdoor (6527m²)",
+      parkOutdoor: "Park & Venkovní prostory (6527m²)",
       parkOutdoorItems: [
-        "Dva živé potůčky",
-        "Vzrostlé stromy",
+        "Dva živé potoky",
+        "Staré stromy",
         "Několik teras",
-        "Gril a pizza pec (8 pizz)",
-        "Procházkové stezky",
-        "Soukromé parkování + Tesla nabíjení",
+        "BBQ & pizza pec (8 pizz)",
+        "Procházkové cesty",
+        "Soukromé parkoviště + Tesla nabíjení",
       ],
       catering: "Catering & Stravování",
       cateringItems: [
-        { title: "Vlastní catering", desc: "s lokálními ingrediencemi" },
+        { title: "Vlastní catering", desc: "s lokálními surovinami" },
         { title: "Pizza pec", desc: "pro společné večeře (až 8 pizz)" },
-        { title: "Plně vybavená kuchyň", desc: "pro vlastní vaření" },
-        { title: "Rozvoz z místních restaurací", desc: "z Domažlic" },
+        { title: "Plně vybavená kuchyně", desc: "pro vlastní vaření" },
+        { title: "Dovoz z lokální restaurace", desc: "z Domažlic" },
       ],
     },
   },
@@ -307,11 +381,11 @@ const translations = {
       contact: "Contact",
     },
     mlyn: {
-      title: "Mlýn na Pile",
+      title: "Mlýn Šnajberk Studios",
       subtitle: "Retreat Studio",
       tagline: "Where inspiration is born",
-      description: "Unique space with genius loci in beautiful nature",
-      scrollHint: "Scroll down to discover our spaces",
+      description: "Unique space with Genius Loci in beautiful nature",
+      scrollHint: "Scroll down for uninterrupted viewing of presentations",
       threeSpaces: "Three unique spaces for your creativity",
       vintageInstruments: "Vintage Instruments",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
@@ -364,8 +438,16 @@ const translations = {
         "We found the perfect location and a beautiful historic old mill building that we want to share. We want to elevate this place further - with creative people who will have open doors here and where great things will be created.",
       transport: "Transport accessibility",
       byCar: "By car",
+      byCarItems: [
+        "10 min to Domažlice center",
+        "10 min to German border",
+        "Direct access, private parking",
+        "Tesla charging station",
+      ],
       byTrain: "By train",
+      byTrainItems: ["Train station directly in Pila", "10 min walk from Trhanov station"],
       byPlane: "By plane",
+      byPlaneItems: ["1h 45min from Prague Airport", "2h from Munich Airport", "Pick-up service available"],
       surroundings: "Surroundings and points of interest",
       events: "Interesting events nearby",
       domazliceTitle: "Domažlice (approx. 7 km)",
@@ -416,26 +498,82 @@ const translations = {
         "Instruments are professionally set up, we prefer classic tube amplifiers and think about every detail so that nothing is lost in the sound - most pedals are TRUE BYPASS or have other solutions to ensure true bypass (e.g. G-LAB), connections are made with quality Mogami Platinum and Evidence cables",
       vintageInstruments: "Vintage Instruments",
       guitars: "Guitars",
+      guitarsItems: [
+        "Fender Custom Shop - Jeff Beck (Surf Green)",
+        "Fender Custom Shop - LTD 67 HSS Strat AB HR",
+        "Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)",
+        "Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)",
+        "Gibson Explorer",
+        "Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)",
+      ],
       basses: "Bass Guitars",
+      bassesItems: ["Fender Precision (1993)", "Squier short scale bass"],
       ampsAndCabs: "Amplifiers and Cabinets",
       amps: "Amplifiers",
+      ampsItems: [
+        "Fender 64 Custom Deluxe Reverb",
+        "Mesa Boogie Rect-o-verb (custom version by Antonín Salva)",
+        "Mesa Boogie Dual Rectifier®Head, 3 Channels / 8 Modes, 100W",
+        "Marshall AFD 100",
+        "AMPEG V-4B Bass Head",
+        "Roland JC-22 (2x)",
+      ],
       cabs: "Cabinets",
+      cabsItems: ["Marshall 1960 BX", "Coffe custom CLASSIC 212", "Ampeg SVT-112AV Cabinet"],
       effects: "Effects (extensive collection) and other effects",
       mics: "Microphones",
+      micsItems: ["Sennheiser e 906", "Shure Beta 58", "Shure SM 7 B", "2x SHURE SM57"],
       drums: "Drums",
+      drumsItems: ["Mapex Saturn", "K-Zildjian cymbals"],
       cables: "Cables and Stands",
       modernTech: "Modern Technology",
       uaPlugins: "Universal Audio Plugins (76)",
+      uaPluginsItems: [
+        "Universal Audio Apollo Interface",
+        "UAD-2 Satellite (extra DSP power)",
+        "76 UAD plugins (complete collection)",
+        "Unison Technology",
+        "Near-zero latency tracking",
+      ],
       workflow: "Workflow recommendations",
+      workflowItems: ["Logic Pro X", "UA LUNA"],
       infrastructure: "Additional Technical Equipment",
+      infrastructureTitle: "Infrastructure",
+      infrastructureItems: ["Surge protectors", "Tesla charging station", "Off-grid capability", "Security system"],
       thankYouNote: "Acknowledgments",
       noraCollaboration:
         "The instrument collection is enriched by unique pieces from Radek Fořt, guitarist of the band",
+      vintageHighlights: [
+        "Vintage Fender Custom Shop guitars",
+        "Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)",
+        "Gibson Explorer",
+        "Marshall AFD 100, Mesa Boogie",
+        "Extensive effects collection",
+        "Mapex Saturn drums with K-Zildjian cymbals",
+      ],
+      modernHighlights: [
+        "MAC + Apple Pro Display XDR 6K monitor",
+        "Universal Audio Apollo Interface",
+        "76 UAD plugins (complete collection)",
+        "Logic Pro X + UA LUNA",
+        "4K projector for screening",
+      ],
+      videoItems: [
+        "Apple Pro XDR 6K monitor for color-accurate editing",
+        "Professional video cameras for session documentation",
+        "DJI Gimbal stabilizer for smooth camera movements",
+        "4K projector for screening and presentations",
+        "Lighting equipment for professional video shoots",
+      ],
+      videoSoftwareItems: ["Final Cut Pro X"],
     },
     contact: {
       title: "Contact",
       info: "Contact Information",
       address: "Address",
+      addressLine1: "Pila 100 - Mill",
+      addressLine2: "Trhanov 34401",
+      addressLine3: "Czech Republic",
       phone: "Phone",
       availability: "Availability",
       availabilityItems: [
@@ -457,7 +595,7 @@ const translations = {
       jindrichDesc:
         "Guitarist of the band Anteater, enthusiast of modern technologies who swears by classic vintage instruments and equipment.",
       jindrichQuote:
-        "We work to ensure that musicians find an inspiring space perfectly prepared for creation. The Mill has its genius loci and soul – and the instruments and vintage equipment available here carry the same energy. In harmony with them, modern technology unobtrusively supports comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful and comfortable environment where people will want to return. We have open doors for all creative people, not just musicians. We believe that this combination – a space with soul, instruments with history and modern technology in the background – will become the engine and synergy for creating amazing things.",
+        "We work to ensure that musicians find an inspiring space perfectly prepared for creation. The Mill has its genius loci and soul – and the same energy carry the instruments and vintage equipment available here. In harmony with them, modern technology unobtrusively supports comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful and comfortable environment where people will want to return. We have open doors for all creative people, not just musicians. We believe that this combination – a space with soul, instruments with history and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
         "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindra :)) But seriously: we complement each other and try to inspire each other from our different perspectives on the world.",
       collaboration: "Collaboration and Support",
@@ -468,6 +606,13 @@ const translations = {
       collaborationContact:
         "Don't hesitate to contact us! Come visit us and have a casual chat - we love meeting interesting people who create something. We want to thoroughly test everything first.",
       collaborationForms: "Forms of collaboration:",
+      collaborationFormsItems: [
+        "Artist Residencies - long-term creative partnerships",
+        "Equipment Testing - real-world evaluation with feedback",
+        "Content Creation - documentary projects and tutorials",
+        "Educational Programs - masterclasses and workshops",
+        "Brand Integration - authentic product placement",
+      ],
       bonuses: "Other Bonuses",
       bonusesItems: [
         "You can lift the mill gate and let water flow to the mill. 😄💧",
@@ -582,7 +727,7 @@ const translations = {
       subtitle: "Retreat Studio",
       tagline: "Wo Inspiration entsteht",
       description: "Einzigartiger Raum mit Genius Loci in schöner Natur",
-      scrollHint: "Scrollen Sie nach unten, um unsere Räume zu entdecken",
+      scrollHint: "Scrollen Sie nach unten für eine ungestörte Ansicht der Präsentationen",
       threeSpaces: "Drei einzigartige Räume für Ihre Kreativität",
       vintageInstruments: "Vintage-Instrumente",
       vintageDesc: "60er-80er Fender, Gibson, VOX",
@@ -635,8 +780,16 @@ const translations = {
         "Wir haben den perfekten Ort und ein wunderschönes historisches altes Mühlengebäude gefunden, das wir teilen möchten. Wir wollen diesen Ort weiter aufwerten - mit kreativen Menschen, die hier offene Türen haben und wo großartige Dinge entstehen werden.",
       transport: "Verkehrsanbindung",
       byCar: "Mit dem Auto",
+      byCarItems: [
+        "10 Min. zum Zentrum von Domažlice",
+        "10 Min. zur deutschen Grenze",
+        "Direkter Zugang, privater Parkplatz",
+        "Tesla-Ladestation",
+      ],
       byTrain: "Mit dem Zug",
+      byTrainItems: ["Bahnhof direkt in Pila", "10 Min. zu Fuß vom Bahnhof Trhanov"],
       byPlane: "Mit dem Flugzeug",
+      byPlaneItems: ["1h 45min vom Prager Flughafen", "2h vom Münchner Flughafen", "Abholservice verfügbar"],
       surroundings: "Umgebung und Sehenswürdigkeiten",
       events: "Interessante Veranstaltungen in der Nähe",
       domazliceTitle: "Domažlice (ca. 7 km)",
@@ -685,25 +838,81 @@ const translations = {
         "Instrumente sind professionell eingerichtet, wir bevorzugen klassische Röhrenverstärker und denken an jedes Detail, damit im Sound nichts verloren geht - die meisten Pedale sind TRUE BYPASS oder haben andere Lösungen, um True Bypass zu gewährleisten (z.B. G-LAB), Verbindungen werden mit hochwertigen Mogami Platinum und Evidence Kabeln hergestellt",
       vintageInstruments: "Vintage-Instrumente",
       guitars: "Gitarren",
+      guitarsItems: [
+        "Fender Custom Shop - Jeff Beck (Surf Green)",
+        "Fender Custom Shop - LTD 67 HSS Strat AB HR",
+        "Fender Jaguar Kurt Cobain (mit Graph Tech Bridge Saddles)",
+        "Gibson Les Paul Studio (1993) (mit Graph Tech Bridge Saddles)",
+        "Gibson Explorer",
+        "Martin Guitar D-15E (Upgrade mit Martin Guitar Bridge Pin Liquid Metal DG)",
+      ],
       basses: "Bassgitarren",
+      bassesItems: ["Fender Precision (1993)", "Squier Short Scale Bass"],
       ampsAndCabs: "Verstärker und Boxen",
       amps: "Verstärker",
+      ampsItems: [
+        "Fender 64 Custom Deluxe Reverb",
+        "Mesa Boogie Rect-o-verb (angepasste Version von Antonín Salva)",
+        "Mesa Boogie Dual Rectifier®Head, 3 Kanäle / 8 Modi, 100W",
+        "Marshall AFD 100",
+        "AMPEG V-4B Bass Head",
+        "Roland JC-22 (2x)",
+      ],
       cabs: "Boxen",
+      cabsItems: ["Marshall 1960 BX", "Coffe custom CLASSIC 212", "Ampeg SVT-112AV Cabinet"],
       effects: "Effekte (umfangreiche Sammlung) und weitere Effekte",
       mics: "Mikrofone",
+      micsItems: ["Sennheiser e 906", "Shure Beta 58", "Shure SM 7 B", "2x SHURE SM57"],
       drums: "Schlagzeug",
+      drumsItems: ["Mapex Saturn", "K-Zildjian Becken"],
       cables: "Kabel und Ständer",
       modernTech: "Moderne Technologie",
       uaPlugins: "Universal Audio Plugins (76)",
+      uaPluginsItems: [
+        "Universal Audio Apollo Interface",
+        "UAD-2 Satellite (extra DSP-Leistung)",
+        "76 UAD-Plugins (vollständige Sammlung)",
+        "Unison Technology",
+        "Nahezu latenzfreies Tracking",
+      ],
       workflow: "Workflow-Empfehlungen",
+      workflowItems: ["Logic Pro X", "UA LUNA"],
       infrastructure: "Sonstige technische Ausstattung",
+      infrastructureTitle: "Infrastruktur",
+      infrastructureItems: ["Überspannungsschutz", "Tesla-Ladestation", "Off-Grid-Fähigkeit", "Sicherheitssystem"],
       thankYouNote: "Danksagung",
       noraCollaboration: "Die Instrumentensammlung wird durch einzigartige Stücke von Radek Fořt, Gitarrist der Band",
+      vintageHighlights: [
+        "Vintage Fender Custom Shop Gitarren",
+        "Gibson Les Paul Studio (1993) (mit Graph Tech Bridge Saddles)",
+        "Gibson Explorer",
+        "Marshall AFD 100, Mesa Boogie",
+        "Umfangreiche Effektsammlung",
+        "Mapex Saturn Schlagzeug mit K-Zildjian Becken",
+      ],
+      modernHighlights: [
+        "MAC + Apple Pro Display XDR 6K Monitor",
+        "Universal Audio Apollo Interface",
+        "76 UAD-Plugins (vollständige Sammlung)",
+        "Logic Pro X + UA LUNA",
+        "4K-Projektor für Screening",
+      ],
+      videoItems: [
+        "Apple Pro XDR 6K Monitor für farbgenaue Bearbeitung",
+        "Professionelle Videokameras für Session-Dokumentation",
+        "DJI Gimbal-Stabilisator für flüssige Kamerabewegungen",
+        "4K-Projektor für Screening und Präsentationen",
+        "Beleuchtungsausrüstung für professionelle Videodrehs",
+      ],
+      videoSoftwareItems: ["Final Cut Pro X"],
     },
     contact: {
       title: "Kontakt",
       info: "Kontaktinformationen",
       address: "Adresse",
+      addressLine1: "Pila 100 - Mühle",
+      addressLine2: "Trhanov 34401",
+      addressLine3: "Tschechische Republik",
       phone: "Telefon",
       availability: "Verfügbarkeit",
       availabilityItems: [
@@ -736,6 +945,13 @@ const translations = {
       collaborationContact:
         "Zögern Sie nicht, uns zu kontaktieren! Kommen Sie uns besuchen und unterhalten Sie sich unverbindlich - wir lernen gerne interessante Menschen kennen, die etwas schaffen. Wir möchten zuerst alles gründlich testen.",
       collaborationForms: "Formen der Zusammenarbeit:",
+      collaborationFormsItems: [
+        "Artist Residencies - langfristige kreative Partnerschaften",
+        "Equipment-Testing - reale Bewertung mit Feedback",
+        "Content-Erstellung - Dokumentarprojekte und Tutorials",
+        "Bildungsprogramme - Masterclasses und Workshops",
+        "Markenintegration - authentische Produktplatzierung",
+      ],
       bonuses: "Weitere Boni",
       bonusesItems: [
         "Sie können das Mühlenwehr anheben und Wasser zur Mühle fließen lassen. 😄💧",
@@ -1309,7 +1525,7 @@ export default function MlynNaPilePage() {
                 <div className="max-w-6xl mx-auto mb-16">
                   <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">{t.mlyn.threeSpaces}</h2>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-grid-cols-2 lg:grid-cols-3 gap-6">
                     <Card
                       className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
                       onClick={() => handleSectionChange("equipment")}
@@ -1412,12 +1628,9 @@ export default function MlynNaPilePage() {
                       <div className="space-y-2 text-sm text-white/90">
                         <h3 className="text-xl font-semibold text-white drop-shadow-lg">{t.studio.equipment}</h3>
                         <ul className="space-y-1">
-                          <li>• Vintage Fender Custom Shop kytary</li>
-                          <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
-                          <li>• Gibson Explorer</li>
-                          <li>• Marshall AFD 100, Mesa Boogie</li>
-                          <li>• Rozsáhlá kolekce efektů</li>
-                          <li>• Mapex Saturn bicí s K-Zildjian činely</li>
+                          {t.equipment.vintageHighlights.map((item, index) => (
+                            <li key={index}>• {item}</li>
+                          ))}
                         </ul>
                       </div>
                     </div>
@@ -1456,11 +1669,9 @@ export default function MlynNaPilePage() {
                       <div className="space-y-2 text-sm text-white/90">
                         <h3 className="text-xl font-semibold text-white drop-shadow-lg">{t.studio.technology}</h3>
                         <ul className="space-y-1">
-                          <li>• MAC + Apple Pro Display XDR 6K monitor</li>
-                          <li>• Universal Audio Apollo Interface</li>
-                          <li>• 76 UAD pluginů (kompletní kolekce)</li>
-                          <li>• Logic Pro X + UA LUNA</li>
-                          <li>• 4K projektor pro screening</li>
+                          {t.equipment.modernHighlights.map((item, index) => (
+                            <li key={index}>• {item}</li>
+                          ))}
                         </ul>
                       </div>
                     </div>
@@ -1538,10 +1749,9 @@ export default function MlynNaPilePage() {
                           <div>
                             <h4 className="font-semibold text-white mb-2">{t.location.byCar}</h4>
                             <ul className="space-y-1 text-sm text-white">
-                              <li>• 10 min do centra Domažlic</li>
-                              <li>• 10 min na německé hranice</li>
-                              <li>• Přímý přístup, private parking</li>
-                              <li>• Tesla charging station</li>
+                              {t.location.byCarItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
                             </ul>
                           </div>
                         </div>
@@ -1550,8 +1760,9 @@ export default function MlynNaPilePage() {
                           <div>
                             <h4 className="font-semibold text-white mb-2">{t.location.byTrain}</h4>
                             <ul className="space-y-1 text-sm text-white">
-                              <li>• Vlaková zastávka přímo na Pile</li>
-                              <li>• 10 min walk z Trhanov station</li>
+                              {t.location.byTrainItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
                             </ul>
                           </div>
                         </div>
@@ -1560,9 +1771,9 @@ export default function MlynNaPilePage() {
                           <div>
                             <h4 className="font-semibold text-white mb-2">{t.location.byPlane}</h4>
                             <ul className="space-y-1 text-sm text-white">
-                              <li>• 1h 45min z Prague Airport</li>
-                              <li>• 2h z Munich Airport</li>
-                              <li>• Pick-up service available</li>
+                              {t.location.byPlaneItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
                             </ul>
                           </div>
                         </div>
@@ -1750,15 +1961,9 @@ export default function MlynNaPilePage() {
                         <div>
                           <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.guitars}</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li className="cursor-pointer hover:text-secondary transition-colors">
-                              • Fender 1973 Telecaster Deluxe
-                            </li>
-                            <li>• Fender Custom Shop - Jeff Beck (Surf Green)</li>
-                            <li>• Fender Custom Shop - LTD 67 HSS Strat AB HR</li>
-                            <li>• Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)</li>
-                            <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
-                            <li>• Gibson Explorer</li>
-                            <li>• Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)</li>
+                            {t.equipment.guitarsItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                             <li className="text-white/60 italic">...a další</li>
                           </ul>
                         </div>
@@ -1766,8 +1971,9 @@ export default function MlynNaPilePage() {
                         <div>
                           <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.basses}</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Fender Precision (1993)</li>
-                            <li>• Squier short scale bass</li>
+                            {t.equipment.bassesItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                       </div>
@@ -1784,20 +1990,17 @@ export default function MlynNaPilePage() {
                         <div>
                           <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.amps}</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Fender 64 Custom Deluxe Reverb</li>
-                            <li>• Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)</li>
-                            <li>• Mesa Boogie Dual Rectifier®Head, 3 Channels / 8 Modes, 100W</li>
-                            <li>• Marshall AFD 100</li>
-                            <li>• AMPEG V-4B Bass Head</li>
-                            <li>• Roland JC-22 (2x)</li>
+                            {t.equipment.ampsItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                         <div>
                           <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.cabs}</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Marshall 1960 BX</li>
-                            <li>• Coffe custom CLASSIC 212</li>
-                            <li>• Ampeg SVT-112AV Cabinet</li>
+                            {t.equipment.cabsItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                       </div>
@@ -1893,17 +2096,17 @@ export default function MlynNaPilePage() {
                             {t.equipment.mics}
                           </h3>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Sennheiser e 906</li>
-                            <li>• Shure Beta 58</li>
-                            <li>• Shure SM 7 B</li>
-                            <li>• 2x SHURE SM57</li>
+                            {t.equipment.micsItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                         <div>
                           <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.drums}</h3>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Mapex Saturn</li>
-                            <li>• K-Zildjian činely</li>
+                            {t.equipment.drumsItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                       </div>
@@ -1943,18 +2146,17 @@ export default function MlynNaPilePage() {
                         <div>
                           <h4 className="text-lg font-semibold text-white mb-3">Universal Audio</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Universal Audio Apollo Interface</li>
-                            <li>• UAD-2 Satellite (extra DSP power)</li>
-                            <li>• 76 UAD pluginů (kompletní kolekce)</li>
-                            <li>• Unison Technology</li>
-                            <li>• Near-zero latency tracking</li>
+                            {t.equipment.uaPluginsItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                         <div>
                           <h4 className="text-lg font-semibold text-white mb-3">DAW & Monitoring</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Logic Pro X</li>
-                            <li>• UA LUNA</li>
+                            {t.equipment.workflowItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                       </div>
@@ -1971,17 +2173,17 @@ export default function MlynNaPilePage() {
                         <div>
                           <h4 className="text-lg font-semibold text-white mb-3">Hardware</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Apple Pro XDR 6K monitor pro color-accurate editing</li>
-                            <li>• Professional video cameras pro session dokumentaci</li>
-                            <li>• DJI Gimbal stabilizátor pro smooth camera movements</li>
-                            <li>• 4K projektor pro screening a presentations</li>
-                            <li>• Lighting equipment pro professional video shoots</li>
+                            {t.equipment.videoItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                         <div>
                           <h4 className="text-lg font-semibold text-white mb-3">Software</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Final Cut Pro X</li>
+                            {t.equipment.videoSoftwareItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                       </div>
@@ -2226,12 +2428,11 @@ export default function MlynNaPilePage() {
                     <CardContent className="p-6">
                       <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.infrastructure}</h3>
                       <div>
-                        <h4 className="text-lg font-semibold text-white mb-3">Infrastruktura</h4>
+                        <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.infrastructureTitle}</h4>
                         <ul className="text-white/80 text-sm space-y-2">
-                          <li>• Přepěťové ochrany</li>
-                          <li>• Tesla charging station</li>
-                          <li>• Off-grid capability</li>
-                          <li>• Security systém</li>
+                          {t.equipment.infrastructureItems.map((item, index) => (
+                            <li key={index}>• {item}</li>
+                          ))}
                         </ul>
                       </div>
                     </CardContent>
@@ -2259,11 +2460,11 @@ export default function MlynNaPilePage() {
                           <div>
                             <h4 className="font-semibold text-white mb-1">{t.contact.address}</h4>
                             <p className="text-white/80">
-                              Pila 100 - Mlýn
+                              {t.contact.addressLine1}
                               <br />
-                              Trhanov 34401
+                              {t.contact.addressLine2}
                               <br />
-                              Česká republika
+                              {t.contact.addressLine3}
                             </p>
                           </div>
                         </div>
@@ -2449,11 +2650,9 @@ export default function MlynNaPilePage() {
                           <div className="mt-6">
                             <h4 className="font-semibold text-white mb-2">{t.about.collaborationForms}</h4>
                             <ul className="space-y-1 text-sm">
-                              <li>• Artist Residencies - long-term creative partnerships</li>
-                              <li>• Equipment Testing - real-world evaluation s feedback</li>
-                              <li>• Content Creation - dokumentární projekty a tutorials</li>
-                              <li>• Educational Programs - masterclasses a workshops</li>
-                              <li>• Brand Integration - authentic product placement</li>
+                              {t.about.collaborationFormsItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
                             </ul>
                           </div>
                           <div className="mt-6 pt-6 border-t border-white/20">

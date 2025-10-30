@@ -1,35 +1,29 @@
 "use client"
 
 import { useState } from "react"
-import { Download, User } from "lucide-react"
+import { Download, User, X } from "lucide-react"
 
 export function BusinessCardDownload() {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleImageDownload = async () => {
     try {
-      // Fetch the image as blob
       const response = await fetch("/images/business-card.png")
       const blob = await response.blob()
 
-      // Create object URL
       const url = window.URL.createObjectURL(blob)
 
-      // Create download link
       const link = document.createElement("a")
       link.href = url
       link.download = "vizitka-mlyn-na-pile.png"
 
-      // Trigger download
       document.body.appendChild(link)
       link.click()
 
-      // Cleanup
       document.body.removeChild(link)
       window.URL.revokeObjectURL(url)
     } catch (error) {
       console.error("Download failed:", error)
-      // Fallback method
       const link = document.createElement("a")
       link.href = "/images/business-card.png"
       link.download = "vizitka-mlyn-na-pile.png"
@@ -61,57 +55,57 @@ END:VCARD`
   }
 
   return (
-    <div className="relative inline-block">
-      {/* Hlavní text */}
-      <div
-        className={`cursor-pointer transition-all duration-300 ${
-          isHovered
-            ? "bg-primary text-primary-foreground px-4 py-2 rounded-md shadow-md"
-            : "text-lg font-medium text-white/80 hover:text-white"
-        }`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+    <>
+      <button
+        className="text-lg font-medium text-white/80 hover:text-white transition-colors cursor-pointer"
+        onClick={() => setIsOpen(true)}
       >
         <div className="flex items-center gap-2">
           <span>Stáhnout vizitku</span>
-          <Download
-            className={`transition-all duration-300 ${isHovered ? "h-4 w-4 opacity-100" : "h-0 w-0 opacity-0"}`}
-          />
+          <Download className="h-4 w-4" />
         </div>
-      </div>
+      </button>
 
-      {/* Vizitka se zobrazí pod textem */}
-      <div
-        className={`absolute left-0 top-full mt-2 w-80 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-700 ease-in-out z-10 ${
-          isHovered ? "opacity-100 transform translate-y-0 visible" : "opacity-0 transform -translate-y-2 invisible"
-        }`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <img
-          src="/images/business-card.png"
-          alt="Vizitka Mlýn na Pile"
-          className="w-full h-auto transition-opacity duration-700"
-        />
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[10000] p-4 animate-in fade-in duration-200"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            className="relative bg-white rounded-lg shadow-2xl overflow-hidden max-w-4xl w-full animate-in zoom-in-95 duration-300"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setIsOpen(false)}
+              className="absolute top-2 right-2 z-10 p-2 bg-white/90 hover:bg-white rounded-full shadow-lg transition-colors"
+              aria-label="Zavřít"
+            >
+              <X className="h-5 w-5 text-gray-700" />
+            </button>
 
-        {/* Tlačítka pod vizitkou */}
-        <div className="p-3 flex gap-2 justify-center bg-gray-50">
-          <button
-            onClick={handleImageDownload}
-            className="px-3 py-2 bg-white text-gray-700 text-sm font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center gap-2 shadow-sm border border-gray-200"
-          >
-            <Download className="h-4 w-4" />
-            Stáhnout obrázek
-          </button>
-          <button
-            onClick={handleVCardDownload}
-            className="px-3 py-2 bg-white text-gray-700 text-sm font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center gap-2 shadow-sm border border-gray-200"
-          >
-            <User className="h-4 w-4" />
-            Uložit kontakt
-          </button>
+            <img src="/images/business-card.png" alt="Vizitka Mlýn na Pile" className="w-full h-auto" />
+
+            {/* Tlačítka pod vizitkou */}
+            <div className="p-4 flex flex-col sm:flex-row gap-3 justify-center bg-gray-50">
+              <button
+                onClick={handleImageDownload}
+                className="px-4 py-3 bg-white text-gray-700 text-sm font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-sm border border-gray-200"
+              >
+                <Download className="h-4 w-4" />
+                Stáhnout obrázek
+              </button>
+              <button
+                onClick={handleVCardDownload}
+                className="px-4 py-3 bg-white text-gray-700 text-sm font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 shadow-sm border border-gray-200"
+              >
+                <User className="h-4 w-4" />
+                Uložit kontakt
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   )
 }
