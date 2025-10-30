@@ -169,7 +169,7 @@ const translations = {
       availabilityItems: [
         "10 min do centra Domažlic",
         "10 min na německé hranice",
-        "Vlakové spojení Praha-Mnichov",
+        "Vlaková zastávka přímo na Pile",
         "1h 45min z Prague Airport",
       ],
     },
@@ -434,7 +434,7 @@ const translations = {
       availabilityItems: [
         "10 min to Domažlice center",
         "10 min to German border",
-        "Prague-Munich train connection",
+        "Train station directly in Pila",
         "1h 45min from Prague Airport",
       ],
     },
@@ -452,7 +452,7 @@ const translations = {
       jindrichQuote:
         "We work to ensure that musicians find an inspiring space perfectly prepared for creation. The Mill has its genius loci and soul – and the instruments and vintage equipment available here carry the same energy. In harmony with them, modern technology unobtrusively supports comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful and comfortable environment where people will want to return. We have open doors for all creative people, not just musicians. We believe that this combination – a space with soul, instruments with history and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
-        "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindra :)) But seriously: we complement each other and often try to inspire each other from our different perspectives on the World.",
+        "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindra :)) But seriously: we complement each other and try to inspire each other from our different perspectives on the World.",
       collaboration: "Collaboration and Support",
       bonuses: "Other Bonuses",
       bonusesItems: [
@@ -695,7 +695,7 @@ const translations = {
       availabilityItems: [
         "10 Min. zum Zentrum von Domažlice",
         "10 Min. zur deutschen Grenze",
-        "Zugverbindung Prag-München",
+        "Bahnhof direkt in Pila",
         "1h 45min vom Prager Flughafen",
       ],
     },
@@ -1550,7 +1550,7 @@ export default function MlynNaPilePage() {
                           <div>
                             <h4 className="font-semibold text-white mb-2">{t.location.byTrain}</h4>
                             <ul className="space-y-1 text-sm text-white">
-                              <li>• Vlakové spojení Praha-Mnichov</li>
+                              <li>• Vlaková zastávka přímo na Pile</li>
                               <li>• 10 min walk z Trhanov station</li>
                             </ul>
                           </div>
