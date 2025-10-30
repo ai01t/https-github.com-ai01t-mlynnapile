@@ -5,6 +5,7 @@ import React from "react"
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { BusinessCardDownload } from "@/components/business-card-download"
 import {
   Play,
   Pause,
@@ -25,6 +26,7 @@ import {
   UtensilsCrossed,
   Languages,
   Ghost,
+  FileText,
 } from "lucide-react"
 
 const translations = {
@@ -185,7 +187,7 @@ const translations = {
       jindrichQuote:
         "Pracujeme na tom, aby u nás muzikanti našli inspirativní prostor dokonale připravený pro tvorbu. Mlýn má svůj genius loci a duši – a stejnou energii nesou i nástroje a vintage aparáty, které jsou zde k dispozici. V harmonii s nimi zde moderní technologie nenápadně podporují pohodlí a profesionální podmínky pro zachycení každého hudebního nápadu. Naším cílem je vytvořit krásné, klidné a pohodové prostředí, kam se lidé budou rádi vracet. Dveře máme otevřené všem kreativním lidem, nejen hudebníkům. Věříme, že právě tato kombinace – prostor s duší, nástroje s příběhem a moderní technologie v pozadí – se stane motorem a synergií pro vznik úžasných věcí.",
       andreaDesc:
-        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Takže když budete chtít kakao tak jí můžete říct a když nepujde aparát tak zase spíš za Jindrou :-D. Teď vážně ;-), vzájmně se doplňujeme a snažíme se mnohdy z našich různých pohledů inspirovat.",
+        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na Svět inspirovat.",
       collaboration: "Spolupráce a podpora",
       bonuses: "Další bonusy",
       bonusesItems: [
@@ -450,7 +452,7 @@ const translations = {
       jindrichQuote:
         "We work to ensure that musicians find an inspiring space perfectly prepared for creation. The Mill has its genius loci and soul – and the instruments and vintage equipment available here carry the same energy. In harmony with them, modern technology unobtrusively supports comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful and comfortable environment where people will want to return. We have open doors for all creative people, not just musicians. We believe that this combination – a space with soul, instruments with history and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
-        "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. So if you want cocoa, you can ask her, and if the equipment doesn't work, you should probably go to Jindra :-D. Seriously though ;-), we complement each other and often try to inspire each other from our different perspectives.",
+        "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindra :)) But seriously: we complement each other and often try to inspire each other from our different perspectives on the World.",
       collaboration: "Collaboration and Support",
       bonuses: "Other Bonuses",
       bonusesItems: [
@@ -711,7 +713,7 @@ const translations = {
       jindrichQuote:
         "Wir arbeiten daran, dass Musiker bei uns einen inspirierenden Raum finden, der perfekt für die Kreation vorbereitet ist. Die Mühle hat ihren Genius Loci und ihre Seele – und die gleiche Energie tragen auch die Instrumente und Vintage-Geräte, die hier zur Verfügung stehen. In Harmonie mit ihnen unterstützt moderne Technologie unauffällig Komfort und professionelle Bedingungen für die Erfassung jeder musikalischen Idee. Unser Ziel ist es, eine schöne, ruhige und komfortable Umgebung zu schaffen, in die Menschen gerne zurückkehren werden. Wir haben offene Türen für alle kreativen Menschen, nicht nur für Musiker. Wir glauben, dass diese Kombination – ein Raum mit Seele, Instrumente mit Geschichte und moderne Technologie im Hintergrund – zum Motor und zur Synergie für die Entstehung erstaunlicher Dinge wird.",
       andreaDesc:
-        "Sängerin und Bassistin der Band Anteater und auch Archäologin. Gerade in der Umgebung der alten Mühle verbinden sich all diese Leidenschaften natürlich. Andrea schafft die heimelige und inspirierende Atmosphäre des Studios. Wenn Sie also Kakao möchten, können Sie sie fragen, und wenn die Ausrüstung nicht funktioniert, sollten Sie wahrscheinlich zu Jindra gehen :-D. Aber im Ernst ;-), wir ergänzen uns und versuchen oft, uns aus unseren unterschiedlichen Perspektiven zu inspirieren.",
+        "Sängerin und Bassistin der Band Anteater und auch Archäologin. Gerade in der Umgebung der alten Mühle verbinden sich all diese Leidenschaften natürlich. Andrea schafft die heimelige und inspirierende Atmosphäre des Studios. Wenn Sie um Mitternacht Kakao kochen möchten (oder Backing Vocals singen), zögern Sie nicht, sich an Andrea zu wenden (bei technischen Problemen dann an Jindra :)) Aber im Ernst: Wir ergänzen uns und versuchen oft, uns aus unseren unterschiedlichen Perspektiven auf die Welt zu inspirieren.",
       collaboration: "Zusammenarbeit und Unterstützung",
       bonuses: "Weitere Boni",
       bonusesItems: [
@@ -2273,6 +2275,10 @@ export default function MlynNaPilePage() {
                             <p className="text-white/80">+420 724 050 093</p>
                           </div>
                         </div>
+
+                        <div className="pt-4 border-t border-white/20">
+                          <BusinessCardDownload />
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
@@ -2500,7 +2506,10 @@ export default function MlynNaPilePage() {
                         <h3 className="text-2xl font-bold text-white mb-6">{t.about.faq}</h3>
                         <div className="space-y-3">
                           {t.about.faqItems.map((faq, index) => {
-                            const icons = [Ghost, Home, Users, Music, Car, UtensilsCrossed, Languages]
+                            // Ghost (haunted), FileText (VAT/business), Home (property rental),
+                            // Users (team), Music (genres), Car (transportation),
+                            // UtensilsCrossed (catering), Languages (languages)
+                            const icons = [Ghost, FileText, Home, Users, Music, Car, UtensilsCrossed, Languages]
                             const IconComponent = icons[index] || Ghost
                             return (
                               <div key={index} className="border-b border-white/10 pb-3">
