@@ -156,7 +156,7 @@ const translations = {
       modernTech: "Moderní technologie",
       uaPlugins: "Universal Audio Pluginy (76)",
       workflow: "Workflow doporučení",
-      infrastructure: "Ostatní technické vybavení",
+      infrastructure: "Další technické vybavení",
       thankYouNote: "Poděkování",
       noraCollaboration: "Sbírka nástrojů je obohacena o unikátní kusy od Radka Fořta, kytaristy kapely",
     },
@@ -187,13 +187,20 @@ const translations = {
       jindrichQuote:
         "Pracujeme na tom, aby u nás muzikanti našli inspirativní prostor dokonale připravený pro tvorbu. Mlýn má svůj genius loci a duši – a stejnou energii nesou i nástroje a vintage aparáty, které jsou zde k dispozici. V harmonii s nimi zde moderní technologie nenápadně podporují pohodlí a profesionální podmínky pro zachycení každého hudebního nápadu. Naším cílem je vytvořit krásné, klidné a pohodové prostředí, kam se lidé budou rádi vracet. Dveře máme otevřené všem kreativním lidem, nejen hudebníkům. Věříme, že právě tato kombinace – prostor s duší, nástroje s příběhem a moderní technologie v pozadí – se stane motorem a synergií pro vznik úžasných věcí.",
       andreaDesc:
-        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na Svět inspirovat.",
+        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na svět inspirovat.",
       collaboration: "Spolupráce a podpora",
+      collaborationIntro:
+        "Hledáme partnery, ne pouze dodavatele. Věříme v dlouhodobé vztahy založené na společné vášni pro hudbu a kvalitu.",
+      collaborationEquipment:
+        "Ve studiu se snažíme mít co nejlepší vybavení - průběžně upravujeme setup a stále hledáme to nejlepší na trhu. Stavíte kytary, efektové krabičky, zesilovače? Chcete, aby se k vašim produktům dostali zajímaví zákazníci?",
+      collaborationContact:
+        "Neváhejte nás kontaktovat! Přijeďte se za námi podívat a nezávazně si popovídat - rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si chceme nejdříve důkladně vyzkoušet.",
+      collaborationForms: "Formy spolupráce:",
       bonuses: "Další bonusy",
       bonusesItems: [
         "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
         "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
-        "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
+        "Pro milovníky přírody: Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
         "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
         "U sousedky Dády si můžete projet na koních. 🐴",
         "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
@@ -420,7 +427,7 @@ const translations = {
       modernTech: "Modern Technology",
       uaPlugins: "Universal Audio Plugins (76)",
       workflow: "Workflow recommendations",
-      infrastructure: "Other technical equipment",
+      infrastructure: "Additional Technical Equipment",
       thankYouNote: "Acknowledgments",
       noraCollaboration:
         "The instrument collection is enriched by unique pieces from Radek Fořt, guitarist of the band",
@@ -452,13 +459,20 @@ const translations = {
       jindrichQuote:
         "We work to ensure that musicians find an inspiring space perfectly prepared for creation. The Mill has its genius loci and soul – and the instruments and vintage equipment available here carry the same energy. In harmony with them, modern technology unobtrusively supports comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful and comfortable environment where people will want to return. We have open doors for all creative people, not just musicians. We believe that this combination – a space with soul, instruments with history and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
-        "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindra :)) But seriously: we complement each other and try to inspire each other from our different perspectives on the World.",
+        "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindra :)) But seriously: we complement each other and try to inspire each other from our different perspectives on the world.",
       collaboration: "Collaboration and Support",
+      collaborationIntro:
+        "We're looking for partners, not just suppliers. We believe in long-term relationships based on shared passion for music and quality.",
+      collaborationEquipment:
+        "In the studio, we strive to have the best equipment - we continuously update our setup and are always looking for the best on the market. Do you build guitars, effect pedals, amplifiers? Do you want interesting customers to get to your products?",
+      collaborationContact:
+        "Don't hesitate to contact us! Come visit us and have a casual chat - we love meeting interesting people who create something. We want to thoroughly test everything first.",
+      collaborationForms: "Forms of collaboration:",
       bonuses: "Other Bonuses",
       bonusesItems: [
         "You can lift the mill gate and let water flow to the mill. 😄💧",
         "At night, the sky is like in North Korea – complete darkness, stars everywhere you look. ✨🌟",
-        "For Dan Bárta (and other nature lovers): There are dragonflies here, beautiful and numerous. 🦋 They fly into the conservatory and are smart enough to fly back out after their inspection without bumping into the glass. Besides them, you'll find invasive plants, against which we bravely fight. 🌿⚔️ But there are also giant sequoias growing here, which – we admit – we don't have the heart to cut down. 🌲💚",
+        "For nature lovers: There are dragonflies here, beautiful and numerous. 🦋 They fly into the conservatory and are smart enough to fly back out after their inspection without bumping into the glass. Besides them, you'll find invasive plants, against which we bravely fight. 🌿⚔️ But there are also giant sequoias growing here, which – we admit – we don't have the heart to cut down. 🌲💚",
         "Under the studio windows, there are often swans with cygnets that let you feed them. 🦢",
         "At neighbor Dáda's, you can go horseback riding. 🐴",
         "Even in broad daylight, you can encounter hedgehogs, martens, and deer right in the garden. When Dáda's horses escape, you can have coffee with them practically in the conservatory :-) 🦔🦌☕",
@@ -682,7 +696,7 @@ const translations = {
       modernTech: "Moderne Technologie",
       uaPlugins: "Universal Audio Plugins (76)",
       workflow: "Workflow-Empfehlungen",
-      infrastructure: "Weitere technische Ausstattung",
+      infrastructure: "Sonstige technische Ausstattung",
       thankYouNote: "Danksagung",
       noraCollaboration: "Die Instrumentensammlung wird durch einzigartige Stücke von Radek Fořt, Gitarrist der Band",
     },
@@ -715,11 +729,18 @@ const translations = {
       andreaDesc:
         "Sängerin und Bassistin der Band Anteater und auch Archäologin. Gerade in der Umgebung der alten Mühle verbinden sich all diese Leidenschaften natürlich. Andrea schafft die heimelige und inspirierende Atmosphäre des Studios. Wenn Sie um Mitternacht Kakao kochen möchten (oder Backing Vocals singen), zögern Sie nicht, sich an Andrea zu wenden (bei technischen Problemen dann an Jindra :)) Aber im Ernst: Wir ergänzen uns und versuchen oft, uns aus unseren unterschiedlichen Perspektiven auf die Welt zu inspirieren.",
       collaboration: "Zusammenarbeit und Unterstützung",
+      collaborationIntro:
+        "Wir suchen Partner, nicht nur Lieferanten. Wir glauben an langfristige Beziehungen, die auf gemeinsamer Leidenschaft für Musik und Qualität basieren.",
+      collaborationEquipment:
+        "Im Studio bemühen wir uns, die beste Ausrüstung zu haben - wir aktualisieren kontinuierlich unser Setup und suchen immer nach dem Besten auf dem Markt. Bauen Sie Gitarren, Effektpedale, Verstärker? Möchten Sie, dass interessante Kunden Ihre Produkte erreichen?",
+      collaborationContact:
+        "Zögern Sie nicht, uns zu kontaktieren! Kommen Sie uns besuchen und unterhalten Sie sich unverbindlich - wir lernen gerne interessante Menschen kennen, die etwas schaffen. Wir möchten zuerst alles gründlich testen.",
+      collaborationForms: "Formen der Zusammenarbeit:",
       bonuses: "Weitere Boni",
       bonusesItems: [
         "Sie können das Mühlenwehr anheben und Wasser zur Mühle fließen lassen. 😄💧",
         "Nachts ist der Himmel wie in Nordkorea – völlige Dunkelheit, Sterne wohin man schaut. ✨🌟",
-        "Für Dan Bárta (und andere Naturliebhaber): Es gibt hier Libellen, schön und zahlreich. 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen, gegen die wir tapfer kämpfen. 🌿⚔️ Aber es wachsen hier auch Riesenmammutbäume, die – wir geben es zu – wir nicht übers Herz bringen zu fällen. 🌲💚",
+        "Für Naturliebhaber: Es gibt hier Libellen, schön und zahlreich. 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen, gegen die wir tapfer kämpfen. 🌿⚔️ Aber es wachsen hier auch Riesenmammutbäume, die – wir geben es zu – wir nicht übers Herz bringen zu fällen. 🌲💚",
         "Unter den Studiofenstern sind oft Schwäne mit Schwanenjungen, die sich füttern lassen. 🦢",
         "Bei der Nachbarin Dáda können Sie reiten. 🐴",
         "Auch am helllichten Tag können Sie Igel, Marder und Rehe direkt im Garten begegnen. Wenn Dádas Pferde entkommen, können Sie praktisch im Wintergarten mit ihnen Kaffee trinken :-) 🦔🦌☕",
@@ -762,7 +783,7 @@ const translations = {
         },
         {
           q: "Sprechen Sie Englisch/Deutsch?",
-          a: "Mehrsprachiges Team: Tschechisch - Muttersprachler, Englisch - fließend (Jindřích, Andrea, Tech-Team), Deutsch - Konversationsniveau (regionaler Vorteil), Übersetzungsdienste für Verträge.",
+          a: "Mehrsprachiges Team: Tschechisch - Muttersprachler, Englisch - fließend (Jindřich, Andrea, Tech-Team), Deutsch - Konversationsniveau (regionaler Vorteil), Übersetzungsdienste für Verträge.",
         },
       ],
       historyTimeline: [
@@ -1038,15 +1059,6 @@ export default function MlynNaPilePage() {
     return () => mlynSection.removeEventListener("scroll", handleScroll)
   }, [showEndMessage])
 
-  const [showPresentationMessage, setShowPresentationMessage] = useState(true)
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowPresentationMessage(false)
-    }, 3000)
-    return () => clearTimeout(timer)
-  }, [])
-
   return (
     <div className="min-h-screen relative overflow-hidden">
       <div className="fixed inset-0 z-0">
@@ -1275,18 +1287,6 @@ export default function MlynNaPilePage() {
             {isVideoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </Button>
         </div>
-
-        {showPresentationMessage && (
-          <div className="absolute left-1/2 -translate-x-1/2 top-20 text-white/90 text-sm animate-fade-in">
-            {t.mlyn.endMessage}
-          </div>
-        )}
-
-        {showEndMessage && (
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 text-white/90 text-lg font-light animate-in fade-in duration-500 z-50 bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/20">
-            {t.mlyn.endMessage}
-          </div>
-        )}
 
         <div className="pt-32">
           {currentSection === "mlyn" ? (
@@ -2440,22 +2440,14 @@ export default function MlynNaPilePage() {
                         <h3 className="text-2xl font-bold text-white mb-6">{t.about.collaboration}</h3>
                         <div className="space-y-4 text-white/80">
                           <p className="leading-relaxed">
-                            <strong className="text-white">Hledáme partnery, ne pouze dodavatele.</strong> Věříme v
-                            long-term relationships založené na shared passion pro music a quality.
+                            <strong className="text-white">{t.about.collaborationIntro}</strong>
                           </p>
+                          <p className="leading-relaxed">{t.about.collaborationEquipment}</p>
                           <p className="leading-relaxed">
-                            Ve studiu se snažíme mít co nejlepší vybavení - průběžně upravujeme setup a stále hledáme to
-                            nejlepší na trhu.
-                            <strong className="text-white"> Stavíte kytary, efektové krabičky, zesilovače?</strong>{" "}
-                            Chcete, aby se k vašim produktům dostali zajímaví zákazníci?
-                          </p>
-                          <p className="leading-relaxed">
-                            <strong className="text-white">Neváhejte nás kontaktovat!</strong> Přijeďte se za námi
-                            podívat a nezávazně si popovídat - rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si
-                            chceme nejdříve důkladně vyzkoušet.
+                            <strong className="text-white">{t.about.collaborationContact}</strong>
                           </p>
                           <div className="mt-6">
-                            <h4 className="font-semibold text-white mb-2">Formy spolupráce:</h4>
+                            <h4 className="font-semibold text-white mb-2">{t.about.collaborationForms}</h4>
                             <ul className="space-y-1 text-sm">
                               <li>• Artist Residencies - long-term creative partnerships</li>
                               <li>• Equipment Testing - real-world evaluation s feedback</li>
@@ -2479,21 +2471,6 @@ export default function MlynNaPilePage() {
                               .
                             </p>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  <div>
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.bonuses}</h3>
-                        <div className="space-y-3 text-white/80">
-                          {t.about.bonusesItems.map((bonus, index) => (
-                            <p key={index} className="leading-relaxed">
-                              {bonus}
-                            </p>
-                          ))}
                         </div>
                       </CardContent>
                     </Card>
