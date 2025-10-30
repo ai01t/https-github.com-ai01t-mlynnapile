@@ -187,7 +187,7 @@ const translations = {
       jindrichQuote:
         "Pracujeme na tom, aby u nás muzikanti našli inspirativní prostor dokonale připravený pro tvorbu. Mlýn má svůj genius loci a duši – a stejnou energii nesou i nástroje a vintage aparáty, které jsou zde k dispozici. V harmonii s nimi zde moderní technologie nenápadně podporují pohodlí a profesionální podmínky pro zachycení každého hudebního nápadu. Naším cílem je vytvořit krásné, klidné a pohodové prostředí, kam se lidé budou rádi vracet. Dveře máme otevřené všem kreativním lidem, nejen hudebníkům. Věříme, že právě tato kombinace – prostor s duší, nástroje s příběhem a moderní technologie v pozadí – se stane motorem a synergií pro vznik úžasných věcí.",
       andreaDesc:
-        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na Svět inspirovat.",
+        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na svět inspirovat.",
       collaboration: "Spolupráce a podpora",
       collaborationPara1:
         "Hledáme partnery, ne pouze dodavatele. Věříme v long-term relationships založené na shared passion pro music a quality.",
@@ -494,7 +494,7 @@ const translations = {
       bonusesItems: [
         "You can lift the mill gate and let water flow to the mill. 😄💧",
         "At night, the sky is like in North Korea – complete darkness, stars everywhere you look. ✨🌟",
-        "For Dan Bárta (and other nature lovers): There are dragonflies here, beautiful and numerous. 🦋 They fly into the conservatory and are smart enough to fly back out after their inspection without bumping into the glass. Besides them, you'll find invasive plants, against which we bravely fight. 🌿⚔️ But there are also giant sequoias growing here, which – we admit – we don't have the heart to cut down. 🌲💚",
+        "For nature lovers: There are dragonflies here, beautiful and numerous. 🦋 They fly into the conservatory and are smart enough to fly back out after their inspection without bumping into the glass. Besides them, you'll find invasive plants, against which we bravely fight. 🌿⚔️ But there are also giant sequoias growing here, which – we admit – we don't have the heart to cut down. 🌲💚",
         "Under the studio windows, there are often swans with cygnets that let you feed them. 🦢",
         "At neighbor Dáda's, you can go horseback riding. 🐴",
         "Even in broad daylight, you can encounter hedgehogs, martens, and deer right in the garden. When Dáda's horses escape, you can have coffee with them practically in the conservatory :-) 🦔🦌☕",
@@ -774,7 +774,7 @@ const translations = {
       bonusesItems: [
         "Sie können das Mühlenwehr anheben und Wasser zur Mühle fließen lassen. 😄💧",
         "Nachts ist der Himmel wie in Nordkorea – völlige Dunkelheit, Sterne wohin man schaut. ✨🌟",
-        "Für Dan Bárta (und andere Naturliebhaber): Es gibt hier Libellen, schön und zahlreich. 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen, gegen die wir tapfer kämpfen. 🌿⚔️ Aber es wachsen hier auch Riesenmammutbäume, die – wir geben es zu – wir nicht übers Herz bringen zu fällen. 🌲💚",
+        "Für Naturliebhaber: Es gibt hier Libellen, schön und zahlreich. 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen, gegen die wir tapfer kämpfen. 🌿⚔️ Aber es wachsen hier auch Riesenmammutbäume, die – wir geben es zu – wir nicht übers Herz bringen zu fällen. 🌲💚",
         "Unter den Studiofenstern sind oft Schwäne mit Schwanenjungen, die sich füttern lassen. 🦢",
         "Bei der Nachbarin Dáda können Sie reiten. 🐴",
         "Auch am helllichten Tag können Sie Igel, Marder und Rehe direkt im Garten begegnen. Wenn Dádas Pferde entkommen, können Sie praktisch im Wintergarten mit ihnen Kaffee trinken :-) 🦔🦌☕",
@@ -2461,7 +2461,14 @@ export default function MlynNaPilePage() {
                             <div>
                               <h4 className="text-xl font-bold text-white mb-2">Jindřich Traxmandl</h4>
                               <div className="space-y-4 text-white/80 leading-relaxed">
-                                <p>{t.about.jindrichDesc}</p>
+                                <p
+                                  dangerouslySetInnerHTML={{
+                                    __html: t.about.jindrichDesc.replace(
+                                      /Anteater/g,
+                                      '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
+                                    ),
+                                  }}
+                                />
                                 <blockquote className="border-l-2 border-secondary pl-4 italic">
                                   "{t.about.jindrichQuote}"
                                 </blockquote>
@@ -2471,7 +2478,14 @@ export default function MlynNaPilePage() {
                             <div>
                               <h4 className="text-xl font-bold text-white mb-2">Andrea Kohoutová</h4>
                               <div className="space-y-4 text-white/80 leading-relaxed">
-                                <p>{t.about.andreaDesc}</p>
+                                <p
+                                  dangerouslySetInnerHTML={{
+                                    __html: t.about.andreaDesc.replace(
+                                      /Anteater/g,
+                                      '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
+                                    ),
+                                  }}
+                                />
                               </div>
                             </div>
                           </div>
