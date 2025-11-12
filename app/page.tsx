@@ -60,6 +60,8 @@ const translations = {
       benefitsDesc: "Zapůjčení elektromobilu, kol, nabíjecí stanice, bateriový backup, zabezpečené prostory",
       endMessage: "Užijte si prezentaci!",
       menuHint: "Nebo procházejte přes menu nahoře",
+      darkMode: "Noční režim zapnutý - klikněte pro denní režim",
+      lightMode: "Denní režim zapnutý - klikněte pro noční režim",
     },
     studio: {
       title: "Mlýn na Pile",
@@ -338,6 +340,8 @@ const translations = {
       benefitsDesc: "Electric car rental, bikes, charging station, battery backup, secured premises",
       endMessage: "Enjoy the presentation!",
       menuHint: "Or browse through the menu above",
+      darkMode: "Dark mode enabled - click to switch to light mode",
+      lightMode: "Light mode enabled - click to switch to dark mode",
     },
     studio: {
       title: "Mlýn na Pile",
@@ -621,6 +625,8 @@ const translations = {
       benefitsDesc: "Elektroauto-Verleih, Fahrräder, Ladestation, Batterie-Backup, gesicherte Räumlichkeiten",
       endMessage: "Genießen Sie die Präsentation!",
       menuHint: "Oder durchsuchen Sie das Menü oben",
+      darkMode: "Dunkler Modus aktiviert - klicken Sie, um zum hellen Modus zu wechseln",
+      lightMode: "Heller Modus aktiviert - klicken Sie, um zum dunklen Modus zu wechseln",
     },
     studio: {
       title: "Mlýn Šnajberk Studios",
@@ -1270,6 +1276,79 @@ export default function MlynNaPilePage() {
               </div>
             </div>
 
+            {/* Mobile controls - visible on small screens */}
+            <div className="flex md:hidden gap-2 justify-center">
+              <div className="relative">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+                >
+                  <Globe className="h-4 w-4" />
+                </Button>
+                {showLanguageMenu && (
+                  <div className="absolute top-full mt-1 right-0 bg-black/80 backdrop-blur-sm rounded-lg p-1 flex flex-col gap-1 min-w-[60px] z-50">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setLanguage("cs")
+                        setShowLanguageMenu(false)
+                      }}
+                      className={`${language === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                    >
+                      CS
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setLanguage("en")
+                        setShowLanguageMenu(false)
+                      }}
+                      className={`${language === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                    >
+                      EN
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setLanguage("de")
+                        setShowLanguageMenu(false)
+                      }}
+                      className={`${language === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                    >
+                      DE
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleDarkMode}
+                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white ${
+                  isDarkMode ? "bg-blue-500/30 text-white" : "bg-amber-500/30 text-white"
+                }`}
+                title={isDarkMode ? t.mlyn.darkMode : t.mlyn.lightMode}
+              >
+                {isDarkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              </Button>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={toggleVideo}
+                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+              >
+                {isVideoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+              </Button>
+            </div>
+
+            {/* Desktop controls - visible on medium screens and up */}
             <div className="hidden md:flex gap-2 justify-end">
               <div className="relative">
                 <Button
@@ -1289,9 +1368,9 @@ export default function MlynNaPilePage() {
                         setLanguage("cs")
                         setShowLanguageMenu(false)
                       }}
-                      className={`text-xs justify-start ${language === "cs" ? "bg-white/20 text-white" : "text-white/60"}`}
+                      className={`${language === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
-                      CZ
+                      CS
                     </Button>
                     <Button
                       variant="ghost"
@@ -1300,7 +1379,7 @@ export default function MlynNaPilePage() {
                         setLanguage("en")
                         setShowLanguageMenu(false)
                       }}
-                      className={`text-xs justify-start ${language === "en" ? "bg-white/20 text-white" : "text-white/60"}`}
+                      className={`${language === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       EN
                     </Button>
@@ -1311,32 +1390,24 @@ export default function MlynNaPilePage() {
                         setLanguage("de")
                         setShowLanguageMenu(false)
                       }}
-                      className={`text-xs justify-start ${language === "de" ? "bg-white/20 text-white" : "text-white/60"}`}
+                      className={`${language === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       DE
                     </Button>
                   </div>
                 )}
               </div>
-              {/* Updated button styling and logic - shows current mode with clear visual feedback */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={toggleDarkMode}
-                className={`backdrop-blur-sm border-white/20 transition-all ${
-                  isDarkMode
-                    ? "bg-blue-500/30 text-white border-blue-400/50 hover:bg-blue-500/40"
-                    : "bg-amber-500/30 text-white border-amber-400/50 hover:bg-amber-500/40"
+                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white ${
+                  isDarkMode ? "bg-blue-500/30 text-white" : "bg-amber-500/30 text-white"
                 }`}
-                title={
-                  isDarkMode
-                    ? "Noční režim zapnutý - klikněte pro denní režim"
-                    : "Denní režim zapnutý - klikněte pro noční režim"
-                }
+                title={isDarkMode ? t.mlyn.darkMode : t.mlyn.lightMode}
               >
                 {isDarkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
               </Button>
-              {/* </CHANGE> */}
               <Button
                 variant="outline"
                 size="sm"
@@ -1346,7 +1417,6 @@ export default function MlynNaPilePage() {
                 {isVideoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
               </Button>
             </div>
-            {/* </CHANGE> */}
           </div>
         </nav>
 
