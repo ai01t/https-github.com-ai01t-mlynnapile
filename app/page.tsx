@@ -44,7 +44,7 @@ const translations = {
       subtitle: "Retreat Studio",
       tagline: "Kde se rodí inspirace",
       description: "Unikátní prostor s genius loci v krásné přírodě",
-      scrollHint: "Scrollujte dolů pro objevení našich prostorů",
+      scrollHint: "Scrollujte dolů pro nerušené prohlížení prezentací",
       threeSpaces: "Tři unikátní prostory pro vaši kreativitu",
       vintageInstruments: "Vintage Nástroje",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
@@ -198,7 +198,7 @@ const translations = {
       collaborationPara2End: "Chcete, aby se k vašim produktům dostali zajímaví zákazníci?",
       collaborationPara3:
         "Přijeďte se za námi podívat a nezávazně si popovídat - rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si chceme nejdříve důkladně vyzkoušet.",
-      collaborationPara3Strong: "Neváhejte nás kontaktovat!",
+      collaboration3Strong: "Don't hesitate to contact us!",
       collaborationFormsTitle: "Formy spolupráce:",
       collaborationForms: [
         "Artist Residencies - long-term creative partnerships",
@@ -214,7 +214,7 @@ const translations = {
         "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
         "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
         "U sousedky Dády si můžete projet na koních. 🐴",
-        "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
+        "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔Deer☕",
         "Můžete potkat i tlustou veverku, co vyvrací plaňky - zvířata se zde mají skvěle :-) Máme i volavky a u sousedů štěně a pár kamarádských koček (také od různých sousedů), žáby a krtky (naše) :-) 🐿️🐕🐈",
         "Žijeme se zvířaty v symbióze a spolupracujeme, tento rok byl vstup do studia navíc zabezpečen i sršním hnízdem hned nad vstupem, které pro příští roky už neplánujeme a nahradíme ho modernějšími technologiemi. Děkujeme. (Žádní sršni nepřišli k úhoně – nechali jsme je dožít v klidu. 🐝) ⚡",
         "Čerstvá bio zelenina, výborné hroznové víno, chmel. Celkově je tady tráva zelenější a díky krtkům je vidět krásná černozem. :-D 🥬🍇🌿",
@@ -322,7 +322,7 @@ const translations = {
       subtitle: "Retreat Studio",
       tagline: "Where inspiration is born",
       description: "Unique space with genius loci in beautiful nature",
-      scrollHint: "Scroll down to discover our spaces",
+      scrollHint: "Scroll down for uninterrupted viewing of presentations",
       threeSpaces: "Three unique spaces for your creativity",
       vintageInstruments: "Vintage Instruments",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
@@ -481,7 +481,7 @@ const translations = {
       collaborationPara2End: "Do you want your products to reach interesting customers?",
       collaborationPara3:
         "Come visit us and have a casual chat - we love meeting interesting people who create. We want to thoroughly test everything first.",
-      collaborationPara3Strong: "Don't hesitate to contact us!",
+      collaboration3Strong: "Don't hesitate to contact us!",
       collaborationFormsTitle: "Forms of Collaboration:",
       collaborationForms: [
         "Artist Residencies - long-term creative partnerships",
@@ -502,7 +502,7 @@ const translations = {
         "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for future years and will replace with more modern technologies. (No hornets were harmed – we let them live out their lives in peace. 🐝) Thank you. ⚡",
         "Fresh organic vegetables, excellent grapes, hops. Overall, the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
         "Everything is underlined by silence and peace, yet it's as close to Domažlice as from Národní to Palmovka (8 minutes). 🤫🌳",
-        "Last but not least, nice neighbors from all sides and the Bidlo pub with friendly staff and a beautiful view of the pond and mill from the other side. Here you can have a Pilsner and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlická desítka, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
+        "Last but not least, nice neighbors from all sides and the Bidlo pub with friendly staff and a beautiful view of the mill from the other side. Here you can have a Pilsner and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlická desítka, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
         "In the morning you can also jump into the pond, but nobody does... but you can :-) 🏊‍♂️",
       ],
       faq: "Frequently Asked Questions",
@@ -605,7 +605,7 @@ const translations = {
       subtitle: "Retreat Studio",
       tagline: "Wo Inspiration entsteht",
       description: "Einzigartiger Raum mit Genius Loci in schöner Natur",
-      scrollHint: "Scrollen Sie nach unten, um unsere Räume zu entdecken",
+      scrollHint: "Scrollen Sie nach unten für eine ungestörte Ansicht der Präsentationen",
       threeSpaces: "Drei einzigartige Räume für Ihre Kreativität",
       vintageInstruments: "Vintage-Instrumente",
       vintageDesc: "60er-80er Fender, Gibson, VOX",
@@ -761,7 +761,7 @@ const translations = {
       collaborationPara2End: "Möchten Sie, dass Ihre Produkte interessante Kunden erreichen?",
       collaborationPara3:
         "Besuchen Sie uns und unterhalten Sie sich unverbindlich - wir lernen gerne interessante Menschen kennen, die etwas schaffen. Wir möchten zuerst alles gründlich testen.",
-      collaborationPara3Strong: "Zögern Sie nicht, uns zu kontaktieren!",
+      collaboration3Strong: "Zögern Sie nicht, uns zu kontaktieren!",
       collaborationFormsTitle: "Formen der Zusammenarbeit:",
       collaborationForms: [
         "Artist Residencies - langfristige kreative Partnerschaften",
@@ -894,10 +894,13 @@ export default function MlynNaPilePage() {
   const onasSectionRef = useRef<HTMLDivElement>(null)
 
   const [scrolled, setScrolled] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false) // Added for mobile menu toggle
 
   const t = translations[language]
 
   const [showEndMessage, setShowEndMessage] = React.useState(false)
+
+  const darkModeTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     const tag = document.createElement("script")
@@ -962,6 +965,11 @@ export default function MlynNaPilePage() {
   }
 
   const toggleDarkMode = () => {
+    if (darkModeTimerRef.current) {
+      clearTimeout(darkModeTimerRef.current)
+      darkModeTimerRef.current = null
+    }
+
     const newDarkMode = !isDarkMode
     setIsDarkMode(newDarkMode)
 
@@ -994,17 +1002,26 @@ export default function MlynNaPilePage() {
 
   const handleSectionChange = (section: string) => {
     console.log("[v0] Changing section to:", section, "dark mode:", isDarkMode)
+
+    if (darkModeTimerRef.current) {
+      clearTimeout(darkModeTimerRef.current)
+      darkModeTimerRef.current = null
+    }
+
     setCurrentSection(section)
+    setShowMobileMenu(false) // Close mobile menu on section change
 
     if (section === "spoluprace") {
-      setCurrentSection("about")
-      setTimeout(() => {
-        const collaborationSection = document.getElementById("spoluprace")
-        if (collaborationSection) {
-          collaborationSection.scrollIntoView({ behavior: "smooth", block: "start" })
-        }
-      }, 100)
+      const element = document.getElementById("collaboration") // Changed ID to match the actual ID used later
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+      return
     }
+    // </CHANGE>
+
+    // Scroll to top for all other sections
+    window.scrollTo({ top: 0, behavior: "smooth" })
 
     let newVideoId = ""
     if (isDarkMode) {
@@ -1035,6 +1052,61 @@ export default function MlynNaPilePage() {
       setIsVideoPlaying(true)
     }, 1000)
   }
+
+  useEffect(() => {
+    // Clear any existing timer
+    if (darkModeTimerRef.current) {
+      clearTimeout(darkModeTimerRef.current)
+      darkModeTimerRef.current = null
+    }
+
+    // Only auto-switch if currently in light mode
+    if (!isDarkMode) {
+      if (currentSection === "home") {
+        // For photos: switch to dark mode after 10 seconds
+        console.log("[v0] Starting 10s timer for photo dark mode switch")
+        darkModeTimerRef.current = setTimeout(() => {
+          console.log("[v0] Auto-switching to dark mode (photo)")
+          setIsDarkMode(true)
+          const newVideoId = "yl1CN7_Y73s"
+          setIsTransitioning(true)
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1`
+          setNextVideoUrl(newUrl)
+          setTimeout(() => {
+            setCurrentVideoUrl(newUrl)
+            setIsTransitioning(false)
+            setNextVideoUrl("")
+            setIsVideoPlaying(true)
+          }, 1000)
+        }, 10000)
+      } else {
+        // For videos: switch to dark mode after 45 seconds (estimated video length)
+        console.log("[v0] Starting 45s timer for video dark mode switch")
+        darkModeTimerRef.current = setTimeout(() => {
+          console.log("[v0] Auto-switching to dark mode (video)")
+          setIsDarkMode(true)
+          const newVideoId = "yl1CN7_Y73s"
+          setIsTransitioning(true)
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1`
+          setNextVideoUrl(newUrl)
+          setTimeout(() => {
+            setCurrentVideoUrl(newUrl)
+            setIsTransitioning(false)
+            setNextVideoUrl("")
+            setIsVideoPlaying(true)
+          }, 1000)
+        }, 45000)
+      }
+    }
+
+    // Cleanup timer on unmount or when dependencies change
+    return () => {
+      if (darkModeTimerRef.current) {
+        clearTimeout(darkModeTimerRef.current)
+        darkModeTimerRef.current = null
+      }
+    }
+  }, [currentSection, isDarkMode])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -1103,7 +1175,7 @@ export default function MlynNaPilePage() {
   }, [])
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative">
       <div className="fixed inset-0 z-0">
         {currentSection !== "home" && (
           <>
@@ -1118,12 +1190,16 @@ export default function MlynNaPilePage() {
             />
             <iframe
               id="background-video"
-              className={`absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-1000 ${isTransitioning ? "opacity-0" : "opacity-100"}`}
+              className={`absolute pointer-events-none transition-opacity duration-1000 ${isTransitioning ? "opacity-0" : "opacity-100"}`}
               style={{
-                objectFit: "cover",
-                width: "100vw",
+                width: "177.77vh", // 16:9 aspect ratio: 100vh * 16/9
                 height: "100vh",
-                transform: "scale(1.5)",
+                minWidth: "100vw",
+                minHeight: "56.25vw", // 16:9 aspect ratio: 100vw * 9/16
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
               }}
               src={currentVideoUrl}
               title="Mlýn na Pile Background Video"
@@ -1132,12 +1208,16 @@ export default function MlynNaPilePage() {
             />
             {isTransitioning && nextVideoUrl && (
               <iframe
-                className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-1000 opacity-100"
+                className="absolute pointer-events-none transition-opacity duration-1000 opacity-100"
                 style={{
-                  objectFit: "cover",
-                  width: "100vw",
+                  width: "177.77vh",
                   height: "100vh",
-                  transform: "scale(1.5)",
+                  minWidth: "100vw",
+                  minHeight: "56.25vw",
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
                 }}
                 src={nextVideoUrl}
                 title="Mlýn na Pile Background Video Transition"
@@ -1164,9 +1244,7 @@ export default function MlynNaPilePage() {
 
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Navigation */}
-        <nav
-          className={`fixed top-0 left-0 right-0 z-50 p-6 transition-all duration-300 ${scrolled ? "bg-black/60 backdrop-blur-md" : "bg-transparent"}`}
-        >
+        <nav className="fixed top-0 left-0 right-0 z-50 p-6 transition-all duration-300 bg-transparent">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             {/* Main menu - centered on desktop, full width on mobile */}
             <div className="flex-1 flex justify-center">
@@ -1198,7 +1276,7 @@ export default function MlynNaPilePage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                  className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
                 >
                   <Globe className="h-4 w-4" />
                 </Button>
@@ -1240,97 +1318,47 @@ export default function MlynNaPilePage() {
                   </div>
                 )}
               </div>
+              {/* Updated button styling and logic - shows current mode with clear visual feedback */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={toggleDarkMode}
-                className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
-                title={isDarkMode ? "Přepnout na denní režim" : "Přepnout na noční režim"}
+                className={`backdrop-blur-sm border-white/20 transition-all ${
+                  isDarkMode
+                    ? "bg-blue-500/30 text-white border-blue-400/50 hover:bg-blue-500/40"
+                    : "bg-amber-500/30 text-white border-amber-400/50 hover:bg-amber-500/40"
+                }`}
+                title={
+                  isDarkMode
+                    ? "Noční režim zapnutý - klikněte pro denní režim"
+                    : "Denní režim zapnutý - klikněte pro noční režim"
+                }
               >
-                {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                {isDarkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
               </Button>
+              {/* </CHANGE> */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={toggleVideo}
-                className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
               >
                 {isVideoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
               </Button>
             </div>
+            {/* </CHANGE> */}
           </div>
         </nav>
 
-        <div className="fixed top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/80 via-black/40 to-transparent pointer-events-none z-40" />
+        <div
+          className="fixed top-0 left-0 right-0 h-32 pointer-events-none z-40"
+          style={{
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)",
+          }}
+        />
+        {/* </CHANGE> */}
 
-        {/* Mobile control buttons - fixed at bottom center */}
-        <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-[9999] bg-black/40 backdrop-blur-md rounded-full p-2 border border-white/20">
-          <div className="relative">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-              className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
-            >
-              <Globe className="h-4 w-4" />
-            </Button>
-            {showLanguageMenu && (
-              <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-black/90 backdrop-blur-sm rounded-lg p-1 flex flex-col gap-1 min-w-[60px] border border-white/20">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setLanguage("cs")
-                    setShowLanguageMenu(false)
-                  }}
-                  className={`text-xs justify-start ${language === "cs" ? "bg-white/20 text-white" : "text-white/60"}`}
-                >
-                  CZ
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setLanguage("en")
-                    setShowLanguageMenu(false)
-                  }}
-                  className={`text-xs justify-start ${language === "en" ? "bg-white/20 text-white" : "text-white/60"}`}
-                >
-                  EN
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setLanguage("de")
-                    setShowLanguageMenu(false)
-                  }}
-                  className={`text-xs justify-start ${language === "de" ? "bg-white/20 text-white" : "text-white/60"}`}
-                >
-                  DE
-                </Button>
-              </div>
-            )}
-          </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={toggleDarkMode}
-            className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
-            title={isDarkMode ? "Přepnout na denní režim" : "Přepnout na noční režim"}
-          >
-            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={toggleVideo}
-            className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
-          >
-            {isVideoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          </Button>
-        </div>
-
+        {/* Removed pt-32 from here and applied it to the content sections */}
         {showPresentationMessage && (
           <div className="absolute left-1/2 -translate-x-1/2 top-20 text-white/90 text-sm animate-fade-in">
             {t.mlyn.endMessage}
@@ -1343,12 +1371,13 @@ export default function MlynNaPilePage() {
           </div>
         )}
 
-        <div className="pt-32">
+        <div className="">
+          {" "}
+          {/* Removed pt-32 */}
           {currentSection === "mlyn" ? (
             <div
               ref={mlynSectionRef}
-              className="flex-1 overflow-y-auto scroll-smooth"
-              style={{ height: "calc(100vh - 128px)" }}
+              className="flex-1 pt-32" // Applied pt-32 here for section content spacing
             >
               <div className="px-6 py-12">
                 <div className="text-center max-w-5xl mx-auto mb-16">
@@ -1400,7 +1429,7 @@ export default function MlynNaPilePage() {
 
                     <Card
                       className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
-                      onClick={() => handleSectionChange("home")}
+                      onClick={() => handleSectionChange("equipment")}
                     >
                       <CardContent className="p-6 text-center">
                         <Headphones className="h-8 w-8 text-secondary mx-auto mb-4" />
@@ -1440,7 +1469,9 @@ export default function MlynNaPilePage() {
             </div>
           ) : currentSection === "home" ? (
             // Removed uvod section, only keeping home (Studio) section
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto pt-32">
+              {" "}
+              {/* Applied pt-32 here */}
               {/* Hero Section */}
               <div className="flex items-center justify-center px-6 py-16 text-white">
                 <div className="text-center max-w-5xl">
@@ -1453,7 +1484,6 @@ export default function MlynNaPilePage() {
                   </p>
                 </div>
               </div>
-
               {/* Hlavní Studio Section */}
               <div className="flex items-center px-6 py-12 bg-black/60 text-white">
                 <div className="max-w-7xl mx-auto w-full">
@@ -1488,7 +1518,6 @@ export default function MlynNaPilePage() {
                   </div>
                 </div>
               </div>
-
               {/* Control Room Section */}
               <div className="flex items-center px-6 py-12 bg-white/10 backdrop-blur-sm text-white">
                 <div className="max-w-7xl mx-auto w-full">
@@ -1522,7 +1551,6 @@ export default function MlynNaPilePage() {
                   </div>
                 </div>
               </div>
-
               {/* Druhé Studio Section */}
               <div className="flex items-center px-6 py-12 bg-black/60 text-white">
                 <div className="max-w-7xl mx-auto w-full">
@@ -1546,7 +1574,6 @@ export default function MlynNaPilePage() {
                   </div>
                 </div>
               </div>
-
               {/* CTA Section */}
               <div className="flex items-center justify-center px-6 py-12 bg-black/70 text-white">
                 <div className="text-center max-w-3xl">
@@ -1563,7 +1590,9 @@ export default function MlynNaPilePage() {
               </div>
             </div>
           ) : currentSection === "lokalita" ? (
-            <div className="flex-1 px-6 py-12 overflow-y-auto">
+            <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
+              {" "}
+              {/* Applied pt-32 here */}
               <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-12">
                   <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.location.title}</h1>
@@ -1773,7 +1802,9 @@ export default function MlynNaPilePage() {
               </div>
             </div>
           ) : currentSection === "equipment" ? (
-            <div className="flex-1 px-6 py-12 overflow-y-auto">
+            <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
+              {" "}
+              {/* Applied pt-32 here */}
               <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-8">
                   <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 text-balance">{t.equipment.title}</h1>
@@ -2295,7 +2326,9 @@ export default function MlynNaPilePage() {
               </div>
             </div>
           ) : currentSection === "contact" ? (
-            <div className="flex-1 px-6 py-12">
+            <div className="flex-1 px-6 py-12 pt-32">
+              {" "}
+              {/* Applied pt-32 here */}
               <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-12">
                   <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.contact.title}</h1>
@@ -2307,7 +2340,7 @@ export default function MlynNaPilePage() {
                       <h3 className="text-2xl font-bold text-white mb-6">{t.contact.info}</h3>
                       <div className="space-y-6">
                         <div>
-                          <h4 className="text-xl font-bold text-white mb-2">Ing. Jindřích Traxmandl</h4>
+                          <h4 className="text-xl font-bold text-white mb-2">Ing. Jindřich Traxmandl</h4>
                         </div>
                         <div className="flex items-start space-x-4">
                           <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
@@ -2355,7 +2388,9 @@ export default function MlynNaPilePage() {
             </div>
           ) : (
             // Removed all opacity animations and min-h-screen classes for simple scrollable layout
-            <div ref={onasSectionRef} className="flex-1 overflow-y-auto scroll-smooth">
+            <div ref={onasSectionRef} className="flex-1 overflow-y-auto scroll-smooth pt-32">
+              {" "}
+              {/* Applied pt-32 here */}
               <div className="px-6 py-12">
                 <div className="max-w-4xl mx-auto space-y-8">
                   {/* Section 1: Hero + History */}
