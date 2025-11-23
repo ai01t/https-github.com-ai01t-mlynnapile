@@ -27,7 +27,10 @@ import {
   Languages,
   Ghost,
   FileText,
+  Cigarette,
 } from "lucide-react"
+
+const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
 
 const translations = {
   cs: {
@@ -84,6 +87,51 @@ const translations = {
       ctaTitle: "Připraveni vytvořit něco úžasného?",
       ctaDesc: "Kontaktujte nás a domluvme si návštěvu studia",
       ctaButton: "Kontaktovat",
+      accommodation: {
+        title: "NAHRÁVÁNÍ + UBYTOVÁNÍ",
+        subtitle:
+          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Free wifi a parkování v areálu, s možností nabití EV.",
+        intro: "Jdeme na to:",
+        parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
+        packages: [
+          {
+            name: "Into the Wild",
+            tags: "#Main studio",
+            description:
+              "Nejekonomičtější - stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence, usínejte a probouzejte se do světa hudby s přírodou :-)",
+            details:
+              "Možnost přespání ve vlastním autě/karavanu/stanu. Main studio má vlastní sociální zařízení včetně sprchy.",
+            video: "https://youtu.be/qEc9SnmU4cM",
+          },
+          {
+            name: "Underwater",
+            tags: "#Main Studio #Sauna",
+            description:
+              "Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka :-) Skromné ale stylové a útulné přespání, jedná se o spaní přímo v prostorách bývalé mlýnice.",
+            details:
+              "Zde můžete usínat za zvuků protékající vody - stačí pootevřít okno :-) - součástí je i možnost využít saunu + posezení pod hrází vedle velké pece. 1x dvojlůžko, možnost dalších dvou přistýlek.",
+            video: "https://youtu.be/gI3204B7eNk",
+          },
+          {
+            name: "Otherside",
+            tags: "#Control room #Staročeská světnice #Dva pokoje",
+            description:
+              "Z druhé strany studia můžete využít pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple (Magic Trackpad, Magic Mouse, Apple Magic Keyboard) pro pohodlnou práci + ubytování ve staročeské světnici.",
+            details:
+              "Vhodné jak pro zpracování vaší práce ve studiích, tak i pro nehudební aktivity (např. grafiky, digitální tvůrce), finální zpracování nahrávek.",
+            video: "https://youtu.be/X7lvikbWnMQ",
+          },
+          {
+            name: "Fuel",
+            tags: "#VIP balíček #Main Studio #Millstone #Control room #Sauna #Zimní zahrada #Staročeská světnice #Další prostory mlýna včetně domácího kina #Catering #Tesla Model X #Support 24/7",
+            description:
+              "Tato varianta se jmenuje podle našeho songu Fuel a i podle songu od Metallicy, protože tohle je fakt asi pro Metallicu, (ale nebojte napsat a určitě se domluvíme).",
+            details:
+              "Vhodné pro ty, kteří chtějí všechno, a mají spoustu nástrojů, co umějí a chtějí využít kompletně prostor mlýna.",
+            video: "https://youtu.be/5INpfHr0lu4",
+          },
+        ],
+      },
     },
     location: {
       title: "Lokalita",
@@ -258,55 +306,58 @@ const translations = {
           q: "Mluvíte anglicky/německy?",
           a: "Vícejazyčný tým: Čeština - rodilí mluvčí, Angličtina - plynule (Jindřich, Andrea, tech tým), Němčina - konverzační úroveň (regionální výhoda), překladatelské služby pro smlouvy.",
         },
+        {
+          q: "Smí se v mlýně kouřit?",
+          a: "Nesmí. Mlýn je z velké části ze dřeva, je tam hodně protipožárních ochran, které by okamžitě spustili hlasitý poplacha vzdálené notifikace - tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.",
+        },
       ],
       historyTimeline: [
+        { year: "16. století", desc: "První zmínky o mlýně na Pile" },
+        { year: "19. století", desc: "Přestavba na vodní elektrárnu" },
+        { year: "20. století", desc: "Využíván pro zemědělské účely" },
         {
-          year: "1653 - Založení",
-          desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena",
+          year: "2020",
+          desc: "Zahájení rekonstrukce na umělecké a retreatové centrum",
         },
         {
-          year: "1810 - Přestavba na mlýn",
-          desc: "Mlýn s pilou poháněnou vodní silou",
-        },
-        {
-          year: "1990 - Pila",
-          desc: "Vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice",
-        },
-        {
-          year: "2024 - Nový začátek",
-          desc: "Transformace na prémiové kreativní retreat studio",
+          year: "2023",
+          desc: "Otevření prvních studií a ubytování",
         },
       ],
-      accommodationRooms: "Pokoje (až 8 hostů)",
-      masterSuite: "Master Suite",
-      masterSuiteDesc: "Terasa s výhledem na rybník, vintage nábytek, vlastní koupelna",
-      fourRooms: "4 pokoje",
-      fourRoomsDesc: "Každý pokoj s unikátním charakterem, moderní komfort, inspirativní design",
-      commonSpaces: "Společné prostory",
+      accommodationRooms: "Prostory pro ubytování",
+      masterSuite: "Master Suite (63m²)",
+      masterSuiteDesc:
+        "Luxusní apartmá s výhledem na rybník, krbem a terasou. Ideální pro umělce hledající klid a inspiraci.",
+      fourRooms: "Čtyři Pokojíky (15-20m²)",
+      fourRoomsDesc:
+        "Stylově zařízené pokoje s možností přistýlek, každý s vlastním sociálním zařízením. Vhodné pro menší týmy nebo kapely.",
+      commonSpaces: "Společné Prostory",
       commonSpacesItems: [
-        "Jídelna pro 8 osob",
-        "Plně vybavená kuchyň",
-        "Malá knihovna",
-        "Domácí kino",
-        "Zimní zahrada 63m²",
+        "Prostorná zimní zahrada (63m²) s krbem a kuchyňským koutem",
+        "Společenská místnost s domácím kinem",
+        "Venkovní posezení s grilem a ohništěm",
+        "Knihovna s relaxační zónou",
       ],
-      finnishSauna: "Finská sauna",
-      finnishSaunaItems: ["Finská sauna", "Tenisové kurty, koupaliště (2,2 km)"],
-      parkOutdoor: "Park & Outdoor (6527m²)",
+      finnishSauna: "Finská Sauna",
+      finnishSaunaItems: ["Kapacita 4-6 osob", "Relaxační zóna s výhledem do přírody", "Možnost ochlazení v jezírku"],
+      parkOutdoor: "Park a Outdoor Aktivity",
       parkOutdoorItems: [
-        "Dva živé potůčky",
-        "Vzrostlé stromy",
-        "Několik teras",
-        "Gril a pizza pec (8 pizz)",
-        "Procházkové stezky",
-        "Soukromé parkování + Tesla nabíjení",
+        "Rozsáhlý pozemek (6500m²) s možností procházek",
+        "Místní potůčky a jezírko",
+        "Možnost zapůjčení kol",
+        "Místa pro piknik a meditaci",
       ],
-      catering: "Catering & Stravování",
+      catering: "Catering",
       cateringItems: [
-        { title: "Vlastní catering", desc: "s lokálními ingrediencemi" },
-        { title: "Pizza pec", desc: "pro společné večeře (až 8 pizz)" },
-        { title: "Plně vybavená kuchyň", desc: "pro vlastní vaření" },
-        { title: "Rozvoz z místních restaurací", desc: "z Domažlic" },
+        { title: "Snídaně:", desc: "Čerstvé lokální suroviny, domácí pečivo a marmelády." },
+        {
+          title: "Obědy & Večeře:",
+          desc: "Možnost výběru z několika menu, včetně vegetariánských a veganských variant. Nabízíme i možnost zapůjčení pizza pece pro společné večery.",
+        },
+        {
+          title: "Nápoje:",
+          desc: "Široký výběr kávy, čajů, lokálních piv a vín.",
+        },
       ],
     },
   },
@@ -364,6 +415,51 @@ const translations = {
       ctaTitle: "Ready to create something amazing?",
       ctaDesc: "Contact us and let's arrange a studio visit",
       ctaButton: "Contact",
+      accommodation: {
+        title: "RECORDING + ACCOMMODATION",
+        subtitle:
+          "Individual packages are arranged from most economical to VIP - we named them after our songs :-) Studio rental includes musical equipment and instruments. Free wifi and parking on site, with EV charging available.",
+        intro: "Let's go:",
+        parking: "All packages include parking in the mill area, which is under camera surveillance.",
+        packages: [
+          {
+            name: "Into the Wild",
+            tags: "#Main studio",
+            description:
+              "Most economical - camping in the park, studio rental only, for adventurers and enthusiasts, fall asleep and wake up to the world of music with nature :-)",
+            details:
+              "Option to sleep in your own car/caravan/tent. Main studio has its own facilities including shower.",
+            video: "https://youtu.be/qEc9SnmU4cM",
+          },
+          {
+            name: "Underwater",
+            tags: "#Main Studio #Sauna",
+            description:
+              "Closest to the music, sleeping literally under the studio floor and also below the pond surface :-) Modest but stylish and cozy accommodation, sleeping directly in the former mill house.",
+            details:
+              "Here you can fall asleep to the sounds of flowing water - just open the window :-) - includes access to sauna + seating under the dam next to the large oven. 1x double bed, possibility of two extra beds.",
+            video: "https://youtu.be/gI3204B7eNk",
+          },
+          {
+            name: "Otherside",
+            tags: "#Control room #Traditional Czech room #Two rooms",
+            description:
+              "From the other side of the studio, you can use the 6K Apple Pro XDR for post-production, complete with Apple peripherals (Magic Trackpad, Magic Mouse, Apple Magic Keyboard) for comfortable work + accommodation in a traditional Czech room.",
+            details:
+              "Suitable both for processing your studio work and for non-musical activities (e.g., graphics, digital creators), final recording processing.",
+            video: "https://youtu.be/X7lvikbWnMQ",
+          },
+          {
+            name: "Fuel",
+            tags: "#VIP package",
+            description:
+              "This option is named after our song Fuel and also after Metallica's song, because this is really for Metallica, (but don't hesitate to write and we'll definitely work something out).",
+            details:
+              "Suitable for those who want everything and have lots of tools they know and want to use the entire mill space.",
+            video: "https://youtu.be/5INpfHr0lu4",
+          },
+        ],
+      },
     },
     location: {
       title: "Location",
@@ -472,7 +568,7 @@ const translations = {
       jindrichDesc:
         "Guitarist of the band Anteater, enthusiast of modern technologies who swears by classic vintage instruments and equipment.",
       jindrichQuote:
-        "We work to ensure that musicians find an inspiring space perfectly prepared for creation. The Mill has its genius loci and soul – and the instruments and vintage equipment available here carry the same energy. In harmony with them, modern technology unobtrusively supports comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful and comfortable environment where people will want to return. We have open doors for all creative people, not just musicians. We believe that this combination – a space with soul, instruments with history and modern technology in the background – will become the engine and synergy for creating amazing things.",
+        "We work to ensure that musicians find an inspiring space perfectly prepared for creation. The Mill has its genius loci and soul – and the same energy carry the instruments and vintage equipment available here. In harmony with them, modern technology unobtrusively supports comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful and comfortable environment where people will want to return. We have open doors for all creative people, not just musicians. We believe that this combination – a space with soul, instruments with history and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
         "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindra :)) But seriously: we complement each other and try to inspire each other from our different perspectives on the World.",
       collaboration: "Collaboration and Support",
@@ -543,55 +639,67 @@ const translations = {
           q: "Do you speak English/German?",
           a: "Multilingual team: Czech - native, English - fluent (Jindřich, Andrea, tech team), German - conversational (regional advantage), translation services for contracts.",
         },
+        {
+          q: "Is smoking allowed in the mill?",
+          a: "No. The mill is largely made of wood and has extensive fire protection systems that would immediately trigger loud alarms and remote notifications - which means if you bring your own instruments, they'll be safe.",
+        },
       ],
       historyTimeline: [
         {
           year: "1653 - Foundation",
-          desc: "Establishment of ponds and construction of blast furnace and hammer mill by Lamingen",
+          desc: "Creation of ponds and construction of high furnace and Lamingen hammer",
         },
         {
-          year: "1810 - Conversion to mill",
-          desc: "Mill with sawmill powered by water",
+          year: "1810 - Mill Conversion",
+          desc: "Mill with saw powered by water force",
         },
         {
           year: "1990 - Sawmill",
-          desc: "Established on November 24, 1990 as part of Trhanov municipality in Domažlice district",
+          desc: "Established on November 24, 1990 as part of Trhanov village in Domažlice district",
         },
         {
           year: "2024 - New Beginning",
           desc: "Transformation into premium creative retreat studio",
         },
       ],
-      accommodationRooms: "Rooms (up to 8 guests)",
-      masterSuite: "Master Suite",
-      masterSuiteDesc: "Terrace overlooking the pond, vintage furniture, private bathroom",
-      fourRooms: "4 rooms",
-      fourRoomsDesc: "Each room with unique character, modern comfort, inspiring design",
+      accommodationRooms: "Accommodation Spaces",
+      masterSuite: "Master Suite (63m²)",
+      masterSuiteDesc:
+        "Luxurious apartment with a pond view, fireplace, and terrace. Ideal for artists seeking peace and inspiration.",
+      fourRooms: "Four Rooms (15-20m²)",
+      fourRoomsDesc:
+        "Stylishly furnished rooms with the possibility of extra beds, each with its own bathroom. Suitable for small teams or bands.",
       commonSpaces: "Common Spaces",
       commonSpacesItems: [
-        "Dining room for 8 people",
-        "Fully equipped kitchen",
-        "Small library",
-        "Home cinema",
-        "Winter garden 63m²",
+        "Spacious winter garden (63m²) with a fireplace and kitchenette",
+        "Common room with a home cinema",
+        "Outdoor seating area with BBQ and fire pit",
+        "Library with a relaxation zone",
       ],
       finnishSauna: "Finnish Sauna",
-      finnishSaunaItems: ["Finnish sauna", "Tennis courts, swimming pool (2.2 km)"],
-      parkOutdoor: "Park & Outdoor (6527m²)",
-      parkOutdoorItems: [
-        "Two live streams",
-        "Mature trees",
-        "Multiple terraces",
-        "BBQ & pizza oven (8 pizzas)",
-        "Walking paths",
-        "Private parking + Tesla charging",
+      finnishSaunaItems: [
+        "Capacity for 4-6 people",
+        "Relaxation area with nature views",
+        "Option for cooling off in the pond",
       ],
-      catering: "Catering & Dining",
+      parkOutdoor: "Park and Outdoor Activities",
+      parkOutdoorItems: [
+        "Extensive grounds (6500m²) with walking paths",
+        "Local streams and a pond",
+        "Bicycle rental available",
+        "Areas for picnics and meditation",
+      ],
+      catering: "Catering",
       cateringItems: [
-        { title: "In-house catering", desc: "with local ingredients" },
-        { title: "Pizza oven", desc: "for community dinners (up to 8 pizzas)" },
-        { title: "Fully equipped kitchen", desc: "for self-catering" },
-        { title: "Local restaurant delivery", desc: "from Domažlice" },
+        { title: "Breakfast:", desc: "Fresh local ingredients, homemade bread and jams." },
+        {
+          title: "Lunch & Dinner:",
+          desc: "Choice of several menus, including vegetarian and vegan options. We also offer the possibility to rent a pizza oven for communal evenings.",
+        },
+        {
+          title: "Beverages:",
+          desc: "Wide selection of coffee, teas, local beers, and wines.",
+        },
       ],
     },
   },
@@ -649,6 +757,51 @@ const translations = {
       ctaTitle: "Bereit, etwas Erstaunliches zu schaffen?",
       ctaDesc: "Kontaktieren Sie uns und vereinbaren Sie einen Studiobesuch",
       ctaButton: "Kontakt",
+      accommodation: {
+        title: "AUFNAHME + UNTERKUNFT",
+        subtitle:
+          "Die einzelnen Pakete sind von den wirtschaftlichsten bis zu VIP sortiert - wir haben sie nach unseren Songs benannt :-) Die Studiovermietung umfasst Musikausrüstung und Instrumente. Kostenloses WLAN und Parken vor Ort, mit EV-Lademöglichkeit.",
+        intro: "Los geht's:",
+        parking: "Bei allen Paketen können Sie im Mühlenbereich parken, der videoüberwacht ist.",
+        packages: [
+          {
+            name: "Into the Wild",
+            tags: "#Main studio",
+            description:
+              "Am wirtschaftlichsten - Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten, schlafen Sie ein und wachen Sie in der Welt der Musik mit der Natur auf :-)",
+            details:
+              "Möglichkeit im eigenen Auto/Wohnwagen/Zelt zu schlafen. Das Hauptstudio verfügt über eigene Einrichtungen inklusive Dusche.",
+            video: "https://youtu.be/qEc9SnmU4cM",
+          },
+          {
+            name: "Underwater",
+            tags: "#Main Studio #Sauna",
+            description:
+              "Am nächsten zur Musik, schlafen buchstäblich unter dem Studioboden und auch unter der Teichoberfläche :-) Bescheidene, aber stilvolle und gemütliche Unterkunft, Schlafen direkt in den Räumen des ehemaligen Mühlenhauses.",
+            details:
+              "Hier können Sie zu den Klängen des fließenden Wassers einschlafen - öffnen Sie einfach das Fenster :-) - beinhaltet Zugang zur Sauna + Sitzgelegenheit unter dem Damm neben dem großen Ofen. 1x Doppelbett, Möglichkeit von zwei Zustellbetten.",
+            video: "https://youtu.be/gI3204B7eNk",
+          },
+          {
+            name: "Otherside",
+            tags: "#Kontrollraum #Traditionelles tschechisches Zimmer #Zwei Zimmer",
+            description:
+              "Von der anderen Seite des Studios aus können Sie den 6K Apple Pro XDR für die Nachbearbeitung nutzen, komplett mit Apple-Peripheriegeräten (Magic Trackpad, Magic Mouse, Apple Magic Keyboard) für komfortables Arbeiten + Unterkunft in einem traditionellen tschechischen Zimmer.",
+            details:
+              "Geeignet sowohl für die Verarbeitung Ihrer Studioarbeit als auch für nicht-musikalische Aktivitäten (z.B. Grafik, digitale Schöpfer), finale Aufnahmeverarbeitung.",
+            video: "https://youtu.be/X7lvikbWnMQ",
+          },
+          {
+            name: "Fuel",
+            tags: "#VIP-Paket",
+            description:
+              "Diese Variante ist nach unserem Song Fuel und auch nach dem Song von Metallica benannt, denn das ist wirklich für Metallica, (aber zögern Sie nicht zu schreiben und wir werden uns sicher einigen).",
+            details:
+              "Geeignet für diejenigen, die alles wollen und viele Werkzeuge haben, die sie können und den gesamten Mühlenraum nutzen möchten.",
+            video: "https://youtu.be/5INpfHr0lu4",
+          },
+        ],
+      },
     },
     location: {
       title: "Standort",
@@ -823,57 +976,69 @@ const translations = {
         },
         {
           q: "Sprechen Sie Englisch/Deutsch?",
-          a: "Mehrsprachiges Team: Tschechisch - Muttersprachler, Englisch - fließend (Jindřích, Andrea, Tech-Team), Deutsch - Konversationsniveau (regionaler Vorteil), Übersetzungsdienste für Verträge.",
+          a: "Mehrsprachiges Team: Tschechisch - Muttersprachler, Englisch - fließend (Jindřich, Andrea, Tech-Team), Deutsch - Konversationsniveau (regionaler Vorteil), Übersetzungsdienste für Verträge.",
+        },
+        {
+          q: "Darf man in der Mühle rauchen?",
+          a: "Nein. Die Mühle besteht größtenteils aus Holz und verfügt über umfangreiche Brandschutzsysteme, die sofort laute Alarme und Fernbenachrichtigungen auslösen würden - das heißt, wenn Sie Ihre eigenen Instrumente mitbringen, sind sie sicher.",
         },
       ],
       historyTimeline: [
         {
           year: "1653 - Gründung",
-          desc: "Anlage von Teichen und Bau eines Hochofens und Hammerwerks durch Lamingen",
+          desc: "Anlage von Teichen und Bau des Hochofens und Lamingen-Hammers",
         },
         {
           year: "1810 - Umbau zur Mühle",
-          desc: "Mühle mit wasserbetriebener Sägemühle",
+          desc: "Mühle mit wasserkraftbetriebener Säge",
         },
         {
           year: "1990 - Sägewerk",
           desc: "Am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice gegründet",
         },
         {
-          year: "2024 - Neubeginn",
-          desc: "Umwandlung in ein Premium-Kreativ-Retreat-Studio",
+          year: "2024 - Neuer Anfang",
+          desc: "Transformation in ein Premium-Kreativ-Retreat-Studio",
         },
       ],
-      accommodationRooms: "Zimmer (bis zu 8 Gäste)",
-      masterSuite: "Master Suite",
-      masterSuiteDesc: "Terrasse mit Blick auf den Teich, Vintage-Möbel, eigenes Bad",
-      fourRooms: "4 Zimmer",
-      fourRoomsDesc: "Jedes Zimmer mit einzigartigem Charakter, modernem Komfort, inspirierendem Design",
+      accommodationRooms: "Unterkunftsbereiche",
+      masterSuite: "Master Suite (63m²)",
+      masterSuiteDesc:
+        "Luxuriöses Apartment mit Teichblick, Kamin und Terrasse. Ideal für Künstler, die Ruhe und Inspiration suchen.",
+      fourRooms: "Vier Zimmer (15-20m²)",
+      fourRoomsDesc:
+        "Stilvoll eingerichtete Zimmer mit Zustellmöglichkeiten, jedes mit eigenem Bad. Geeignet für kleinere Teams oder Bands.",
       commonSpaces: "Gemeinschaftsräume",
       commonSpacesItems: [
-        "Esszimmer für 8 Personen",
-        "Voll ausgestattete Küche",
-        "Kleine Bibliothek",
-        "Heimkino",
-        "Wintergarten 63m²",
+        "Geräumiger Wintergarten (63m²) mit Kamin und Kochnische",
+        "Gemeinschaftsraum mit Heimkino",
+        "Außenbereich mit Grill und Feuerstelle",
+        "Bibliothek mit Entspannungszone",
       ],
       finnishSauna: "Finnische Sauna",
-      finnishSaunaItems: ["Finnische Sauna", "Tennisplätze, Schwimmbad (2,2 km)"],
-      parkOutdoor: "Park & Outdoor (6527m²)",
-      parkOutdoorItems: [
-        "Zwei lebendige Bäche",
-        "Ausgewachsene Bäume",
-        "Mehrere Terrassen",
-        "BBQ & Pizzaofen (8 Pizzen)",
-        "Spazierwege",
-        "Privater Parkplatz + Tesla-Ladestation",
+      finnishSaunaItems: [
+        "Kapazität für 4-6 Personen",
+        "Entspannungsbereich mit Blick in die Natur",
+        "Möglichkeit zur Abkühlung im Teich",
       ],
-      catering: "Catering & Verpflegung",
+      parkOutdoor: "Park und Outdoor-Aktivitäten",
+      parkOutdoorItems: [
+        "Großes Grundstück (6500m²) mit Spazierwegen",
+        "Lokale Bäche und Teich",
+        "Fahrradverleih möglich",
+        "Bereiche für Picknicks und Meditation",
+      ],
+      catering: "Catering",
       cateringItems: [
-        { title: "In-house Catering", desc: "mit lokalen Zutaten" },
-        { title: "Pizzaofen", desc: "für Gemeinschaftsessen (bis zu 8 Pizzen)" },
-        { title: "Voll ausgestattete Küche", desc: "für Selbstversorgung" },
-        { title: "Lokale Restaurant-Lieferung", desc: "aus Domažlice" },
+        { title: "Frühstück:", desc: "Frische lokale Zutaten, hausgemachtes Brot und Marmeladen." },
+        {
+          title: "Mittag- und Abendessen:",
+          desc: "Auswahl aus mehreren Menüs, einschließlich vegetarischer und veganer Optionen. Wir bieten auch die Möglichkeit, einen Pizzaofen für gesellige Abende zu mieten.",
+        },
+        {
+          title: "Getränke:",
+          desc: "Große Auswahl an Kaffee, Tee, lokalen Bieren und Weinen.",
+        },
       ],
     },
   },
@@ -971,13 +1136,13 @@ export default function MlynNaPilePage() {
   }
 
   const toggleDarkMode = () => {
+    const newDarkMode = !isDarkMode
+    setIsDarkMode(newDarkMode)
+
     if (darkModeTimerRef.current) {
       clearTimeout(darkModeTimerRef.current)
       darkModeTimerRef.current = null
     }
-
-    const newDarkMode = !isDarkMode
-    setIsDarkMode(newDarkMode)
 
     let newVideoId = ""
     if (newDarkMode) {
@@ -1171,6 +1336,52 @@ export default function MlynNaPilePage() {
     return () => mlynSection.removeEventListener("scroll", handleScroll)
   }, [showEndMessage])
 
+  React.useEffect(() => {
+    const mlynSection = mlynSectionRef.current
+    if (!mlynSection) return
+
+    const handleScroll = () => {
+      const scrollTop = mlynSection.scrollTop
+      const scrollHeight = mlynSection.scrollHeight
+      const clientHeight = mlynSection.clientHeight
+      const scrollPercentage = scrollTop / (scrollHeight - clientHeight)
+
+      // Auto-switch to next section when scrolled to 95% or more
+      if (scrollPercentage >= 0.95) {
+        const currentIndex = sectionOrder.indexOf(currentSection)
+        const nextIndex = (currentIndex + 1) % sectionOrder.length
+        const nextSection = sectionOrder[nextIndex]
+        handleSectionChange(nextSection)
+      }
+    }
+
+    mlynSection.addEventListener("scroll", handleScroll)
+    return () => mlynSection.removeEventListener("scroll", handleScroll)
+  }, [currentSection])
+
+  React.useEffect(() => {
+    const onasSection = onasSectionRef.current
+    if (!onasSection) return
+
+    const handleScroll = () => {
+      const scrollTop = onasSection.scrollTop
+      const scrollHeight = onasSection.scrollHeight
+      const clientHeight = onasSection.clientHeight
+      const scrollPercentage = scrollTop / (scrollHeight - clientHeight)
+
+      // Auto-switch to next section when scrolled to 95% or more
+      if (scrollPercentage >= 0.95) {
+        const currentIndex = sectionOrder.indexOf(currentSection)
+        const nextIndex = (currentIndex + 1) % sectionOrder.length
+        const nextSection = sectionOrder[nextIndex]
+        handleSectionChange(nextSection)
+      }
+    }
+
+    onasSection.addEventListener("scroll", handleScroll)
+    return () => onasSection.removeEventListener("scroll", handleScroll)
+  }, [currentSection])
+
   const [showPresentationMessage, setShowPresentationMessage] = useState(true)
 
   useEffect(() => {
@@ -1241,7 +1452,7 @@ export default function MlynNaPilePage() {
             style={{
               backgroundImage: isDarkMode
                 ? `url("/images/twilight-lake.jpeg")`
-                : `url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/847BBD26-F10F-443A-8DB7-94666E95A9A5-He8aS0Zg0mCu8gKsmK5F83l98BUjw0.jpeg")`,
+                : `url("/images/847bbd26-f10f-443a-8db7-94666e95a9a5.jpeg")`,
               zIndex: 0,
             }}
           />
@@ -1452,8 +1663,8 @@ export default function MlynNaPilePage() {
               <div className="px-6 py-12">
                 <div className="text-center max-w-5xl mx-auto mb-16">
                   <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
-                  <p className="text-2xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.subtitle}</p>
-                  <p className="text-2xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.tagline}</p>
+                  <p className="text-xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.subtitle}</p>
+                  <p className="text-xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.tagline}</p>
                   <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
                     {t.mlyn.description}
                   </p>
@@ -1614,7 +1825,7 @@ export default function MlynNaPilePage() {
                           <li>• Universal Audio Apollo Interface</li>
                           <li>• 76 UAD pluginů (kompletní kolekce)</li>
                           <li>• Logic Pro X + UA LUNA</li>
-                          <li>• 4K projektor pro screening</li>
+                          <li>• Projektor pro screening</li>
                         </ul>
                       </div>
                     </div>
@@ -1641,6 +1852,59 @@ export default function MlynNaPilePage() {
                         allowFullScreen
                       />
                     </div>
+                  </div>
+                </div>
+              </div>
+              {/* Accommodation Packages Section */}
+              <div className="px-6 py-16 bg-white/5 backdrop-blur-sm text-white">
+                <div className="max-w-7xl mx-auto">
+                  <div className="text-center mb-12">
+                    <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+                      {t.studio.accommodation.title}
+                    </h2>
+                    <p className="text-lg md:text-xl text-white/90 max-w-4xl mx-auto mb-4 drop-shadow-md">
+                      {t.studio.accommodation.subtitle}
+                    </p>
+                    <p className="text-xl font-semibold text-white/95 drop-shadow-md">{t.studio.accommodation.intro}</p>
+                  </div>
+
+                  <div className="space-y-8">
+                    {t.studio.accommodation.packages.map((pkg, index) => (
+                      <div key={index} className="bg-black/40 backdrop-blur-sm rounded-xl p-8 border border-white/10">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                          <div className="space-y-4">
+                            <h3 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
+                              {index + 1}. Balíček "{pkg.name}"
+                            </h3>
+                            <p className="text-sm text-secondary/90 font-mono">{pkg.tags}</p>
+                            <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{pkg.description}</p>
+                            <p className="text-base leading-relaxed text-white/80">{pkg.details}</p>
+                          </div>
+                          <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+                            {pkg.video ? (
+                              <iframe
+                                className="w-full h-full"
+                                src={`${pkg.video.replace("youtu.be/", "www.youtube.com/embed/")}?autoplay=1&mute=1&loop=1&playlist=${pkg.video.split("/").pop()}&controls=0&showinfo=0&rel=0&modestbranding=1`}
+                                title={pkg.name}
+                                allow="autoplay; encrypted-media"
+                                allowFullScreen
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-black/60 flex items-center justify-center">
+                                <p className="text-white/60 text-lg">Video bude doplněno</p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-12 text-center">
+                    <p className="text-lg text-white/80 flex items-center justify-center gap-2">
+                      <Car className="h-5 w-5" />
+                      {t.studio.accommodation.parking}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -1858,7 +2122,7 @@ export default function MlynNaPilePage() {
                               href="https://la-cham.de/"
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-secondary hover:text-secondary/80 underline font-semibold"
+                              className="text-secondary hover:text-secondary/80 underline"
                             >
                               {t.location.chamClub}
                             </a>
@@ -1907,7 +2171,14 @@ export default function MlynNaPilePage() {
                           <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.guitars}</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
                             <li className="cursor-pointer hover:text-secondary transition-colors">
-                              • Fender 1973 Telecaster Deluxe
+                              <a
+                                href="https://equipboard.com/items/telecaster-deluxe-73"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-secondary transition-colors"
+                              >
+                                • Fender 1973 Telecaster Deluxe
+                              </a>
                             </li>
                             <li>• Fender Custom Shop - Jeff Beck (Surf Green)</li>
                             <li>• Fender Custom Shop - LTD 67 HSS Strat AB HR</li>
@@ -2067,57 +2338,6 @@ export default function MlynNaPilePage() {
                   </Card>
                 </div>
 
-                {/* Kabely a Stojany */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.cables}</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                        <div className="bg-white/5 p-3 rounded">
-                          <p className="text-white/90">Mogami Platinum</p>
-                        </div>
-                        <div className="bg-white/5 p-3 rounded">
-                          <p className="text-white/90">Evidence Cables</p>
-                        </div>
-                        <div className="bg-white/5 p-3 rounded">
-                          <p className="text-white/90">Lava Cable Tephra</p>
-                        </div>
-                        <div className="bg-white/5 p-3 rounded">
-                          <p className="text-white/90">K&M stojany</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Moderní technologie - THIRD */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.modernTech}</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-3">Universal Audio</h4>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Universal Audio Apollo Interface</li>
-                            <li>• UAD-2 Satellite (extra DSP power)</li>
-                            <li>• 76 UAD pluginů (kompletní kolekce)</li>
-                            <li>• Unison Technology</li>
-                            <li>• Near-zero latency tracking</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-3">DAW & Monitoring</h4>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Logic Pro X</li>
-                            <li>• UA LUNA</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
                 {/* VIDEO PRODUCTION */}
                 <div className="mb-8">
                   <Card className="bg-white/10 backdrop-blur-sm border-white/20">
@@ -2130,7 +2350,7 @@ export default function MlynNaPilePage() {
                             <li>• Apple Pro XDR 6K monitor pro color-accurate editing</li>
                             <li>• Professional video cameras pro session dokumentaci</li>
                             <li>• DJI Gimbal stabilizátor pro smooth camera movements</li>
-                            <li>• 4K projektor pro screening a presentations</li>
+                            <li>• Projektor pro screening a presentations</li>
                             <li>• Lighting equipment pro professional video shoots</li>
                           </ul>
                         </div>
@@ -2138,6 +2358,7 @@ export default function MlynNaPilePage() {
                           <h4 className="text-lg font-semibold text-white mb-3">Software</h4>
                           <ul className="text-white/80 text-sm space-y-1.5">
                             <li>• Final Cut Pro X</li>
+                            <li>• Affinity</li>
                           </ul>
                         </div>
                       </div>
@@ -2338,6 +2559,32 @@ export default function MlynNaPilePage() {
                   </Card>
                 </div>
 
+                {/* Kabely a Stojany */}
+                <div className="mb-8">
+                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                    <CardContent className="p-6">
+                      <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.cables}</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div className="bg-white/5 p-3 rounded">
+                          <p className="text-white/90">Mogami Platinum</p>
+                        </div>
+                        <div className="bg-white/5 p-3 rounded">
+                          <p className="text-white/90">Evidence Cables</p>
+                        </div>
+                        <div className="bg-white/5 p-3 rounded">
+                          <p className="text-white/90">Lava Cable Tephra</p>
+                        </div>
+                        <div className="bg-white/5 p-3 rounded">
+                          <p className="text-white/90">Monster Studio Pro 2000</p>
+                        </div>
+                        <div className="bg-white/5 p-3 rounded">
+                          <p className="text-white/90">K&M stojany</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
                 {/* Workflow Recommendations */}
                 <div className="mb-8">
                   <Card className="bg-white/10 backdrop-blur-sm border-white/20">
@@ -2396,9 +2643,7 @@ export default function MlynNaPilePage() {
               </div>
             </div>
           ) : currentSection === "contact" ? (
-            <div className="flex-1 px-6 py-12 pt-32">
-              {" "}
-              {/* Applied pt-32 here */}
+            <div className="pt-32 px-6 py-12">
               <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-12">
                   <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.contact.title}</h1>
@@ -2457,254 +2702,249 @@ export default function MlynNaPilePage() {
               </div>
             </div>
           ) : (
-            // Removed all opacity animations and min-h-screen classes for simple scrollable layout
-            <div ref={onasSectionRef} className="flex-1 overflow-y-auto scroll-smooth pt-32">
-              {" "}
-              {/* Applied pt-32 here */}
-              <div className="px-6 py-12">
-                <div className="max-w-4xl mx-auto space-y-8">
-                  {/* Section 1: Hero + History */}
-                  <div>
-                    <div className="text-center mb-12">
-                      <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.about.title}</h1>
-                      <p className="text-xl md:text-2xl text-white/90 font-light">{t.about.subtitle}</p>
-                      <p className="text-lg text-white/80 mt-4">{t.about.tagline}</p>
-                    </div>
-
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.history}</h3>
-                        <div className="space-y-4 text-white/80">
-                          {t.about.historyTimeline.map((item, index) => (
-                            <div key={index} className="border-l-2 border-secondary pl-4">
-                              <p className="font-semibold text-white">{item.year}</p>
-                              <p className="text-sm">{item.desc}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
+            <div ref={onasSectionRef} className="pt-32 px-6 py-12">
+              <div className="space-y-8">
+                {/* Section 1: Hero + History */}
+                <div>
+                  <div className="text-center mb-12">
+                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.about.title}</h1>
+                    <p className="text-xl md:text-2xl text-white/90 font-light">{t.about.subtitle}</p>
+                    <p className="text-lg text-white/80 mt-4">{t.about.tagline}</p>
                   </div>
 
-                  {/* Section 2: Ubytování */}
-                  <div className="max-w-6xl mx-auto">
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-8">
-                        <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.accommodation}</h3>
+                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                    <CardContent className="p-8">
+                      <h3 className="text-2xl font-bold text-white mb-6">{t.about.history}</h3>
+                      <div className="space-y-4 text-white/80">
+                        {t.about.historyTimeline.map((item, index) => (
+                          <div key={index} className="border-l-2 border-secondary pl-4">
+                            <p className="font-semibold text-white">{item.year}</p>
+                            <p className="text-sm">{item.desc}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                          <div>
-                            <h4 className="text-xl font-bold text-white mb-4">{t.about.accommodationRooms}</h4>
-                            <div className="space-y-4">
-                              <div className="bg-white/5 p-4 rounded-lg">
-                                <h5 className="font-semibold text-white mb-2">{t.about.masterSuite}</h5>
-                                <p className="text-white/80 text-sm">{t.about.masterSuiteDesc}</p>
-                              </div>
-                              <div className="bg-white/5 p-4 rounded-lg">
-                                <h5 className="font-semibold text-white mb-2">{t.about.fourRooms}</h5>
-                                <p className="text-white/80 text-sm">{t.about.fourRoomsDesc}</p>
-                              </div>
+                {/* Section 2: Ubytování */}
+                <div className="max-w-6xl mx-auto">
+                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                    <CardContent className="p-8">
+                      <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.accommodation}</h3>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div>
+                          <h4 className="text-xl font-bold text-white mb-4">{t.about.accommodationRooms}</h4>
+                          <div className="space-y-4">
+                            <div className="bg-white/5 p-4 rounded-lg">
+                              <h5 className="font-semibold text-white mb-2">{t.about.masterSuite}</h5>
+                              <p className="text-white/80 text-sm">{t.about.masterSuiteDesc}</p>
                             </div>
-                          </div>
-
-                          <div>
-                            <h4 className="text-xl font-bold text-white mb-4">{t.about.commonSpaces}</h4>
-                            <ul className="text-white/80 space-y-2">
-                              {t.about.commonSpacesItems.map((item, index) => (
-                                <li key={index}>• {item}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                          <div>
-                            <h4 className="text-xl font-bold text-white mb-4">{t.about.finnishSauna}</h4>
-                            <ul className="text-white/80 space-y-2">
-                              {t.about.finnishSaunaItems.map((item, index) => (
-                                <li key={index}>• {item}</li>
-                              ))}
-                            </ul>
-                          </div>
-
-                          <div>
-                            <h4 className="text-xl font-bold text-white mb-4">{t.about.parkOutdoor}</h4>
-                            <ul className="text-white/80 space-y-2">
-                              {t.about.parkOutdoorItems.map((item, index) => (
-                                <li key={index}>• {item}</li>
-                              ))}
-                            </ul>
+                            <div className="bg-white/5 p-4 rounded-lg">
+                              <h5 className="font-semibold text-white mb-2">{t.about.fourRooms}</h5>
+                              <p className="text-white/80 text-sm">{t.about.fourRoomsDesc}</p>
+                            </div>
                           </div>
                         </div>
 
                         <div>
-                          <h4 className="text-xl font-bold text-white mb-4">{t.about.catering}</h4>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {t.about.cateringItems.map((item, index) => (
-                              <div key={index} className="bg-white/5 p-4 rounded-lg">
-                                <p className="text-white/80 text-sm">
-                                  <strong className="text-white">{item.title}</strong> {item.desc}
-                                </p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Section 3: Founders */}
-                  <div className="max-w-6xl mx-auto">
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-8">
-                        <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.founders}</h3>
-
-                        <p className="text-white/80 text-center mb-8 leading-relaxed">{t.about.foundersIntro}</p>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                          <div className="space-y-6">
-                            <div>
-                              <h4 className="text-xl font-bold text-white mb-2">Jindřich Traxmandl</h4>
-                              <div className="space-y-4 text-white/80 leading-relaxed">
-                                <p
-                                  dangerouslySetInnerHTML={{
-                                    __html: t.about.jindrichDesc.replace(
-                                      /Anteater/g,
-                                      '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
-                                    ),
-                                  }}
-                                />
-                                <blockquote className="border-l-2 border-secondary pl-4 italic">
-                                  "{t.about.jindrichQuote}"
-                                </blockquote>
-                              </div>
-                            </div>
-
-                            <div>
-                              <h4 className="text-xl font-bold text-white mb-2">Andrea Kohoutová</h4>
-                              <div className="space-y-4 text-white/80 leading-relaxed">
-                                <p
-                                  dangerouslySetInnerHTML={{
-                                    __html: t.about.andreaDesc.replace(
-                                      /Anteater/g,
-                                      '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
-                                    ),
-                                  }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="flex justify-center">
-                            <img
-                              src="/images/design-mode/DAFF6861-2B75-4DD9-9DB2-3F045A522E16_1_105_c.jpeg"
-                              alt="Jindřích a Andrea - zakladatelé Mlýn Šnajberk Studios"
-                              className="w-full max-w-md rounded-lg shadow-2xl grayscale"
-                            />
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Section 4: Collaboration */}
-                  <div id="collaboration" className="py-24">
-                    <div className="max-w-4xl mx-auto px-4">
-                      <h3 className="text-2xl font-bold text-white mb-6">{t.about.collaboration}</h3>
-                      <div className="space-y-4 text-white/80">
-                        <p className="leading-relaxed">
-                          <strong className="text-white">{t.about.collaborationPara1Strong}</strong>{" "}
-                          {t.about.collaborationPara1.replace(t.about.collaborationPara1Strong + " ", "")}
-                        </p>
-                        <p className="leading-relaxed">
-                          {t.about.collaborationPara2}
-                          <strong className="text-white"> {t.about.collaborationPara2Strong}</strong>{" "}
-                          {t.about.collaborationPara2End}
-                        </p>
-                        <p className="leading-relaxed">
-                          <strong className="text-white">{t.about.collaborationPara3Strong}</strong>{" "}
-                          {t.about.collaborationPara3}
-                        </p>
-                        <div className="mt-6">
-                          <h4 className="font-semibold text-white mb-2">{t.about.collaborationFormsTitle}</h4>
-                          <ul className="space-y-1 text-sm">
-                            {t.about.collaborationForms.map((form, index) => (
-                              <li key={index}>• {form}</li>
+                          <h4 className="text-xl font-bold text-white mb-4">{t.about.commonSpaces}</h4>
+                          <ul className="text-white/80 space-y-2">
+                            {t.about.commonSpacesItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
                             ))}
                           </ul>
                         </div>
-                        <div className="mt-6 pt-6 border-t border-white/20">
-                          <p className="text-sm text-white/80 leading-relaxed">
-                            <strong className="text-secondary">{t.equipment.thankYouNote}:</strong>{" "}
-                            {t.equipment.noraCollaboration}{" "}
-                            <a
-                              href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-secondary hover:text-secondary/80 underline font-semibold"
-                            >
-                              Nora
-                            </a>
-                            .
-                          </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                        <div>
+                          <h4 className="text-xl font-bold text-white mb-4">{t.about.finnishSauna}</h4>
+                          <ul className="text-white/80 space-y-2">
+                            {t.about.finnishSaunaItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div>
+                          <h4 className="text-xl font-bold text-white mb-4">{t.about.parkOutdoor}</h4>
+                          <ul className="text-white/80 space-y-2">
+                            {t.about.parkOutdoorItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
+                          </ul>
                         </div>
                       </div>
-                    </div>
-                  </div>
 
-                  <div>
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.bonuses}</h3>
-                        <div className="space-y-3 text-white/80">
-                          {t.about.bonusesItems.map((bonus, index) => (
-                            <p key={index} className="leading-relaxed">
-                              {bonus}
-                            </p>
+                      <div>
+                        <h4 className="text-xl font-bold text-white mb-4">{t.about.catering}</h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {t.about.cateringItems.map((item, index) => (
+                            <div key={index} className="bg-white/5 p-4 rounded-lg">
+                              <p className="text-white/80 text-sm">
+                                <strong className="text-white">{item.title}</strong> {item.desc}
+                              </p>
+                            </div>
                           ))}
                         </div>
-                      </CardContent>
-                    </Card>
-                  </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
 
-                  {/* Section 5: FAQ */}
-                  <div>
+                {/* Section 3: Founders */}
+                <div className="max-w-6xl mx-auto">
+                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                    <CardContent className="p-8">
+                      <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.founders}</h3>
+
+                      <p className="text-white/80 text-center mb-8 leading-relaxed">{t.about.foundersIntro}</p>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                        <div className="space-y-6">
+                          <div>
+                            <h4 className="text-xl font-bold text-white mb-2">Jindřich Traxmandl</h4>
+                            <div className="space-y-4 text-white/80 leading-relaxed">
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: t.about.jindrichDesc.replace(
+                                    /Anteater/g,
+                                    '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
+                                  ),
+                                }}
+                              />
+                              <blockquote className="border-l-2 border-secondary pl-4 italic">
+                                "{t.about.jindrichQuote}"
+                              </blockquote>
+                            </div>
+                          </div>
+
+                          <div>
+                            <h4 className="text-xl font-bold text-white mb-2">Andrea Kohoutová</h4>
+                            <div className="space-y-4 text-white/80 leading-relaxed">
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: t.about.andreaDesc.replace(
+                                    /Anteater/g,
+                                    '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
+                                  ),
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-center">
+                          <img
+                            src="/images/design-mode/DAFF6861-2B75-4DD9-9DB2-3F045A522E16_1_105_c.jpeg"
+                            alt="Jindřích a Andrea - zakladatelé Mlýn Šnajberk Studios"
+                            className="w-full max-w-md rounded-lg shadow-2xl grayscale"
+                          />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Section 4: Collaboration */}
+                <div id="collaboration" className="py-24">
+                  <div className="max-w-6xl mx-auto">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.faq}</h3>
-                        <div className="space-y-3">
-                          {t.about.faqItems.map((faq, index) => {
-                            // Ghost (haunted), FileText (VAT/business), Home (property rental),
-                            // Users (team), Music (genres), Car (transportation),
-                            // UtensilsCrossed (catering), Languages (languages)
-                            const icons = [Ghost, FileText, Home, Users, Music, Car, UtensilsCrossed, Languages]
-                            const IconComponent = icons[index] || Ghost
-                            return (
-                              <div key={index} className="border-b border-white/10 pb-3">
-                                <button
-                                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                                  className="w-full text-left flex justify-between items-start gap-2 group"
-                                >
-                                  <div className="flex items-start gap-3">
-                                    <IconComponent className="h-5 w-5 text-white/60 flex-shrink-0 mt-0.5" />
-                                    <h4 className="font-semibold text-white text-sm group-hover:text-secondary transition-colors">
-                                      {faq.q}
-                                    </h4>
-                                  </div>
-                                  <ChevronDown
-                                    className={`h-4 w-4 text-white/60 flex-shrink-0 transition-transform ${openFaqIndex === index ? "rotate-180" : ""}`}
-                                  />
-                                </button>
-                                {openFaqIndex === index && (
-                                  <p className="text-sm text-white/80 mt-2 ml-8 leading-relaxed">{faq.a}</p>
-                                )}
-                              </div>
-                            )
-                          })}
+                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.collaboration}</h3>
+                        <div className="space-y-4 text-white/80">
+                          <p className="leading-relaxed">
+                            <strong className="text-white">{t.about.collaborationPara1Strong}</strong>{" "}
+                            {t.about.collaborationPara1.replace(t.about.collaborationPara1Strong + " ", "")}
+                          </p>
+
+                          <p className="leading-relaxed">
+                            {t.about.collaborationPara2}
+                            <strong className="text-white"> {t.about.collaborationPara2Strong}</strong>{" "}
+                            {t.about.collaborationPara2End}
+                          </p>
+                          <p className="leading-relaxed">
+                            <strong className="text-white">{t.about.collaborationPara3Strong}</strong>{" "}
+                            {t.about.collaborationPara3}
+                          </p>
+                          <div className="mt-6">
+                            <h4 className="font-semibold text-white mb-2">{t.about.collaborationFormsTitle}</h4>
+                            <ul className="space-y-1 text-sm">
+                              {t.about.collaborationForms.map((form, index) => (
+                                <li key={index}>• {form}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div className="mt-6 pt-6 border-t border-white/20">
+                            <p className="text-sm text-white/80 leading-relaxed">
+                              <strong className="text-secondary">{t.equipment.thankYouNote}:</strong>{" "}
+                              {t.equipment.noraCollaboration}{" "}
+                              <a
+                                href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-secondary hover:text-secondary/80 underline font-semibold"
+                              >
+                                Nora
+                              </a>
+                              .
+                            </p>
+                          </div>
                         </div>
                       </CardContent>
                     </Card>
                   </div>
+                </div>
+
+                {/* Section 5: FAQ */}
+                <div className="max-w-6xl mx-auto">
+                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                    <CardContent className="p-8">
+                      <h3 className="text-2xl font-bold text-white mb-6">{t.about.faq}</h3>
+                      <div className="space-y-3">
+                        {t.about.faqItems.map((faq, index) => {
+                          // Ghost (haunted), FileText (VAT/business), Home (property rental),
+                          // Users (team), Music (genres), Car (transportation),
+                          // UtensilsCrossed (catering), Languages (languages), Cigarette (smoking)
+                          const icons = [
+                            Ghost,
+                            FileText,
+                            Home,
+                            Users,
+                            Music,
+                            Car,
+                            UtensilsCrossed,
+                            Languages,
+                            Cigarette,
+                          ]
+                          const IconComponent = icons[index] || Ghost
+                          return (
+                            <div key={index} className="border-b border-white/10 pb-3">
+                              <button
+                                onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                                className="w-full text-left flex justify-between items-start gap-2 group"
+                              >
+                                <div className="flex items-start gap-3">
+                                  <IconComponent className="h-5 w-5 text-white/60 flex-shrink-0 mt-0.5" />
+                                  <h4 className="font-semibold text-white text-sm group-hover:text-secondary transition-colors">
+                                    {faq.q}
+                                  </h4>
+                                </div>
+                                <ChevronDown
+                                  className={`h-4 w-4 text-white/60 flex-shrink-0 transition-transform ${openFaqIndex === index ? "rotate-180" : ""}`}
+                                />
+                              </button>
+                              {openFaqIndex === index && (
+                                <p className="text-sm text-white/80 mt-2 ml-8 leading-relaxed">{faq.a}</p>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </div>
