@@ -28,6 +28,7 @@ import {
   Ghost,
   FileText,
   Cigarette,
+  Shield,
 } from "lucide-react"
 
 const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
@@ -127,7 +128,7 @@ const translations = {
             description:
               "Tato varianta se jmenuje podle našeho songu Fuel a i podle songu od Metallicy, protože tohle je fakt asi pro Metallicu, (ale nebojte napsat a určitě se domluvíme).",
             details:
-              "Vhodné pro ty, kteří chtějí všechno, a mají spoustu nástrojů, co umějí a chtějí využít kompletně prostor mlýna.",
+              "Jedná se VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady kde si můžete dát výbornou kávu a vejdete se sem s celým týmem nebo si zde můžete užít klid mezitím co bude zbytek teamu pracovat ve studiu. Profi catering, roztopení velké pece. Vynikající pizza i chleba - který si můžete zkusit sami upéct a to nám věřte - to je radost a zážitek, který si užijete :-). Dále zapůjčení Tesla model X v ceně (200 km), popř. včetně řidiče s možností navštívit zajímavá místa v okolí (viz. [lokalita]) :-)",
             video: "https://youtu.be/5INpfHr0lu4",
           },
         ],
@@ -310,19 +311,16 @@ const translations = {
           q: "Smí se v mlýně kouřit?",
           a: "Nesmí. Mlýn je z velké části ze dřeva, je tam hodně protipožárních ochran, které by okamžitě spustili hlasitý poplacha vzdálené notifikace - tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.",
         },
+        {
+          q: "Mohu si dovést vlastní aparaturu a je objekt dostatečně zabezpečen?",
+          a: "Samozřejmě můžete, aparatura se dá vyložit přímo před studiem. Objekt je zabezpečen na několika úrovních, současně je na hrázy kde projede jen jedno auto. Vykrást takový objekt s aparaturou, která by opravdu těžko veřejně prodávala úplně nedává smysl... Zlodějům bychom nedoporučovali s ohledem na výše zmíněné okolnosti, nad tím vůbec uvažovat.... ;-)",
+        },
       ],
       historyTimeline: [
-        { year: "16. století", desc: "První zmínky o mlýně na Pile" },
-        { year: "19. století", desc: "Přestavba na vodní elektrárnu" },
-        { year: "20. století", desc: "Využíván pro zemědělské účely" },
-        {
-          year: "2020",
-          desc: "Zahájení rekonstrukce na umělecké a retreatové centrum",
-        },
-        {
-          year: "2023",
-          desc: "Otevření prvních studií a ubytování",
-        },
+        { year: "1653 - Založení", desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena" },
+        { year: "1810 - Přestavba na mlýn", desc: "Mlýn s pilou poháněnou vodní silou" },
+        { year: "1990 - Pila", desc: "Vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice" },
+        { year: "2024 - Nový začátek", desc: "Transformace na prémiové kreativní retreat studio" },
       ],
       accommodationRooms: "Prostory pro ubytování",
       masterSuite: "Master Suite (63m²)",
@@ -455,7 +453,7 @@ const translations = {
             description:
               "This option is named after our song Fuel and also after Metallica's song, because this is really for Metallica, (but don't hesitate to write and we'll definitely work something out).",
             details:
-              "Suitable for those who want everything and have lots of tools they know and want to use the entire mill space.",
+              "This is a VIP rental of the entire property with full service, including a winter garden where you can enjoy excellent coffee and fit your whole team or enjoy peace while the rest of the team works in the studio. Professional catering, firing up the large oven. Excellent pizza and bread - which you can try baking yourself and believe us - it's a joy and an experience you'll enjoy :-). Tesla Model X rental included in the price (200 km), optionally with a driver to visit interesting places in the area (see [location]) :-)",
             video: "https://youtu.be/5INpfHr0lu4",
           },
         ],
@@ -643,24 +641,22 @@ const translations = {
           q: "Is smoking allowed in the mill?",
           a: "No. The mill is largely made of wood and has extensive fire protection systems that would immediately trigger loud alarms and remote notifications - which means if you bring your own instruments, they'll be safe.",
         },
+        {
+          q: "Can I bring my own equipment and is the property adequately secured?",
+          a: "Of course you can, equipment can be unloaded right in front of the studio. The property is secured on multiple levels, and it's on a dam where only one car can pass through. Stealing such a property with equipment that would be really hard to sell publicly makes absolutely no sense... We wouldn't recommend thieves to even consider it given the aforementioned circumstances.... ;-)",
+        },
       ],
       historyTimeline: [
         {
           year: "1653 - Foundation",
-          desc: "Creation of ponds and construction of high furnace and Lamingen hammer",
+          desc: "Establishment of ponds and construction of Lamingen blast furnace and forge",
         },
-        {
-          year: "1810 - Mill Conversion",
-          desc: "Mill with saw powered by water force",
-        },
+        { year: "1810 - Conversion to Mill", desc: "Mill with water-powered saw" },
         {
           year: "1990 - Sawmill",
           desc: "Established on November 24, 1990 as part of Trhanov village in Domažlice district",
         },
-        {
-          year: "2024 - New Beginning",
-          desc: "Transformation into premium creative retreat studio",
-        },
+        { year: "2024 - New Beginning", desc: "Transformation into premium creative retreat studio" },
       ],
       accommodationRooms: "Accommodation Spaces",
       masterSuite: "Master Suite (63m²)",
@@ -797,7 +793,7 @@ const translations = {
             description:
               "Diese Variante ist nach unserem Song Fuel und auch nach dem Song von Metallica benannt, denn das ist wirklich für Metallica, (aber zögern Sie nicht zu schreiben und wir werden uns sicher einigen).",
             details:
-              "Geeignet für diejenigen, die alles wollen und viele Werkzeuge haben, die sie können und den gesamten Mühlenraum nutzen möchten.",
+              "Dies ist eine VIP-Vermietung des gesamten Anwesens mit vollem Service, einschließlich eines Wintergartens, wo Sie ausgezeichneten Kaffee genießen können und Ihr ganzes Team Platz hat oder Ruhe genießen können, während der Rest des Teams im Studio arbeitet. Professionelles Catering, Anheizen des großen Ofens. Ausgezeichnete Pizza und Brot - die Sie selbst backen können, und glauben Sie uns - das ist eine Freude und ein Erlebnis, das Sie genießen werden :-). Tesla Model X Miete im Preis inbegriffen (200 km), optional mit Fahrer, um interessante Orte in der Umgebung zu besuchen (siehe [Standort]) :-)",
             video: "https://youtu.be/5INpfHr0lu4",
           },
         ],
@@ -982,24 +978,19 @@ const translations = {
           q: "Darf man in der Mühle rauchen?",
           a: "Nein. Die Mühle besteht größtenteils aus Holz und verfügt über umfangreiche Brandschutzsysteme, die sofort laute Alarme und Fernbenachrichtigungen auslösen würden - das heißt, wenn Sie Ihre eigenen Instrumente mitbringen, sind sie sicher.",
         },
+        {
+          q: "Kann ich meine eigene Ausrüstung mitbringen und ist das Objekt ausreichend gesichert?",
+          a: "Natürlich können Sie, die Ausrüstung kann direkt vor dem Studio ausgeladen werden. Das Objekt ist auf mehreren Ebenen gesichert, und es liegt an einem Damm, wo nur ein Auto durchfahren kann. Ein solches Objekt mit Ausrüstung zu stehlen, die wirklich schwer öffentlich zu verkaufen wäre, macht absolut keinen Sinn... Wir würden Dieben angesichts der oben genannten Umstände nicht empfehlen, darüber nachzudenken.... ;-)",
+        },
       ],
       historyTimeline: [
-        {
-          year: "1653 - Gründung",
-          desc: "Anlage von Teichen und Bau des Hochofens und Lamingen-Hammers",
-        },
-        {
-          year: "1810 - Umbau zur Mühle",
-          desc: "Mühle mit wasserkraftbetriebener Säge",
-        },
+        { year: "1653 - Gründung", desc: "Anlage von Teichen und Bau der Lamingen Hochofen und Schmiede" },
+        { year: "1810 - Umbau zur Mühle", desc: "Mühle mit wasserbetriebenem Sägewerk" },
         {
           year: "1990 - Sägewerk",
-          desc: "Am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice gegründet",
+          desc: "Gegründet am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice",
         },
-        {
-          year: "2024 - Neuer Anfang",
-          desc: "Transformation in ein Premium-Kreativ-Retreat-Studio",
-        },
+        { year: "2024 - Neuer Anfang", desc: "Umwandlung in ein Premium-Kreativ-Retreat-Studio" },
       ],
       accommodationRooms: "Unterkunftsbereiche",
       masterSuite: "Master Suite (63m²)",
@@ -1336,28 +1327,7 @@ export default function MlynNaPilePage() {
     return () => mlynSection.removeEventListener("scroll", handleScroll)
   }, [showEndMessage])
 
-  React.useEffect(() => {
-    const mlynSection = mlynSectionRef.current
-    if (!mlynSection) return
-
-    const handleScroll = () => {
-      const scrollTop = mlynSection.scrollTop
-      const scrollHeight = mlynSection.scrollHeight
-      const clientHeight = mlynSection.clientHeight
-      const scrollPercentage = scrollTop / (scrollHeight - clientHeight)
-
-      // Auto-switch to next section when scrolled to 95% or more
-      if (scrollPercentage >= 0.95) {
-        const currentIndex = sectionOrder.indexOf(currentSection)
-        const nextIndex = (currentIndex + 1) % sectionOrder.length
-        const nextSection = sectionOrder[nextIndex]
-        handleSectionChange(nextSection)
-      }
-    }
-
-    mlynSection.addEventListener("scroll", handleScroll)
-    return () => mlynSection.removeEventListener("scroll", handleScroll)
-  }, [currentSection])
+  // Previously auto-switched to next section at 95% scroll
 
   React.useEffect(() => {
     const onasSection = onasSectionRef.current
@@ -1878,7 +1848,25 @@ export default function MlynNaPilePage() {
                             </h3>
                             <p className="text-sm text-secondary/90 font-mono">{pkg.tags}</p>
                             <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{pkg.description}</p>
-                            <p className="text-base leading-relaxed text-white/80">{pkg.details}</p>
+
+                            <p className="text-base leading-relaxed text-white/80">
+                              {pkg.details.includes("[lokalita]") ||
+                              pkg.details.includes("[location]") ||
+                              pkg.details.includes("[Standort]") ? (
+                                <>
+                                  {pkg.details.split(/\[(lokalita|location|Standort)\]/)[0]}
+                                  <button
+                                    onClick={() => handleSectionChange("lokalita")}
+                                    className="text-secondary hover:text-secondary/80 underline cursor-pointer"
+                                  >
+                                    {language === "cs" ? "lokalita" : language === "en" ? "location" : "Standort"}
+                                  </button>
+                                  {pkg.details.split(/\[(lokalita|location|Standort)\]/)[2]}
+                                </>
+                              ) : (
+                                pkg.details
+                              )}
+                            </p>
                           </div>
                           <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
                             {pkg.video ? (
@@ -2907,8 +2895,8 @@ export default function MlynNaPilePage() {
                         {t.about.faqItems.map((faq, index) => {
                           // Ghost (haunted), FileText (VAT/business), Home (property rental),
                           // Users (team), Music (genres), Car (transportation),
-                          // UtensilsCrossed (catering), Languages (languages), Cigarette (smoking)
-                          const icons = [
+                          // UtensilsCrossed (catering), Languages (languages), Cigarette (smoking), Shield (security)
+                          const faqIcons = [
                             Ghost,
                             FileText,
                             Home,
@@ -2918,8 +2906,9 @@ export default function MlynNaPilePage() {
                             UtensilsCrossed,
                             Languages,
                             Cigarette,
+                            Shield,
                           ]
-                          const IconComponent = icons[index] || Ghost
+                          const IconComponent = faqIcons[index] || Ghost
                           return (
                             <div key={index} className="border-b border-white/10 pb-3">
                               <button
