@@ -139,7 +139,7 @@ const translations = {
       subtitle: "Klidné místo v srdci Evropy, blízko všeho důležitého",
       nature: "Krásná příroda - rekreační oblast, soukromí a vlastní park",
       naturePara1:
-        "Pila u Trhanova je ideální lokalitou pro milovníky krásné přírody, soukromí a aktivního odpočinku. Pozemek má rozlohu přes 6500 m² a nabízí klidné prostředí s několika poseděními a dvěma potůčky, které dotvářejí harmonickou atmosféru.",
+        "Pila u Trhanov je ideální lokalitou pro milovníky krásné přírody, soukromí a aktivního odpočinku. Pozemek má rozlohu přes 6500 m² a nabízí klidné prostředí s několika poseděními a dvěma potůčky, které dotvářejí harmonickou atmosféru.",
       naturePara2:
         "Z Pily se pohodlně dostanete pěšky jak do Domažlic, tak na vrchol nejvyšší hory Českého lesa, Čerchov (1042 m), která láká turisty rozhlednou a nádhernými výhledy. Okolí je bohaté na značené cyklotrasy i pěší stezky vedoucí malebnou krajinou, ideální pro vyznavače přírody a historie.",
       naturePara3:
@@ -265,7 +265,7 @@ const translations = {
         "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
         "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
         "U sousedky Dády si můžete projet na koních. 🐴",
-        "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔Deer☕",
+        "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔 Deer☕",
         "Můžete potkat i tlustou veverku, co vyvrací plaňky - zvířata se zde mají skvěle :-) Máme i volavky a u sousedů štěně a pár kamarádských koček (také od různých sousedů), žáby a krtky (naše) :-) 🐿️🐕🐈",
         "Žijeme se zvířaty v symbióze a spolupracujeme, tento rok byl vstup do studia navíc zabezpečen i sršním hnízdem hned nad vstupem, které pro příští roky už neplánujeme a nahradíme ho modernějšími technologiemi. Děkujeme. (Žádní sršni nepřišli k úhoně – nechali jsme je dožít v klidu. 🐝) ⚡",
         "Čerstvá bio zelenina, výborné hroznové víno, chmel. Celkově je tady tráva zelenější a díky krtkům je vidět krásná černozem. :-D 🥬🍇🌿",
@@ -313,14 +313,14 @@ const translations = {
         },
         {
           q: "Mohu si dovést vlastní aparaturu a je objekt dostatečně zabezpečen?",
-          a: "Samozřejmě můžete, aparatura se dá vyložit přímo před studiem. Objekt je zabezpečen na několika úrovních, současně je na hrázy kde projede jen jedno auto. Vykrást takový objekt s aparaturou, která by opravdu těžko veřejně prodávala úplně nedává smysl... Zlodějům bychom nedoporučovali s ohledem na výše zmíněné okolnosti, nad tím vůbec uvažovat.... ;-)",
+          a: "Samozřejmě můžete, aparatura se dá vyložit přímo před studiem. Objekt je zabezpečen na několika úrovních, současně je na hrázi, kde projede jen jedno auto. Vykrást takový objekt s aparaturou, která by se opravdu těžko veřejně prodávala, úplně nedává smysl... Zlodějům bychom s ohledem na výše zmíněné okolnosti nedoporučovali nad tím vůbec uvažovat... ;-)",
         },
       ],
       historyTimeline: [
         { year: "1653 - Založení", desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena" },
         { year: "1810 - Přestavba na mlýn", desc: "Mlýn s pilou poháněnou vodní silou" },
         { year: "1990 - Pila", desc: "Vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice" },
-        { year: "2024 - Nový začátek", desc: "Transformace na prémiové kreativní retreat studio" },
+        { year: "2025 - Nový začátek", desc: "Transformace na prémiové kreativní retreat studio" },
       ],
       accommodationRooms: "Prostory pro ubytování",
       masterSuite: "Master Suite (63m²)",
@@ -595,7 +595,7 @@ const translations = {
         "For nature lovers: There are dragonflies here, beautiful and numerous. 🦋 They fly into the conservatory and are smart enough to fly back out after their inspection without bumping into the glass. Besides them, you'll find invasive plants, against which we bravely fight. 🌿⚔️ But there are also giant sequoias growing here, which – we admit – we don't have the heart to cut down. 🌲💚",
         "Under the studio windows, there are often swans with cygnets that let you feed them. 🦢",
         "At neighbor Dáda's, you can go horseback riding. 🐴",
-        "Even in broad daylight, you can encounter hedgehogs, martens, and deer right in the garden. When Dáda's horses escape, you can have coffee with them practically in the conservatory :-) 🦔🦌☕",
+        "Even in broad daylight, you can encounter hedgehogs, martens, and deer right in the garden. When Dáda's horses escape, you can have coffee with them practically in the conservatory :-) 🦔 deer☕",
         "You might also meet a fat squirrel that digs up planks - animals have it great here :-) We also have herons and neighbors have a puppy and a few friendly cats (also from various neighbors) :-) 🐿️🐕🐈",
         "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for future years and will replace with more modern technologies. (No hornets were harmed – we let them live out their lives in peace. 🐝) Thank you. ⚡",
         "Fresh organic vegetables, excellent grapes, hops. Overall, the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
@@ -656,7 +656,7 @@ const translations = {
           year: "1990 - Sawmill",
           desc: "Established on November 24, 1990 as part of Trhanov village in Domažlice district",
         },
-        { year: "2024 - New Beginning", desc: "Transformation into premium creative retreat studio" },
+        { year: "2025 - New Beginning", desc: "Transformation into premium creative retreat studio" },
       ],
       accommodationRooms: "Accommodation Spaces",
       masterSuite: "Master Suite (63m²)",
@@ -932,7 +932,7 @@ const translations = {
         "Für Naturliebhaber: Es gibt hier Libellen, schön und zahlreich. 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen, gegen die wir tapfer kämpfen. 🌿⚔️ Aber es wachsen hier auch Riesenmammutbäume, die – wir geben es zu – wir nicht übers Herz bringen zu fällen. 🌲💚",
         "Unter den Studiofenstern sind oft Schwäne mit Schwanenjungen, die sich füttern lassen. 🦢",
         "Bei der Nachbarin Dáda können Sie reiten. 🐴",
-        "Auch am helllichten Tag können Sie Igel, Marder und Rehe direkt im Garten begegnen. Wenn Dádas Pferde entkommen, können Sie praktisch im Wintergarten mit ihnen Kaffee trinken :-) 🦔🦌☕",
+        "Auch am helllichten Tag können Sie Igel, Marder und Rehe direkt im Garten begegnen. Wenn Dádas Pferde entkommen, können Sie praktisch im Wintergarten mit ihnen Kaffee trinken :-) 🦔 deer☕",
         "Sie können auch ein dickes Eichhörnchen treffen, das Bretter ausgräbt - Tiere haben es hier großartig :-) Wir haben auch Reiher und die Nachbarn haben einen Welpen und ein paar freundliche Katzen (auch von verschiedenen Nachbarn) :-) 🐿️🐕🐈",
         "Wir leben in Symbiose mit Tieren und arbeiten zusammen, dieses Jahr wurde der Studioeingang zusätzlich durch ein Hornissennest direkt über dem Eingang gesichert, das wir für zukünftige Jahre nicht planen und durch modernere Technologien ersetzen werden. (Keine Hornissen wurden verletzt – wir ließen sie in Ruhe ihr Leben zu Ende leben. 🐝) Danke. ⚡",
         "Frisches Bio-Gemüse, ausgezeichnete Trauben, Hopfen. Insgesamt ist das Gras hier grüner und dank der Maulwürfe sieht man schöne Schwarzerde. :-D 🥬🍇🌿",
@@ -1052,6 +1052,8 @@ export default function MlynNaPilePage() {
   const [mlynScrollProgress, setMlynScrollProgress] = useState(0)
   const mlynSectionRef = useRef<HTMLDivElement>(null)
 
+  const studioSectionRef = useRef<HTMLDivElement>(null)
+
   const [onasScrollProgress, setOnasScrollProgress] = useState(0)
   const onasSectionRef = useRef<HTMLDivElement>(null)
 
@@ -1162,58 +1164,61 @@ export default function MlynNaPilePage() {
     }, 1000)
   }
 
-  const handleSectionChange = (section: string) => {
-    console.log("[v0] Changing section to:", section, "dark mode:", isDarkMode)
+  // Removed handleSectionChange from dependencies as it is memoized now.
+  const handleSectionChange = React.useCallback(
+    (section: string) => {
+      console.log("[v0] Changing section to:", section, "dark mode:", isDarkMode)
 
-    if (darkModeTimerRef.current) {
-      clearTimeout(darkModeTimerRef.current)
-      darkModeTimerRef.current = null
-    }
-
-    setCurrentSection(section)
-    setShowMobileMenu(false) // Close mobile menu on section change
-
-    if (section === "spoluprace") {
-      const element = document.getElementById("collaboration") // Changed ID to match the actual ID used later
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" })
+      if (darkModeTimerRef.current) {
+        clearTimeout(darkModeTimerRef.current)
+        darkModeTimerRef.current = null
       }
-      return
-    }
-    // </CHANGE>
 
-    // Scroll to top for all other sections
-    window.scrollTo({ top: 0, behavior: "smooth" })
+      setCurrentSection(section)
+      setShowMobileMenu(false) // Close mobile menu on section change
 
-    let newVideoId = ""
-    if (isDarkMode) {
-      newVideoId = "yl1CN7_Y73s"
-    } else {
-      if (section === "mlyn") {
-        newVideoId = "HQUoxExYlEM"
-      } else if (section === "about") {
-        newVideoId = "qcbDEWXmPdE"
-      } else if (section === "contact") {
-        newVideoId = "Js0nD8lUKH8"
+      if (section === "spoluprace") {
+        const element = document.getElementById("collaboration") // Changed ID to match the actual ID used later
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" })
+        }
+        return
+      }
+
+      // Scroll to top for all other sections
+      window.scrollTo({ top: 0, behavior: "smooth" })
+
+      let newVideoId = ""
+      if (isDarkMode) {
+        newVideoId = "yl1CN7_Y73s"
       } else {
-        // For uvod, home, equipment, lokalita - use default video
-        newVideoId = "Q6fS_hCaufA"
+        if (section === "mlyn") {
+          newVideoId = "HQUoxExYlEM"
+        } else if (section === "about") {
+          newVideoId = "qcbDEWXmPdE"
+        } else if (section === "contact") {
+          newVideoId = "Js0nD8lUKH8"
+        } else {
+          // For uvod, home, equipment, lokalita - use default video
+          newVideoId = "Q6fS_hCaufA"
+        }
       }
-    }
 
-    console.log("[v0] Switching to video:", newVideoId)
+      console.log("[v0] Switching to video:", newVideoId)
 
-    setIsTransitioning(true)
-    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1`
-    setNextVideoUrl(newUrl)
+      setIsTransitioning(true)
+      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1`
+      setNextVideoUrl(newUrl)
 
-    setTimeout(() => {
-      setCurrentVideoUrl(newUrl)
-      setIsTransitioning(false)
-      setNextVideoUrl("")
-      setIsVideoPlaying(true)
-    }, 1000)
-  }
+      setTimeout(() => {
+        setCurrentVideoUrl(newUrl)
+        setIsTransitioning(false)
+        setNextVideoUrl("")
+        setIsVideoPlaying(true)
+      }, 1000)
+    },
+    [isDarkMode, currentSection],
+  ) // Added dependencies for currentSection and isDarkMode
 
   useEffect(() => {
     // Clear any existing timer
@@ -1270,87 +1275,56 @@ export default function MlynNaPilePage() {
     }
   }, [currentSection, isDarkMode])
 
+  /** rest of code here **/
   useEffect(() => {
-    const handleScroll = () => {
-      if (currentSection === "mlyn" && mlynSectionRef.current) {
-        const scrollTop = mlynSectionRef.current.scrollTop
-        const scrollHeight = mlynSectionRef.current.scrollHeight - mlynSectionRef.current.clientHeight
-        const progress = Math.min(scrollTop / scrollHeight, 1)
-        setMlynScrollProgress(progress)
-      }
+    console.log("[v0] Universal scroll useEffect, currentSection:", currentSection)
 
-      if (currentSection === "about" && onasSectionRef.current) {
-        const scrollTop = onasSectionRef.current.scrollTop
-        const scrollHeight = onasSectionRef.current.scrollHeight - onasSectionRef.current.clientHeight
-        const progress = Math.min(scrollTop / scrollHeight, 1)
-        setOnasScrollProgress(progress)
-      }
+    let scrollContainer: HTMLElement | null = null
+
+    // Determine which section is currently active and get its scroll container
+    if (currentSection === "mlyn") {
+      scrollContainer = mlynSectionRef.current
+      console.log("[v0] Active container: Mlýn section", scrollContainer ? "exists" : "is null")
+    } else if (currentSection === "home") {
+      scrollContainer = studioSectionRef.current
+      console.log("[v0] Active container: Studio section", scrollContainer ? "exists" : "is null")
+    } else if (currentSection === "about") {
+      scrollContainer = onasSectionRef.current
+      console.log("[v0] Active container: O nás section", scrollContainer ? "exists" : "is null")
     }
 
-    const mlynSection = mlynSectionRef.current
-    const onasSection = onasSectionRef.current
-
-    if (mlynSection) {
-      mlynSection.addEventListener("scroll", handleScroll)
+    if (!scrollContainer) {
+      console.log("[v0] No scroll container found, skipping handler attachment")
+      return
     }
-    if (onasSection) {
-      onasSection.addEventListener("scroll", handleScroll)
-    }
-
-    return () => {
-      if (mlynSection) mlynSection.removeEventListener("scroll", handleScroll)
-      if (onasSection) onasSection.removeEventListener("scroll", handleScroll)
-    }
-  }, [currentSection])
-
-  React.useEffect(() => {
-    const mlynSection = mlynSectionRef.current
-    if (!mlynSection) return
 
     const handleScroll = () => {
-      const scrollTop = mlynSection.scrollTop
-      const scrollHeight = mlynSection.scrollHeight
-      const clientHeight = mlynSection.clientHeight
-      const scrollPercentage = scrollTop / (scrollHeight - clientHeight)
+      const scrollTop = scrollContainer!.scrollTop
+      const scrollHeight = scrollContainer!.scrollHeight
+      const clientHeight = scrollContainer!.clientHeight
+      const scrollPercentage = (scrollTop / (scrollHeight - clientHeight)) * 100
 
-      // Show message when scrolled to 90% or more
-      if (scrollPercentage >= 0.9 && !showEndMessage) {
-        setShowEndMessage(true)
-        // Hide after 7 seconds
-        setTimeout(() => {
-          setShowEndMessage(false)
-        }, 7000)
-      }
-    }
+      console.log("[v0] Scroll detected in", currentSection, "- Percentage:", scrollPercentage.toFixed(2) + "%")
 
-    mlynSection.addEventListener("scroll", handleScroll)
-    return () => mlynSection.removeEventListener("scroll", handleScroll)
-  }, [showEndMessage])
-
-  // Previously auto-switched to next section at 95% scroll
-
-  React.useEffect(() => {
-    const onasSection = onasSectionRef.current
-    if (!onasSection) return
-
-    const handleScroll = () => {
-      const scrollTop = onasSection.scrollTop
-      const scrollHeight = onasSection.scrollHeight
-      const clientHeight = onasSection.clientHeight
-      const scrollPercentage = scrollTop / (scrollHeight - clientHeight)
-
-      // Auto-switch to next section when scrolled to 95% or more
-      if (scrollPercentage >= 0.95) {
+      // When user scrolls to 95% of the section, auto-switch to next
+      if (scrollPercentage >= 95) {
+        console.log("[v0] 95% threshold reached! Auto-switching to next section...")
         const currentIndex = sectionOrder.indexOf(currentSection)
         const nextIndex = (currentIndex + 1) % sectionOrder.length
         const nextSection = sectionOrder[nextIndex]
+        console.log("[v0] Next section:", nextSection)
         handleSectionChange(nextSection)
       }
     }
 
-    onasSection.addEventListener("scroll", handleScroll)
-    return () => onasSection.removeEventListener("scroll", handleScroll)
-  }, [currentSection])
+    console.log("[v0] Attaching scroll handler to", currentSection, "section")
+    scrollContainer.addEventListener("scroll", handleScroll)
+
+    return () => {
+      console.log("[v0] Removing scroll handler from", currentSection, "section")
+      scrollContainer?.removeEventListener("scroll", handleScroll)
+    }
+  }, [currentSection, handleSectionChange, sectionOrder])
 
   const [showPresentationMessage, setShowPresentationMessage] = useState(true)
 
@@ -1607,1337 +1581,1347 @@ export default function MlynNaPilePage() {
             background: "linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)",
           }}
         />
-        {/* </CHANGE> */}
-
-        {/* Removed pt-32 from here and applied it to the content sections */}
-        {showPresentationMessage && (
-          <div className="absolute left-1/2 -translate-x-1/2 top-20 text-white/90 text-sm animate-fade-in">
-            {t.mlyn.endMessage}
-          </div>
-        )}
-
-        {showEndMessage && (
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 text-white/90 text-lg font-light animate-in fade-in duration-500 z-50 bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/20">
-            {t.mlyn.endMessage}
-          </div>
-        )}
-
-        <div className="">
-          {" "}
-          {/* Removed pt-32 */}
-          {currentSection === "mlyn" ? (
-            <div
-              ref={mlynSectionRef}
-              className="flex-1 pt-32" // Applied pt-32 here for section content spacing
-            >
-              <div className="px-6 py-12">
-                <div className="text-center max-w-5xl mx-auto mb-16">
-                  <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
-                  <p className="text-xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.subtitle}</p>
-                  <p className="text-xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.tagline}</p>
-                  <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
-                    {t.mlyn.description}
-                  </p>
-                  <p className="text-sm text-white/50 animate-pulse">{t.mlyn.scrollHint}</p>
-                </div>
-
-                <div className="max-w-6xl mx-auto mb-16">
-                  <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">{t.mlyn.threeSpaces}</h2>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <Card
-                      className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
-                      onClick={() => handleSectionChange("equipment")}
-                    >
-                      <CardContent className="p-6 text-center">
-                        <Guitar className="h-8 w-8 text-secondary mx-auto mb-4" />
-                        <h3 className="text-white font-semibold mb-2">{t.mlyn.vintageInstruments}</h3>
-                        <p className="text-white/80 text-sm">{t.mlyn.vintageDesc}</p>
-                      </CardContent>
-                    </Card>
-
-                    <Card
-                      className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
-                      onClick={() => handleSectionChange("about")}
-                    >
-                      <CardContent className="p-6 text-center">
-                        <Home className="h-8 w-8 text-secondary mx-auto mb-4" />
-                        <h3 className="text-white font-semibold mb-2">{t.mlyn.accommodation}</h3>
-                        <p className="text-white/80 text-sm">{t.mlyn.accommodationDesc}</p>
-                      </CardContent>
-                    </Card>
-
-                    <Card
-                      className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
-                      onClick={() => handleSectionChange("lokalita")}
-                    >
-                      <CardContent className="p-6 text-center">
-                        <MapPin className="h-8 w-8 text-secondary mx-auto mb-4" />
-                        <h3 className="text-white font-semibold mb-2">{t.mlyn.locationCard}</h3>
-                        <p className="text-white/80 text-sm">{t.mlyn.locationDesc}</p>
-                      </CardContent>
-                    </Card>
-
-                    <Card
-                      className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
-                      onClick={() => handleSectionChange("equipment")}
-                    >
-                      <CardContent className="p-6 text-center">
-                        <Headphones className="h-8 w-8 text-secondary mx-auto mb-4" />
-                        <h3 className="text-white font-semibold mb-2">{t.mlyn.studios}</h3>
-                        <p className="text-white/80 text-sm whitespace-pre-line">{t.mlyn.studiosDesc}</p>
-                      </CardContent>
-                    </Card>
-
-                    <Card
-                      className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
-                      onClick={() => handleSectionChange("equipment")}
-                    >
-                      <CardContent className="p-6 text-center">
-                        <Mic className="h-8 w-8 text-secondary mx-auto mb-4" />
-                        <h3 className="text-white font-semibold mb-2">{t.mlyn.modernTech}</h3>
-                        <p className="text-white/80 text-sm">{t.mlyn.modernTechDesc}</p>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6 text-center">
-                        <Calendar className="h-8 w-8 text-secondary mx-auto mb-4" />
-                        <h3 className="text-white font-semibold mb-2">{t.mlyn.benefits}</h3>
-                        <p className="text-white/80 text-sm">{t.mlyn.benefitsDesc}</p>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-
-                <div className="text-center py-24">
-                  <p className="text-3xl md:text-5xl font-light text-white/90 mb-4">{t.mlyn.endMessage}</p>
-                  <p className="text-sm text-white/50">{t.mlyn.menuHint}</p>
-                </div>
-              </div>
-
-              <div className="h-screen" />
+        {/* </CHANGE> Added h-screen and flex flex-col to make children with overflow-y-auto scrollable */}
+        <div className="h-screen flex flex-col">
+          {showPresentationMessage && (
+            <div className="absolute left-1/2 -translate-x-1/2 top-20 text-white/90 text-sm animate-fade-in">
+              {t.mlyn.endMessage}
             </div>
-          ) : currentSection === "home" ? (
-            // Removed uvod section, only keeping home (Studio) section
-            <div className="flex-1 overflow-y-auto pt-32">
-              {" "}
-              {/* Applied pt-32 here */}
-              {/* Hero Section */}
-              <div className="flex items-center justify-center px-6 py-16 text-white">
-                <div className="text-center max-w-5xl">
-                  <h1 className="text-5xl md:text-7xl font-bold mb-4 text-balance text-white drop-shadow-lg">
-                    {t.studio.title}
-                  </h1>
-                  <p className="text-xl md:text-2xl font-light mb-2 text-white drop-shadow-lg">{t.studio.subtitle}</p>
-                  <p className="text-base md:text-lg text-white/95 max-w-3xl mx-auto drop-shadow-lg">
-                    {t.studio.description}
-                  </p>
-                </div>
-              </div>
-              {/* Hlavní Studio Section */}
-              <div className="flex items-center px-6 py-12 bg-black/60 text-white">
-                <div className="max-w-7xl mx-auto w-full">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                    <div className="space-y-4">
-                      <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
-                        {t.studio.mainStudio}
-                      </h2>
-                      <p className="text-2xl font-light text-white/95 drop-shadow-lg">{t.studio.mainStudioSize}</p>
-                      <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{t.studio.mainStudioDesc}</p>
-                      <div className="space-y-2 text-sm text-white/90">
-                        <h3 className="text-xl font-semibold text-white drop-shadow-lg">{t.studio.equipment}</h3>
-                        <ul className="space-y-1">
-                          <li>• Vintage Fender Custom Shop kytary</li>
-                          <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
-                          <li>• Gibson Explorer</li>
-                          <li>• Marshall AFD 100, Mesa Boogie</li>
-                          <li>• Rozsáhlá kolekce efektů</li>
-                          <li>• Mapex Saturn bicí s K-Zildjian činely</li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
-                      <iframe
-                        className="w-full h-full"
-                        src="https://www.youtube.com/embed/YWnYQDGHeLw?autoplay=1&mute=1&loop=1&playlist=YWnYQDGHeLw&controls=0&showinfo=0&rel=0&modestbranding=1"
-                        title="Hlavní Studio"
-                        allow="autoplay; encrypted-media"
-                        allowFullScreen
-                      />
-                    </div>
+          )}
+
+          {showEndMessage && (
+            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 text-white/90 text-lg font-light animate-in fade-in duration-500 z-50 bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/20">
+              {t.mlyn.endMessage}
+            </div>
+          )}
+
+          <div className="">
+            {" "}
+            {/* Removed pt-32 from here and applied it to the content sections */}
+            {currentSection === "mlyn" ? (
+              <div
+                ref={mlynSectionRef}
+                className="flex-1 pt-32 overflow-y-auto" // Applied pt-32 here for section content spacing
+              >
+                <div className="px-6 py-12">
+                  <div className="text-center max-w-5xl mx-auto mb-16">
+                    <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
+                    <p className="text-xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.subtitle}</p>
+                    <p className="text-xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.tagline}</p>
+                    <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
+                      {t.mlyn.description}
+                    </p>
+                    <p className="text-sm text-white/50 animate-pulse">{t.mlyn.scrollHint}</p>
                   </div>
-                </div>
-              </div>
-              {/* Control Room Section */}
-              <div className="flex items-center px-6 py-12 bg-white/10 backdrop-blur-sm text-white">
-                <div className="max-w-7xl mx-auto w-full">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                    <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group order-2 lg:order-1">
-                      <iframe
-                        className="w-full h-full"
-                        src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1"
-                        title="Control Room"
-                        allow="autoplay; encrypted-media"
-                        allowFullScreen
-                      />
-                    </div>
-                    <div className="space-y-4 order-1 lg:order-2">
-                      <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
-                        {t.studio.controlRoom}
-                      </h2>
-                      <p className="text-2xl font-light text-white/95 drop-shadow-lg">{t.studio.controlRoomSize}</p>
-                      <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{t.studio.controlRoomDesc}</p>
-                      <div className="space-y-2 text-sm text-white/90">
-                        <h3 className="text-xl font-semibold text-white drop-shadow-lg">{t.studio.technology}</h3>
-                        <ul className="space-y-1">
-                          <li>• MAC + Apple Pro Display XDR 6K monitor</li>
-                          <li>• Universal Audio Apollo Interface</li>
-                          <li>• 76 UAD pluginů (kompletní kolekce)</li>
-                          <li>• Logic Pro X + UA LUNA</li>
-                          <li>• Projektor pro screening</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Druhé Studio Section */}
-              <div className="flex items-center px-6 py-12 bg-black/60 text-white">
-                <div className="max-w-7xl mx-auto w-full">
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                    <div className="space-y-4">
-                      <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
-                        {t.studio.millstoneStudio}
-                      </h2>
-                      <p className="text-2xl font-light text-white/95 drop-shadow-lg">{t.studio.millstoneSize}</p>
-                      <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{t.studio.millstoneDesc}</p>
-                    </div>
-                    <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
-                      <iframe
-                        className="w-full h-full"
-                        src="https://www.youtube.com/embed/sc0bCt6G9dM?autoplay=1&mute=1&loop=1&playlist=sc0bCt6G9dM&controls=0&showinfo=0&rel=0&modestbranding=1"
-                        title="Millstone Studio"
-                        allow="autoplay; encrypted-media"
-                        allowFullScreen
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {/* Accommodation Packages Section */}
-              <div className="px-6 py-16 bg-white/5 backdrop-blur-sm text-white">
-                <div className="max-w-7xl mx-auto">
-                  <div className="text-center mb-12">
-                    <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
-                      {t.studio.accommodation.title}
+
+                  <div className="max-w-6xl mx-auto mb-16">
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">
+                      {t.mlyn.threeSpaces}
                     </h2>
-                    <p className="text-lg md:text-xl text-white/90 max-w-4xl mx-auto mb-4 drop-shadow-md">
-                      {t.studio.accommodation.subtitle}
-                    </p>
-                    <p className="text-xl font-semibold text-white/95 drop-shadow-md">{t.studio.accommodation.intro}</p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <Card
+                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        onClick={() => handleSectionChange("equipment")}
+                      >
+                        <CardContent className="p-6 text-center">
+                          <Guitar className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <h3 className="text-white font-semibold mb-2">{t.mlyn.vintageInstruments}</h3>
+                          <p className="text-white/80 text-sm">{t.mlyn.vintageDesc}</p>
+                        </CardContent>
+                      </Card>
+
+                      <Card
+                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        onClick={() => handleSectionChange("about")}
+                      >
+                        <CardContent className="p-6 text-center">
+                          <Home className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <h3 className="text-white font-semibold mb-2">{t.mlyn.accommodation}</h3>
+                          <p className="text-white/80 text-sm">{t.mlyn.accommodationDesc}</p>
+                        </CardContent>
+                      </Card>
+
+                      <Card
+                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        onClick={() => handleSectionChange("lokalita")}
+                      >
+                        <CardContent className="p-6 text-center">
+                          <MapPin className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <h3 className="text-white font-semibold mb-2">{t.mlyn.locationCard}</h3>
+                          <p className="text-white/80 text-sm">{t.mlyn.locationDesc}</p>
+                        </CardContent>
+                      </Card>
+
+                      <Card
+                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        onClick={() => handleSectionChange("equipment")}
+                      >
+                        <CardContent className="p-6 text-center">
+                          <Headphones className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <h3 className="text-white font-semibold mb-2">{t.mlyn.studios}</h3>
+                          <p className="text-white/80 text-sm whitespace-pre-line">{t.mlyn.studiosDesc}</p>
+                        </CardContent>
+                      </Card>
+
+                      <Card
+                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        onClick={() => handleSectionChange("equipment")}
+                      >
+                        <CardContent className="p-6 text-center">
+                          <Mic className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <h3 className="text-white font-semibold mb-2">{t.mlyn.modernTech}</h3>
+                          <p className="text-white/80 text-sm">{t.mlyn.modernTechDesc}</p>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-6 text-center">
+                          <Calendar className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <h3 className="text-white font-semibold mb-2">{t.mlyn.benefits}</h3>
+                          <p className="text-white/80 text-sm">{t.mlyn.benefitsDesc}</p>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
 
-                  <div className="space-y-8">
-                    {t.studio.accommodation.packages.map((pkg, index) => (
-                      <div key={index} className="bg-black/40 backdrop-blur-sm rounded-xl p-8 border border-white/10">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                          <div className="space-y-4">
-                            <h3 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
-                              {index + 1}. Balíček "{pkg.name}"
-                            </h3>
-                            <p className="text-sm text-secondary/90 font-mono">{pkg.tags}</p>
-                            <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{pkg.description}</p>
-
-                            <p className="text-base leading-relaxed text-white/80">
-                              {pkg.details.includes("[lokalita]") ||
-                              pkg.details.includes("[location]") ||
-                              pkg.details.includes("[Standort]") ? (
-                                <>
-                                  {pkg.details.split(/\[(lokalita|location|Standort)\]/)[0]}
-                                  <button
-                                    onClick={() => handleSectionChange("lokalita")}
-                                    className="text-secondary hover:text-secondary/80 underline cursor-pointer"
-                                  >
-                                    {language === "cs" ? "lokalita" : language === "en" ? "location" : "Standort"}
-                                  </button>
-                                  {pkg.details.split(/\[(lokalita|location|Standort)\]/)[2]}
-                                </>
-                              ) : (
-                                pkg.details
-                              )}
-                            </p>
-                          </div>
-                          <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
-                            {pkg.video ? (
-                              <iframe
-                                className="w-full h-full"
-                                src={`${pkg.video.replace("youtu.be/", "www.youtube.com/embed/")}?autoplay=1&mute=1&loop=1&playlist=${pkg.video.split("/").pop()}&controls=0&showinfo=0&rel=0&modestbranding=1`}
-                                title={pkg.name}
-                                allow="autoplay; encrypted-media"
-                                allowFullScreen
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-black/60 flex items-center justify-center">
-                                <p className="text-white/60 text-lg">Video bude doplněno</p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="mt-12 text-center">
-                    <p className="text-lg text-white/80 flex items-center justify-center gap-2">
-                      <Car className="h-5 w-5" />
-                      {t.studio.accommodation.parking}
-                    </p>
+                  <div className="text-center py-24">
+                    <p className="text-3xl md:text-5xl font-light text-white/90 mb-4">{t.mlyn.endMessage}</p>
+                    <p className="text-sm text-white/50">{t.mlyn.menuHint}</p>
                   </div>
                 </div>
+
+                <div className="h-screen" />
               </div>
-              {/* CTA Section */}
-              <div className="flex items-center justify-center px-6 py-12 bg-black/70 text-white">
-                <div className="text-center max-w-3xl">
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white drop-shadow-lg">{t.studio.ctaTitle}</h2>
-                  <p className="text-lg mb-6 text-white/90 drop-shadow-md">{t.studio.ctaDesc}</p>
-                  <Button
-                    size="lg"
-                    onClick={() => handleSectionChange("contact")}
-                    className="px-8 py-4 text-base bg-white text-black hover:bg-gray-200"
-                  >
-                    {t.studio.ctaButton}
-                  </Button>
+            ) : currentSection === "home" ? (
+              // Removed uvod section, only keeping home (Studio) section
+              <div ref={studioSectionRef} className="flex-1 overflow-y-auto pt-32">
+                {" "}
+                {/* Applied pt-32 here */}
+                {/* Hero Section */}
+                <div className="flex items-center justify-center px-6 py-16 text-white">
+                  <div className="text-center max-w-5xl">
+                    <h1 className="text-5xl md:text-7xl font-bold mb-4 text-balance text-white drop-shadow-lg">
+                      {t.studio.title}
+                    </h1>
+                    <p className="text-xl md:text-2xl font-light mb-2 text-white drop-shadow-lg">{t.studio.subtitle}</p>
+                    <p className="text-base md:text-lg text-white/95 max-w-3xl mx-auto drop-shadow-lg">
+                      {t.studio.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ) : currentSection === "lokalita" ? (
-            <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
-              {" "}
-              {/* Applied pt-32 here */}
-              <div className="max-w-6xl mx-auto">
-                <div className="text-center mb-12">
-                  <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.location.title}</h1>
-                  <p className="text-xl md:text-2xl text-white/90 font-light">{t.location.subtitle}</p>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <MapPin className="h-8 w-8 text-secondary mx-auto mb-4" />
-                      <h3 className="text-white font-semibold mb-4 text-center text-xl">{t.location.nature}</h3>
-                      <div className="text-white/80 text-sm space-y-4 leading-relaxed">
-                        <p>{t.location.naturePara1}</p>
-                        <p>{t.location.naturePara2}</p>
-                        <p>{t.location.naturePara3}</p>
-                        <p className="italic border-l-2 border-secondary pl-4 mt-4">"{t.location.quote}"</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-8">
-                      <h3 className="text-2xl font-bold text-white mb-6">{t.location.transport}</h3>
+                {/* Hlavní Studio Section */}
+                <div className="flex items-center px-6 py-12 bg-black/60 text-white">
+                  <div className="max-w-7xl mx-auto w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                       <div className="space-y-4">
-                        <div className="flex items-start space-x-4">
-                          <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
-                          <div>
-                            <h4 className="font-semibold text-white mb-2">{t.location.byCar}</h4>
-                            <ul className="space-y-1 text-sm text-white">
-                              <li>• 10 min do centra Domažlic</li>
-                              <li>• 10 min na německé hranice</li>
-                              <li>• Přímý přístup, private parking</li>
-                              <li>• Tesla charging station</li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="flex items-start space-x-4">
-                          <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
-                          <div>
-                            <h4 className="font-semibold text-white mb-2">{t.location.byTrain}</h4>
-                            <ul className="space-y-1 text-sm text-white">
-                              <li>• Vlaková zastávka přímo na Pile</li>
-                              <li>• 10 min walk z Trhanov station</li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="flex items-start space-x-4">
-                          <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
-                          <div>
-                            <h4 className="font-semibold text-white mb-2">{t.location.byPlane}</h4>
-                            <ul className="space-y-1 text-sm text-white">
-                              <li>• 1h 45min z Prague Airport</li>
-                              <li>• 2h z Munich Airport</li>
-                              <li>• Pick-up service available</li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <div className="mb-16">
-                  <h2 className="text-4xl font-bold text-white mb-8 text-center">{t.location.surroundings}</h2>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                    {/* Domažlice */}
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <MapPin className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">{t.location.domazliceTitle}</h3>
-                        </div>
-                        <ul className="text-white/80 space-y-2 text-sm">
-                          {t.location.domazliceItems.map((item, i) => (
-                            <li key={i}>• {item}</li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-
-                    {/* Horšovský Týn */}
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <MapPin className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">{t.location.horsovskytynTitle}</h3>
-                        </div>
-                        <ul className="text-white/80 space-y-2 text-sm">
-                          {t.location.horsovskytynItems.map((item, i) => (
-                            <li key={i}>• {item}</li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-
-                    {/* Babylon */}
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <MapPin className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">{t.location.babylonTitle}</h3>
-                        </div>
-                        <ul className="text-white/80 space-y-2 text-sm">
-                          {t.location.babylonItems.map((item, i) => (
-                            <li key={i}>• {item}</li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-
-                    {/* Německo */}
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <MapPin className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">{t.location.germanyTitle}</h3>
-                        </div>
-                        <ul className="text-white/80 space-y-2 text-sm">
-                          {t.location.germanyItems.map((item, i) => (
-                            <li key={i}>• {item}</li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-
-                <div className="mb-16">
-                  <h2 className="text-4xl font-bold text-white mb-8 text-center">{t.location.events}</h2>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Domažlice Events */}
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <Calendar className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">Domažlice</h3>
-                        </div>
-                        <ul className="text-white/80 space-y-3 text-sm">
-                          {t.location.domazliceEvents.map((item, i) => (
-                            <li key={i}>
-                              <strong className="text-white">{item.month}:</strong> {item.event}
-                            </li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-
-                    {/* Horšovský Týn Events */}
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <Calendar className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">Horšovský Týn</h3>
-                        </div>
-                        <ul className="text-white/80 space-y-3 text-sm">
-                          {t.location.horsovskytynEvents.map((item, i) => (
-                            <li key={i}>
-                              <strong className="text-white">{item.month}:</strong> {item.event}
-                            </li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-
-                    {/* Babylon Events */}
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <Calendar className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">Babylon</h3>
-                        </div>
-                        <ul className="text-white/80 space-y-3 text-sm">
-                          {t.location.babylonEvents.map((item, i) => (
-                            <li key={i}>
-                              <strong className="text-white">{item.month}:</strong> {item.event}
-                            </li>
-                          ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <div className="flex items-center gap-3 mb-4">
-                          <Calendar className="h-6 w-6 text-secondary" />
-                          <h3 className="text-2xl font-bold text-white">{t.location.chamTitle}</h3>
-                        </div>
-                        <div className="text-white/80 space-y-3 text-sm">
-                          <p>
-                            <a
-                              href="https://la-cham.de/"
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-secondary hover:text-secondary/80 underline"
-                            >
-                              {t.location.chamClub}
-                            </a>
-                          </p>
-                          <p>{t.location.chamDescription}</p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : currentSection === "equipment" ? (
-            <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
-              {" "}
-              {/* Applied pt-32 here */}
-              <div className="max-w-7xl mx-auto">
-                <div className="text-center mb-8">
-                  <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 text-balance">{t.equipment.title}</h1>
-                  <p className="text-xl md:text-2xl text-white/90 font-light">{t.equipment.subtitle}</p>
-                  <p className="text-sm md:text-base text-white/80 mt-4 max-w-4xl mx-auto leading-relaxed">
-                    {t.equipment.collectionNote}{" "}
-                    <button
-                      onClick={() => handleSectionChange("spoluprace")}
-                      className="text-secondary hover:text-secondary/80 underline"
-                    >
-                      {t.equipment.collaborationLink}
-                    </button>
-                    .
-                  </p>
-                  <p className="text-sm md:text-base text-white/80 mt-2 max-w-4xl mx-auto leading-relaxed">
-                    {t.equipment.detailsNote}
-                  </p>
-                </div>
-
-                {/* Vintage Nástroje - FIRST */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                        <Guitar className="h-6 w-6 text-secondary" />
-                        {t.equipment.vintageInstruments}
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.guitars}</h4>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li className="cursor-pointer hover:text-secondary transition-colors">
-                              <a
-                                href="https://equipboard.com/items/telecaster-deluxe-73"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:text-secondary transition-colors"
-                              >
-                                • Fender 1973 Telecaster Deluxe
-                              </a>
-                            </li>
-                            <li>• Fender Custom Shop - Jeff Beck (Surf Green)</li>
-                            <li>• Fender Custom Shop - LTD 67 HSS Strat AB HR</li>
-                            <li>• Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)</li>
+                        <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                          {t.studio.mainStudio}
+                        </h2>
+                        <p className="text-2xl font-light text-white/95 drop-shadow-lg">{t.studio.mainStudioSize}</p>
+                        <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">
+                          {t.studio.mainStudioDesc}
+                        </p>
+                        <div className="space-y-2 text-sm text-white/90">
+                          <h3 className="text-xl font-semibold text-white drop-shadow-lg">{t.studio.equipment}</h3>
+                          <ul className="space-y-1">
+                            <li>• Vintage Fender Custom Shop kytary</li>
                             <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
                             <li>• Gibson Explorer</li>
-                            <li>• Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)</li>
-                            <li className="text-white/60 italic">...a další</li>
-                          </ul>
-                        </div>
-
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.basses}</h4>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Fender Precision (1993)</li>
-                            <li>• Squier short scale bass</li>
+                            <li>• Marshall AFD 100, Mesa Boogie</li>
+                            <li>• Rozsáhlá kolekce efektů</li>
+                            <li>• Mapex Saturn bicí s K-Zildjian činely</li>
                           </ul>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                      <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
+                        <iframe
+                          className="w-full h-full"
+                          src="https://www.youtube.com/embed/YWnYQDGHeLw?autoplay=1&mute=1&loop=1&playlist=YWnYQDGHeLw&controls=0&showinfo=0&rel=0&modestbranding=1"
+                          title="Hlavní Studio"
+                          allow="autoplay; encrypted-media"
+                          allowFullScreen
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-
-                {/* Kytara a Basa (Zesilovače a Boxy) - SECOND */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.ampsAndCabs}</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.amps}</h4>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Fender 64 Custom Deluxe Reverb</li>
-                            <li>• Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)</li>
-                            <li>• Mesa Boogie Dual Rectifier®Head, 3 Channels / 8 Modes, 100W</li>
-                            <li>• Marshall AFD 100</li>
-                            <li>• AMPEG V-4B Bass Head</li>
-                            <li>• Roland JC-22 (2x)</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.cabs}</h4>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Marshall 1960 BX</li>
-                            <li>• Coffe custom CLASSIC 212</li>
-                            <li>• Ampeg SVT-112AV Cabinet</li>
+                {/* Control Room Section */}
+                <div className="flex items-center px-6 py-12 bg-white/10 backdrop-blur-sm text-white">
+                  <div className="max-w-7xl mx-auto w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                      <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group order-2 lg:order-1">
+                        <iframe
+                          className="w-full h-full"
+                          src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1"
+                          title="Control Room"
+                          allow="autoplay; encrypted-media"
+                          allowFullScreen
+                        />
+                      </div>
+                      <div className="space-y-4 order-1 lg:order-2">
+                        <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                          {t.studio.controlRoom}
+                        </h2>
+                        <p className="text-2xl font-light text-white/95 drop-shadow-lg">{t.studio.controlRoomSize}</p>
+                        <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">
+                          {t.studio.controlRoomDesc}
+                        </p>
+                        <div className="space-y-2 text-sm text-white/90">
+                          <h3 className="text-xl font-semibold text-white drop-shadow-lg">{t.studio.technology}</h3>
+                          <ul className="space-y-1">
+                            <li>• MAC + Apple Pro Display XDR 6K monitor</li>
+                            <li>• Universal Audio Apollo Interface</li>
+                            <li>• 76 UAD pluginů (kompletní kolekce)</li>
+                            <li>• Logic Pro X + UA LUNA</li>
+                            <li>• Projektor pro screening</li>
                           </ul>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </div>
-
-                {/* Efekty - Extensive Collection */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.effects}</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                        <div className="space-y-1.5">
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Dunlop DCR 2SR Rack Crybaby</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Dunlop Dimebag Cry Baby Wah</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Dunlop Zakk Wylde Rotovibe (2x)</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">G-LAB TBWP True Bypass Wah Pad (2x)</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">D&M Drive</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Dunlop MXR MICRO AMP</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Antonín Salva - Tone Wheel</p>
-                          </div>
-                        </div>
-                        <div className="space-y-1.5">
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">KHDK Abyss</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Digitech Whammy IV (červený, pitch shifter/harmonizer)</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Gamechanger Audio Light Pedal</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Gamechanger Audio Third Man Records PLASMA COIL</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Strymon Timeline</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">TC Electronic PolyTune</p>
-                          </div>
-                        </div>
-                        <div className="space-y-1.5">
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Electro-Harmonix POG2 (červený, polyfonní oktáver)</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Strymon Zuma (3x)</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Strymon Flint V2</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">Boss ODB-3</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">TC Electronic Plethora X5 (Looper/Effect)</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/90">EBow Plus</p>
-                          </div>
-                          <div className="bg-white/5 p-2 rounded">
-                            <p className="text-white/60 italic">...a další</p>
-                          </div>
-                        </div>
+                {/* Druhé Studio Section */}
+                <div className="flex items-center px-6 py-12 bg-black/60 text-white">
+                  <div className="max-w-7xl mx-auto w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                      <div className="space-y-4">
+                        <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                          {t.studio.millstoneStudio}
+                        </h2>
+                        <p className="text-2xl font-light text-white/95 drop-shadow-lg">{t.studio.millstoneSize}</p>
+                        <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{t.studio.millstoneDesc}</p>
                       </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Mikrofony a Bicí */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
-                            <Mic className="h-6 w-6 text-secondary" />
-                            {t.equipment.mics}
-                          </h3>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Sennheiser e 906</li>
-                            <li>• Shure Beta 58</li>
-                            <li>• Shure SM 7 B</li>
-                            <li>• 2x SHURE SM57</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.drums}</h3>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Mapex Saturn</li>
-                            <li>• K-Zildjian činely</li>
-                          </ul>
-                        </div>
+                      <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
+                        <iframe
+                          className="w-full h-full"
+                          src="https://www.youtube.com/embed/sc0bCt6G9dM?autoplay=1&mute=1&loop=1&playlist=sc0bCt6G9dM&controls=0&showinfo=0&rel=0&modestbranding=1"
+                          title="Millstone Studio"
+                          allow="autoplay; encrypted-media"
+                          allowFullScreen
+                        />
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </div>
+                {/* Accommodation Packages Section */}
+                <div className="px-6 py-16 bg-white/5 backdrop-blur-sm text-white">
+                  <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-12">
+                      <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+                        {t.studio.accommodation.title}
+                      </h2>
+                      <p className="text-lg md:text-xl text-white/90 max-w-4xl mx-auto mb-4 drop-shadow-md">
+                        {t.studio.accommodation.subtitle}
+                      </p>
+                      <p className="text-xl font-semibold text-white/95 drop-shadow-md">
+                        {t.studio.accommodation.intro}
+                      </p>
+                    </div>
 
-                {/* VIDEO PRODUCTION */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4">VIDEO PRODUCTION</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-3">Hardware</h4>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Apple Pro XDR 6K monitor pro color-accurate editing</li>
-                            <li>• Professional video cameras pro session dokumentaci</li>
-                            <li>• DJI Gimbal stabilizátor pro smooth camera movements</li>
-                            <li>• Projektor pro screening a presentations</li>
-                            <li>• Lighting equipment pro professional video shoots</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-3">Software</h4>
-                          <ul className="text-white/80 text-sm space-y-1.5">
-                            <li>• Final Cut Pro X</li>
-                            <li>• Affinity</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+                    <div className="space-y-8">
+                      {t.studio.accommodation.packages.map((pkg, index) => (
+                        <div key={index} className="bg-black/40 backdrop-blur-sm rounded-xl p-8 border border-white/10">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                            <div className="space-y-4">
+                              <h3 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
+                                {index + 1}. Balíček "{pkg.name}"
+                              </h3>
+                              <p className="text-sm text-secondary/90 font-mono">{pkg.tags}</p>
+                              <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{pkg.description}</p>
 
-                {/* Universal Audio Pluginy - LAST */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.uaPlugins}</h3>
-
-                      {/* Microphone Preamps */}
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
-                          <Mic className="h-5 w-5 text-secondary" />
-                          Microphone Preamps (7)
-                        </h4>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                          {[
-                            "Neve 1073 Collection",
-                            "Precision Channel Strip",
-                            "UA 610-A Preamp & EQ",
-                            "UA 610-B Preamp & EQ",
-                            "V76 Preamplifier",
-                            "Avalon VT-737sp",
-                            "Manley Reference",
-                          ].map((item, i) => (
-                            <div key={i} className="bg-white/5 p-2 rounded">
-                              <p className="text-white/90">{item}</p>
+                              <p className="text-base leading-relaxed text-white/80">
+                                {pkg.details.includes("[lokalita]") ||
+                                pkg.details.includes("[location]") ||
+                                pkg.details.includes("[Standort]") ? (
+                                  <>
+                                    {pkg.details.split(/\[(lokalita|location|Standort)\]/)[0]}
+                                    <button
+                                      onClick={() => handleSectionChange("lokalita")}
+                                      className="text-secondary hover:text-secondary/80 underline cursor-pointer"
+                                    >
+                                      {language === "cs" ? "lokalita" : language === "en" ? "location" : "Standort"}
+                                    </button>
+                                    {pkg.details.split(/\[(lokalita|location|Standort)\]/)[2]}
+                                  </>
+                                ) : (
+                                  pkg.details
+                                )}
+                              </p>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Compressors */}
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold text-white mb-2">Kompresory (24)</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div>
-                            <p className="text-white/80 text-sm mb-2">Teletronix (6)</p>
-                            <div className="space-y-1 text-xs">
-                              {[
-                                "LA-2 Classic",
-                                "LA-2A Gray",
-                                "LA-2A Silver",
-                                "LA-2A Legacy",
-                                "LA-2A Tube",
-                                "LA-3A",
-                              ].map((item, i) => (
-                                <div key={i} className="bg-white/5 p-1.5 rounded">
-                                  <p className="text-white/90">{item}</p>
+                            <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
+                              {pkg.video ? (
+                                <iframe
+                                  className="w-full h-full"
+                                  src={`${pkg.video.replace("youtu.be/", "www.youtube.com/embed/")}?autoplay=1&mute=1&loop=1&playlist=${pkg.video.split("/").pop()}&controls=0&showinfo=0&rel=0&modestbranding=1`}
+                                  title={pkg.name}
+                                  allow="autoplay; encrypted-media"
+                                  allowFullScreen
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-black/60 flex items-center justify-center">
+                                  <p className="text-white/60 text-lg">Video bude doplněno</p>
                                 </div>
-                              ))}
+                              )}
                             </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-12 text-center">
+                      <p className="text-lg text-white/80 flex items-center justify-center gap-2">
+                        <Car className="h-5 w-5" />
+                        {t.studio.accommodation.parking}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                {/* CTA Section */}
+                <div className="flex items-center justify-center px-6 py-12 bg-black/70 text-white">
+                  <div className="text-center max-w-3xl">
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white drop-shadow-lg">
+                      {t.studio.ctaTitle}
+                    </h2>
+                    <p className="text-lg mb-6 text-white/90 drop-shadow-md">{t.studio.ctaDesc}</p>
+                    <Button
+                      size="lg"
+                      onClick={() => handleSectionChange("contact")}
+                      className="px-8 py-4 text-base bg-white text-black hover:bg-gray-200"
+                    >
+                      {t.studio.ctaButton}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : currentSection === "lokalita" ? (
+              <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
+                {" "}
+                {/* Applied pt-32 here */}
+                <div className="max-w-6xl mx-auto">
+                  <div className="text-center mb-12">
+                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.location.title}</h1>
+                    <p className="text-xl md:text-2xl text-white/90 font-light">{t.location.subtitle}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <MapPin className="h-8 w-8 text-secondary mx-auto mb-4" />
+                        <h3 className="text-white font-semibold mb-4 text-center text-xl">{t.location.nature}</h3>
+                        <div className="text-white/80 text-sm space-y-4 leading-relaxed">
+                          <p>{t.location.naturePara1}</p>
+                          <p>{t.location.naturePara2}</p>
+                          <p>{t.location.naturePara3}</p>
+                          <p className="italic border-l-2 border-secondary pl-4 mt-4">"{t.location.quote}"</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-8">
+                        <h3 className="text-2xl font-bold text-white mb-6">{t.location.transport}</h3>
+                        <div className="space-y-4">
+                          <div className="flex items-start space-x-4">
+                            <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-white mb-2">{t.location.byCar}</h4>
+                              <ul className="space-y-1 text-sm text-white">
+                                <li>• 10 min do centra Domažlic</li>
+                                <li>• 10 min na německé hranice</li>
+                                <li>• Přímý přístup, private parking</li>
+                                <li>• Tesla charging station</li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div className="flex items-start space-x-4">
+                            <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-white mb-2">{t.location.byTrain}</h4>
+                              <ul className="space-y-1 text-sm text-white">
+                                <li>• Vlaková zastávka přímo na Pile</li>
+                                <li>• 10 min walk z Trhanov station</li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div className="flex items-start space-x-4">
+                            <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-white mb-2">{t.location.byPlane}</h4>
+                              <ul className="space-y-1 text-sm text-white">
+                                <li>• 1h 45min z Prague Airport</li>
+                                <li>• 2h z Munich Airport</li>
+                                <li>• Pick-up service available</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="mb-16">
+                    <h2 className="text-4xl font-bold text-white mb-8 text-center">{t.location.surroundings}</h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                      {/* Domažlice */}
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <MapPin className="h-6 w-6 text-secondary" />
+                            <h3 className="text-2xl font-bold text-white">{t.location.domazliceTitle}</h3>
+                          </div>
+                          <ul className="text-white/80 space-y-2 text-sm">
+                            {t.location.domazliceItems.map((item, i) => (
+                              <li key={i}>• {item}</li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+
+                      {/* Horšovský Týn */}
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <MapPin className="h-6 w-6 text-secondary" />
+                            <h3 className="text-2xl font-bold text-white">{t.location.horsovskytynTitle}</h3>
+                          </div>
+                          <ul className="text-white/80 space-y-2 text-sm">
+                            {t.location.horsovskytynItems.map((item, i) => (
+                              <li key={i}>• {item}</li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+
+                      {/* Babylon */}
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <MapPin className="h-6 w-6 text-secondary" />
+                            <h3 className="text-2xl font-bold text-white">{t.location.babylonTitle}</h3>
+                          </div>
+                          <ul className="text-white/80 space-y-2 text-sm">
+                            {t.location.babylonItems.map((item, i) => (
+                              <li key={i}>• {item}</li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+
+                      {/* Německo */}
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <MapPin className="h-6 w-6 text-secondary" />
+                            <h3 className="text-2xl font-bold text-white">{t.location.germanyTitle}</h3>
+                          </div>
+                          <ul className="text-white/80 space-y-2 text-sm">
+                            {t.location.germanyItems.map((item, i) => (
+                              <li key={i}>• {item}</li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+
+                  <div className="mb-16">
+                    <h2 className="text-4xl font-bold text-white mb-8 text-center">{t.location.events}</h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {/* Domažlice Events */}
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <Calendar className="h-6 w-6 text-secondary" />
+                            <h3 className="text-2xl font-bold text-white">Domažlice</h3>
+                          </div>
+                          <ul className="text-white/80 space-y-3 text-sm">
+                            {t.location.domazliceEvents.map((item, i) => (
+                              <li key={i}>
+                                <strong className="text-white">{item.month}:</strong> {item.event}
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+
+                      {/* Horšovský Týn Events */}
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <Calendar className="h-6 w-6 text-secondary" />
+                            <h3 className="text-2xl font-bold text-white">Horšovský Týn</h3>
+                          </div>
+                          <ul className="text-white/80 space-y-3 text-sm">
+                            {t.location.horsovskytynEvents.map((item, i) => (
+                              <li key={i}>
+                                <strong className="text-white">{item.month}:</strong> {item.event}
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+
+                      {/* Babylon Events */}
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <Calendar className="h-6 w-6 text-secondary" />
+                            <h3 className="text-2xl font-bold text-white">Babylon</h3>
+                          </div>
+                          <ul className="text-white/80 space-y-3 text-sm">
+                            {t.location.babylonEvents.map((item, i) => (
+                              <li key={i}>
+                                <strong className="text-white">{item.month}:</strong> {item.event}
+                              </li>
+                            ))}
+                          </ul>
+                        </CardContent>
+                      </Card>
+
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <Calendar className="h-6 w-6 text-secondary" />
+                            <h3 className="text-2xl font-bold text-white">{t.location.chamTitle}</h3>
+                          </div>
+                          <div className="text-white/80 space-y-3 text-sm">
+                            <p>
+                              <a
+                                href="https://la-cham.de/"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-secondary hover:text-secondary/80 underline"
+                              >
+                                {t.location.chamClub}
+                              </a>
+                            </p>
+                            <p>{t.location.chamDescription}</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : currentSection === "equipment" ? (
+              <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
+                {" "}
+                {/* Applied pt-32 here */}
+                <div className="max-w-7xl mx-auto">
+                  <div className="text-center mb-8">
+                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 text-balance">{t.equipment.title}</h1>
+                    <p className="text-xl md:text-2xl text-white/90 font-light">{t.equipment.subtitle}</p>
+                    <p className="text-sm md:text-base text-white/80 mt-4 max-w-4xl mx-auto leading-relaxed">
+                      {t.equipment.collectionNote}{" "}
+                      <button
+                        onClick={() => handleSectionChange("spoluprace")}
+                        className="text-secondary hover:text-secondary/80 underline"
+                      >
+                        {t.equipment.collaborationLink}
+                      </button>
+                      .
+                    </p>
+                    <p className="text-sm md:text-base text-white/80 mt-2 max-w-4xl mx-auto leading-relaxed">
+                      {t.equipment.detailsNote}
+                    </p>
+                  </div>
+
+                  {/* Vintage Nástroje - FIRST */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Guitar className="h-6 w-6 text-secondary" />
+                          {t.equipment.vintageInstruments}
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.guitars}</h4>
+                            <ul className="text-white/80 text-sm space-y-1.5">
+                              <li className="cursor-pointer hover:text-secondary transition-colors">
+                                <a
+                                  href="https://equipboard.com/items/telecaster-deluxe-73"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hover:text-secondary transition-colors"
+                                >
+                                  • Fender 1973 Telecaster Deluxe
+                                </a>
+                              </li>
+                              <li>• Fender Custom Shop - Jeff Beck (Surf Green)</li>
+                              <li>• Fender Custom Shop - LTD 67 HSS Strat AB HR</li>
+                              <li>• Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)</li>
+                              <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
+                              <li>• Gibson Explorer</li>
+                              <li>• Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)</li>
+                              <li className="text-white/60 italic">...a další</li>
+                            </ul>
+                          </div>
+
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.basses}</h4>
+                            <ul className="text-white/80 text-sm space-y-1.5">
+                              <li>• Fender Precision (1993)</li>
+                              <li>• Squier short scale bass</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Kytara a Basa (Zesilovače a Boxy) - SECOND */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.ampsAndCabs}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.amps}</h4>
+                            <ul className="text-white/80 text-sm space-y-1.5">
+                              <li>• Fender 64 Custom Deluxe Reverb</li>
+                              <li>• Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)</li>
+                              <li>• Mesa Boogie Dual Rectifier®Head, 3 Channels / 8 Modes, 100W</li>
+                              <li>• Marshall AFD 100</li>
+                              <li>• AMPEG V-4B Bass Head</li>
+                              <li>• Roland JC-22 (2x)</li>
+                            </ul>
                           </div>
                           <div>
-                            <p className="text-white/80 text-sm mb-2">UA 1176 (6)</p>
-                            <div className="space-y-1 text-xs">
-                              {[
-                                "1176 Rev A",
-                                "1176AE",
-                                "1176LN Rev E",
-                                "1176LN Legacy",
-                                "1176SE Legacy",
-                                "1176 FET",
-                              ].map((item, i) => (
-                                <div key={i} className="bg-white/5 p-1.5 rounded">
-                                  <p className="text-white/90">{item}</p>
-                                </div>
-                              ))}
+                            <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.cabs}</h4>
+                            <ul className="text-white/80 text-sm space-y-1.5">
+                              <li>• Marshall 1960 BX</li>
+                              <li>• Coffe custom CLASSIC 212</li>
+                              <li>• Ampeg SVT-112AV Cabinet</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Efekty - Extensive Collection */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.effects}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                          <div className="space-y-1.5">
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Dunlop DCR 2SR Rack Crybaby</p>
                             </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Dunlop Dimebag Cry Baby Wah</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Dunlop Zakk Wylde Rotovibe (2x)</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">G-LAB TBWP True Bypass Wah Pad (2x)</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">D&M Drive</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Dunlop MXR MICRO AMP</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Antonín Salva - Tone Wheel</p>
+                            </div>
+                          </div>
+                          <div className="space-y-1.5">
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">KHDK Abyss</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Digitech Whammy IV (červený, pitch shifter/harmonizer)</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Gamechanger Audio Light Pedal</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Gamechanger Audio Third Man Records PLASMA COIL</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Strymon Timeline</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">TC Electronic PolyTune</p>
+                            </div>
+                          </div>
+                          <div className="space-y-1.5">
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Electro-Harmonix POG2 (červený, polyfonní oktáver)</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Strymon Zuma (3x)</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Strymon Flint V2</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">Boss ODB-3</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">TC Electronic Plethora X5 (Looper/Effect)</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/90">EBow Plus</p>
+                            </div>
+                            <div className="bg-white/5 p-2 rounded">
+                              <p className="text-white/60 italic">...a další</p>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Mikrofony a Bicí */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                              <Mic className="h-6 w-6 text-secondary" />
+                              {t.equipment.mics}
+                            </h3>
+                            <ul className="text-white/80 text-sm space-y-1.5">
+                              <li>• Sennheiser e 906</li>
+                              <li>• Shure Beta 58</li>
+                              <li>• Shure SM 7 B</li>
+                              <li>• 2x SHURE SM57</li>
+                            </ul>
                           </div>
                           <div>
-                            <p className="text-white/80 text-sm mb-2">Další (12)</p>
-                            <div className="space-y-1 text-xs">
-                              {[
-                                "dbx 160",
-                                "Distressor",
-                                "UA 175B",
-                                "UA 176",
-                                "Fairchild 660",
-                                "Fairchild 670 Legacy",
-                                "Fairchild 670",
-                                "Precision Limiter",
-                                "Precision Multi-Band",
-                                "Precision Maximizer",
-                              ].map((item, i) => (
-                                <div key={i} className="bg-white/5 p-1.5 rounded">
-                                  <p className="text-white/90">{item}</p>
-                                </div>
-                              ))}
-                            </div>
+                            <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.drums}</h3>
+                            <ul className="text-white/80 text-sm space-y-1.5">
+                              <li>• Mapex Saturn</li>
+                              <li>• K-Zildjian činely</li>
+                            </ul>
                           </div>
                         </div>
-                      </div>
+                      </CardContent>
+                    </Card>
+                  </div>
 
-                      {/* Equalizers */}
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold text-white mb-2">Ekvalizéry (9)</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
-                          {[
-                            "Pultec EQP-1A Legacy",
-                            "Pultec EQP-1A Passive",
-                            "Pultec HLF-3C",
-                            "Pultec MEQ-5",
-                            "Pultec Pro Legacy",
-                            "A-Designs Hammer EQ",
-                            "Cambridge EQ",
-                            "Helios Type 69",
-                            "Neve 1073 EQ",
-                          ].map((item, i) => (
-                            <div key={i} className="bg-white/5 p-2 rounded">
-                              <p className="text-white/90">{item}</p>
-                            </div>
-                          ))}
+                  {/* VIDEO PRODUCTION */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-2xl font-bold text-white mb-4">VIDEO PRODUCTION</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-3">Hardware</h4>
+                            <ul className="text-white/80 text-sm space-y-1.5">
+                              <li>• Apple Pro XDR 6K monitor pro color-accurate editing</li>
+                              <li>• Professional video cameras pro session dokumentaci</li>
+                              <li>• DJI Gimbal stabilizátor pro smooth camera movements</li>
+                              <li>• Projektor pro screening a presentations</li>
+                              <li>• Lighting equipment pro professional video shoots</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-3">Software</h4>
+                            <ul className="text-white/80 text-sm space-y-1.5">
+                              <li>• Final Cut Pro X</li>
+                              <li>• Affinity</li>
+                            </ul>
+                          </div>
                         </div>
-                      </div>
+                      </CardContent>
+                    </Card>
+                  </div>
 
-                      {/* Virtual Instruments */}
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold text-white mb-2">Virtuální Nástroje (6)</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
-                          {[
-                            "Electra 88 Keyboard",
-                            "Moog Minimoog",
-                            "Opal Morphing Synth",
-                            "PolyMAX Synth",
-                            "Ravel Grand Piano",
-                            "Waterfall B3 Organ",
-                          ].map((item, i) => (
-                            <div key={i} className="bg-white/5 p-2 rounded">
-                              <p className="text-white/90">{item}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                  {/* Universal Audio Pluginy - LAST */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.uaPlugins}</h3>
 
-                      {/* Special Processors */}
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold text-white mb-2">Speciální Procesory (11)</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                          {[
-                            "Oxide Tape",
-                            "Studer A800",
-                            "Verve Analog",
-                            "Auto-Tune Access",
-                            "Auto-Tune Advanced",
-                            "Auto-Tune X",
-                            "A-Type Enhancer",
-                            "Precision Enhancer",
-                            "Sound City Studios",
-                            "Century Tube",
-                            "CS-1 Channel Strip",
-                          ].map((item, i) => (
-                            <div key={i} className="bg-white/5 p-2 rounded">
-                              <p className="text-white/90">{item}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Delay & Modulation */}
-                      <div className="mb-6">
-                        <h4 className="text-lg font-semibold text-white mb-2">Delay a Modulace (7)</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                          {[
-                            "Cooper Time Cube",
-                            "EP-34 Tape Echo",
-                            "Galaxy Tape Echo",
-                            "Precision Delay Mod",
-                            "Brigade Chorus",
-                            "Precision Delay Mod L",
-                            "Studio D Chorus",
-                          ].map((item, i) => (
-                            <div key={i} className="bg-white/5 p-2 rounded">
-                              <p className="text-white/90">{item}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Reverbs */}
-                      <div>
-                        <h4 className="text-lg font-semibold text-white mb-2">Reverby (4)</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
-                          {["Lexicon 224", "Precision Reflection", "Pure Plate Reverb", "RealVerb Pro"].map(
-                            (item, i) => (
+                        {/* Microphone Preamps */}
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                            <Mic className="h-5 w-5 text-secondary" />
+                            Microphone Preamps (7)
+                          </h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                            {[
+                              "Neve 1073 Collection",
+                              "Precision Channel Strip",
+                              "UA 610-A Preamp & EQ",
+                              "UA 610-B Preamp & EQ",
+                              "V76 Preamplifier",
+                              "Avalon VT-737sp",
+                              "Manley Reference",
+                            ].map((item, i) => (
                               <div key={i} className="bg-white/5 p-2 rounded">
                                 <p className="text-white/90">{item}</p>
                               </div>
-                            ),
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Kabely a Stojany */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.cables}</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                        <div className="bg-white/5 p-3 rounded">
-                          <p className="text-white/90">Mogami Platinum</p>
-                        </div>
-                        <div className="bg-white/5 p-3 rounded">
-                          <p className="text-white/90">Evidence Cables</p>
-                        </div>
-                        <div className="bg-white/5 p-3 rounded">
-                          <p className="text-white/90">Lava Cable Tephra</p>
-                        </div>
-                        <div className="bg-white/5 p-3 rounded">
-                          <p className="text-white/90">Monster Studio Pro 2000</p>
-                        </div>
-                        <div className="bg-white/5 p-3 rounded">
-                          <p className="text-white/90">K&M stojany</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Workflow Recommendations */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.workflow}</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-2">Tracking Chain</h4>
-                          <ul className="text-white/80 text-sm space-y-1">
-                            <li>1. Neve 1073 / UA 610</li>
-                            <li>2. LA-2A / 1176</li>
-                            <li>3. Pultec EQP-1A</li>
-                            <li>4. Oxide / Studer</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-2">Mixing Chain</h4>
-                          <ul className="text-white/80 text-sm space-y-1">
-                            <li>1. Cambridge / Helios EQ</li>
-                            <li>2. Distressor / dbx 160</li>
-                            <li>3. Verve Analog</li>
-                            <li>4. Lexicon 224 / Pure Plate</li>
-                          </ul>
-                        </div>
-                        <div>
-                          <h4 className="text-lg font-semibold text-white mb-2">Mastering Chain</h4>
-                          <ul className="text-white/80 text-sm space-y-1">
-                            <li>1. Pultec Pro Legacy</li>
-                            <li>2. Precision Multi-Band</li>
-                            <li>3. Precision Maximizer</li>
-                            <li>4. A-Type Enhancer</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Ostatní technické vybavení */}
-                <div className="mb-8">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-6">
-                      <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.infrastructure}</h3>
-                      <div>
-                        <h4 className="text-lg font-semibold text-white mb-3">Infrastruktura</h4>
-                        <ul className="text-white/80 text-sm space-y-2">
-                          <li>• Přepěťové ochrany</li>
-                          <li>• Tesla charging station</li>
-                          <li>• Off-grid capability</li>
-                          <li>• Security systém</li>
-                        </ul>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          ) : currentSection === "contact" ? (
-            <div className="pt-32 px-6 py-12">
-              <div className="max-w-4xl mx-auto">
-                <div className="text-center mb-12">
-                  <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.contact.title}</h1>
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-8">
-                      <h3 className="text-2xl font-bold text-white mb-6">{t.contact.info}</h3>
-                      <div className="space-y-6">
-                        <div>
-                          <h4 className="text-xl font-bold text-white mb-2">Ing. Jindřich Traxmandl</h4>
-                        </div>
-                        <div className="flex items-start space-x-4">
-                          <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
-                          <div>
-                            <h4 className="font-semibold text-white mb-1">{t.contact.address}</h4>
-                            <p className="text-white/80">
-                              Pila 100 - Mlýn
-                              <br />
-                              Trhanov 34401
-                              <br />
-                              Česká republika
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start space-x-4">
-                          <Phone className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
-                          <div>
-                            <h4 className="font-semibold text-white mb-1">{t.contact.phone}</h4>
-                            <p className="text-white/80">+420 724 050 093</p>
-                          </div>
-                        </div>
-
-                        <div className="pt-4 border-t border-white/20">
-                          <BusinessCardDownload />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-8">
-                      <h3 className="text-2xl font-bold text-white mb-6">{t.contact.availability}</h3>
-                      <div className="space-y-4">
-                        <ul className="text-white/80 text-sm space-y-1">
-                          {t.contact.availabilityItems.map((item, index) => (
-                            <li key={index}>• {item}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div ref={onasSectionRef} className="pt-32 px-6 py-12">
-              <div className="space-y-8">
-                {/* Section 1: Hero + History */}
-                <div>
-                  <div className="text-center mb-12">
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.about.title}</h1>
-                    <p className="text-xl md:text-2xl text-white/90 font-light">{t.about.subtitle}</p>
-                    <p className="text-lg text-white/80 mt-4">{t.about.tagline}</p>
-                  </div>
-
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-8">
-                      <h3 className="text-2xl font-bold text-white mb-6">{t.about.history}</h3>
-                      <div className="space-y-4 text-white/80">
-                        {t.about.historyTimeline.map((item, index) => (
-                          <div key={index} className="border-l-2 border-secondary pl-4">
-                            <p className="font-semibold text-white">{item.year}</p>
-                            <p className="text-sm">{item.desc}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Section 2: Ubytování */}
-                <div className="max-w-6xl mx-auto">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-8">
-                      <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.accommodation}</h3>
-
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                        <div>
-                          <h4 className="text-xl font-bold text-white mb-4">{t.about.accommodationRooms}</h4>
-                          <div className="space-y-4">
-                            <div className="bg-white/5 p-4 rounded-lg">
-                              <h5 className="font-semibold text-white mb-2">{t.about.masterSuite}</h5>
-                              <p className="text-white/80 text-sm">{t.about.masterSuiteDesc}</p>
-                            </div>
-                            <div className="bg-white/5 p-4 rounded-lg">
-                              <h5 className="font-semibold text-white mb-2">{t.about.fourRooms}</h5>
-                              <p className="text-white/80 text-sm">{t.about.fourRoomsDesc}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div>
-                          <h4 className="text-xl font-bold text-white mb-4">{t.about.commonSpaces}</h4>
-                          <ul className="text-white/80 space-y-2">
-                            {t.about.commonSpacesItems.map((item, index) => (
-                              <li key={index}>• {item}</li>
                             ))}
-                          </ul>
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                        <div>
-                          <h4 className="text-xl font-bold text-white mb-4">{t.about.finnishSauna}</h4>
-                          <ul className="text-white/80 space-y-2">
-                            {t.about.finnishSaunaItems.map((item, index) => (
-                              <li key={index}>• {item}</li>
+                        {/* Compressors */}
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold text-white mb-2">Kompresory (24)</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                              <p className="text-white/80 text-sm mb-2">Teletronix (6)</p>
+                              <div className="space-y-1 text-xs">
+                                {[
+                                  "LA-2 Classic",
+                                  "LA-2A Gray",
+                                  "LA-2A Silver",
+                                  "LA-2A Legacy",
+                                  "LA-2A Tube",
+                                  "LA-3A",
+                                ].map((item, i) => (
+                                  <div key={i} className="bg-white/5 p-1.5 rounded">
+                                    <p className="text-white/90">{item}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-white/80 text-sm mb-2">UA 1176 (6)</p>
+                              <div className="space-y-1 text-xs">
+                                {[
+                                  "1176 Rev A",
+                                  "1176AE",
+                                  "1176LN Rev E",
+                                  "1176LN Legacy",
+                                  "1176SE Legacy",
+                                  "1176 FET",
+                                ].map((item, i) => (
+                                  <div key={i} className="bg-white/5 p-1.5 rounded">
+                                    <p className="text-white/90">{item}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-white/80 text-sm mb-2">Další (12)</p>
+                              <div className="space-y-1 text-xs">
+                                {[
+                                  "dbx 160",
+                                  "Distressor",
+                                  "UA 175B",
+                                  "UA 176",
+                                  "Fairchild 660",
+                                  "Fairchild 670 Legacy",
+                                  "Fairchild 670",
+                                  "Precision Limiter",
+                                  "Precision Multi-Band",
+                                  "Precision Maximizer",
+                                ].map((item, i) => (
+                                  <div key={i} className="bg-white/5 p-1.5 rounded">
+                                    <p className="text-white/90">{item}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Equalizers */}
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold text-white mb-2">Ekvalizéry (9)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                            {[
+                              "Pultec EQP-1A Legacy",
+                              "Pultec EQP-1A Passive",
+                              "Pultec HLF-3C",
+                              "Pultec MEQ-5",
+                              "Pultec Pro Legacy",
+                              "A-Designs Hammer EQ",
+                              "Cambridge EQ",
+                              "Helios Type 69",
+                              "Neve 1073 EQ",
+                            ].map((item, i) => (
+                              <div key={i} className="bg-white/5 p-2 rounded">
+                                <p className="text-white/90">{item}</p>
+                              </div>
                             ))}
-                          </ul>
+                          </div>
                         </div>
 
-                        <div>
-                          <h4 className="text-xl font-bold text-white mb-4">{t.about.parkOutdoor}</h4>
-                          <ul className="text-white/80 space-y-2">
-                            {t.about.parkOutdoorItems.map((item, index) => (
-                              <li key={index}>• {item}</li>
+                        {/* Virtual Instruments */}
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold text-white mb-2">Virtuální Nástroje (6)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                            {[
+                              "Electra 88 Keyboard",
+                              "Moog Minimoog",
+                              "Opal Morphing Synth",
+                              "PolyMAX Synth",
+                              "Ravel Grand Piano",
+                              "Waterfall B3 Organ",
+                            ].map((item, i) => (
+                              <div key={i} className="bg-white/5 p-2 rounded">
+                                <p className="text-white/90">{item}</p>
+                              </div>
                             ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div>
-                        <h4 className="text-xl font-bold text-white mb-4">{t.about.catering}</h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {t.about.cateringItems.map((item, index) => (
-                            <div key={index} className="bg-white/5 p-4 rounded-lg">
-                              <p className="text-white/80 text-sm">
-                                <strong className="text-white">{item.title}</strong> {item.desc}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Section 3: Founders */}
-                <div className="max-w-6xl mx-auto">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-8">
-                      <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.founders}</h3>
-
-                      <p className="text-white/80 text-center mb-8 leading-relaxed">{t.about.foundersIntro}</p>
-
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-                        <div className="space-y-6">
-                          <div>
-                            <h4 className="text-xl font-bold text-white mb-2">Jindřich Traxmandl</h4>
-                            <div className="space-y-4 text-white/80 leading-relaxed">
-                              <p
-                                dangerouslySetInnerHTML={{
-                                  __html: t.about.jindrichDesc.replace(
-                                    /Anteater/g,
-                                    '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
-                                  ),
-                                }}
-                              />
-                              <blockquote className="border-l-2 border-secondary pl-4 italic">
-                                "{t.about.jindrichQuote}"
-                              </blockquote>
-                            </div>
-                          </div>
-
-                          <div>
-                            <h4 className="text-xl font-bold text-white mb-2">Andrea Kohoutová</h4>
-                            <div className="space-y-4 text-white/80 leading-relaxed">
-                              <p
-                                dangerouslySetInnerHTML={{
-                                  __html: t.about.andreaDesc.replace(
-                                    /Anteater/g,
-                                    '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
-                                  ),
-                                }}
-                              />
-                            </div>
                           </div>
                         </div>
 
-                        <div className="flex justify-center">
-                          <img
-                            src="/images/design-mode/DAFF6861-2B75-4DD9-9DB2-3F045A522E16_1_105_c.jpeg"
-                            alt="Jindřích a Andrea - zakladatelé Mlýn Šnajberk Studios"
-                            className="w-full max-w-md rounded-lg shadow-2xl grayscale"
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Section 4: Collaboration */}
-                <div id="collaboration" className="py-24">
-                  <div className="max-w-6xl mx-auto">
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.collaboration}</h3>
-                        <div className="space-y-4 text-white/80">
-                          <p className="leading-relaxed">
-                            <strong className="text-white">{t.about.collaborationPara1Strong}</strong>{" "}
-                            {t.about.collaborationPara1.replace(t.about.collaborationPara1Strong + " ", "")}
-                          </p>
-
-                          <p className="leading-relaxed">
-                            {t.about.collaborationPara2}
-                            <strong className="text-white"> {t.about.collaborationPara2Strong}</strong>{" "}
-                            {t.about.collaborationPara2End}
-                          </p>
-                          <p className="leading-relaxed">
-                            <strong className="text-white">{t.about.collaborationPara3Strong}</strong>{" "}
-                            {t.about.collaborationPara3}
-                          </p>
-                          <div className="mt-6">
-                            <h4 className="font-semibold text-white mb-2">{t.about.collaborationFormsTitle}</h4>
-                            <ul className="space-y-1 text-sm">
-                              {t.about.collaborationForms.map((form, index) => (
-                                <li key={index}>• {form}</li>
-                              ))}
-                            </ul>
+                        {/* Special Processors */}
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold text-white mb-2">Speciální Procesory (11)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                            {[
+                              "Oxide Tape",
+                              "Studer A800",
+                              "Verve Analog",
+                              "Auto-Tune Access",
+                              "Auto-Tune Advanced",
+                              "Auto-Tune X",
+                              "A-Type Enhancer",
+                              "Precision Enhancer",
+                              "Sound City Studios",
+                              "Century Tube",
+                              "CS-1 Channel Strip",
+                            ].map((item, i) => (
+                              <div key={i} className="bg-white/5 p-2 rounded">
+                                <p className="text-white/90">{item}</p>
+                              </div>
+                            ))}
                           </div>
-                          <div className="mt-6 pt-6 border-t border-white/20">
-                            <p className="text-sm text-white/80 leading-relaxed">
-                              <strong className="text-secondary">{t.equipment.thankYouNote}:</strong>{" "}
-                              {t.equipment.noraCollaboration}{" "}
-                              <a
-                                href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-secondary hover:text-secondary/80 underline font-semibold"
-                              >
-                                Nora
-                              </a>
-                              .
-                            </p>
+                        </div>
+
+                        {/* Delay & Modulation */}
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold text-white mb-2">Delay a Modulace (7)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                            {[
+                              "Cooper Time Cube",
+                              "EP-34 Tape Echo",
+                              "Galaxy Tape Echo",
+                              "Precision Delay Mod",
+                              "Brigade Chorus",
+                              "Precision Delay Mod L",
+                              "Studio D Chorus",
+                            ].map((item, i) => (
+                              <div key={i} className="bg-white/5 p-2 rounded">
+                                <p className="text-white/90">{item}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Reverbs */}
+                        <div>
+                          <h4 className="text-lg font-semibold text-white mb-2">Reverby (4)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                            {["Lexicon 224", "Precision Reflection", "Pure Plate Reverb", "RealVerb Pro"].map(
+                              (item, i) => (
+                                <div key={i} className="bg-white/5 p-2 rounded">
+                                  <p className="text-white/90">{item}</p>
+                                </div>
+                              ),
+                            )}
                           </div>
                         </div>
                       </CardContent>
                     </Card>
                   </div>
-                </div>
 
-                {/* Section 5: FAQ */}
-                <div className="max-w-6xl mx-auto">
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                    <CardContent className="p-8">
-                      <h3 className="text-2xl font-bold text-white mb-6">{t.about.faq}</h3>
-                      <div className="space-y-3">
-                        {t.about.faqItems.map((faq, index) => {
-                          // Ghost (haunted), FileText (VAT/business), Home (property rental),
-                          // Users (team), Music (genres), Car (transportation),
-                          // UtensilsCrossed (catering), Languages (languages), Cigarette (smoking), Shield (security)
-                          const faqIcons = [
-                            Ghost,
-                            FileText,
-                            Home,
-                            Users,
-                            Music,
-                            Car,
-                            UtensilsCrossed,
-                            Languages,
-                            Cigarette,
-                            Shield,
-                          ]
-                          const IconComponent = faqIcons[index] || Ghost
-                          return (
-                            <div key={index} className="border-b border-white/10 pb-3">
-                              <button
-                                onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
-                                className="w-full text-left flex justify-between items-start gap-2 group"
-                              >
-                                <div className="flex items-start gap-3">
-                                  <IconComponent className="h-5 w-5 text-white/60 flex-shrink-0 mt-0.5" />
-                                  <h4 className="font-semibold text-white text-sm group-hover:text-secondary transition-colors">
-                                    {faq.q}
-                                  </h4>
-                                </div>
-                                <ChevronDown
-                                  className={`h-4 w-4 text-white/60 flex-shrink-0 transition-transform ${openFaqIndex === index ? "rotate-180" : ""}`}
-                                />
-                              </button>
-                              {openFaqIndex === index && (
-                                <p className="text-sm text-white/80 mt-2 ml-8 leading-relaxed">{faq.a}</p>
-                              )}
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  {/* Kabely a Stojany */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.cables}</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">Mogami Platinum</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">Evidence Cables</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">Lava Cable Tephra</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">Monster Studio Pro 2000</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">K&M stojany</p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Workflow Recommendations */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.workflow}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-2">Tracking Chain</h4>
+                            <ul className="text-white/80 text-sm space-y-1">
+                              <li>1. Neve 1073 / UA 610</li>
+                              <li>2. LA-2A / 1176</li>
+                              <li>3. Pultec EQP-1A</li>
+                              <li>4. Oxide / Studer</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-2">Mixing Chain</h4>
+                            <ul className="text-white/80 text-sm space-y-1">
+                              <li>1. Cambridge / Helios EQ</li>
+                              <li>2. Distressor / dbx 160</li>
+                              <li>3. Verve Analog</li>
+                              <li>4. Lexicon 224 / Pure Plate</li>
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-semibold text-white mb-2">Mastering Chain</h4>
+                            <ul className="text-white/80 text-sm space-y-1">
+                              <li>1. Pultec Pro Legacy</li>
+                              <li>2. Precision Multi-Band</li>
+                              <li>3. Precision Maximizer</li>
+                              <li>4. A-Type Enhancer</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Ostatní technické vybavení */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.infrastructure}</h3>
+                        <div>
+                          <h4 className="text-lg font-semibold text-white mb-3">Infrastruktura</h4>
+                          <ul className="text-white/80 text-sm space-y-2">
+                            <li>• Přepěťové ochrany</li>
+                            <li>• Tesla charging station</li>
+                            <li>• Off-grid capability</li>
+                            <li>• Security systém</li>
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            ) : currentSection === "contact" ? (
+              <div className="pt-32 px-6 py-12">
+                <div className="max-w-4xl mx-auto">
+                  <div className="text-center mb-12">
+                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.contact.title}</h1>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-8">
+                        <h3 className="text-2xl font-bold text-white mb-6">{t.contact.info}</h3>
+                        <div className="space-y-6">
+                          <div>
+                            <h4 className="text-xl font-bold text-white mb-2">Ing. Jindřich Traxmandl</h4>
+                          </div>
+                          <div className="flex items-start space-x-4">
+                            <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-white mb-1">{t.contact.address}</h4>
+                              <p className="text-white/80">
+                                Pila 100 - Mlýn
+                                <br />
+                                Trhanov 34401
+                                <br />
+                                Česká republika
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-start space-x-4">
+                            <Phone className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-white mb-1">{t.contact.phone}</h4>
+                              <p className="text-white/80">+420 724 050 093</p>
+                            </div>
+                          </div>
+
+                          <div className="pt-4 border-t border-white/20">
+                            <BusinessCardDownload />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-8">
+                        <h3 className="text-2xl font-bold text-white mb-6">{t.contact.availability}</h3>
+                        <div className="space-y-4">
+                          <ul className="text-white/80 text-sm space-y-1">
+                            {t.contact.availabilityItems.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div ref={onasSectionRef} className="pt-32 px-6 py-12">
+                <div className="space-y-8">
+                  {/* Section 1: Hero + History */}
+                  <div>
+                    <div className="text-center mb-12">
+                      <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.about.title}</h1>
+                      <p className="text-xl md:text-2xl text-white/90 font-light">{t.about.subtitle}</p>
+                      <p className="text-lg text-white/80 mt-4">{t.about.tagline}</p>
+                    </div>
+
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-8">
+                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.history}</h3>
+                        <div className="space-y-4 text-white/80">
+                          {t.about.historyTimeline.map((item, index) => (
+                            <div key={index} className="border-l-2 border-secondary pl-4">
+                              <p className="font-semibold text-white">{item.year}</p>
+                              <p className="text-sm">{item.desc}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Section 2: Ubytování */}
+                  <div className="max-w-6xl mx-auto">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-8">
+                        <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.accommodation}</h3>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                          <div>
+                            <h4 className="text-xl font-bold text-white mb-4">{t.about.accommodationRooms}</h4>
+                            <div className="space-y-4">
+                              <div className="bg-white/5 p-4 rounded-lg">
+                                <h5 className="font-semibold text-white mb-2">{t.about.masterSuite}</h5>
+                                <p className="text-white/80 text-sm">{t.about.masterSuiteDesc}</p>
+                              </div>
+                              <div className="bg-white/5 p-4 rounded-lg">
+                                <h5 className="font-semibold text-white mb-2">{t.about.fourRooms}</h5>
+                                <p className="text-white/80 text-sm">{t.about.fourRoomsDesc}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <h4 className="text-xl font-bold text-white mb-4">{t.about.commonSpaces}</h4>
+                            <ul className="text-white/80 space-y-2">
+                              {t.about.commonSpacesItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                          <div>
+                            <h4 className="text-xl font-bold text-white mb-4">{t.about.finnishSauna}</h4>
+                            <ul className="text-white/80 space-y-2">
+                              {t.about.finnishSaunaItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div>
+                            <h4 className="text-xl font-bold text-white mb-4">{t.about.parkOutdoor}</h4>
+                            <ul className="text-white/80 space-y-2">
+                              {t.about.parkOutdoorItems.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div>
+                          <h4 className="text-xl font-bold text-white mb-4">{t.about.catering}</h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {t.about.cateringItems.map((item, index) => (
+                              <div key={index} className="bg-white/5 p-4 rounded-lg">
+                                <p className="text-white/80 text-sm">
+                                  <strong className="text-white">{item.title}</strong> {item.desc}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Section 3: Founders */}
+                  <div className="max-w-6xl mx-auto">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-8">
+                        <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.founders}</h3>
+
+                        <p className="text-white/80 text-center mb-8 leading-relaxed">{t.about.foundersIntro}</p>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                          <div className="space-y-6">
+                            <div>
+                              <h4 className="text-xl font-bold text-white mb-2">Jindřich Traxmandl</h4>
+                              <div className="space-y-4 text-white/80 leading-relaxed">
+                                <p
+                                  dangerouslySetInnerHTML={{
+                                    __html: t.about.jindrichDesc.replace(
+                                      /Anteater/g,
+                                      '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
+                                    ),
+                                  }}
+                                />
+                                <blockquote className="border-l-2 border-secondary pl-4 italic">
+                                  "{t.about.jindrichQuote}"
+                                </blockquote>
+                              </div>
+                            </div>
+
+                            <div>
+                              <h4 className="text-xl font-bold text-white mb-2">Andrea Kohoutová</h4>
+                              <div className="space-y-4 text-white/80 leading-relaxed">
+                                <p
+                                  dangerouslySetInnerHTML={{
+                                    __html: t.about.andreaDesc.replace(
+                                      /Anteater/g,
+                                      '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
+                                    ),
+                                  }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="flex justify-center">
+                            <img
+                              src="/images/design-mode/DAFF6861-2B75-4DD9-9DB2-3F045A522E16_1_105_c.jpeg"
+                              alt="Jindřích a Andrea - zakladatelé Mlýn Šnajberk Studios"
+                              className="w-full max-w-md rounded-lg shadow-2xl grayscale"
+                            />
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Section 4: Collaboration */}
+                  <div id="collaboration" className="py-24">
+                    <div className="max-w-6xl mx-auto">
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-8">
+                          <h3 className="text-2xl font-bold text-white mb-6">{t.about.collaboration}</h3>
+                          <div className="space-y-4 text-white/80">
+                            <p className="leading-relaxed">
+                              <strong className="text-white">{t.about.collaborationPara1Strong}</strong>{" "}
+                              {t.about.collaborationPara1.replace(t.about.collaborationPara1Strong + " ", "")}
+                            </p>
+
+                            <p className="leading-relaxed">
+                              {t.about.collaborationPara2}
+                              <strong className="text-white"> {t.about.collaborationPara2Strong}</strong>{" "}
+                              {t.about.collaborationPara2End}
+                            </p>
+                            <p className="leading-relaxed">
+                              <strong className="text-white">{t.about.collaborationPara3Strong}</strong>{" "}
+                              {t.about.collaborationPara3}
+                            </p>
+                            <div className="mt-6">
+                              <h4 className="font-semibold text-white mb-2">{t.about.collaborationFormsTitle}</h4>
+                              <ul className="space-y-1 text-sm">
+                                {t.about.collaborationForms.map((form, index) => (
+                                  <li key={index}>• {form}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="mt-6 pt-6 border-t border-white/20">
+                              <p className="text-sm text-white/80 leading-relaxed">
+                                <strong className="text-secondary">{t.equipment.thankYouNote}:</strong>{" "}
+                                {t.equipment.noraCollaboration}{" "}
+                                <a
+                                  href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-secondary hover:text-secondary/80 underline font-semibold"
+                                >
+                                  Nora
+                                </a>
+                                .
+                              </p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+
+                  {/* Section 5: FAQ */}
+                  <div className="max-w-6xl mx-auto">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-8">
+                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.faq}</h3>
+                        <div className="space-y-3">
+                          {t.about.faqItems.map((faq, index) => {
+                            // Ghost (haunted), FileText (VAT/business), Home (property rental),
+                            // Users (team), Music (genres), Car (transportation),
+                            // UtensilsCrossed (catering), Languages (languages), Cigarette (smoking), Shield (security)
+                            const faqIcons = [
+                              Ghost,
+                              FileText,
+                              Home,
+                              Users,
+                              Music,
+                              Car,
+                              UtensilsCrossed,
+                              Languages,
+                              Cigarette,
+                              Shield,
+                            ]
+                            const IconComponent = faqIcons[index] || Ghost
+                            return (
+                              <div key={index} className="border-b border-white/10 pb-3">
+                                <button
+                                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                                  className="w-full text-left flex justify-between items-start gap-2 group"
+                                >
+                                  <div className="flex items-start gap-3">
+                                    <IconComponent className="h-5 w-5 text-white/60 flex-shrink-0 mt-0.5" />
+                                    <h4 className="font-semibold text-white text-sm group-hover:text-secondary transition-colors">
+                                      {faq.q}
+                                    </h4>
+                                  </div>
+                                  <ChevronDown
+                                    className={`h-4 w-4 text-white/60 flex-shrink-0 transition-transform ${openFaqIndex === index ? "rotate-180" : ""}`}
+                                  />
+                                </button>
+                                {openFaqIndex === index && (
+                                  <p className="text-sm text-white/80 mt-2 ml-8 leading-relaxed">{faq.a}</p>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
