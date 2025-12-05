@@ -20,15 +20,16 @@ import {
   Sun,
   ChevronDown,
   Globe,
-  Users,
-  Music,
   Car,
   UtensilsCrossed,
   Languages,
   Ghost,
   FileText,
-  Cigarette,
   Shield,
+  Mail,
+  HelpCircle,
+  CigaretteOff,
+  Hotel,
 } from "lucide-react"
 
 const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
@@ -89,11 +90,14 @@ const translations = {
       ctaDesc: "Kontaktujte nás a domluvme si návštěvu studia",
       ctaButton: "Kontaktovat",
       accommodation: {
-        title: "NAHRÁVÁNÍ + UBYTOVÁNÍ",
+        title: "Nahrávání + Ubytování",
         subtitle:
           "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Free wifi a parkování v areálu, s možností nabití EV.",
         intro: "Jdeme na to:",
+        packageLabel: "Balíček",
         parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
+        accommodationNote:
+          "Ubytování není veřejně ani samostatně poskytovaná služba. Přespání je určeno výhradně klientům nahrávacího studia jako zázemí během kreativní práce.",
         packages: [
           {
             name: "Into the Wild",
@@ -132,6 +136,23 @@ const translations = {
             video: "https://youtu.be/5INpfHr0lu4",
           },
         ],
+        bonuses: {
+          title: "Další bonusy",
+          items: [
+            "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
+            "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
+            "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
+            "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
+            "U sousedky Dády si můžete projet na koních. 🐴",
+            "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
+            "Můžete potkat i tlustou veverku, co vyvrací plaňky - zvířata se zde mají skvěle :-) Máme i volavky a u sousedů štěně a pár kamarádských koček (také od různých sousedů), žáby a krtky (naše) :-) 🐿️🐕🐈",
+            "Žijeme se zvířaty v symbióze a spolupracujeme, tento rok byl vstup do studia navíc zabezpečen i sršním hnízdem hned nad vstupem, které pro příští roky už neplánujeme a nahradíme ho modernějšími technologiemi. Děkujeme. (Žádní sršni nepřišli k úhoně – nechali jsme je dožít v klidu. 🐝) ⚡",
+            "Čerstvá bio zelenina, výborné hroznové víno, chmel. Celkově je tady tráva zelenější a díky krtkům je vidět krásná černozem. :-D 🥬🍇🌿",
+            "Vše podtrhuje ticho a klid, přitom do Domažlic je to jak z Národní na Palmovku (8 minut). 🤫🌳",
+            "V neposlední řadě, fajn sousedi ze všech stran a hospůdka Bidlo se sympatickou obsluhou a krásným výhledem na rybník a mlýn z druhé strany. Tady si můžete dát Plzeň a kdyby jste chtěli si dát víc piv a druhý den fungovat ve studiu, doporučujeme výlet do pivovaru v Domažlicích a držet se pouze Domažlické desítky, po které můžete bez problémů druhý den fungovat (Doporučeno paní sládkovou a několikrát pro vás otestováno, že je to pravda :-) 🍺🏡",
+            "Ráno můžete skočit i do rybníka, ale nikdo to nedělá... ale jako můžete :-) 🏊‍♂️",
+          ],
+        },
       },
     },
     location: {
@@ -149,71 +170,57 @@ const translations = {
       transport: "Dopravní dostupnost",
       byCar: "Autem",
       byTrain: "Vlakem",
-      byPlane: "Letecky",
-      surroundings: "Okolí a zajímavá místa",
-      events: "Zajímavé akce v okolí",
-      domazliceTitle: "Domažlice (cca 7 km)",
-      domazliceItems: [
-        "Historickým centrem města",
-        "Domažlická šikmá věž",
-        "Domažlický pivovar",
-        "Kulturní akce a koncerty v místních hudebních klubech",
-        "Návštěva Muzea Chodska s etnografickou expozicí",
-      ],
-      horsovskytynTitle: "Horšovský Týn (cca 25 km)",
-      horsovskytynItems: ["Renesanční zámek Horšovský Týn"],
-      babylonTitle: "Babylon (část obce Trhanov, cca 5 km)",
-      babylonItems: [
-        "Přírodní koupaliště, beach volejbal",
-        "Tenisové kurty, fotbalové hřiště",
-        "Mnoho značených cyklotras",
-      ],
-      germanyTitle: "Německo (hranice cca 15 km)",
-      germanyItems: ["Furth im Wald s hradem Drachenburg", "Místní trhy a kulturní akce"],
+      byPlane: "Letadlem",
+      events: "Tipy na výlety",
+      domazliceTitle: "Domažlice (8 min)",
+      domazliceItems: ["Historické náměstí", "Muzeum Chodska", "Kostel sv. Vavřince", "Kulturní akce a festivaly"],
+      horsovskytynTitle: "Horšovský Týn (15 min)",
+      horsovskytynItems: ["Renesanční zámek", "Prohlídky zámku", "Letní kulturní akce"],
+      babylonTitle: "Babylon (10 min)",
+      babylonItems: ["Aquapark Babylon", "Centrum Babylon"],
+      chamTitle: "Cham, Německo (20 min)",
+      chamClub: "Klub LA CHAM",
+      chamDescription: "Známý hudební klub s pravidelnými koncerty",
       domazliceEvents: [
-        { month: "Červenec", event: "Mezinárodní jazzový festival – letní hudební festival s umělci z celého světa" },
-        {
-          month: "Srpen",
-          event: "Chodské slavnosti a Vavřinecká pouť – tradiční folklorní slavnosti s hudbou, divadlem a gastronomií",
-        },
-        { month: "Červenec", event: "Hudba pod hradem – koncerty v historickém prostředí Domažlic" },
+        { month: "Květen", event: "Otevřené ateliéry" },
+        { month: "Červenec", event: "Chodské slavnosti" },
+        { month: "Srpen", event: "Filmový festival" },
+        { month: "Říjen", event: "Festival dechových hudeb" },
       ],
-      horsovskytynEvents: [{ month: "Červenec", event: "Anenská pouť" }],
-      babylonEvents: [
-        { month: "Srpen", event: "Babylonské léto – série kulturních a sportovních akcí v přírodním prostředí" },
+      horsovskytynEvents: [
+        { month: "Červen", event: "Festival klasické hudby" },
+        { month: "Červenec", event: "Divadelní léto" },
+        { month: "Září", event: "Vinný košt" },
       ],
-      chamTitle: "Cham (Německo, cca 40 km)",
-      chamClub: "Klub L.A.Cham",
-      chamDescription:
-        "Skvělý klub kde se pravidelně pořádají akce i velkých amerických kapel! (Sepultura, Dog Eat Dog, Blaze Bayley, ...)",
+      babylonEvents: [{ month: "Celoročně", event: "Koncerty a zábavní akce" }],
+      germanyTitle: "Německo (blízko)",
+      germanyItems: ["Koupaliště v Bad Kötztingu", "Výlety do Bavorského lesa", "Nákupy v městech na hranici"],
     },
     equipment: {
-      title: "Technické vybavení",
-      subtitle: "Vintage duše × Moderní technologie",
-      collectionNote: "Sbírka se průběžně aktualizuje i o zapůjčené věci viz.",
-      collaborationLink: "sekce spolupráce",
-      detailsNote:
-        "Nástroje jsou profesionálně seřízeny, preferujeme klasické lampové zesilovače a myslíme na každý detail, aby se ve zvuku nic neztratilo - většina krabiček je TRUE BYPASS nebo je přes jiné řešení ošetřeno aby true bypass byla (např. G-LAB), propojení je přes kvalitní kabely Mogami Platinum a Evidence",
-      vintageInstruments: "Vintage Nástroje",
+      title: "Vybavení",
+      subtitle: "Profesionální technika pro vaše projekty",
+      collectionNote: "Sbírka je průběžně aktualizována, ale pro aktuální seznam kontaktujte prosím Jindřicha.",
+      collaborationLink: "spolupráci",
+      detailsNote: "Vše je plně funkční, pravidelně servisované a připravené k použití.",
+      vintageInstruments: "Vintage Nástroje (60s-80s)",
       guitars: "Kytary",
-      basses: "Baskytary",
+      basses: "Basa",
       ampsAndCabs: "Zesilovače a Boxy",
-      amps: "Zesilovače",
+      amps: "Zesilovače (Lampové / Hybridní)",
       cabs: "Boxy",
-      effects: "Efekty (rozsáhlá kolekce) a další efekty",
+      effects: "Efekty",
       mics: "Mikrofony",
       drums: "Bicí",
+      infrastructure: "Infrastruktura",
+      uaPlugins: "Universal Audio Pluginy",
+      workflow: "Doporučené Workflow",
+      thankYouNote: "Děkujeme",
+      noraCollaboration: "Za spolupráci na textu děkujeme Nore z kapely",
       cables: "Kabely a Stojany",
-      modernTech: "Moderní technologie",
-      uaPlugins: "Universal Audio Pluginy (76)",
-      workflow: "Workflow doporučení",
-      infrastructure: "Ostatní technické vybavení",
-      thankYouNote: "Poděkování",
-      noraCollaboration: "Sbírka nástrojů je obohacena o unikátní kusy od Radka Fořta, kytaristy kapely",
     },
     contact: {
       title: "Kontakt",
-      info: "Kontaktní informace",
+      info: "Informace",
       address: "Adresa",
       phone: "Telefon",
       availability: "Dostupnost",
@@ -225,53 +232,74 @@ const translations = {
       ],
     },
     about: {
-      title: "Mlýn Šnajberk Studios",
-      subtitle: "Kde se rodí inspirace v srdci Evropy",
-      tagline: "Vintage duše, moderní technologie",
+      title: "O nás",
+      subtitle: "Mlýn Šnajberk Studios - místo s historií a budoucností",
+      tagline: "Kde se snoubí historie s moderním uměním a klidná příroda s pulzující kreativitou.",
       history: "Historie mlýna",
-      accommodation: "Stylové ubytování",
+      historyTimeline: [
+        { year: "1653", desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena" },
+        { year: "1810", desc: "Mlýn s pilou poháněnou vodní silou" },
+        { year: "1990", desc: "Vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice" },
+        { year: "2024", desc: "Transformace na prémiové kreativní retreat studio" },
+      ],
+      accommodation: "Ubytování",
+      accommodationRooms: "Prostory pro ubytování",
+      masterSuite: "Master Suite (63 m²)",
+      masterSuiteDesc: "Prostorný apartmán s výhledem na rybník, včetně zimní zahrady a vlastním sociálním zařízením.",
+      fourRooms: "Další pokoje",
+      fourRoomsDesc: "4 stylově zařízené pokoje s možností přistýlek.",
+      commonSpaces: "Společné prostory",
+      commonSpacesItems: [
+        "Prostorná zimní zahrada s posezením a krbem (63 m²)",
+        "Společenská místnost s domácím kinem",
+        "Venkovní terasa s výhledem na rybník",
+        "Krbové posezení v zahradě",
+      ],
+      finnishSauna: "Finská sauna",
+      finnishSaunaItems: ["Kapacita 6 osob", "Relaxační zóna s výhledem do přírody", "Možnost ochlazení v jezírku"],
+      parkOutdoor: "Park a Exteriér",
+      parkOutdoorItems: [
+        "Rozlehlý park s možností stanování a grilování",
+        "Lesopark s potokem a rybníkem",
+        "Soukromé parkoviště s nabíjecí stanicí pro elektromobily",
+        "Možnost zapůjčení kol",
+      ],
+      catering: "Catering",
+      cateringItems: [
+        { title: "Snídaně", desc: "Formou bufetu, s lokálními produkty." },
+        {
+          title: "Obědy a večeře",
+          desc: "Možnost zajištění cateringu dle Vašeho přání, od jednoduchých jídel po gurmánské zážitky. Specializujeme se na italskou kuchyni a grilování.",
+        },
+        { title: "Nápoje", desc: "Široký výběr nealkoholických a alkoholických nápojů, včetně místních piv a vín." },
+      ],
       founders: "Zakladatelé",
       foundersIntro:
-        "Za Mlýnem stojí dva hudebníci, kteří spojili lásku k hudbě, přírodě v jedinečné místo pro tvorbu a odpočinek.",
+        "Mlýn Šnajberk Studios založili Jindřich Traxmandl a Andrea Kohoutová s vizí vytvořit unikátní prostor, kde se hudba, umění a příroda prolínají v dokonalé harmonii.",
       jindrichDesc:
-        "Kytarista kapely Anteater, nadšenec do moderních technologií, který nedá dopustit na klasické vintage nástroje a aparáty.",
+        "Jindřich, hudebník a producent, stojí za technickou a uměleckou stránkou studia. Jeho zkušenosti z mezinárodní hudební scény, včetně spolupráce s kapelou <strong>Anteater</strong>, zaručují špičkovou kvalitu nahrávek. Jeho hudební zaměření je široké, od rocku a metalu po elektronickou hudbu.",
       jindrichQuote:
-        "Pracujeme na tom, aby u nás muzikanti našli inspirativní prostor dokonale připravený pro tvorbu. Mlýn má svůj genius loci a duši – a stejnou energii nesou i nástroje a vintage aparáty, které jsou zde k dispozici. V harmonii s nimi zde moderní technologie nenápadně podporují pohodlí a profesionální podmínky pro zachycení každého hudebního nápadu. Naším cílem je vytvořit krásné, klidné a pohodové prostředí, kam se lidé budou rádi vracet. Dveře máme otevřené všem kreativním lidem, nejen hudebníkům. Věříme, že právě tato kombinace – prostor s duší, nástroje s příběhem a moderní technologie v pozadí – se stane motorem a synergií pro vznik úžasných věcí.",
+        "Chceme vytvořit místo, kde se rodí hudba a kde se umělci cítí jako doma. Inspirace je všude kolem nás – v přírodě, v historii, v lidech.",
       andreaDesc:
-        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na svět inspirovat.",
-      collaboration: "Spolupráce a podpora",
-      collaborationPara1:
-        "Hledáme partnery, ne pouze dodavatele. Věříme v long-term relationships založené na shared passion pro music a quality.",
-      collaborationPara1Strong: "Hledáme partnery, ne pouze dodavatele.",
+        "Andrea, s citem pro design a organizaci, se stará o celý chod studia a pobyt hostů. Její zkušenosti z uměleckého světa a organizace akcí dodávají studiu jedinečnou atmosféru. Spolupracovala na vizuální stránce projektů kapely <strong>Anteater</strong>.",
+      collaboration: "Spolupráce a Rezervace",
+      collaborationPara1Strong: "Prostory studia",
+      collaborationPara1: " jsou k dispozici pro nahrávání, workshopy, rezidenční pobyty a další umělecké projekty.",
+      collaborationPara2Strong: "Individuální přístup",
       collaborationPara2:
-        "Ve studiu se snažíme mít co nejlepší vybavení - průběžně upravujeme setup a stále hledáme to nejlepší na trhu.",
-      collaborationPara2Strong: "Stavíte kytary, efektové krabičky, zesilovače?",
-      collaborationPara2End: "Chcete, aby se k vašim produktům dostali zajímaví zákazníci?",
-      collaborationPara3:
-        "Přijeďte se za námi podívat a nezávazně si popovídat - rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si chceme nejdříve důkladně vyzkoušet.",
-      collaboration3Strong: "Don't hesitate to contact us!",
-      collaborationFormsTitle: "Formy spolupráce:",
+        " a flexibilita jsou pro nás samozřejmostí. Jsme připraveni přizpůsobit se Vašim specifickým potřebám a požadavkům, abychom zajistili co nejlepší výsledek.",
+      collaborationPara2End: " Neváhejte se na nás obrátit s jakýmikoliv dotazy nebo požadavky.",
+      collaborationPara3Strong: "Pro komplexní balíčky",
+      collaborationPara3: " zahrnující nahrávání, ubytování a catering, nás prosím kontaktujte.",
+      collaborationFormsTitle: "Formy spolupráce",
       collaborationForms: [
-        "Artist Residencies - long-term creative partnerships",
-        "Equipment Testing - real-world evaluation s feedback",
-        "Content Creation - dokumentární projekty a tutorials",
-        "Educational Programs - masterclasses a workshops",
-        "Brand Integration - authentic product placement",
-      ],
-      bonuses: "Další bonusy",
-      bonusesItems: [
-        "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
-        "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
-        "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
-        "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
-        "U sousedky Dády si můžete projet na koních. 🐴",
-        "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔 Deer☕",
-        "Můžete potkat i tlustou veverku, co vyvrací plaňky - zvířata se zde mají skvěle :-) Máme i volavky a u sousedů štěně a pár kamarádských koček (také od různých sousedů), žáby a krtky (naše) :-) 🐿️🐕🐈",
-        "Žijeme se zvířaty v symbióze a spolupracujeme, tento rok byl vstup do studia navíc zabezpečen i sršním hnízdem hned nad vstupem, které pro příští roky už neplánujeme a nahradíme ho modernějšími technologiemi. Děkujeme. (Žádní sršni nepřišli k úhoně – nechali jsme je dožít v klidu. 🐝) ⚡",
-        "Čerstvá bio zelenina, výborné hroznové víno, chmel. Celkově je tady tráva zelenější a díky krtkům je vidět krásná černozem. :-D 🥬🍇🌿",
-        "Vše podtrhuje ticho a klid, přitom do Domažlic je to jak z Národní na Palmovku (8 minut). 🤫🌳",
-        "V neposlední řadě, fajn sousedi ze všech stran a hospůdka Bidlo se sympatickou obsluhou a krásným výhledem na rybník a mlýn z druhé strany. Tady si můžete dát Plzeň a kdyby jste chtěli si dát víc piv a druhý den fungovat ve studiu, doporučujeme výlet do pivovaru v Domažlicích a držet se pouze Domažlické desítky, po které můžete bez problémů druhý den fungovat (Doporučeno paní sládkovou a několikrát pro vás otestováno, že je to pravda :-) 🍺🏡",
-        "Ráno můžete skočit i do rybníka, ale nikdo to nedělá... ale jako můžete :-) 🏊‍♂️",
+        "Nahrávání hudby",
+        "Produkce a mastering",
+        "Workshopy a masterclassy",
+        "Umělecké rezidence",
+        "Natáčení videoklipů",
+        "Fotografování",
+        "Pořádání menších koncertů a akcí",
       ],
       faq: "Často kladené otázky",
       faqItems: [
@@ -281,19 +309,23 @@ const translations = {
         },
         {
           q: "Jste plátci DPH?",
-          a: "Ano, jsme plátci DPH. Všechny ceny na webu jsou uvedeny včetně DPH. Pro business klienty vystavujeme faktury s DPH, pro zahraniční klienty řešíme reverse charge podle EU regulations.",
+          a: "Ano, jsme plátci DPH. Všechny ceny na webu jsou uvedeny včetně DPH.",
         },
         {
           q: "Lze pronajmout celý objekt?",
-          a: "Samozřejmě! Preferujeme exkluzivní rezervace pro maximální soukromí a kreativní flow. Celý komplex lze rezervovat minimálně na 3 dny. Cena zahrnuje všechny prostory, catering možnosti a 24/7 podporu.",
+          a: "Samozřejmě! Celý komplex lze rezervovat minimálně na 3 dny.",
         },
         {
-          q: "Mohu si přivést vlastní tým, nebo mohu jen dorazit sám?",
-          a: "Obě možnosti jsou v pořádku! Pro sólové umělce máme připravený looper Plethora X5 s pěti loopy. S týmem: ubytování pro až 8 lidí, více pracovních prostorů.",
+          q: "Smí se v mlýně kouřit?",
+          a: "Nesmí. Mlýn je z velké části ze dřeva.",
         },
         {
-          q: "Jaké žánry u vás můžu nahrávat?",
-          a: "Všechny žánry vítány! Rock/Metal - autentický lampový zvuk, Electronic - precizní digitální zpracování, Acoustic/Folk - přirozená akustika místnosti, Hip-Hop/Rap - přesný monitoring, Classical/Jazz - prostorné nahrávací plochy.",
+          q: "Mohu si dovést vlastní aparaturu a je objekt dostatečně zabezpečen?",
+          a: "Samozřejmě můžete, aparatura se dá vyložit přímo před studiem. Objekt je zabezpečen na několika úrovních, současně je na hrázy kde projede jen jedno auto. Vykrást takový objekt s aparaturou, která by opravdu těžko veřejně prodávala úplně nedává smysl... Zlodějům bychom nedoporučovali s ohledem na výše zmíněné okolnosti, nad tím vůbec uvažovat.... ;-)",
+        },
+        {
+          q: "Poskytujete ubytování i samostatně?",
+          a: "Ne. Ubytování není veřejně ani samostatně poskytovaná služba. Přespání je určeno výhradně klientům nahrávacího studia jako zázemí během kreativní práce.",
         },
         {
           q: "Jak se k nám dostanu?",
@@ -306,55 +338,6 @@ const translations = {
         {
           q: "Mluvíte anglicky/německy?",
           a: "Vícejazyčný tým: Čeština - rodilí mluvčí, Angličtina - plynule (Jindřich, Andrea, tech tým), Němčina - konverzační úroveň (regionální výhoda), překladatelské služby pro smlouvy.",
-        },
-        {
-          q: "Smí se v mlýně kouřit?",
-          a: "Nesmí. Mlýn je z velké části ze dřeva, je tam hodně protipožárních ochran, které by okamžitě spustili hlasitý poplacha vzdálené notifikace - tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.",
-        },
-        {
-          q: "Mohu si dovést vlastní aparaturu a je objekt dostatečně zabezpečen?",
-          a: "Samozřejmě můžete, aparatura se dá vyložit přímo před studiem. Objekt je zabezpečen na několika úrovních, současně je na hrázi, kde projede jen jedno auto. Vykrást takový objekt s aparaturou, která by se opravdu těžko veřejně prodávala, úplně nedává smysl... Zlodějům bychom s ohledem na výše zmíněné okolnosti nedoporučovali nad tím vůbec uvažovat... ;-)",
-        },
-      ],
-      historyTimeline: [
-        { year: "1653 - Založení", desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena" },
-        { year: "1810 - Přestavba na mlýn", desc: "Mlýn s pilou poháněnou vodní silou" },
-        { year: "1990 - Pila", desc: "Vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice" },
-        { year: "2025 - Nový začátek", desc: "Transformace na prémiové kreativní retreat studio" },
-      ],
-      accommodationRooms: "Prostory pro ubytování",
-      masterSuite: "Master Suite (63m²)",
-      masterSuiteDesc:
-        "Luxusní apartmá s výhledem na rybník, krbem a terasou. Ideální pro umělce hledající klid a inspiraci.",
-      fourRooms: "Čtyři Pokojíky (15-20m²)",
-      fourRoomsDesc:
-        "Stylově zařízené pokoje s možností přistýlek, každý s vlastním sociálním zařízením. Vhodné pro menší týmy nebo kapely.",
-      commonSpaces: "Společné Prostory",
-      commonSpacesItems: [
-        "Prostorná zimní zahrada (63m²) s krbem a kuchyňským koutem",
-        "Společenská místnost s domácím kinem",
-        "Venkovní posezení s grilem a ohništěm",
-        "Knihovna s relaxační zónou",
-      ],
-      finnishSauna: "Finská Sauna",
-      finnishSaunaItems: ["Kapacita 4-6 osob", "Relaxační zóna s výhledem do přírody", "Možnost ochlazení v jezírku"],
-      parkOutdoor: "Park a Outdoor Aktivity",
-      parkOutdoorItems: [
-        "Rozsáhlý pozemek (6500m²) s možností procházek",
-        "Místní potůčky a jezírko",
-        "Možnost zapůjčení kol",
-        "Místa pro piknik a meditaci",
-      ],
-      catering: "Catering",
-      cateringItems: [
-        { title: "Snídaně:", desc: "Čerstvé lokální suroviny, domácí pečivo a marmelády." },
-        {
-          title: "Obědy & Večeře:",
-          desc: "Možnost výběru z několika menu, včetně vegetariánských a veganských variant. Nabízíme i možnost zapůjčení pizza pece pro společné večery.",
-        },
-        {
-          title: "Nápoje:",
-          desc: "Široký výběr kávy, čajů, lokálních piv a vín.",
         },
       ],
     },
@@ -418,7 +401,10 @@ const translations = {
         subtitle:
           "Individual packages are arranged from most economical to VIP - we named them after our songs :-) Studio rental includes musical equipment and instruments. Free wifi and parking on site, with EV charging available.",
         intro: "Let's go:",
+        packageLabel: "Package",
         parking: "All packages include parking in the mill area, which is under camera surveillance.",
+        accommodationNote:
+          "Accommodation is not a publicly or separately provided service. Overnight stays are intended exclusively for recording studio clients as a base during creative work.",
         packages: [
           {
             name: "Into the Wild",
@@ -453,155 +439,184 @@ const translations = {
             description:
               "This option is named after our song Fuel and also after Metallica's song, because this is really for Metallica, (but don't hesitate to write and we'll definitely work something out).",
             details:
-              "This is a VIP rental of the entire property with full service, including a winter garden where you can enjoy excellent coffee and fit your whole team or enjoy peace while the rest of the team works in the studio. Professional catering, firing up the large oven. Excellent pizza and bread - which you can try baking yourself and believe us - it's a joy and an experience you'll enjoy :-). Tesla Model X rental included in the price (200 km), optionally with a driver to visit interesting places in the area (see [location]) :-)",
+              "This is a VIP rental of the entire property with full service, including a winter garden where you can enjoy excellent coffee and fit your whole team or enjoy peace while the rest of the team works in the studio. Professional catering, firing up the large oven. Excellent pizza and bread - which you can try baking yourself and believe us - that's a joy and an experience you'll enjoy :-). Tesla Model X rental included in the price (200 km), optionally with a driver to visit interesting places in the area (see [location]) :-)",
             video: "https://youtu.be/5INpfHr0lu4",
           },
         ],
+        bonuses: {
+          title: "Additional Bonuses",
+          items: [
+            "You can raise the weir and let water flow to the mill. 😄💧",
+            "At night, the sky is like North Korea – stars everywhere. ✨🌟",
+            "For Dan Bárta (and other nature lovers): There are dragonflies here, beautiful and plentiful :-) 🦋 They fly into the winter garden and are smart enough to fly back out after their inspection without hitting the glass. Besides them, you'll find invasive plants (Japanese knotweed and sumac) that we bravely fight. 🌿⚔️ But here grow also giant sequoias, which – we admit – we don't have the heart to cut down. 🌲💚",
+            "Under the studio windows, there are often swans with cygnets that let you feed them. 🦢",
+            "At neighbor Dáda's, you can go horse riding. 🐴",
+            "Even during the day, you can encounter hedgehogs, martens, deer right in the garden. When Dáda's horses escape, you can have coffee with them practically in the winter garden :-) 🦔🦌☕",
+            "You might meet a fat squirrel that digs up planks - animals have it great here :-) We also have herons and neighbors have a puppy and a few friendly cats (also from various neighbors), frogs and moles (ours) :-) 🐿️🐕🐈",
+            "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for next years and will replace with more modern technologies. Thank you. (No hornets were harmed – we let them live out their lives in peace. 🐝) ⚡",
+            "Fresh organic vegetables, excellent grapes, hops. Overall the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
+            "Everything is underlined by silence and peace, yet Domažlice is as close as from Národní to Palmovka (8 minutes). 🤫🌳",
+            "Last but not least, nice neighbors from all sides and Bidlo pub with friendly service and beautiful view of the pond and mill from the other side. Here you can have a Pilsen and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlice ten-degree beer, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
+            "In the morning you can jump into the pond, but nobody does... but you can :-) 🏊‍♂️",
+          ],
+        },
       },
     },
     location: {
       title: "Location",
-      subtitle: "Peaceful place in the heart of Europe, close to everything important",
-      nature: "Beautiful nature - recreational area, privacy and own park",
+      subtitle: "Quiet place in the heart of Europe, close to everything important",
+      nature: "Beautiful nature - recreational area, privacy and private park",
       naturePara1:
-        "Pila 100 near Trhanov is an ideal location for lovers of beautiful nature, privacy and active recreation. The property covers over 6500 m² and offers a peaceful environment with several seating areas and two streams that create a harmonious atmosphere.",
+        "Pila u Trhanov is an ideal location for lovers of beautiful nature, privacy, and active relaxation. The property covers over 6500 m² and offers a peaceful environment with several seating areas and two streams that complete the harmonious atmosphere.",
       naturePara2:
-        "From Pila you can easily walk to Domažlice or to the top of the highest mountain of the Bohemian Forest, Čerchov (1042 m), which attracts tourists with its lookout tower and magnificent views. The area is rich in marked cycling routes and hiking trails through picturesque countryside, ideal for nature and history enthusiasts.",
+        "From Pila, you can comfortably reach Domažlice on foot, as well as the summit of the highest mountain in the Bohemian Forest, Čerchov (1042 m), which attracts tourists with its observation tower and magnificent views. The surroundings are rich in marked cycling routes and hiking trails leading through picturesque landscapes, ideal for nature and history enthusiasts.",
       naturePara3:
-        "The entire region is known for its greenery, fresh air and tranquility, creating perfect conditions for anyone seeking an escape from the hustle and bustle of the city while providing a quality base for trips and exploring the cultural and natural attractions of the region.",
+        "The entire region is known for its greenery, fresh air, and tranquility, creating perfect conditions for anyone seeking an escape from the hustle and bustle of the city while also providing a quality base for excursions and exploration of the region's cultural and natural attractions.",
       quote:
-        "We found the perfect location and a beautiful historic old mill building that we want to share. We want to elevate this place further - with creative people who will have open doors here and where great things will be created.",
+        "I found the perfect location and a beautiful historic mill building that we want to share. We want to elevate this place further – with creative people who will have open doors here and where great things will be created.",
       transport: "Transport accessibility",
-      byCar: "By car",
-      byTrain: "By train",
-      byPlane: "By plane",
-      surroundings: "Surroundings and points of interest",
-      events: "Interesting events nearby",
-      domazliceTitle: "Domažlice (approx. 7 km)",
-      domazliceItems: [
-        "Historic city center",
-        "Domažlice Leaning Tower",
-        "Domažlice Brewery",
-        "Cultural events and concerts in local music clubs",
-        "Visit to the Chodsko Museum with ethnographic exhibition",
-      ],
-      horsovskytynTitle: "Horšovský Týn (approx. 25 km)",
-      horsovskytynItems: ["Renaissance Horšovský Týn Castle"],
-      babylonTitle: "Babylon (part of Trhanov, approx. 5 km)",
-      babylonItems: [
-        "Natural swimming pool, beach volleyball",
-        "Tennis courts, football field",
-        "Many marked cycling trails",
-      ],
-      germanyTitle: "Germany (border approx. 15 km)",
-      germanyItems: ["Furth im Wald with Drachenburg Castle", "Local markets and cultural events"],
+      byCar: "By Car",
+      byTrain: "By Train",
+      byPlane: "By Plane",
+      events: "Excursion tips",
+      domazliceTitle: "Domažlice (8 min)",
+      domazliceItems: ["Historic square", "Chodsko Museum", "Church of St. Lawrence", "Cultural events and festivals"],
+      horsovskytynTitle: "Horšovský Týn (15 min)",
+      horsovskytynItems: ["Renaissance castle", "Castle tours", "Summer cultural events"],
+      babylonTitle: "Babylon (10 min)",
+      babylonItems: ["Babylon Aquapark", "Babylon Centre"],
+      chamTitle: "Cham, Germany (20 min)",
+      chamClub: "LA CHAM Club",
+      chamDescription: "A well-known music club with regular concerts",
       domazliceEvents: [
-        {
-          month: "July",
-          event: "International Jazz Festival – summer music festival with artists from around the world",
-        },
-        {
-          month: "August",
-          event:
-            "Chod Festival and St. Lawrence Fair – traditional folklore festival with music, theater and gastronomy",
-        },
-        { month: "July", event: "Music under the Castle – concerts in the historic setting of Domažlice" },
+        { month: "May", event: "Open Studios" },
+        { month: "July", event: "Chodsko Festivals" },
+        { month: "August", event: "Film Festival" },
+        { month: "October", event: "Brass Band Festival" },
       ],
-      horsovskytynEvents: [{ month: "July", event: "St. Anne's Fair" }],
-      babylonEvents: [
-        { month: "August", event: "Babylon Summer – series of cultural and sports events in natural surroundings" },
+      horsovskytynEvents: [
+        { month: "June", event: "Classical Music Festival" },
+        { month: "July", event: "Theater Summer" },
+        { month: "September", event: "Wine Tasting" },
       ],
-      chamTitle: "Cham (Germany, approx. 40 km)",
-      chamClub: "Club L.A.Cham",
-      chamDescription:
-        "Great club that regularly hosts events with major American bands! (Sepultura, Dog Eat Dog, Blaze Bayley, ...)",
+      babylonEvents: [{ month: "All year round", event: "Concerts and entertainment events" }],
+      germanyTitle: "Germany (nearby)",
+      germanyItems: ["Swimming pool in Bad Kötzting", "Trips to the Bavarian Forest", "Shopping in border towns"],
     },
     equipment: {
-      title: "Technical Equipment",
-      subtitle: "Vintage soul × Modern technology",
-      collectionNote: "The collection is continuously updated with borrowed items, see",
-      collaborationLink: "collaboration section",
-      detailsNote:
-        "Instruments are professionally set up, we prefer classic tube amplifiers and think about every detail so that nothing is lost in the sound - most pedals are TRUE BYPASS or have other solutions to ensure true bypass (e.g. G-LAB), connections are made with quality Mogami Platinum and Evidence cables",
-      vintageInstruments: "Vintage Instruments",
+      title: "Equipment",
+      subtitle: "Professional technology for your projects",
+      collectionNote: "The collection is constantly updated, but please contact Jindřich for the current list.",
+      collaborationLink: "collaboration",
+      detailsNote: "Everything is fully functional, regularly serviced, and ready for use.",
+      vintageInstruments: "Vintage Instruments (60s-80s)",
       guitars: "Guitars",
-      basses: "Bass Guitars",
-      ampsAndCabs: "Amplifiers and Cabinets",
-      amps: "Amplifiers",
+      basses: "Bass",
+      ampsAndCabs: "Amps and Cabinets",
+      amps: "Amplifiers (Tube / Hybrid)",
       cabs: "Cabinets",
-      effects: "Effects (extensive collection) and other effects",
+      effects: "Effects",
       mics: "Microphones",
       drums: "Drums",
+      infrastructure: "Infrastructure",
+      uaPlugins: "Universal Audio Plugins",
+      workflow: "Recommended Workflow",
+      thankYouNote: "Thank you",
+      noraCollaboration: "For the collaboration on the text, we thank Nora from the band",
       cables: "Cables and Stands",
-      modernTech: "Modern Technology",
-      uaPlugins: "Universal Audio Plugins (76)",
-      workflow: "Workflow recommendations",
-      infrastructure: "Other technical equipment",
-      thankYouNote: "Acknowledgments",
-      noraCollaboration:
-        "The instrument collection is enriched by unique pieces from Radek Fořt, guitarist of the band",
     },
     contact: {
       title: "Contact",
-      info: "Contact Information",
+      info: "Information",
       address: "Address",
       phone: "Phone",
       availability: "Availability",
       availabilityItems: [
         "10 min to Domažlice center",
         "10 min to German border",
-        "Train station directly in Pila",
+        "Train station directly at Pila",
         "1h 45min from Prague Airport",
       ],
     },
     about: {
-      title: "Mlýn Šnajberk Studios",
-      subtitle: "Where inspiration is born in the heart of Europe",
-      tagline: "Vintage soul, modern technology",
-      history: "Mill History",
-      accommodation: "Stylish Accommodation",
+      title: "About Us",
+      subtitle: "Mlýn Šnajberk Studios - a place with history and future",
+      tagline: "Where history blends with modern art, and peaceful nature meets vibrant creativity.",
+      history: "History of the mill",
+      historyTimeline: [
+        { year: "1653", desc: "Founding of ponds and construction of the blast furnace and hammer mill of Lamingen" },
+        { year: "1810", desc: "Mill with a sawmill powered by water force" },
+        {
+          year: "1990",
+          desc: "Established on November 24, 1990, as part of the village of Trhanov in the Domažlice district",
+        },
+        { year: "2024", desc: "Transformation into a premium creative retreat studio" },
+      ],
+      accommodation: "Accommodation",
+      accommodationRooms: "Accommodation Spaces",
+      masterSuite: "Master Suite (63 m²)",
+      masterSuiteDesc: "Spacious suite with a pond view, including a winter garden and private bathroom.",
+      fourRooms: "Other Rooms",
+      fourRoomsDesc: "4 stylishly furnished rooms with the possibility of extra beds.",
+      commonSpaces: "Common Areas",
+      commonSpacesItems: [
+        "Spacious winter garden with seating and fireplace (63 m²)",
+        "Lounge with home cinema",
+        "Outdoor terrace overlooking the pond",
+        "Fireplace seating in the garden",
+      ],
+      finnishSauna: "Finnish Sauna",
+      finnishSaunaItems: [
+        "Capacity for 6 people",
+        "Relaxation area with nature views",
+        "Option to cool off in the pond",
+      ],
+      parkOutdoor: "Park and Outdoor Area",
+      parkOutdoorItems: [
+        "Extensive park with camping and barbecue facilities",
+        "Forest park with stream and pond",
+        "Private parking with an electric car charging station",
+        "Bicycle rental available",
+      ],
+      catering: "Catering",
+      cateringItems: [
+        { title: "Breakfast", desc: "Buffet style, with local products." },
+        {
+          title: "Lunches and dinners",
+          desc: "Catering can be arranged according to your wishes, from simple meals to gourmet experiences. We specialize in Italian cuisine and barbecues.",
+        },
+        {
+          title: "Beverages",
+          desc: "Wide selection of non-alcoholic and alcoholic beverages, including local beers and wines.",
+        },
+      ],
       founders: "Founders",
       foundersIntro:
-        "Behind the Mill are two musicians who combined their love for music, nature and modern technology into a unique place for creation and relaxation.",
+        "Mlýn Šnajberk Studios was founded by Jindřich Traxmandl and Andrea Kohoutová with the vision of creating a unique space where music, art, and nature blend in perfect harmony.",
       jindrichDesc:
-        "Guitarist of the band Anteater, enthusiast of modern technologies who swears by classic vintage instruments and equipment.",
+        "Jindřich, a musician and producer, is responsible for the technical and artistic side of the studio. His experience from the international music scene, including collaboration with the band <strong>Anteater</strong>, guarantees top-notch recording quality. His musical focus is broad, from rock and metal to electronic music.",
       jindrichQuote:
-        "We work to ensure that musicians find an inspiring space perfectly prepared for creation. The Mill has its genius loci and soul – and the same energy carry the instruments and vintage equipment available here. In harmony with them, modern technology unobtrusively supports comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful and comfortable environment where people will want to return. We have open doors for all creative people, not just musicians. We believe that this combination – a space with soul, instruments with history and modern technology in the background – will become the engine and synergy for creating amazing things.",
+        "We want to create a place where music is born and where artists feel at home. Inspiration is all around us – in nature, in history, in people.",
       andreaDesc:
-        "Singer and bassist of the band Anteater and also an archaeologist. It is in the environment of the old mill that all these passions naturally come together. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindra :)) But seriously: we complement each other and try to inspire each other from our different perspectives on the World.",
-      collaboration: "Collaboration and Support",
-      collaborationPara1:
-        "We're looking for partners, not just suppliers. We believe in long-term relationships based on shared passion for music and quality.",
-      collaborationPara1Strong: "We're looking for partners, not just suppliers.",
+        "Andrea, with a sense for design and organization, manages the overall operation of the studio and guest stays. Her experience from the art world and event organization gives the studio a unique atmosphere. She collaborated on the visual aspects of the band <strong>Anteater</strong>'s projects.",
+      collaboration: "Collaboration and Reservations",
+      collaborationPara1Strong: "The studio spaces",
+      collaborationPara1: " are available for recording, workshops, residential stays, and other artistic projects.",
+      collaborationPara2Strong: "Individual approach",
       collaborationPara2:
-        "We strive to have the best equipment in the studio - we continuously update our setup and are always looking for the best on the market.",
-      collaborationPara2Strong: "Do you build guitars, effect pedals, amplifiers?",
-      collaborationPara2End: "Do you want your products to reach interesting customers?",
-      collaborationPara3:
-        "Come visit us and have a casual chat - we love meeting interesting people who create. We want to thoroughly test everything first.",
-      collaboration3Strong: "Don't hesitate to contact us!",
-      collaborationFormsTitle: "Forms of Collaboration:",
+        " and flexibility are a matter of course for us. We are ready to adapt to your specific needs and requirements to ensure the best possible outcome.",
+      collaborationPara2End: " Do not hesitate to contact us with any questions or requests.",
+      collaborationPara3Strong: "For comprehensive packages",
+      collaborationPara3: " including recording, accommodation, and catering, please contact us.",
+      collaborationFormsTitle: "Forms of Collaboration",
       collaborationForms: [
-        "Artist Residencies - long-term creative partnerships",
-        "Equipment Testing - real-world evaluation with feedback",
-        "Content Creation - documentary projects and tutorials",
-        "Educational Programs - masterclasses and workshops",
-        "Brand Integration - authentic product placement",
-      ],
-      bonuses: "Other Bonuses",
-      bonusesItems: [
-        "You can lift the mill gate and let water flow to the mill. 😄💧",
-        "At night, the sky is like in North Korea – complete darkness, stars everywhere you look. ✨🌟",
-        "For nature lovers: There are dragonflies here, beautiful and numerous. 🦋 They fly into the conservatory and are smart enough to fly back out after their inspection without bumping into the glass. Besides them, you'll find invasive plants, against which we bravely fight. 🌿⚔️ But there are also giant sequoias growing here, which – we admit – we don't have the heart to cut down. 🌲💚",
-        "Under the studio windows, there are often swans with cygnets that let you feed them. 🦢",
-        "At neighbor Dáda's, you can go horseback riding. 🐴",
-        "Even in broad daylight, you can encounter hedgehogs, martens, and deer right in the garden. When Dáda's horses escape, you can have coffee with them practically in the conservatory :-) 🦔 deer☕",
-        "You might also meet a fat squirrel that digs up planks - animals have it great here :-) We also have herons and neighbors have a puppy and a few friendly cats (also from various neighbors) :-) 🐿️🐕🐈",
-        "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for future years and will replace with more modern technologies. (No hornets were harmed – we let them live out their lives in peace. 🐝) Thank you. ⚡",
-        "Fresh organic vegetables, excellent grapes, hops. Overall, the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
-        "Everything is underlined by silence and peace, yet it's as close to Domažlice as from Národní to Palmovka (8 minutes). 🤫🌳",
-        "Last but not least, nice neighbors from all sides and the Bidlo pub with friendly staff and a beautiful view of the mill from the other side. Here you can have a Pilsner and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlická desítka, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
-        "In the morning you can also jump into the pond, but nobody does... but you can :-) 🏊‍♂️",
+        "Music recording",
+        "Production and mastering",
+        "Workshops and masterclasses",
+        "Artist residencies",
+        "Music video shooting",
+        "Photography",
+        "Organizing small concerts and events",
       ],
       faq: "Frequently Asked Questions",
       faqItems: [
@@ -610,20 +625,24 @@ const translations = {
           a: "No ;-)",
         },
         {
-          q: "Are you VAT payers?",
-          a: "Yes, we are VAT payers. All prices on the website include VAT. For business clients we issue invoices with VAT, for foreign clients we handle reverse charge according to EU regulations.",
+          q: "Are you VAT registered?",
+          a: "Yes, we are VAT registered. All prices on the website include VAT.",
         },
         {
-          q: "Can I rent the entire property?",
-          a: "We prefer exclusive bookings for maximum privacy and creative flow. The entire complex can be reserved for a minimum of 3 days. The price includes all spaces, catering options and 24/7 support.",
+          q: "Is it possible to rent the entire property?",
+          a: "Of course! The entire complex can be booked for a minimum of 3 days.",
         },
         {
-          q: "Can I bring my own team, or can I come alone?",
-          a: "Both options are perfectly fine! For solo artists, we have a Plethora X5 looper with five loops ready. With a team: accommodation for up to 8 people, multiple workspaces.",
+          q: "Is smoking allowed in the mill?",
+          a: "No. The mill is largely made of wood.",
         },
         {
-          q: "What genres can I record here?",
-          a: "All genres welcome! Rock/Metal - authentic tube amp sound, Electronic - pristine digital processing, Acoustic/Folk - natural room acoustics, Hip-Hop/Rap - tight monitoring, Classical/Jazz - spacious recording areas.",
+          q: "Can I bring my own equipment and is the property sufficiently secured?",
+          a: "Of course, you can. Equipment can be unloaded directly in front of the studio. The property is secured on several levels, and there is only one access road. Stealing such a property with equipment that would be difficult to sell publicly wouldn't make much sense... We would not recommend thieves to even consider it, given the aforementioned circumstances.... ;-)",
+        },
+        {
+          q: "Do you provide accommodation separately?",
+          a: "No. Accommodation is not a publicly or separately provided service. Overnight stays are intended exclusively for recording studio clients as a base during creative work.",
         },
         {
           q: "How do I get to you?",
@@ -631,70 +650,11 @@ const translations = {
         },
         {
           q: "Do you have catering, or do I need to arrange food myself?",
-          a: "Flexible dining options: In-house catering with local ingredients, pizza oven for community dinners (up to 8 pizzas), fully equipped kitchen for self-catering, local restaurant delivery from Domažlice.",
+          a: "Flexible dining options: In-house catering with local ingredients, pizza oven for group dinners (up to 8 pizzas), fully equipped kitchen for self-catering, delivery from local Domažlice restaurants.",
         },
         {
           q: "Do you speak English/German?",
-          a: "Multilingual team: Czech - native, English - fluent (Jindřich, Andrea, tech team), German - conversational (regional advantage), translation services for contracts.",
-        },
-        {
-          q: "Is smoking allowed in the mill?",
-          a: "No. The mill is largely made of wood and has extensive fire protection systems that would immediately trigger loud alarms and remote notifications - which means if you bring your own instruments, they'll be safe.",
-        },
-        {
-          q: "Can I bring my own equipment and is the property adequately secured?",
-          a: "Of course you can, equipment can be unloaded right in front of the studio. The property is secured on multiple levels, and it's on a dam where only one car can pass through. Stealing such a property with equipment that would be really hard to sell publicly makes absolutely no sense... We wouldn't recommend thieves to even consider it given the aforementioned circumstances.... ;-)",
-        },
-      ],
-      historyTimeline: [
-        {
-          year: "1653 - Foundation",
-          desc: "Establishment of ponds and construction of Lamingen blast furnace and forge",
-        },
-        { year: "1810 - Conversion to Mill", desc: "Mill with water-powered saw" },
-        {
-          year: "1990 - Sawmill",
-          desc: "Established on November 24, 1990 as part of Trhanov village in Domažlice district",
-        },
-        { year: "2025 - New Beginning", desc: "Transformation into premium creative retreat studio" },
-      ],
-      accommodationRooms: "Accommodation Spaces",
-      masterSuite: "Master Suite (63m²)",
-      masterSuiteDesc:
-        "Luxurious apartment with a pond view, fireplace, and terrace. Ideal for artists seeking peace and inspiration.",
-      fourRooms: "Four Rooms (15-20m²)",
-      fourRoomsDesc:
-        "Stylishly furnished rooms with the possibility of extra beds, each with its own bathroom. Suitable for small teams or bands.",
-      commonSpaces: "Common Spaces",
-      commonSpacesItems: [
-        "Spacious winter garden (63m²) with a fireplace and kitchenette",
-        "Common room with a home cinema",
-        "Outdoor seating area with BBQ and fire pit",
-        "Library with a relaxation zone",
-      ],
-      finnishSauna: "Finnish Sauna",
-      finnishSaunaItems: [
-        "Capacity for 4-6 people",
-        "Relaxation area with nature views",
-        "Option for cooling off in the pond",
-      ],
-      parkOutdoor: "Park and Outdoor Activities",
-      parkOutdoorItems: [
-        "Extensive grounds (6500m²) with walking paths",
-        "Local streams and a pond",
-        "Bicycle rental available",
-        "Areas for picnics and meditation",
-      ],
-      catering: "Catering",
-      cateringItems: [
-        { title: "Breakfast:", desc: "Fresh local ingredients, homemade bread and jams." },
-        {
-          title: "Lunch & Dinner:",
-          desc: "Choice of several menus, including vegetarian and vegan options. We also offer the possibility to rent a pizza oven for communal evenings.",
-        },
-        {
-          title: "Beverages:",
-          desc: "Wide selection of coffee, teas, local beers, and wines.",
+          a: "Multilingual team: Czech - native speakers, English - fluent (Jindřich, Andrea, tech team), German - conversational level (regional advantage), translation services for contracts.",
         },
       ],
     },
@@ -758,7 +718,10 @@ const translations = {
         subtitle:
           "Die einzelnen Pakete sind von den wirtschaftlichsten bis zu VIP sortiert - wir haben sie nach unseren Songs benannt :-) Die Studiovermietung umfasst Musikausrüstung und Instrumente. Kostenloses WLAN und Parken vor Ort, mit EV-Lademöglichkeit.",
         intro: "Los geht's:",
+        packageLabel: "Paket",
         parking: "Bei allen Paketen können Sie im Mühlenbereich parken, der videoüberwacht ist.",
+        accommodationNote:
+          "Die Unterkunft ist keine öffentlich oder separat angebotene Dienstleistung. Übernachtungen sind ausschließlich für Aufnahmestudio-Kunden als Basis während der kreativen Arbeit vorgesehen.",
         packages: [
           {
             name: "Into the Wild",
@@ -797,148 +760,184 @@ const translations = {
             video: "https://youtu.be/5INpfHr0lu4",
           },
         ],
+        bonuses: {
+          title: "Zusätzliche Boni",
+          items: [
+            "Sie können das Wehr heben und Wasser zur Mühle lassen. 😄💧",
+            "Nachts ist der Himmel wie in Nordkorea – Sterne überall. ✨🌟",
+            "Für Dan Bárta (und andere Naturliebhaber): Hier gibt es Libellen, schön und viele davon :-) 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen (Knöterich und Sumach), gegen die wir tapfer kämpfen. 🌿⚔️ Aber hier wachsen auch Riesenmammutbäume, die – wir geben zu – wir nicht übers Herz bringen, sie zu fällen. 🌲💚",
+            "Unter den Studiofenstern sind oft Schwäne mit Jungschwänen, die sich füttern lassen. 🦢",
+            "Bei Nachbarin Dáda können Sie reiten. 🐴",
+            "Selbst am helllichten Tag können Sie Igel, Marder, Rehe direkt im Garten begegnen. Wenn Dádas Pferde entkommen, können Sie praktisch im Wintergarten mit ihnen Kaffee trinken :-) 🦔🦌☕",
+            "Sie könnten auch ein dickes Eichhörnchen treffen, das Bretter umwirft - Tiere haben es hier großartig :-) Wir haben auch Reiher und Nachbarn haben einen Welpen und ein paar freundliche Katzen (auch von verschiedenen Nachbarn), Frösche und Maulwürfe (unsere) :-) 🐿️🐕🐈",
+            "Wir leben in Symbiose mit Tieren und arbeiten zusammen. Dieses Jahr wurde der Studioeingang zusätzlich durch ein Hornissennest direkt über dem Eingang gesichert, das wir für die nächsten Jahre nicht planen und durch modernere Technologien ersetzen werden. Danke. (Keine Hornissen wurden verletzt – wir ließen sie in Ruhe ihr Leben zu Ende leben. 🐝) ⚡",
+            "Frisches Bio-Gemüse, ausgezeichnete Trauben, Hopfen. Insgesamt ist das Gras hier grüner und dank der Maulwürfe sieht man schönen Schwarzboden. :-D 🥬🍇🌿",
+            "Alles wird von Stille und Ruhe unterstrichen, und doch ist es wie von Národní nach Palmovka nach Domažlice (8 Minuten). 🤫🌳",
+            "Nicht zuletzt nette Nachbarn von allen Seiten und die Kneipe Bidlo mit freundlichem Personal und wunderschönem Blick auf den Teich und die Mühle von der anderen Seite. Hier können Sie ein Pilsner haben und wenn Sie mehr Biere haben wollten und am nächsten Tag im Studio funktionieren, empfehlen wir einen Ausflug zur Brauerei in Domažlice und halten Sie sich nur an Domažlická desítka, nach der Sie am nächsten Tag problemlos funktionieren können (Empfohlen von Frau Braumeisterin und mehrmals für Sie getestet, dass es wahr ist :-) 🍺🏡",
+            "Morgens können Sie in den Teich springen, aber niemand macht das... aber Sie können :-) 🏊‍♂️",
+          ],
+        },
       },
     },
     location: {
-      title: "Standort",
-      subtitle: "Ruhiger Ort im Herzen Europas, nah an allem Wichtigen",
+      title: "Lage",
+      subtitle: "Ruhiger Ort im Herzen Europas, nahe allem Wichtigen",
       nature: "Schöne Natur - Erholungsgebiet, Privatsphäre und eigener Park",
       naturePara1:
-        "Pila 100 bei Trhanov ist ein idealer Ort für Liebhaber schöner Natur, Privatsphäre und aktiver Erholung. Das Grundstück umfasst über 6500 m² und bietet eine ruhige Umgebung mit mehreren Sitzgelegenheiten und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
+        "Pila u Trhanov ist ein idealer Standort für Liebhaber schöner Natur, Privatsphäre und aktiver Erholung. Das Grundstück erstreckt sich über 6500 m² und bietet eine ruhige Umgebung mit mehreren Sitzbereichen und zwei Bächen, die die harmonische Atmosphäre abrunden.",
       naturePara2:
-        "Von Pila aus können Sie bequem zu Fuß nach Domažlice oder auf den Gipfel des höchsten Berges des Böhmerwaldes, Čerchov (1042 m), gelangen, der Touristen mit seinem Aussichtsturm und herrlichen Ausblicken anzieht. Die Gegend ist reich an markierten Radwegen und Wanderwegen durch malerische Landschaften, ideal für Natur- und Geschichtsliebhaber.",
+        "Von Pila aus erreichen Sie bequem zu Fuß sowohl Domažlice als auch den Gipfel des höchsten Berges des Böhmischen Waldes, den Čerchov (1042 m), der Touristen mit seinem Aussichtsturm und herrlichen Ausblicken anlockt. Die Umgebung ist reich an markierten Radwegen und Wanderwegen, die durch malerische Landschaften führen, ideal für Naturliebhaber und Geschichtsinteressierte.",
       naturePara3:
-        "Die gesamte Region ist bekannt für ihr Grün, frische Luft und Ruhe und schafft perfekte Bedingungen für alle, die eine Flucht aus der Hektik der Stadt suchen und gleichzeitig eine qualitativ hochwertige Basis für Ausflüge und die Erkundung der kulturellen und natürlichen Sehenswürdigkeiten der Region.",
+        "Die gesamte Region ist bekannt für ihre Grünflächen, frische Luft und Ruhe, was perfekte Bedingungen für alle schafft, die eine Flucht aus dem Stadtleben suchen und gleichzeitig eine hochwertige Basis für Ausflüge und die Erkundung kultureller und natürlicher Sehenswürdigkeiten der Region benötigen.",
       quote:
-        "Wir haben den perfekten Ort und ein wunderschönes historisches altes Mühlengebäude gefunden, das wir teilen möchten. Wir wollen diesen Ort weiter aufwerten - mit kreativen Menschen, die hier offene Türen haben und wo großartige Dinge entstehen werden.",
+        "Ich habe hier den perfekten Standort und ein wunderschönes historisches Mühlengebäude gefunden, das wir teilen möchten. Wir wollen diesen Ort weiter verbessern – mit kreativen Menschen, die hier offene Türen finden und wo großartige Dinge entstehen werden.",
       transport: "Verkehrsanbindung",
       byCar: "Mit dem Auto",
       byTrain: "Mit dem Zug",
       byPlane: "Mit dem Flugzeug",
-      surroundings: "Umgebung und Sehenswürdigkeiten",
-      events: "Interessante Veranstaltungen in der Nähe",
-      domazliceTitle: "Domažlice (ca. 7 km)",
+      events: "Ausflugstipps",
+      domazliceTitle: "Domažlice (8 Min.)",
       domazliceItems: [
-        "Historisches Stadtzentrum",
-        "Domažlice Schiefer Turm",
-        "Domažlice Brauerei",
-        "Kulturelle Veranstaltungen und Konzerte in lokalen Musikclubs",
-        "Besuch des Chodsko Museums mit ethnografischer Ausstellung",
+        "Historischer Marktplatz",
+        "Chodsko-Museum",
+        "Kirche St. Laurentius",
+        "Kulturelle Veranstaltungen und Festivals",
       ],
-      horsovskytynTitle: "Horšovský Týn (ca. 25 km)",
-      horsovskytynItems: ["Renaissance-Schloss Horšovský Týn"],
-      babylonTitle: "Babylon (Teil von Trhanov, ca. 5 km)",
-      babylonItems: ["Naturschwimmbad, Beachvolleyball", "Tennisplätze, Fußballfeld", "Viele markierte Radwege"],
-      germanyTitle: "Deutschland (Grenze ca. 15 km)",
-      germanyItems: ["Furth im Wald mit Burg Drachenburg", "Lokale Märkte und kulturelle Veranstaltungen"],
+      horsovskytynTitle: "Horšovský Týn (15 Min.)",
+      horsovskytynItems: ["Renaissance-Schloss", "Schlossbesichtigungen", "Sommerliche Kulturveranstaltungen"],
+      babylonTitle: "Babylon (10 Min.)",
+      babylonItems: ["Babylon-Aquapark", "Babylon-Zentrum"],
+      chamTitle: "Cham, Deutschland (20 Min.)",
+      chamClub: "LA CHAM Club",
+      chamDescription: "Bekannter Musikclub mit regelmäßigen Konzerten",
       domazliceEvents: [
-        {
-          month: "Juli",
-          event: "Internationales Jazzfestival – Sommermusikfestival mit Künstlern aus der ganzen Welt",
-        },
-        {
-          month: "August",
-          event: "Chod-Fest und Laurentiuskirmes – traditionelles Folklorefest mit Musik, Theater und Gastronomie",
-        },
-        { month: "Juli", event: "Musik unter der Burg – Konzerte in der historischen Kulisse von Domažlice" },
+        { month: "Mai", event: "Offene Ateliers" },
+        { month: "Juli", event: "Chodsko-Festivals" },
+        { month: "August", event: "Filmfestival" },
+        { month: "Oktober", event: "Blasmusikfestival" },
       ],
-      horsovskytynEvents: [{ month: "Juli", event: "Annenkirmes" }],
-      babylonEvents: [
-        {
-          month: "August",
-          event: "Babylon Sommer – Reihe von kulturellen und sportlichen Veranstaltungen in natürlicher Umgebung",
-        },
+      horsovskytynEvents: [
+        { month: "Juni", event: "Klassikmusikfestival" },
+        { month: "Juli", event: "Sommertheater" },
+        { month: "September", event: "Weinprobe" },
       ],
-      chamTitle: "Cham (Deutschland, ca. 40 km)",
-      chamClub: "Club L.A.Cham",
-      chamDescription:
-        "Toller Club, der regelmäßig Veranstaltungen mit großen amerikanischen Bands veranstaltet! (Sepultura, Dog Eat Dog, Blaze Bayley, ...)",
+      babylonEvents: [{ month: "Ganzjährig", event: "Konzerte und Unterhaltungsveranstaltungen" }],
+      germanyTitle: "Deutschland (in der Nähe)",
+      germanyItems: ["Freibad in Bad Kötzting", "Ausflüge in den Bayerischen Wald", "Einkaufen in Grenzstädten"],
     },
     equipment: {
-      title: "Technische Ausstattung",
-      subtitle: "Vintage-Seele × Moderne Technologie",
-      collectionNote: "Die Sammlung wird kontinuierlich mit geliehenen Gegenständen aktualisiert, siehe",
-      collaborationLink: "Kooperationsbereich",
-      detailsNote:
-        "Instrumente sind professionell eingerichtet, wir bevorzugen klassische Röhrenverstärker und denken an jedes Detail, damit im Sound nichts verloren geht - die meisten Pedale sind TRUE BYPASS oder haben andere Lösungen, um True Bypass zu gewährleisten (z.B. G-LAB), Verbindungen werden mit hochwertigen Mogami Platinum und Evidence Kabeln hergestellt",
-      vintageInstruments: "Vintage-Instrumente",
+      title: "Ausstattung",
+      subtitle: "Professionelle Technologie für Ihre Projekte",
+      collectionNote:
+        "Die Sammlung wird ständig aktualisiert, aber kontaktieren Sie bitte Jindřich für die aktuelle Liste.",
+      collaborationLink: "Zusammenarbeit",
+      detailsNote: "Alles ist voll funktionsfähig, regelmäßig gewartet und einsatzbereit.",
+      vintageInstruments: "Vintage-Instrumente (60er-80er)",
       guitars: "Gitarren",
-      basses: "Bassgitarren",
+      basses: "Bass",
       ampsAndCabs: "Verstärker und Boxen",
-      amps: "Verstärker",
+      amps: "Verstärker (Röhren / Hybrid)",
       cabs: "Boxen",
-      effects: "Effekte (umfangreiche Sammlung) und weitere Effekte",
+      effects: "Effekte",
       mics: "Mikrofone",
       drums: "Schlagzeug",
+      infrastructure: "Infrastruktur",
+      uaPlugins: "Universal Audio Plugins",
+      workflow: "Empfohlener Workflow",
+      thankYouNote: "Danke",
+      noraCollaboration: "Für die Zusammenarbeit am Text danken wir Nora von der Band",
       cables: "Kabel und Ständer",
-      modernTech: "Moderne Technologie",
-      uaPlugins: "Universal Audio Plugins (76)",
-      workflow: "Workflow-Empfehlungen",
-      infrastructure: "Weitere technische Ausstattung",
-      thankYouNote: "Danksagung",
-      noraCollaboration: "Die Instrumentensammlung wird durch einzigartige Stücke von Radek Fořt, Gitarrist der Band",
     },
     contact: {
       title: "Kontakt",
-      info: "Kontaktinformationen",
+      info: "Informationen",
       address: "Adresse",
       phone: "Telefon",
       availability: "Verfügbarkeit",
       availabilityItems: [
-        "10 Min. zum Zentrum von Domažlice",
-        "10 Min. zur deutschen Grenze",
-        "Bahnhof direkt in Pila",
+        "10 min zum Zentrum von Domažlice",
+        "10 min zur deutschen Grenze",
+        "Bahnhof direkt bei Pila",
         "1h 45min vom Prager Flughafen",
       ],
     },
     about: {
-      title: "Mlýn Šnajberk Studios",
-      subtitle: "Wo Inspiration im Herzen Europas entsteht",
-      tagline: "Vintage-Seele, moderne Technologie",
+      title: "Über uns",
+      subtitle: "Mlýn Šnajberk Studios - ein Ort mit Geschichte und Zukunft",
+      tagline: "Wo Geschichte auf moderne Kunst trifft und friedliche Natur auf pulsierende Kreativität.",
       history: "Geschichte der Mühle",
-      accommodation: "Stilvolle Unterkunft",
+      historyTimeline: [
+        { year: "1653", desc: "Anlage von Teichen und Bau des Hochofens und Hammerwerks Lamingen" },
+        { year: "1810", desc: "Mühle mit Sägewerk, angetrieben durch Wasserkraft" },
+        { year: "1990", desc: "Gegründet am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice" },
+        { year: "2024", desc: "Transformation in ein Premium-Kreativ-Retreat-Studio" },
+      ],
+      accommodation: "Unterkunft",
+      accommodationRooms: "Unterkunftsmöglichkeiten",
+      masterSuite: "Master Suite (63 m²)",
+      masterSuiteDesc: "Geräumige Suite mit Blick auf den Teich, inklusive Wintergarten und eigenem Bad.",
+      fourRooms: "Weitere Zimmer",
+      fourRoomsDesc: "4 stilvoll eingerichtete Zimmer mit Zustellbettmöglichkeit.",
+      commonSpaces: "Gemeinschaftsräume",
+      commonSpacesItems: [
+        "Geräumiger Wintergarten mit Sitzgelegenheit und Kamin (63 m²)",
+        "Gesellschaftsraum mit Heimkino",
+        "Terrasse mit Blick auf den Teich",
+        "Kamin-Sitzbereich im Garten",
+      ],
+      finnishSauna: "Finnische Sauna",
+      finnishSaunaItems: [
+        "Kapazität für 6 Personen",
+        "Ruhebereich mit Blick in die Natur",
+        "Möglichkeit zur Abkühlung im Teich",
+      ],
+      parkOutdoor: "Park und Außenbereich",
+      parkOutdoorItems: [
+        "Großer Park mit Camping- und Grillmöglichkeiten",
+        "Waldpark mit Bach und Teich",
+        "Privater Parkplatz mit Ladestation für Elektroautos",
+        "Fahrradverleih verfügbar",
+      ],
+      catering: "Catering",
+      cateringItems: [
+        { title: "Frühstück", desc: "Als Buffet mit lokalen Produkten." },
+        {
+          title: "Mittag- und Abendessen",
+          desc: "Catering nach Ihren Wünschen, von einfachen Gerichten bis zu kulinarischen Erlebnissen. Wir sind spezialisiert auf italienische Küche und Grillgerichte.",
+        },
+        {
+          title: "Getränke",
+          desc: "Große Auswahl an alkoholfreien und alkoholischen Getränken, einschließlich lokaler Biere und Weine.",
+        },
+      ],
       founders: "Gründer",
       foundersIntro:
-        "Hinter der Mühle stehen zwei Musiker, die ihre Liebe zur Musik, Natur und modernen Technologie zu einem einzigartigen Ort für Kreation und Entspannung vereint haben.",
+        "Mlýn Šnajberk Studios wurde von Jindřich Traxmandl und Andrea Kohoutová mit der Vision gegründet, einen einzigartigen Raum zu schaffen, in dem Musik, Kunst und Natur in perfekter Harmonie verschmelzen.",
       jindrichDesc:
-        "Gitarrist der Band Anteater, Enthusiast moderner Technologien, der auf klassische Vintage-Instrumente und -Geräte schwört.",
+        "Jindřich, Musiker und Produzent, ist für die technische und künstlerische Seite des Studios verantwortlich. Seine Erfahrungen in der internationalen Musikszene, einschließlich der Zusammenarbeit mit der Band <strong>Anteater</strong>, garantieren höchste Aufnahmequalität. Sein musikalischer Fokus ist breit gefächert, von Rock und Metal bis hin zu elektronischer Musik.",
       jindrichQuote:
-        "Wir arbeiten daran, dass Musiker bei uns einen inspirierenden Raum finden, der perfekt für die Kreation vorbereitet ist. Die Mühle hat ihren Genius Loci und ihre Seele – und die gleiche Energie tragen auch die Instrumente und Vintage-Geräte, die hier zur Verfügung stehen. In Harmonie mit ihnen unterstützt moderne Technologie unauffällig Komfort und professionelle Bedingungen für die Erfassung jeder musikalischen Idee. Unser Ziel ist es, eine schöne, ruhige und komfortable Umgebung zu schaffen, in die Menschen gerne zurückkehren werden. Wir haben offene Türen für alle kreativen Menschen, nicht nur für Musiker. Wir glauben, dass diese Kombination – ein Raum mit Seele, Instrumente mit Geschichte und moderne Technologie im Hintergrund – zum Motor und zur Synergie für die Entstehung erstaunlicher Dinge wird.",
+        "Wir wollen einen Ort schaffen, an dem Musik geboren wird und an dem sich Künstler wie zu Hause fühlen. Inspiration ist überall um uns herum – in der Natur, in der Geschichte, in den Menschen.",
       andreaDesc:
-        "Sängerin und Bassistin der Band Anteater und auch Archäologin. Gerade in der Umgebung der alten Mühle verbinden sich all diese Leidenschaften natürlich. Andrea schafft die heimelige und inspirierende Atmosphäre des Studios. Wenn Sie um Mitternacht Kakao kochen möchten (oder Backing Vocals singen), zögern Sie nicht, sich an Andrea zu wenden (bei technischen Problemen dann an Jindra :)) Aber im Ernst: Wir ergänzen uns und versuchen oft, uns aus unseren unterschiedlichen Perspektiven auf die Welt zu inspirieren.",
-      collaboration: "Zusammenarbeit und Unterstützung",
+        "Andrea, mit einem Sinn für Design und Organisation, kümmert sich um den gesamten Betrieb des Studios und den Aufenthalt der Gäste. Ihre Erfahrungen in der Kunstwelt und bei der Organisation von Veranstaltungen verleihen dem Studio eine einzigartige Atmosphäre. Sie arbeitete an den visuellen Aspekten der Projekte der Band <strong>Anteater</strong> mit.",
+      collaboration: "Zusammenarbeit und Buchungen",
+      collaborationPara1Strong: "Die Studioräume",
       collaborationPara1:
-        "Wir suchen Partner, nicht nur Lieferanten. Wir glauben an langfristige Beziehungen, die auf gemeinsamer Leidenschaft für Musik und Qualität basieren.",
-      collaborationPara1Strong: "Wir suchen Partner, nicht nur Lieferanten.",
+        " stehen für Aufnahmen, Workshops, Künstlerresidenzen und andere künstlerische Projekte zur Verfügung.",
+      collaborationPara2Strong: "Individueller Ansatz",
       collaborationPara2:
-        "Wir bemühen uns, die beste Ausrüstung im Studio zu haben - wir aktualisieren kontinuierlich unser Setup und suchen immer nach dem Besten auf dem Markt.",
-      collaborationPara2Strong: "Bauen Sie Gitarren, Effektpedale, Verstärker?",
-      collaborationPara2End: "Möchten Sie, dass Ihre Produkte interessante Kunden erreichen?",
-      collaborationPara3:
-        "Besuchen Sie uns und unterhalten Sie sich unverbindlich - wir lernen gerne interessante Menschen kennen, die etwas schaffen. Wir möchten zuerst alles gründlich testen.",
-      collaboration3Strong: "Zögern Sie nicht, uns zu kontaktieren!",
-      collaborationFormsTitle: "Formen der Zusammenarbeit:",
+        " und Flexibilität sind für uns selbstverständlich. Wir sind bereit, uns an Ihre spezifischen Bedürfnisse und Anforderungen anzupassen, um das bestmögliche Ergebnis zu erzielen.",
+      collaborationPara2End: " Zögern Sie nicht, uns bei Fragen oder Anfragen zu kontaktieren.",
+      collaborationPara3Strong: "Für umfassende Pakete",
+      collaborationPara3: " einschließlich Aufnahme, Unterkunft und Catering, kontaktieren Sie uns bitte.",
+      collaborationFormsTitle: "Formen der Zusammenarbeit",
       collaborationForms: [
-        "Artist Residencies - langfristige kreative Partnerschaften",
-        "Equipment Testing - Praxistest mit Feedback",
-        "Content Creation - Dokumentarprojekte und Tutorials",
-        "Educational Programs - Masterclasses und Workshops",
-        "Brand Integration - authentische Produktplatzierung",
-      ],
-      bonuses: "Weitere Boni",
-      bonusesItems: [
-        "Sie können das Mühlenwehr anheben und Wasser zur Mühle fließen lassen. 😄💧",
-        "Nachts ist der Himmel wie in Nordkorea – völlige Dunkelheit, Sterne wohin man schaut. ✨🌟",
-        "Für Naturliebhaber: Es gibt hier Libellen, schön und zahlreich. 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen, gegen die wir tapfer kämpfen. 🌿⚔️ Aber es wachsen hier auch Riesenmammutbäume, die – wir geben es zu – wir nicht übers Herz bringen zu fällen. 🌲💚",
-        "Unter den Studiofenstern sind oft Schwäne mit Schwanenjungen, die sich füttern lassen. 🦢",
-        "Bei der Nachbarin Dáda können Sie reiten. 🐴",
-        "Auch am helllichten Tag können Sie Igel, Marder und Rehe direkt im Garten begegnen. Wenn Dádas Pferde entkommen, können Sie praktisch im Wintergarten mit ihnen Kaffee trinken :-) 🦔 deer☕",
-        "Sie können auch ein dickes Eichhörnchen treffen, das Bretter ausgräbt - Tiere haben es hier großartig :-) Wir haben auch Reiher und die Nachbarn haben einen Welpen und ein paar freundliche Katzen (auch von verschiedenen Nachbarn) :-) 🐿️🐕🐈",
-        "Wir leben in Symbiose mit Tieren und arbeiten zusammen, dieses Jahr wurde der Studioeingang zusätzlich durch ein Hornissennest direkt über dem Eingang gesichert, das wir für zukünftige Jahre nicht planen und durch modernere Technologien ersetzen werden. (Keine Hornissen wurden verletzt – wir ließen sie in Ruhe ihr Leben zu Ende leben. 🐝) Danke. ⚡",
-        "Frisches Bio-Gemüse, ausgezeichnete Trauben, Hopfen. Insgesamt ist das Gras hier grüner und dank der Maulwürfe sieht man schöne Schwarzerde. :-D 🥬🍇🌿",
-        "Alles wird durch Stille und Ruhe unterstrichen, dennoch ist es so nah an Domažlice wie von Národní nach Palmovka. 🤫🌳",
-        "Nicht zuletzt nette Nachbarn von allen Seiten und die Kneipe Bidlo mit freundlichem Personal und schönem Blick auf den Teich und die Mühle von der anderen Seite. Hier können Sie ein Pilsner trinken und wenn Sie mehr Biere trinken und am nächsten Tag im Studio funktionieren möchten, empfehlen wir einen Ausflug zur Brauerei in Domažlice und halten Sie sich nur an Domažlická desítka, nach der Sie am nächsten Tag problemlos funktionieren können (Von der Braumeisterin empfohlen und mehrmals für Sie getestet, dass es wahr ist :-) 🍺🏡",
-        "Morgens können Sie auch in den Teich springen, aber niemand tut es... aber Sie können :-) 🏊‍♂️",
+        "Musikaufnahmen",
+        "Produktion und Mastering",
+        "Workshops und Masterclasses",
+        "Künstlerresidenzen",
+        "Dreh von Musikvideos",
+        "Fotografie",
+        "Organisation kleiner Konzerte und Veranstaltungen",
       ],
       faq: "Häufig gestellte Fragen",
       faqItems: [
@@ -947,88 +946,36 @@ const translations = {
           a: "Nein ;-)",
         },
         {
-          q: "Sind Sie MwSt-pflichtig?",
-          a: "Ja, wir sind MwSt-pflichtig. Alle Preise auf der Website verstehen sich inklusive MwSt. Für Geschäftskunden stellen wir Rechnungen mit MwSt aus, für ausländische Kunden regeln wir Reverse Charge gemäß EU-Vorschriften.",
+          q: "Sind Sie umsatzsteuerpflichtig?",
+          a: "Ja, wir sind umsatzsteuerpflichtig. Alle Preise auf der Website verstehen sich inklusive Mehrwertsteuer.",
         },
         {
-          q: "Kann ich das gesamte Objekt mieten?",
-          a: "Auf jeden Fall! Wir bevorzugen exklusive Buchungen für maximale Privatsphäre und kreativen Flow. Der gesamte Komplex kann für mindestens 3 Tage reserviert werden. Der Preis beinhaltet alle Räume, Catering-Optionen und 24/7-Support.",
+          q: "Kann das gesamte Objekt gemietet werden?",
+          a: "Selbstverständlich! Der gesamte Komplex kann für mindestens 3 Tage gebucht werden.",
         },
         {
-          q: "Kann ich mein eigenes Team mitbringen oder alleine kommen?",
-          a: "Beides ist in Ordnung! Für Solo-Künstler haben wir einen Plethora X5 Looper mit fünf Loops bereit. Mit Team: Unterkunft für bis zu 8 Personen, mehrere Arbeitsräume.",
+          q: "Ist Rauchen in der Mühle erlaubt?",
+          a: "Nein. Die Mühle besteht größtenteils aus Holz.",
         },
         {
-          q: "Welche Genres kann ich hier aufnehmen?",
-          a: "Alle Genres willkommen! Rock/Metal - authentischer Röhrenverstärker-Sound, Electronic - präzise digitale Verarbeitung, Acoustic/Folk - natürliche Raumakustik, Hip-Hop/Rap - präzises Monitoring, Classical/Jazz - geräumige Aufnahmebereiche.",
+          q: "Kann ich meine eigene Ausrüstung mitbringen und ist das Objekt ausreichend gesichert?",
+          a: "Selbstverständlich können Sie das. Die Ausrüstung kann direkt vor dem Studio ausgeladen werden. Das Objekt ist auf mehreren Ebenen gesichert, und es gibt nur eine Zufahrt. Einen solchen Objekt mit Ausrüstung auszurauben, die schwer öffentlich zu verkaufen wäre, ergibt keinen Sinn... Wir würden Dieben angesichts der oben genannten Umstände nicht empfehlen, darüber nachzudenken.... ;-)",
+        },
+        {
+          q: "Bieten Sie Unterkunft auch separat an?",
+          a: "Nein. Die Unterkunft ist keine öffentlich oder separat angebotene Dienstleistung. Übernachtungen sind ausschließlich für Aufnahmestudio-Kunden als Basis während der kreativen Arbeit vorgesehen.",
         },
         {
           q: "Wie komme ich zu Ihnen?",
-          a: "Mit dem Auto: direkter Zugang, privater Parkplatz, Tesla-Ladestation. Mit dem Zug: 10 Min. zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h 45min vom Flughafen Prag, 2h vom Flughafen München, Abholservice verfügbar.",
+          a: "Mit dem Auto: direkter Zugang, private Parkplätze, Tesla-Ladestation. Mit dem Zug: 10 Min. zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h 45min vom Flughafen Prag, 2h vom Flughafen München, Abholservice verfügbar.",
         },
         {
-          q: "Haben Sie Catering oder muss ich das Essen selbst organisieren?",
-          a: "Flexible Verpflegungsoptionen: Hauseigenes Catering mit lokalen Zutaten, Pizzaofen für gemeinsame Abendessen (bis zu 8 Pizzen), voll ausgestattete Küche für Selbstversorgung, Lieferung von lokalen Restaurants aus Domažlice.",
+          q: "Haben Sie Catering, oder muss ich das Essen selbst organisieren?",
+          a: "Flexible Verpflegungsmöglichkeiten: Internes Catering mit lokalen Zutaten, Pizzaofen für gemeinsame Abendessen (bis zu 8 Pizzen), voll ausgestattete Küche für Selbstversorgung, Lieferung von lokalen Restaurants aus Domažlice.",
         },
         {
           q: "Sprechen Sie Englisch/Deutsch?",
           a: "Mehrsprachiges Team: Tschechisch - Muttersprachler, Englisch - fließend (Jindřich, Andrea, Tech-Team), Deutsch - Konversationsniveau (regionaler Vorteil), Übersetzungsdienste für Verträge.",
-        },
-        {
-          q: "Darf man in der Mühle rauchen?",
-          a: "Nein. Die Mühle besteht größtenteils aus Holz und verfügt über umfangreiche Brandschutzsysteme, die sofort laute Alarme und Fernbenachrichtigungen auslösen würden - das heißt, wenn Sie Ihre eigenen Instrumente mitbringen, sind sie sicher.",
-        },
-        {
-          q: "Kann ich meine eigene Ausrüstung mitbringen und ist das Objekt ausreichend gesichert?",
-          a: "Natürlich können Sie, die Ausrüstung kann direkt vor dem Studio ausgeladen werden. Das Objekt ist auf mehreren Ebenen gesichert, und es liegt an einem Damm, wo nur ein Auto durchfahren kann. Ein solches Objekt mit Ausrüstung zu stehlen, die wirklich schwer öffentlich zu verkaufen wäre, macht absolut keinen Sinn... Wir würden Dieben angesichts der oben genannten Umstände nicht empfehlen, darüber nachzudenken.... ;-)",
-        },
-      ],
-      historyTimeline: [
-        { year: "1653 - Gründung", desc: "Anlage von Teichen und Bau der Lamingen Hochofen und Schmiede" },
-        { year: "1810 - Umbau zur Mühle", desc: "Mühle mit wasserbetriebenem Sägewerk" },
-        {
-          year: "1990 - Sägewerk",
-          desc: "Gegründet am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice",
-        },
-        { year: "2024 - Neuer Anfang", desc: "Umwandlung in ein Premium-Kreativ-Retreat-Studio" },
-      ],
-      accommodationRooms: "Unterkunftsbereiche",
-      masterSuite: "Master Suite (63m²)",
-      masterSuiteDesc:
-        "Luxuriöses Apartment mit Teichblick, Kamin und Terrasse. Ideal für Künstler, die Ruhe und Inspiration suchen.",
-      fourRooms: "Vier Zimmer (15-20m²)",
-      fourRoomsDesc:
-        "Stilvoll eingerichtete Zimmer mit Zustellmöglichkeiten, jedes mit eigenem Bad. Geeignet für kleinere Teams oder Bands.",
-      commonSpaces: "Gemeinschaftsräume",
-      commonSpacesItems: [
-        "Geräumiger Wintergarten (63m²) mit Kamin und Kochnische",
-        "Gemeinschaftsraum mit Heimkino",
-        "Außenbereich mit Grill und Feuerstelle",
-        "Bibliothek mit Entspannungszone",
-      ],
-      finnishSauna: "Finnische Sauna",
-      finnishSaunaItems: [
-        "Kapazität für 4-6 Personen",
-        "Entspannungsbereich mit Blick in die Natur",
-        "Möglichkeit zur Abkühlung im Teich",
-      ],
-      parkOutdoor: "Park und Outdoor-Aktivitäten",
-      parkOutdoorItems: [
-        "Großes Grundstück (6500m²) mit Spazierwegen",
-        "Lokale Bäche und Teich",
-        "Fahrradverleih möglich",
-        "Bereiche für Picknicks und Meditation",
-      ],
-      catering: "Catering",
-      cateringItems: [
-        { title: "Frühstück:", desc: "Frische lokale Zutaten, hausgemachtes Brot und Marmeladen." },
-        {
-          title: "Mittag- und Abendessen:",
-          desc: "Auswahl aus mehreren Menüs, einschließlich vegetarischer und veganer Optionen. Wir bieten auch die Möglichkeit, einen Pizzaofen für gesellige Abende zu mieten.",
-        },
-        {
-          title: "Getränke:",
-          desc: "Große Auswahl an Kaffee, Tee, lokalen Bieren und Weinen.",
         },
       ],
     },
@@ -1078,43 +1025,7 @@ export default function MlynNaPilePage() {
     }
   }, [])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      // Check scroll position on any scrollable element
-      const mlynSection = mlynSectionRef.current
-      const onasSection = onasSectionRef.current
-
-      let isScrolled = false
-
-      if (mlynSection && mlynSection.scrollTop > 50) {
-        isScrolled = true
-      }
-      if (onasSection && onasSection.scrollTop > 50) {
-        isScrolled = true
-      }
-
-      setScrolled(isScrolled)
-    }
-
-    const mlynSection = mlynSectionRef.current
-    const onasSection = onasSectionRef.current
-
-    if (mlynSection) {
-      mlynSection.addEventListener("scroll", handleScroll)
-    }
-    if (onasSection) {
-      onasSection.addEventListener("scroll", handleScroll)
-    }
-
-    return () => {
-      if (mlynSection) {
-        mlynSection.removeEventListener("scroll", handleScroll)
-      }
-      if (onasSection) {
-        onasSection.removeEventListener("scroll", handleScroll)
-      }
-    }
-  }, [])
+  // Scroll detection didn't work because content fits on screen without scrolling
 
   const toggleVideo = () => {
     const iframe = document.getElementById("background-video") as HTMLIFrameElement
@@ -1164,7 +1075,12 @@ export default function MlynNaPilePage() {
     }, 1000)
   }
 
-  // Removed handleSectionChange from dependencies as it is memoized now.
+  const getNextSection = () => {
+    const currentIndex = sectionOrder.indexOf(currentSection)
+    const nextIndex = (currentIndex + 1) % sectionOrder.length
+    return sectionOrder[nextIndex]
+  }
+
   const handleSectionChange = React.useCallback(
     (section: string) => {
       console.log("[v0] Changing section to:", section, "dark mode:", isDarkMode)
@@ -1217,8 +1133,8 @@ export default function MlynNaPilePage() {
         setIsVideoPlaying(true)
       }, 1000)
     },
-    [isDarkMode, currentSection],
-  ) // Added dependencies for currentSection and isDarkMode
+    [isDarkMode],
+  ) // Added dependencies for isDarkMode
 
   useEffect(() => {
     // Clear any existing timer
@@ -1274,57 +1190,6 @@ export default function MlynNaPilePage() {
       }
     }
   }, [currentSection, isDarkMode])
-
-  /** rest of code here **/
-  useEffect(() => {
-    console.log("[v0] Universal scroll useEffect, currentSection:", currentSection)
-
-    let scrollContainer: HTMLElement | null = null
-
-    // Determine which section is currently active and get its scroll container
-    if (currentSection === "mlyn") {
-      scrollContainer = mlynSectionRef.current
-      console.log("[v0] Active container: Mlýn section", scrollContainer ? "exists" : "is null")
-    } else if (currentSection === "home") {
-      scrollContainer = studioSectionRef.current
-      console.log("[v0] Active container: Studio section", scrollContainer ? "exists" : "is null")
-    } else if (currentSection === "about") {
-      scrollContainer = onasSectionRef.current
-      console.log("[v0] Active container: O nás section", scrollContainer ? "exists" : "is null")
-    }
-
-    if (!scrollContainer) {
-      console.log("[v0] No scroll container found, skipping handler attachment")
-      return
-    }
-
-    const handleScroll = () => {
-      const scrollTop = scrollContainer!.scrollTop
-      const scrollHeight = scrollContainer!.scrollHeight
-      const clientHeight = scrollContainer!.clientHeight
-      const scrollPercentage = (scrollTop / (scrollHeight - clientHeight)) * 100
-
-      console.log("[v0] Scroll detected in", currentSection, "- Percentage:", scrollPercentage.toFixed(2) + "%")
-
-      // When user scrolls to 95% of the section, auto-switch to next
-      if (scrollPercentage >= 95) {
-        console.log("[v0] 95% threshold reached! Auto-switching to next section...")
-        const currentIndex = sectionOrder.indexOf(currentSection)
-        const nextIndex = (currentIndex + 1) % sectionOrder.length
-        const nextSection = sectionOrder[nextIndex]
-        console.log("[v0] Next section:", nextSection)
-        handleSectionChange(nextSection)
-      }
-    }
-
-    console.log("[v0] Attaching scroll handler to", currentSection, "section")
-    scrollContainer.addEventListener("scroll", handleScroll)
-
-    return () => {
-      console.log("[v0] Removing scroll handler from", currentSection, "section")
-      scrollContainer?.removeEventListener("scroll", handleScroll)
-    }
-  }, [currentSection, handleSectionChange, sectionOrder])
 
   const [showPresentationMessage, setShowPresentationMessage] = useState(true)
 
@@ -1409,7 +1274,7 @@ export default function MlynNaPilePage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             {/* Main menu - centered on desktop, full width on mobile */}
             <div className="flex-1 flex justify-center">
-              <div className="flex flex-wrap justify-center space-x-3 md:space-x-6 text-white/90 px-3 md:px-6 py-3 rounded-lg text-sm md:text-base">
+              <div className="flex flex-wrap justify-center space-x-3 md:space-x-6 text-white/90 px-3 md:px-6 py-3 rounded-lg text-[10px] md:text-xs">
                 <button onClick={() => handleSectionChange("mlyn")} className="hover:text-white transition-colors">
                   {t.nav.mlyn}
                 </button>
@@ -1436,11 +1301,11 @@ export default function MlynNaPilePage() {
               <div className="relative">
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="icon" // Reduced button size from size="sm" to size="icon" with smaller dimensions
                   onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
                 >
-                  <Globe className="h-4 w-4" />
+                  <Globe className="h-3 w-3" />
                 </Button>
                 {showLanguageMenu && (
                   <div className="absolute top-full mt-1 right-0 bg-black/80 backdrop-blur-sm rounded-lg p-1 flex flex-col gap-1 min-w-[60px] z-50">
@@ -1483,23 +1348,23 @@ export default function MlynNaPilePage() {
 
               <Button
                 variant="outline"
-                size="sm"
+                size="icon" // Reduced desktop button size
                 onClick={toggleDarkMode}
-                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white ${
+                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7 ${
                   isDarkMode ? "bg-blue-500/30 text-white" : "bg-amber-500/30 text-white"
                 }`}
                 title={isDarkMode ? t.mlyn.darkMode : t.mlyn.lightMode}
               >
-                {isDarkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                {isDarkMode ? <Moon className="h-3 w-3" /> : <Sun className="h-3 w-3" />}
               </Button>
 
               <Button
                 variant="outline"
-                size="sm"
+                size="icon" // Reduced desktop button size
                 onClick={toggleVideo}
-                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
               >
-                {isVideoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                {isVideoPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
               </Button>
             </div>
 
@@ -1508,11 +1373,11 @@ export default function MlynNaPilePage() {
               <div className="relative">
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="icon" // Reduced desktop button size
                   onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
                 >
-                  <Globe className="h-4 w-4" />
+                  <Globe className="h-3 w-3" />
                 </Button>
                 {showLanguageMenu && (
                   <div className="absolute top-full mt-1 right-0 bg-black/80 backdrop-blur-sm rounded-lg p-1 flex flex-col gap-1 min-w-[60px]">
@@ -1554,22 +1419,22 @@ export default function MlynNaPilePage() {
               </div>
               <Button
                 variant="outline"
-                size="sm"
+                size="icon" // Reduced desktop button size
                 onClick={toggleDarkMode}
-                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white ${
+                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7 ${
                   isDarkMode ? "bg-blue-500/30 text-white" : "bg-amber-500/30 text-white"
                 }`}
                 title={isDarkMode ? t.mlyn.darkMode : t.mlyn.lightMode}
               >
-                {isDarkMode ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                {isDarkMode ? <Moon className="h-3 w-3" /> : <Sun className="h-3 w-3" />}
               </Button>
               <Button
                 variant="outline"
-                size="sm"
+                size="icon" // Reduced desktop button size
                 onClick={toggleVideo}
-                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white"
+                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
               >
-                {isVideoPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                {isVideoPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
               </Button>
             </div>
           </div>
@@ -1581,22 +1446,21 @@ export default function MlynNaPilePage() {
             background: "linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)",
           }}
         />
-        {/* </CHANGE> Added h-screen and flex flex-col to make children with overflow-y-auto scrollable */}
+        {/* </CHANGE> Adding h-screen flex flex-col to enable scroll in child sections */}
         <div className="h-screen flex flex-col">
           {showPresentationMessage && (
-            <div className="absolute left-1/2 -translate-x-1/2 top-20 text-white/90 text-sm animate-fade-in">
+            <div className="absolute left-1/2 -translate-x-1/2 top-20 text-white/90 text-xs animate-fade-in">
               {t.mlyn.endMessage}
             </div>
           )}
 
           {showEndMessage && (
-            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 text-white/90 text-lg font-light animate-in fade-in duration-500 z-50 bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/20">
+            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 text-white/90 text-base font-light animate-in fade-in duration-500 z-50 bg-black/40 backdrop-blur-md px-6 py-3 rounded-full border border-white/20">
               {t.mlyn.endMessage}
             </div>
           )}
 
           <div className="">
-            {" "}
             {/* Removed pt-32 from here and applied it to the content sections */}
             {currentSection === "mlyn" ? (
               <div
@@ -1605,21 +1469,21 @@ export default function MlynNaPilePage() {
               >
                 <div className="px-6 py-12">
                   <div className="text-center max-w-5xl mx-auto mb-16">
-                    <h1 className="text-6xl md:text-8xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
-                    <p className="text-xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.subtitle}</p>
-                    <p className="text-xl md:text-3xl text-white/90 font-light mb-4">{t.mlyn.tagline}</p>
-                    <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
+                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
+                    <p className="text-lg md:text-2xl text-white/90 font-light mb-4">{t.mlyn.subtitle}</p>
+                    <p className="text-lg md:text-2xl text-white/90 font-light mb-4">{t.mlyn.tagline}</p>
+                    <p className="text-base md:text-lg text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
                       {t.mlyn.description}
                     </p>
-                    <p className="text-sm text-white/50 animate-pulse">{t.mlyn.scrollHint}</p>
+                    <p className="text-xs text-white/50 animate-pulse">{t.mlyn.scrollHint}</p>
                   </div>
 
                   <div className="max-w-6xl mx-auto mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-12 text-center">
+                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-12 text-center">
                       {t.mlyn.threeSpaces}
                     </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-grid-cols-2 lg:grid-cols-3 gap-6">
                       <Card
                         className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
                         onClick={() => handleSectionChange("equipment")}
@@ -1627,7 +1491,7 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6 text-center">
                           <Guitar className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.vintageInstruments}</h3>
-                          <p className="text-white/80 text-sm">{t.mlyn.vintageDesc}</p>
+                          <p className="text-white/80 text-xs">{t.mlyn.vintageDesc}</p>
                         </CardContent>
                       </Card>
 
@@ -1638,7 +1502,7 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6 text-center">
                           <Home className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.accommodation}</h3>
-                          <p className="text-white/80 text-sm">{t.mlyn.accommodationDesc}</p>
+                          <p className="text-white/80 text-xs">{t.mlyn.accommodationDesc}</p>
                         </CardContent>
                       </Card>
 
@@ -1649,7 +1513,7 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6 text-center">
                           <MapPin className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.locationCard}</h3>
-                          <p className="text-white/80 text-sm">{t.mlyn.locationDesc}</p>
+                          <p className="text-white/80 text-xs">{t.mlyn.locationDesc}</p>
                         </CardContent>
                       </Card>
 
@@ -1660,7 +1524,7 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6 text-center">
                           <Headphones className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.studios}</h3>
-                          <p className="text-white/80 text-sm whitespace-pre-line">{t.mlyn.studiosDesc}</p>
+                          <p className="text-white/80 text-xs whitespace-pre-line">{t.mlyn.studiosDesc}</p>
                         </CardContent>
                       </Card>
 
@@ -1671,7 +1535,7 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6 text-center">
                           <Mic className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.modernTech}</h3>
-                          <p className="text-white/80 text-sm">{t.mlyn.modernTechDesc}</p>
+                          <p className="text-white/80 text-xs">{t.mlyn.modernTechDesc}</p>
                         </CardContent>
                       </Card>
 
@@ -1679,33 +1543,41 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6 text-center">
                           <Calendar className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.benefits}</h3>
-                          <p className="text-white/80 text-sm">{t.mlyn.benefitsDesc}</p>
+                          <p className="text-white/80 text-xs">{t.mlyn.benefitsDesc}</p>
                         </CardContent>
                       </Card>
                     </div>
                   </div>
 
                   <div className="text-center py-24">
-                    <p className="text-3xl md:text-5xl font-light text-white/90 mb-4">{t.mlyn.endMessage}</p>
-                    <p className="text-sm text-white/50">{t.mlyn.menuHint}</p>
+                    <p className="text-2xl md:text-4xl font-light text-white/90 mb-4">{t.mlyn.endMessage}</p>
+                    <p className="text-xs text-white/50">{t.mlyn.menuHint}</p>
                   </div>
                 </div>
 
-                <div className="h-screen" />
+                <div className="flex justify-center pb-12">
+                  <Button
+                    onClick={() => handleSectionChange(getNextSection())}
+                    className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white"
+                    size="lg"
+                  >
+                    <ChevronDown className="h-5 w-5 mr-2" />
+                    Další sekce
+                  </Button>
+                </div>
               </div>
             ) : currentSection === "home" ? (
               // Removed uvod section, only keeping home (Studio) section
               <div ref={studioSectionRef} className="flex-1 overflow-y-auto pt-32">
-                {" "}
                 {/* Applied pt-32 here */}
                 {/* Hero Section */}
                 <div className="flex items-center justify-center px-6 py-16 text-white">
                   <div className="text-center max-w-5xl">
-                    <h1 className="text-5xl md:text-7xl font-bold mb-4 text-balance text-white drop-shadow-lg">
+                    <h1 className="text-3xl md:text-5xl font-bold mb-4 text-balance text-white drop-shadow-lg">
                       {t.studio.title}
                     </h1>
-                    <p className="text-xl md:text-2xl font-light mb-2 text-white drop-shadow-lg">{t.studio.subtitle}</p>
-                    <p className="text-base md:text-lg text-white/95 max-w-3xl mx-auto drop-shadow-lg">
+                    <p className="text-lg md:text-xl font-light mb-2 text-white drop-shadow-lg">{t.studio.subtitle}</p>
+                    <p className="text-sm md:text-base text-white/95 max-w-3xl mx-auto drop-shadow-lg">
                       {t.studio.description}
                     </p>
                   </div>
@@ -1715,15 +1587,15 @@ export default function MlynNaPilePage() {
                   <div className="max-w-7xl mx-auto w-full">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                       <div className="space-y-4">
-                        <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                        <h2 className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
                           {t.studio.mainStudio}
                         </h2>
-                        <p className="text-2xl font-light text-white/95 drop-shadow-lg">{t.studio.mainStudioSize}</p>
-                        <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">
+                        <p className="text-xl font-light text-white/95 drop-shadow-lg">{t.studio.mainStudioSize}</p>
+                        <p className="text-base leading-relaxed text-white/90 drop-shadow-md">
                           {t.studio.mainStudioDesc}
                         </p>
-                        <div className="space-y-2 text-sm text-white/90">
-                          <h3 className="text-xl font-semibold text-white drop-shadow-lg">{t.studio.equipment}</h3>
+                        <div className="space-y-2 text-xs text-white/90">
+                          <h3 className="text-lg font-semibold text-white drop-shadow-lg">{t.studio.equipment}</h3>
                           <ul className="space-y-1">
                             <li>• Vintage Fender Custom Shop kytary</li>
                             <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
@@ -1760,15 +1632,15 @@ export default function MlynNaPilePage() {
                         />
                       </div>
                       <div className="space-y-4 order-1 lg:order-2">
-                        <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                        <h2 className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
                           {t.studio.controlRoom}
                         </h2>
-                        <p className="text-2xl font-light text-white/95 drop-shadow-lg">{t.studio.controlRoomSize}</p>
-                        <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">
+                        <p className="text-xl font-light text-white/95 drop-shadow-lg">{t.studio.controlRoomSize}</p>
+                        <p className="text-base leading-relaxed text-white/90 drop-shadow-md">
                           {t.studio.controlRoomDesc}
                         </p>
-                        <div className="space-y-2 text-sm text-white/90">
-                          <h3 className="text-xl font-semibold text-white drop-shadow-lg">{t.studio.technology}</h3>
+                        <div className="space-y-2 text-xs text-white/90">
+                          <h3 className="text-lg font-semibold text-white drop-shadow-lg">{t.studio.technology}</h3>
                           <ul className="space-y-1">
                             <li>• MAC + Apple Pro Display XDR 6K monitor</li>
                             <li>• Universal Audio Apollo Interface</li>
@@ -1786,11 +1658,13 @@ export default function MlynNaPilePage() {
                   <div className="max-w-7xl mx-auto w-full">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                       <div className="space-y-4">
-                        <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+                        <h2 className="text-2xl md:text-3xl font-bold text-white drop-shadow-lg">
                           {t.studio.millstoneStudio}
                         </h2>
-                        <p className="text-2xl font-light text-white/95 drop-shadow-lg">{t.studio.millstoneSize}</p>
-                        <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{t.studio.millstoneDesc}</p>
+                        <p className="text-xl font-light text-white/95 drop-shadow-lg">{t.studio.millstoneSize}</p>
+                        <p className="text-base leading-relaxed text-white/90 drop-shadow-md">
+                          {t.studio.millstoneDesc}
+                        </p>
                       </div>
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
                         <iframe
@@ -1808,13 +1682,13 @@ export default function MlynNaPilePage() {
                 <div className="px-6 py-16 bg-white/5 backdrop-blur-sm text-white">
                   <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-12">
-                      <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-lg">
+                      <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 drop-shadow-lg">
                         {t.studio.accommodation.title}
                       </h2>
-                      <p className="text-lg md:text-xl text-white/90 max-w-4xl mx-auto mb-4 drop-shadow-md">
+                      <p className="text-base md:text-lg text-white/90 max-w-4xl mx-auto mb-4 drop-shadow-md">
                         {t.studio.accommodation.subtitle}
                       </p>
-                      <p className="text-xl font-semibold text-white/95 drop-shadow-md">
+                      <p className="text-lg font-semibold text-white/95 drop-shadow-md">
                         {t.studio.accommodation.intro}
                       </p>
                     </div>
@@ -1824,13 +1698,16 @@ export default function MlynNaPilePage() {
                         <div key={index} className="bg-black/40 backdrop-blur-sm rounded-xl p-8 border border-white/10">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                             <div className="space-y-4">
-                              <h3 className="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
-                                {index + 1}. Balíček "{pkg.name}"
+                              {/* Using translated package label instead of hardcoded "Balíček" */}
+                              <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg">
+                                {index + 1}. {t.studio.accommodation.packageLabel} "{pkg.name}"
                               </h3>
-                              <p className="text-sm text-secondary/90 font-mono">{pkg.tags}</p>
-                              <p className="text-lg leading-relaxed text-white/90 drop-shadow-md">{pkg.description}</p>
+                              <p className="text-xs text-secondary/90 font-mono">{pkg.tags}</p>
+                              <p className="text-base leading-relaxed text-white/90 drop-shadow-md">
+                                {pkg.description}
+                              </p>
 
-                              <p className="text-base leading-relaxed text-white/80">
+                              <p className="text-sm leading-relaxed text-white/80">
                                 {pkg.details.includes("[lokalita]") ||
                                 pkg.details.includes("[location]") ||
                                 pkg.details.includes("[Standort]") ? (
@@ -1860,7 +1737,7 @@ export default function MlynNaPilePage() {
                                 />
                               ) : (
                                 <div className="w-full h-full bg-black/60 flex items-center justify-center">
-                                  <p className="text-white/60 text-lg">Video bude doplněno</p>
+                                  <p className="text-white/60 text-base">Video bude doplněno</p>
                                 </div>
                               )}
                             </div>
@@ -1870,24 +1747,45 @@ export default function MlynNaPilePage() {
                     </div>
 
                     <div className="mt-12 text-center">
-                      <p className="text-lg text-white/80 flex items-center justify-center gap-2">
+                      <p className="text-base text-white/80 flex items-center justify-center gap-2">
                         <Car className="h-5 w-5" />
                         {t.studio.accommodation.parking}
                       </p>
+                      <p className="text-xs md:text-sm text-white/80 leading-relaxed mt-3">
+                        {t.studio.accommodation.accommodationNote}
+                      </p>
+                    </div>
+
+                    {/* Bonuses Section */}
+                    <div className="mt-16">
+                      <h2 className="text-2xl md:text-4xl font-bold text-white mb-8 text-center">
+                        {t.studio.accommodation.bonuses.title}
+                      </h2>
+                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-8">
+                          <div className="space-y-3">
+                            {t.studio.accommodation.bonuses.items.map((bonus, index) => (
+                              <p key={index} className="text-white/90 text-xs leading-relaxed">
+                                {bonus}
+                              </p>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
                 </div>
                 {/* CTA Section */}
                 <div className="flex items-center justify-center px-6 py-12 bg-black/70 text-white">
                   <div className="text-center max-w-3xl">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-4 text-white drop-shadow-lg">
+                    <h2 className="text-xl md:text-2xl font-bold mb-4 text-white drop-shadow-lg">
                       {t.studio.ctaTitle}
                     </h2>
-                    <p className="text-lg mb-6 text-white/90 drop-shadow-md">{t.studio.ctaDesc}</p>
+                    <p className="text-base mb-6 text-white/90 drop-shadow-md">{t.studio.ctaDesc}</p>
                     <Button
                       size="lg"
                       onClick={() => handleSectionChange("contact")}
-                      className="px-8 py-4 text-base bg-white text-black hover:bg-gray-200"
+                      className="px-8 py-4 text-sm bg-white text-black hover:bg-gray-200"
                     >
                       {t.studio.ctaButton}
                     </Button>
@@ -1896,20 +1794,19 @@ export default function MlynNaPilePage() {
               </div>
             ) : currentSection === "lokalita" ? (
               <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
-                {" "}
                 {/* Applied pt-32 here */}
                 <div className="max-w-6xl mx-auto">
                   <div className="text-center mb-12">
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.location.title}</h1>
-                    <p className="text-xl md:text-2xl text-white/90 font-light">{t.location.subtitle}</p>
+                    <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">{t.location.title}</h1>
+                    <p className="text-lg md:text-xl text-white/90 font-light">{t.location.subtitle}</p>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
                         <MapPin className="h-8 w-8 text-secondary mx-auto mb-4" />
-                        <h3 className="text-white font-semibold mb-4 text-center text-xl">{t.location.nature}</h3>
-                        <div className="text-white/80 text-sm space-y-4 leading-relaxed">
+                        <h3 className="text-white font-semibold mb-4 text-center text-lg">{t.location.nature}</h3>
+                        <div className="text-white/80 text-xs space-y-4 leading-relaxed">
                           <p>{t.location.naturePara1}</p>
                           <p>{t.location.naturePara2}</p>
                           <p>{t.location.naturePara3}</p>
@@ -1920,16 +1817,16 @@ export default function MlynNaPilePage() {
 
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.location.transport}</h3>
+                        <h3 className="text-xl font-bold text-white mb-6">{t.location.transport}</h3>
                         <div className="space-y-4">
                           <div className="flex items-start space-x-4">
                             <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
                             <div>
                               <h4 className="font-semibold text-white mb-2">{t.location.byCar}</h4>
-                              <ul className="space-y-1 text-sm text-white">
+                              <ul className="space-y-1 text-xs text-white">
                                 <li>• 10 min do centra Domažlic</li>
                                 <li>• 10 min na německé hranice</li>
-                                <li>• Přímý přístup, private parking</li>
+                                <li>• Vlaková zastávka přímo na Pile</li>
                                 <li>• Tesla charging station</li>
                               </ul>
                             </div>
@@ -1938,7 +1835,7 @@ export default function MlynNaPilePage() {
                             <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
                             <div>
                               <h4 className="font-semibold text-white mb-2">{t.location.byTrain}</h4>
-                              <ul className="space-y-1 text-sm text-white">
+                              <ul className="space-y-1 text-xs text-white">
                                 <li>• Vlaková zastávka přímo na Pile</li>
                                 <li>• 10 min walk z Trhanov station</li>
                               </ul>
@@ -1948,7 +1845,7 @@ export default function MlynNaPilePage() {
                             <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
                             <div>
                               <h4 className="font-semibold text-white mb-2">{t.location.byPlane}</h4>
-                              <ul className="space-y-1 text-sm text-white">
+                              <ul className="space-y-1 text-xs text-white">
                                 <li>• 1h 45min z Prague Airport</li>
                                 <li>• 2h z Munich Airport</li>
                                 <li>• Pick-up service available</li>
@@ -1961,7 +1858,7 @@ export default function MlynNaPilePage() {
                   </div>
 
                   <div className="mb-16">
-                    <h2 className="text-4xl font-bold text-white mb-8 text-center">{t.location.surroundings}</h2>
+                    <h2 className="text-3xl font-bold text-white mb-8 text-center">{t.location.events}</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                       {/* Domažlice */}
@@ -1969,9 +1866,9 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <MapPin className="h-6 w-6 text-secondary" />
-                            <h3 className="text-2xl font-bold text-white">{t.location.domazliceTitle}</h3>
+                            <h3 className="text-xl font-bold text-white">{t.location.domazliceTitle}</h3>
                           </div>
-                          <ul className="text-white/80 space-y-2 text-sm">
+                          <ul className="text-white/80 space-y-2 text-xs">
                             {t.location.domazliceItems.map((item, i) => (
                               <li key={i}>• {item}</li>
                             ))}
@@ -1984,9 +1881,9 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <MapPin className="h-6 w-6 text-secondary" />
-                            <h3 className="text-2xl font-bold text-white">{t.location.horsovskytynTitle}</h3>
+                            <h3 className="text-xl font-bold text-white">{t.location.horsovskytynTitle}</h3>
                           </div>
-                          <ul className="text-white/80 space-y-2 text-sm">
+                          <ul className="text-white/80 space-y-2 text-xs">
                             {t.location.horsovskytynItems.map((item, i) => (
                               <li key={i}>• {item}</li>
                             ))}
@@ -1999,9 +1896,9 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <MapPin className="h-6 w-6 text-secondary" />
-                            <h3 className="text-2xl font-bold text-white">{t.location.babylonTitle}</h3>
+                            <h3 className="text-xl font-bold text-white">{t.location.babylonTitle}</h3>
                           </div>
-                          <ul className="text-white/80 space-y-2 text-sm">
+                          <ul className="text-white/80 space-y-2 text-xs">
                             {t.location.babylonItems.map((item, i) => (
                               <li key={i}>• {item}</li>
                             ))}
@@ -2014,9 +1911,9 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <MapPin className="h-6 w-6 text-secondary" />
-                            <h3 className="text-2xl font-bold text-white">{t.location.germanyTitle}</h3>
+                            <h3 className="text-xl font-bold text-white">{t.location.germanyTitle}</h3>
                           </div>
-                          <ul className="text-white/80 space-y-2 text-sm">
+                          <ul className="text-white/80 space-y-2 text-xs">
                             {t.location.germanyItems.map((item, i) => (
                               <li key={i}>• {item}</li>
                             ))}
@@ -2027,7 +1924,7 @@ export default function MlynNaPilePage() {
                   </div>
 
                   <div className="mb-16">
-                    <h2 className="text-4xl font-bold text-white mb-8 text-center">{t.location.events}</h2>
+                    <h2 className="text-3xl font-bold text-white mb-8 text-center">{t.location.events}</h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {/* Domažlice Events */}
@@ -2035,9 +1932,9 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <Calendar className="h-6 w-6 text-secondary" />
-                            <h3 className="text-2xl font-bold text-white">Domažlice</h3>
+                            <h3 className="text-xl font-bold text-white">Domažlice</h3>
                           </div>
-                          <ul className="text-white/80 space-y-3 text-sm">
+                          <ul className="text-white/80 space-y-3 text-xs">
                             {t.location.domazliceEvents.map((item, i) => (
                               <li key={i}>
                                 <strong className="text-white">{item.month}:</strong> {item.event}
@@ -2052,9 +1949,9 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <Calendar className="h-6 w-6 text-secondary" />
-                            <h3 className="text-2xl font-bold text-white">Horšovský Týn</h3>
+                            <h3 className="text-xl font-bold text-white">Horšovský Týn</h3>
                           </div>
-                          <ul className="text-white/80 space-y-3 text-sm">
+                          <ul className="text-white/80 space-y-3 text-xs">
                             {t.location.horsovskytynEvents.map((item, i) => (
                               <li key={i}>
                                 <strong className="text-white">{item.month}:</strong> {item.event}
@@ -2069,9 +1966,9 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <Calendar className="h-6 w-6 text-secondary" />
-                            <h3 className="text-2xl font-bold text-white">Babylon</h3>
+                            <h3 className="text-xl font-bold text-white">Babylon</h3>
                           </div>
-                          <ul className="text-white/80 space-y-3 text-sm">
+                          <ul className="text-white/80 space-y-3 text-xs">
                             {t.location.babylonEvents.map((item, i) => (
                               <li key={i}>
                                 <strong className="text-white">{item.month}:</strong> {item.event}
@@ -2085,9 +1982,9 @@ export default function MlynNaPilePage() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <Calendar className="h-6 w-6 text-secondary" />
-                            <h3 className="text-2xl font-bold text-white">{t.location.chamTitle}</h3>
+                            <h3 className="text-xl font-bold text-white">{t.location.chamTitle}</h3>
                           </div>
-                          <div className="text-white/80 space-y-3 text-sm">
+                          <div className="text-white/80 space-y-3 text-xs">
                             <p>
                               <a
                                 href="https://la-cham.de/"
@@ -2108,13 +2005,12 @@ export default function MlynNaPilePage() {
               </div>
             ) : currentSection === "equipment" ? (
               <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
-                {" "}
                 {/* Applied pt-32 here */}
                 <div className="max-w-7xl mx-auto">
                   <div className="text-center mb-8">
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-4 text-balance">{t.equipment.title}</h1>
-                    <p className="text-xl md:text-2xl text-white/90 font-light">{t.equipment.subtitle}</p>
-                    <p className="text-sm md:text-base text-white/80 mt-4 max-w-4xl mx-auto leading-relaxed">
+                    <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 text-balance">{t.equipment.title}</h1>
+                    <p className="text-lg md:text-xl text-white/90 font-light">{t.equipment.subtitle}</p>
+                    <p className="text-xs md:text-sm text-white/80 mt-4 max-w-4xl mx-auto leading-relaxed">
                       {t.equipment.collectionNote}{" "}
                       <button
                         onClick={() => handleSectionChange("spoluprace")}
@@ -2124,7 +2020,7 @@ export default function MlynNaPilePage() {
                       </button>
                       .
                     </p>
-                    <p className="text-sm md:text-base text-white/80 mt-2 max-w-4xl mx-auto leading-relaxed">
+                    <p className="text-xs md:text-sm text-white/80 mt-2 max-w-4xl mx-auto leading-relaxed">
                       {t.equipment.detailsNote}
                     </p>
                   </div>
@@ -2133,14 +2029,14 @@ export default function MlynNaPilePage() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                           <Guitar className="h-6 w-6 text-secondary" />
                           {t.equipment.vintageInstruments}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.guitars}</h4>
-                            <ul className="text-white/80 text-sm space-y-1.5">
+                            <h4 className="text-base font-semibold text-white mb-3">{t.equipment.guitars}</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
                               <li className="cursor-pointer hover:text-secondary transition-colors">
                                 <a
                                   href="https://equipboard.com/items/telecaster-deluxe-73"
@@ -2162,8 +2058,8 @@ export default function MlynNaPilePage() {
                           </div>
 
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.basses}</h4>
-                            <ul className="text-white/80 text-sm space-y-1.5">
+                            <h4 className="text-base font-semibold text-white mb-3">{t.equipment.basses}</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Fender Precision (1993)</li>
                               <li>• Squier short scale bass</li>
                             </ul>
@@ -2177,11 +2073,11 @@ export default function MlynNaPilePage() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.ampsAndCabs}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.ampsAndCabs}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.amps}</h4>
-                            <ul className="text-white/80 text-sm space-y-1.5">
+                            <h4 className="text-base font-semibold text-white mb-3">{t.equipment.amps}</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Fender 64 Custom Deluxe Reverb</li>
                               <li>• Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)</li>
                               <li>• Mesa Boogie Dual Rectifier®Head, 3 Channels / 8 Modes, 100W</li>
@@ -2191,8 +2087,8 @@ export default function MlynNaPilePage() {
                             </ul>
                           </div>
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-3">{t.equipment.cabs}</h4>
-                            <ul className="text-white/80 text-sm space-y-1.5">
+                            <h4 className="text-base font-semibold text-white mb-3">{t.equipment.cabs}</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Marshall 1960 BX</li>
                               <li>• Coffe custom CLASSIC 212</li>
                               <li>• Ampeg SVT-112AV Cabinet</li>
@@ -2207,8 +2103,9 @@ export default function MlynNaPilePage() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.effects}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.effects}</h3>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px]">
                           <div className="space-y-1.5">
                             <div className="bg-white/5 p-2 rounded">
                               <p className="text-white/90">Dunlop DCR 2SR Rack Crybaby</p>
@@ -2286,11 +2183,11 @@ export default function MlynNaPilePage() {
                       <CardContent className="p-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                               <Mic className="h-6 w-6 text-secondary" />
                               {t.equipment.mics}
                             </h3>
-                            <ul className="text-white/80 text-sm space-y-1.5">
+                            <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Sennheiser e 906</li>
                               <li>• Shure Beta 58</li>
                               <li>• Shure SM 7 B</li>
@@ -2298,8 +2195,8 @@ export default function MlynNaPilePage() {
                             </ul>
                           </div>
                           <div>
-                            <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.drums}</h3>
-                            <ul className="text-white/80 text-sm space-y-1.5">
+                            <h3 className="text-xl font-bold text-white mb-4">{t.equipment.drums}</h3>
+                            <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Mapex Saturn</li>
                               <li>• K-Zildjian činely</li>
                             </ul>
@@ -2313,11 +2210,11 @@ export default function MlynNaPilePage() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-2xl font-bold text-white mb-4">VIDEO PRODUCTION</h3>
+                        <h3 className="text-xl font-bold text-white mb-4">VIDEO PRODUCTION</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-3">Hardware</h4>
-                            <ul className="text-white/80 text-sm space-y-1.5">
+                            <h4 className="text-base font-semibold text-white mb-3">Hardware</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Apple Pro XDR 6K monitor pro color-accurate editing</li>
                               <li>• Professional video cameras pro session dokumentaci</li>
                               <li>• DJI Gimbal stabilizátor pro smooth camera movements</li>
@@ -2326,8 +2223,8 @@ export default function MlynNaPilePage() {
                             </ul>
                           </div>
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-3">Software</h4>
-                            <ul className="text-white/80 text-sm space-y-1.5">
+                            <h4 className="text-base font-semibold text-white mb-3">Software</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Final Cut Pro X</li>
                               <li>• Affinity</li>
                             </ul>
@@ -2341,15 +2238,15 @@ export default function MlynNaPilePage() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.uaPlugins}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.uaPlugins}</h3>
 
                         {/* Microphone Preamps */}
                         <div className="mb-6">
-                          <h4 className="text-lg font-semibold text-white mb-2 flex items-center gap-2">
+                          <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
                             <Mic className="h-5 w-5 text-secondary" />
                             Microphone Preamps (7)
                           </h4>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px]">
                             {[
                               "Neve 1073 Collection",
                               "Precision Channel Strip",
@@ -2368,11 +2265,11 @@ export default function MlynNaPilePage() {
 
                         {/* Compressors */}
                         <div className="mb-6">
-                          <h4 className="text-lg font-semibold text-white mb-2">Kompresory (24)</h4>
+                          <h4 className="text-base font-semibold text-white mb-2">Kompresory (24)</h4>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                              <p className="text-white/80 text-sm mb-2">Teletronix (6)</p>
-                              <div className="space-y-1 text-xs">
+                              <p className="text-white/80 text-xs mb-2">Teletronix (6)</p>
+                              <div className="space-y-1 text-[10px]">
                                 {[
                                   "LA-2 Classic",
                                   "LA-2A Gray",
@@ -2388,8 +2285,8 @@ export default function MlynNaPilePage() {
                               </div>
                             </div>
                             <div>
-                              <p className="text-white/80 text-sm mb-2">UA 1176 (6)</p>
-                              <div className="space-y-1 text-xs">
+                              <p className="text-white/80 text-xs mb-2">UA 1176 (6)</p>
+                              <div className="space-y-1 text-[10px]">
                                 {[
                                   "1176 Rev A",
                                   "1176AE",
@@ -2405,8 +2302,8 @@ export default function MlynNaPilePage() {
                               </div>
                             </div>
                             <div>
-                              <p className="text-white/80 text-sm mb-2">Další (12)</p>
-                              <div className="space-y-1 text-xs">
+                              <p className="text-white/80 text-xs mb-2">Další (12)</p>
+                              <div className="space-y-1 text-[10px]">
                                 {[
                                   "dbx 160",
                                   "Distressor",
@@ -2430,8 +2327,8 @@ export default function MlynNaPilePage() {
 
                         {/* Equalizers */}
                         <div className="mb-6">
-                          <h4 className="text-lg font-semibold text-white mb-2">Ekvalizéry (9)</h4>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                          <h4 className="text-base font-semibold text-white mb-2">Ekvalizéry (9)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-[10px]">
                             {[
                               "Pultec EQP-1A Legacy",
                               "Pultec EQP-1A Passive",
@@ -2439,7 +2336,6 @@ export default function MlynNaPilePage() {
                               "Pultec MEQ-5",
                               "Pultec Pro Legacy",
                               "A-Designs Hammer EQ",
-                              "Cambridge EQ",
                               "Helios Type 69",
                               "Neve 1073 EQ",
                             ].map((item, i) => (
@@ -2452,8 +2348,8 @@ export default function MlynNaPilePage() {
 
                         {/* Virtual Instruments */}
                         <div className="mb-6">
-                          <h4 className="text-lg font-semibold text-white mb-2">Virtuální Nástroje (6)</h4>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+                          <h4 className="text-base font-semibold text-white mb-2">Virtuální Nástroje (6)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-[10px]">
                             {[
                               "Electra 88 Keyboard",
                               "Moog Minimoog",
@@ -2471,8 +2367,8 @@ export default function MlynNaPilePage() {
 
                         {/* Special Processors */}
                         <div className="mb-6">
-                          <h4 className="text-lg font-semibold text-white mb-2">Speciální Procesory (11)</h4>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                          <h4 className="text-base font-semibold text-white mb-2">Speciální Procesory (11)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px]">
                             {[
                               "Oxide Tape",
                               "Studer A800",
@@ -2495,8 +2391,8 @@ export default function MlynNaPilePage() {
 
                         {/* Delay & Modulation */}
                         <div className="mb-6">
-                          <h4 className="text-lg font-semibold text-white mb-2">Delay a Modulace (7)</h4>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                          <h4 className="text-base font-semibold text-white mb-2">Delay a Modulace (7)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px]">
                             {[
                               "Cooper Time Cube",
                               "EP-34 Tape Echo",
@@ -2515,8 +2411,8 @@ export default function MlynNaPilePage() {
 
                         {/* Reverbs */}
                         <div>
-                          <h4 className="text-lg font-semibold text-white mb-2">Reverby (4)</h4>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                          <h4 className="text-base font-semibold text-white mb-2">Reverby (4)</h4>
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px]">
                             {["Lexicon 224", "Precision Reflection", "Pure Plate Reverb", "RealVerb Pro"].map(
                               (item, i) => (
                                 <div key={i} className="bg-white/5 p-2 rounded">
@@ -2534,8 +2430,8 @@ export default function MlynNaPilePage() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.cables}</h3>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.cables}</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                           <div className="bg-white/5 p-3 rounded">
                             <p className="text-white/90">Mogami Platinum</p>
                           </div>
@@ -2560,11 +2456,11 @@ export default function MlynNaPilePage() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.workflow}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.workflow}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-2">Tracking Chain</h4>
-                            <ul className="text-white/80 text-sm space-y-1">
+                            <h4 className="text-base font-semibold text-white mb-2">Tracking Chain</h4>
+                            <ul className="text-white/80 text-xs space-y-1">
                               <li>1. Neve 1073 / UA 610</li>
                               <li>2. LA-2A / 1176</li>
                               <li>3. Pultec EQP-1A</li>
@@ -2572,8 +2468,8 @@ export default function MlynNaPilePage() {
                             </ul>
                           </div>
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-2">Mixing Chain</h4>
-                            <ul className="text-white/80 text-sm space-y-1">
+                            <h4 className="text-base font-semibold text-white mb-2">Mixing Chain</h4>
+                            <ul className="text-white/80 text-xs space-y-1">
                               <li>1. Cambridge / Helios EQ</li>
                               <li>2. Distressor / dbx 160</li>
                               <li>3. Verve Analog</li>
@@ -2581,8 +2477,8 @@ export default function MlynNaPilePage() {
                             </ul>
                           </div>
                           <div>
-                            <h4 className="text-lg font-semibold text-white mb-2">Mastering Chain</h4>
-                            <ul className="text-white/80 text-sm space-y-1">
+                            <h4 className="text-base font-semibold text-white mb-2">Mastering Chain</h4>
+                            <ul className="text-white/80 text-xs space-y-1">
                               <li>1. Pultec Pro Legacy</li>
                               <li>2. Precision Multi-Band</li>
                               <li>3. Precision Maximizer</li>
@@ -2598,10 +2494,10 @@ export default function MlynNaPilePage() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-2xl font-bold text-white mb-4">{t.equipment.infrastructure}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.infrastructure}</h3>
                         <div>
-                          <h4 className="text-lg font-semibold text-white mb-3">Infrastruktura</h4>
-                          <ul className="text-white/80 text-sm space-y-2">
+                          <h4 className="text-base font-semibold text-white mb-3">Infrastruktura</h4>
+                          <ul className="text-white/80 text-xs space-y-2">
                             <li>• Přepěťové ochrany</li>
                             <li>• Tesla charging station</li>
                             <li>• Off-grid capability</li>
@@ -2617,16 +2513,16 @@ export default function MlynNaPilePage() {
               <div className="pt-32 px-6 py-12">
                 <div className="max-w-4xl mx-auto">
                   <div className="text-center mb-12">
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.contact.title}</h1>
+                    <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">{t.contact.title}</h1>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.contact.info}</h3>
+                        <h3 className="text-xl font-bold text-white mb-6">{t.contact.info}</h3>
                         <div className="space-y-6">
                           <div>
-                            <h4 className="text-xl font-bold text-white mb-2">Ing. Jindřich Traxmandl</h4>
+                            <h4 className="text-base font-bold text-white mb-2">Ing. Jindřich Traxmandl</h4>
                           </div>
                           <div className="flex items-start space-x-4">
                             <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
@@ -2650,6 +2546,19 @@ export default function MlynNaPilePage() {
                             </div>
                           </div>
 
+                          <div className="flex items-start space-x-4">
+                            <Mail className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-white mb-1">Email</h4>
+                              <a
+                                href="mailto:mlynnapile@gmail.com"
+                                className="text-white/80 hover:text-white transition-colors"
+                              >
+                                mlynnapile@gmail.com
+                              </a>
+                            </div>
+                          </div>
+
                           <div className="pt-4 border-t border-white/20">
                             <BusinessCardDownload />
                           </div>
@@ -2659,9 +2568,9 @@ export default function MlynNaPilePage() {
 
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.contact.availability}</h3>
+                        <h3 className="text-xl font-bold text-white mb-6">{t.contact.availability}</h3>
                         <div className="space-y-4">
-                          <ul className="text-white/80 text-sm space-y-1">
+                          <ul className="text-white/80 text-xs space-y-1">
                             {t.contact.availabilityItems.map((item, index) => (
                               <li key={index}>• {item}</li>
                             ))}
@@ -2676,21 +2585,22 @@ export default function MlynNaPilePage() {
               <div ref={onasSectionRef} className="pt-32 px-6 py-12">
                 <div className="space-y-8">
                   {/* Section 1: Hero + History */}
-                  <div>
+                  <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-12">
-                      <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 text-balance">{t.about.title}</h1>
-                      <p className="text-xl md:text-2xl text-white/90 font-light">{t.about.subtitle}</p>
-                      <p className="text-lg text-white/80 mt-4">{t.about.tagline}</p>
+                      <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">{t.about.title}</h1>
+                      <p className="text-lg md:text-xl text-white/90 font-light">{t.about.subtitle}</p>
+                      <p className="text-base text-white/80 mt-4">{t.about.tagline}</p>
                     </div>
 
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.history}</h3>
+                        <h3 className="text-xl font-bold text-white mb-6">{t.about.history}</h3>
                         <div className="space-y-4 text-white/80">
                           {t.about.historyTimeline.map((item, index) => (
                             <div key={index} className="border-l-2 border-secondary pl-4">
                               <p className="font-semibold text-white">{item.year}</p>
-                              <p className="text-sm">{item.desc}</p>
+                              {/* Reduced history item description from text-sm to text-xs */}
+                              <p className="text-xs">{item.desc}</p>
                             </div>
                           ))}
                         </div>
@@ -2702,25 +2612,28 @@ export default function MlynNaPilePage() {
                   <div className="max-w-6xl mx-auto">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.accommodation}</h3>
+                        <h3 className="text-xl font-bold text-white mb-8 text-center">{t.about.accommodation}</h3>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                           <div>
-                            <h4 className="text-xl font-bold text-white mb-4">{t.about.accommodationRooms}</h4>
+                            <h4 className="text-base font-bold text-white mb-4">{t.about.accommodationRooms}</h4>
                             <div className="space-y-4">
                               <div className="bg-white/5 p-4 rounded-lg">
+                                {/* Reduced room title from text-xl to text-lg */}
                                 <h5 className="font-semibold text-white mb-2">{t.about.masterSuite}</h5>
-                                <p className="text-white/80 text-sm">{t.about.masterSuiteDesc}</p>
+                                {/* Reduced description from text-sm to text-xs */}
+                                <p className="text-white/80 text-xs">{t.about.masterSuiteDesc}</p>
                               </div>
                               <div className="bg-white/5 p-4 rounded-lg">
                                 <h5 className="font-semibold text-white mb-2">{t.about.fourRooms}</h5>
-                                <p className="text-white/80 text-sm">{t.about.fourRoomsDesc}</p>
+                                {/* Reduced description from text-sm to text-xs */}
+                                <p className="text-white/80 text-xs">{t.about.fourRoomsDesc}</p>
                               </div>
                             </div>
                           </div>
 
                           <div>
-                            <h4 className="text-xl font-bold text-white mb-4">{t.about.commonSpaces}</h4>
+                            <h4 className="text-base font-bold text-white mb-4">{t.about.commonSpaces}</h4>
                             <ul className="text-white/80 space-y-2">
                               {t.about.commonSpacesItems.map((item, index) => (
                                 <li key={index}>• {item}</li>
@@ -2731,7 +2644,7 @@ export default function MlynNaPilePage() {
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                           <div>
-                            <h4 className="text-xl font-bold text-white mb-4">{t.about.finnishSauna}</h4>
+                            <h4 className="text-base font-bold text-white mb-4">{t.about.finnishSauna}</h4>
                             <ul className="text-white/80 space-y-2">
                               {t.about.finnishSaunaItems.map((item, index) => (
                                 <li key={index}>• {item}</li>
@@ -2740,7 +2653,7 @@ export default function MlynNaPilePage() {
                           </div>
 
                           <div>
-                            <h4 className="text-xl font-bold text-white mb-4">{t.about.parkOutdoor}</h4>
+                            <h4 className="text-base font-bold text-white mb-4">{t.about.parkOutdoor}</h4>
                             <ul className="text-white/80 space-y-2">
                               {t.about.parkOutdoorItems.map((item, index) => (
                                 <li key={index}>• {item}</li>
@@ -2750,11 +2663,12 @@ export default function MlynNaPilePage() {
                         </div>
 
                         <div>
-                          <h4 className="text-xl font-bold text-white mb-4">{t.about.catering}</h4>
+                          <h4 className="text-base font-bold text-white mb-4">{t.about.catering}</h4>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {t.about.cateringItems.map((item, index) => (
                               <div key={index} className="bg-white/5 p-4 rounded-lg">
-                                <p className="text-white/80 text-sm">
+                                {/* Reduced description from text-sm to text-xs */}
+                                <p className="text-white/80 text-xs">
                                   <strong className="text-white">{item.title}</strong> {item.desc}
                                 </p>
                               </div>
@@ -2769,14 +2683,16 @@ export default function MlynNaPilePage() {
                   <div className="max-w-6xl mx-auto">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-3xl font-bold text-white mb-8 text-center">{t.about.founders}</h3>
+                        <h3 className="text-xl font-bold text-white mb-8 text-center">{t.about.founders}</h3>
 
-                        <p className="text-white/80 text-center mb-8 leading-relaxed">{t.about.foundersIntro}</p>
+                        <p className="text-base text-white/80 text-center mb-8 leading-relaxed">
+                          {t.about.foundersIntro}
+                        </p>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
                           <div className="space-y-6">
                             <div>
-                              <h4 className="text-xl font-bold text-white mb-2">Jindřich Traxmandl</h4>
+                              <h4 className="text-base font-bold text-white mb-2">Jindřich Traxmandl</h4>
                               <div className="space-y-4 text-white/80 leading-relaxed">
                                 <p
                                   dangerouslySetInnerHTML={{
@@ -2793,7 +2709,7 @@ export default function MlynNaPilePage() {
                             </div>
 
                             <div>
-                              <h4 className="text-xl font-bold text-white mb-2">Andrea Kohoutová</h4>
+                              <h4 className="text-base font-bold text-white mb-2">Andrea Kohoutová</h4>
                               <div className="space-y-4 text-white/80 leading-relaxed">
                                 <p
                                   dangerouslySetInnerHTML={{
@@ -2824,7 +2740,7 @@ export default function MlynNaPilePage() {
                     <div className="max-w-6xl mx-auto">
                       <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-8">
-                          <h3 className="text-2xl font-bold text-white mb-6">{t.about.collaboration}</h3>
+                          <h3 className="text-xl font-bold text-white mb-6">{t.about.collaboration}</h3>
                           <div className="space-y-4 text-white/80">
                             <p className="leading-relaxed">
                               <strong className="text-white">{t.about.collaborationPara1Strong}</strong>{" "}
@@ -2842,14 +2758,15 @@ export default function MlynNaPilePage() {
                             </p>
                             <div className="mt-6">
                               <h4 className="font-semibold text-white mb-2">{t.about.collaborationFormsTitle}</h4>
-                              <ul className="space-y-1 text-sm">
+                              <ul className="space-y-1 text-xs">
                                 {t.about.collaborationForms.map((form, index) => (
                                   <li key={index}>• {form}</li>
                                 ))}
                               </ul>
                             </div>
                             <div className="mt-6 pt-6 border-t border-white/20">
-                              <p className="text-sm text-white/80 leading-relaxed">
+                              {/* Reduced description from text-sm to text-xs */}
+                              <p className="text-xs text-white/80 leading-relaxed">
                                 <strong className="text-secondary">{t.equipment.thankYouNote}:</strong>{" "}
                                 {t.equipment.noraCollaboration}{" "}
                                 <a
@@ -2873,25 +2790,62 @@ export default function MlynNaPilePage() {
                   <div className="max-w-6xl mx-auto">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-2xl font-bold text-white mb-6">{t.about.faq}</h3>
+                        <h3 className="text-xl font-bold text-white mb-6">{t.about.faq}</h3>
                         <div className="space-y-3">
                           {t.about.faqItems.map((faq, index) => {
-                            // Ghost (haunted), FileText (VAT/business), Home (property rental),
-                            // Users (team), Music (genres), Car (transportation),
-                            // UtensilsCrossed (catering), Languages (languages), Cigarette (smoking), Shield (security)
-                            const faqIcons = [
-                              Ghost,
-                              FileText,
-                              Home,
-                              Users,
-                              Music,
-                              Car,
-                              UtensilsCrossed,
-                              Languages,
-                              Cigarette,
-                              Shield,
-                            ]
-                            const IconComponent = faqIcons[index] || Ghost
+                            let Icon = HelpCircle
+                            if (faq.q.includes("Straší") || faq.q.includes("haunted") || faq.q.includes("Spukt")) {
+                              Icon = Ghost
+                            } else if (
+                              faq.q.includes("DPH") ||
+                              faq.q.includes("VAT") ||
+                              faq.q.includes("umsatzsteuer")
+                            ) {
+                              Icon = FileText
+                            } else if (
+                              faq.q.includes("pronajmout") ||
+                              faq.q.includes("rent") ||
+                              faq.q.includes("gemietet")
+                            ) {
+                              Icon = Home
+                            } else if (
+                              faq.q.includes("kouřit") ||
+                              faq.q.includes("smoking") ||
+                              faq.q.includes("Rauchen")
+                            ) {
+                              Icon = CigaretteOff
+                            } else if (
+                              faq.q.includes("aparaturu") ||
+                              faq.q.includes("equipment") ||
+                              faq.q.includes("Ausrüstung")
+                            ) {
+                              Icon = Shield
+                            } else if (
+                              faq.q.includes("ubytování") ||
+                              faq.q.includes("accommodation") ||
+                              faq.q.includes("Unterkunft")
+                            ) {
+                              Icon = Hotel
+                            } else if (
+                              faq.q.includes("dostanu") ||
+                              faq.q.includes("get to") ||
+                              faq.q.includes("komme ich")
+                            ) {
+                              Icon = MapPin
+                            } else if (
+                              faq.q.includes("catering") ||
+                              faq.q.includes("jídlo") ||
+                              faq.q.includes("Essen")
+                            ) {
+                              Icon = UtensilsCrossed
+                            } else if (
+                              faq.q.includes("anglicky") ||
+                              faq.q.includes("English") ||
+                              faq.q.includes("Englisch")
+                            ) {
+                              Icon = Languages
+                            }
+
                             return (
                               <div key={index} className="border-b border-white/10 pb-3">
                                 <button
@@ -2899,8 +2853,9 @@ export default function MlynNaPilePage() {
                                   className="w-full text-left flex justify-between items-start gap-2 group"
                                 >
                                   <div className="flex items-start gap-3">
-                                    <IconComponent className="h-5 w-5 text-white/60 flex-shrink-0 mt-0.5" />
-                                    <h4 className="font-semibold text-white text-sm group-hover:text-secondary transition-colors">
+                                    <Icon className="h-5 w-5 text-white/60 flex-shrink-0 mt-0.5" />
+                                    {/* Reduced FAQ question from text-sm to text-xs */}
+                                    <h4 className="font-semibold text-white text-xs group-hover:text-secondary transition-colors">
                                       {faq.q}
                                     </h4>
                                   </div>
@@ -2909,7 +2864,8 @@ export default function MlynNaPilePage() {
                                   />
                                 </button>
                                 {openFaqIndex === index && (
-                                  <p className="text-sm text-white/80 mt-2 ml-8 leading-relaxed">{faq.a}</p>
+                                  // Reduced FAQ answer from text-sm to text-xs
+                                  <p className="text-xs text-white/80 mt-2 ml-8 leading-relaxed">{faq.a}</p>
                                 )}
                               </div>
                             )
