@@ -64,7 +64,6 @@ const translations = {
       benefits: "Další benefity",
       benefitsDesc: "Zapůjčení elektromobilu, kol, nabíjecí stanice, bateriový backup, zabezpečené prostory",
       endMessage: "Užijte si prezentaci!",
-      menuHint: "Nebo procházejte přes menu nahoře",
       darkMode: "Noční režim zapnutý - klikněte pro denní režim",
       lightMode: "Denní režim zapnutý - klikněte pro noční režim",
     },
@@ -371,7 +370,6 @@ const translations = {
       benefits: "Additional Benefits",
       benefitsDesc: "Electric car rental, bikes, charging station, battery backup, secured premises",
       endMessage: "Enjoy the presentation!",
-      menuHint: "Or browse through the menu above",
       darkMode: "Dark mode enabled - click to switch to light mode",
       lightMode: "Light mode enabled - click to switch to dark mode",
     },
@@ -688,8 +686,7 @@ const translations = {
       benefits: "Weitere Vorteile",
       benefitsDesc: "Elektroauto-Verleih, Fahrräder, Ladestation, Batterie-Backup, gesicherte Räumlichkeiten",
       endMessage: "Genießen Sie die Präsentation!",
-      menuHint: "Oder durchsuchen Sie das Menü oben",
-      darkMode: "Dunkler Modus aktiviert - klicken Sie, um zum hellen Modus zu wechseln",
+      darkMode: "Dunkelmodus aktiviert - klicken Sie, um zum hellen Modus zu wechseln",
       lightMode: "Heller Modus aktiviert - klicken Sie, um zum dunklen Modus zu wechseln",
     },
     studio: {
@@ -1551,7 +1548,7 @@ export default function MlynNaPilePage() {
 
                   <div className="text-center py-24">
                     <p className="text-2xl md:text-4xl font-light text-white/90 mb-4">{t.mlyn.endMessage}</p>
-                    <p className="text-xs text-white/50">{t.mlyn.menuHint}</p>
+                    {/* Removed menuHint rendering */}
                   </div>
                 </div>
 
