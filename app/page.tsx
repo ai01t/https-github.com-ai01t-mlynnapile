@@ -276,11 +276,11 @@ const translations = {
       foundersIntro:
         "Mlýn Šnajberk Studios založili Jindřich Traxmandl a Andrea Kohoutová s vizí vytvořit unikátní prostor, kde se hudba, umění a příroda prolínají v dokonalé harmonii.",
       jindrichDesc:
-        "Jindřich, hudebník a producent, stojí za technickou a uměleckou stránkou studia. Jeho zkušenosti z mezinárodní hudební scény, včetně spolupráce s kapelou <strong>Anteater</strong>, zaručují špičkovou kvalitu nahrávek. Jeho hudební zaměření je široké, od rocku a metalu po elektronickou hudbu.",
+        "Kytarista kapely Anteater, nadšenec do moderních technologií, který nedá dopustit na klasické vintage nástroje a aparáty.",
       jindrichQuote:
-        "Chceme vytvořit místo, kde se rodí hudba a kde se umělci cítí jako doma. Inspirace je všude kolem nás – v přírodě, v historii, v lidech.",
+        "Pracujeme na tom, aby u nás muzikanti našli inspirativní prostor dokonale připravený pro tvorbu. Mlýn má svůj genius loci a duši – a stejnou energii nesou i nástroje a vintage aparáty, které jsou zde k dispozici. V harmonii s nimi zde moderní technologie nenápadně podporují pohodlí a profesionální podmínky pro zachycení každého hudebního nápadu. Naším cílem je vytvořit krásné, klidné a pohodové prostředí, kam se lidé budou rádi vracet. Dveře máme otevřené všem kreativním lidem, nejen hudebníkům. Věříme, že právě tato kombinace – prostor s duší, nástroje s příběhem a moderní technologie v pozadí – se stane motorem a synergií pro vznik úžasných věcí.",
       andreaDesc:
-        "Andrea, s citem pro design a organizaci, se stará o celý chod studia a pobyt hostů. Její zkušenosti z uměleckého světa a organizace akcí dodávají studiu jedinečnou atmosféru. Spolupracovala na vizuální stránce projektů kapely <strong>Anteater</strong>.",
+        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na svět inspirovat.",
       collaboration: "Spolupráce a Rezervace",
       collaborationPara1Strong: "Prostory studia",
       collaborationPara1: " jsou k dispozici pro nahrávání, workshopy, rezidenční pobyty a další umělecké projekty.",
@@ -453,7 +453,7 @@ const translations = {
             "You might meet a fat squirrel that digs up planks - animals have it great here :-) We also have herons and neighbors have a puppy and a few friendly cats (also from various neighbors), frogs and moles (ours) :-) 🐿️🐕🐈",
             "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for next years and will replace with more modern technologies. Thank you. (No hornets were harmed – we let them live out their lives in peace. 🐝) ⚡",
             "Fresh organic vegetables, excellent grapes, hops. Overall the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
-            "Everything is underlined by silence and peace, yet Domažlice is as close as from Národní to Palmovka (8 minutes). 🤫🌳",
+            "At night, the sky is like North Korea – stars everywhere. ✨🌟",
             "Last but not least, nice neighbors from all sides and Bidlo pub with friendly service and beautiful view of the pond and mill from the other side. Here you can have a Pilsen and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlice ten-degree beer, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
             "In the morning you can jump into the pond, but nobody does... but you can :-) 🏊‍♂️",
           ],
@@ -592,11 +592,11 @@ const translations = {
       foundersIntro:
         "Mlýn Šnajberk Studios was founded by Jindřich Traxmandl and Andrea Kohoutová with the vision of creating a unique space where music, art, and nature blend in perfect harmony.",
       jindrichDesc:
-        "Jindřich, a musician and producer, is responsible for the technical and artistic side of the studio. His experience from the international music scene, including collaboration with the band <strong>Anteater</strong>, guarantees top-notch recording quality. His musical focus is broad, from rock and metal to electronic music.",
+        "Guitarist of the band Anteater, an enthusiast of modern technologies, who insists on classic vintage instruments and amplifiers.",
       jindrichQuote:
-        "We want to create a place where music is born and where artists feel at home. Inspiration is all around us – in nature, in history, in people.",
+        "We are working to ensure that musicians find an inspiring space here, perfectly prepared for creation. The mill has its genius loci and soul – and the instruments and vintage amplifiers available here carry the same energy. In harmony with them, modern technologies subtly support comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful, and comfortable environment that people will want to return to. Our doors are open to all creative people, not just musicians. We believe that this combination – a space with soul, instruments with a story, and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
-        "Andrea, with a sense for design and organization, manages the overall operation of the studio and guest stays. Her experience from the art world and event organization gives the studio a unique atmosphere. She collaborated on the visual aspects of the band <strong>Anteater</strong>'s projects.",
+        "Singer and bassist of the band Anteater, and also an archaeologist. It is precisely in the environment of the old mill that all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)). But seriously now: we complement each other and often draw inspiration from our different perspectives on the world.",
       collaboration: "Collaboration and Reservations",
       collaborationPara1Strong: "The studio spaces",
       collaborationPara1: " are available for recording, workshops, residential stays, and other artistic projects.",
@@ -911,11 +911,11 @@ const translations = {
       foundersIntro:
         "Mlýn Šnajberk Studios wurde von Jindřich Traxmandl und Andrea Kohoutová mit der Vision gegründet, einen einzigartigen Raum zu schaffen, in dem Musik, Kunst und Natur in perfekter Harmonie verschmelzen.",
       jindrichDesc:
-        "Jindřich, Musiker und Produzent, ist für die technische und künstlerische Seite des Studios verantwortlich. Seine Erfahrungen in der internationalen Musikszene, einschließlich der Zusammenarbeit mit der Band <strong>Anteater</strong>, garantieren höchste Aufnahmequalität. Sein musikalischer Fokus ist breit gefächert, von Rock und Metal bis hin zu elektronischer Musik.",
+        "Gitarrist der Band Anteater, ein Enthusiast für moderne Technologien, der an klassischen Vintage-Instrumenten und Verstärkern festhält.",
       jindrichQuote:
-        "Wir wollen einen Ort schaffen, an dem Musik geboren wird und an dem sich Künstler wie zu Hause fühlen. Inspiration ist überall um uns herum – in der Natur, in der Geschichte, in den Menschen.",
+        "Wir arbeiten daran, dass Musiker hier einen inspirierenden Raum finden, der perfekt für die Kreation vorbereitet ist. Die Mühle hat ihren Genius Loci und ihre Seele – und die Instrumente und Vintage-Verstärker, die hier zur Verfügung stehen, tragen die gleiche Energie. Im Einklang mit ihnen unterstützen moderne Technologien dezent Komfort und professionelle Bedingungen, um jede musikalische Idee einzufangen. Unser Ziel ist es, eine schöne, friedliche und komfortable Umgebung zu schaffen, in die die Menschen gerne zurückkehren. Unsere Türen stehen allen kreativen Menschen offen, nicht nur Musikern. Wir glauben, dass gerade diese Kombination – ein Raum mit Seele, Instrumente mit einer Geschichte und moderne Technologie im Hintergrund – der Motor und die Synergie für die Entstehung erstaunlicher Dinge wird.",
       andreaDesc:
-        "Andrea, mit einem Sinn für Design und Organisation, kümmert sich um den gesamten Betrieb des Studios und den Aufenthalt der Gäste. Ihre Erfahrungen in der Kunstwelt und bei der Organisation von Veranstaltungen verleihen dem Studio eine einzigartige Atmosphäre. Sie arbeitete an den visuellen Aspekten der Projekte der Band <strong>Anteater</strong> mit.",
+        "Sängerin und Bassistin der Band Anteater und auch Archäologin. Gerade in der Umgebung der alten Mühle verbinden sich all diese Leidenschaften auf natürliche Weise. Andrea trägt zur gemütlichen und inspirierenden Atmosphäre des Studios bei. Wenn Sie um Mitternacht Kakao machen wollen (oder zweite Stimmen singen wollen), zögern Sie nicht, sich an Andrea zu wenden (bei technischen Problemen dann an Jindřich :)). Aber jetzt im Ernst: Wir ergänzen uns gegenseitig und lassen uns oft von unseren unterschiedlichen Weltanschauungen inspirieren.",
       collaboration: "Zusammenarbeit und Buchungen",
       collaborationPara1Strong: "Die Studioräume",
       collaborationPara1:
