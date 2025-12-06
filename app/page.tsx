@@ -30,6 +30,7 @@ import {
   HelpCircle,
   CigaretteOff,
   Hotel,
+  Music,
 } from "lucide-react"
 
 const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
@@ -49,8 +50,6 @@ const translations = {
       subtitle: "Retreat Studio",
       tagline: "Kde se rodí inspirace",
       description: "Unikátní prostor s genius loci v krásné přírodě",
-      scrollHint: "Scrollujte dolů pro nerušené prohlížení prezentací",
-      threeSpaces: "Tři unikátní prostory pro vaši kreativitu",
       vintageInstruments: "Vintage Nástroje",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
       accommodation: "Stylové ubytování",
@@ -198,9 +197,9 @@ const translations = {
     equipment: {
       title: "Vybavení",
       subtitle: "Profesionální technika pro vaše projekty",
-      collectionNote: "Sbírka je průběžně aktualizována, ale pro aktuální seznam kontaktujte prosím Jindřicha.",
-      collaborationLink: "spolupráci",
-      detailsNote: "Vše je plně funkční, pravidelně servisované a připravené k použití.",
+      collectionNote: "Sbírka je průběžně aktualizována, viz.",
+      collaborationLink: "spolupráce",
+      detailsNote: "Nástroje jsou pravidelně servisované a připravené k použití.",
       vintageInstruments: "Vintage Nástroje (60s-80s)",
       guitars: "Kytary",
       basses: "Basa",
@@ -355,8 +354,6 @@ const translations = {
       subtitle: "Retreat Studio",
       tagline: "Where inspiration is born",
       description: "Unique space with genius loci in beautiful nature",
-      scrollHint: "Scroll down for uninterrupted viewing of presentations",
-      threeSpaces: "Three unique spaces for your creativity",
       vintageInstruments: "Vintage Instruments",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
       accommodation: "Stylish Accommodation",
@@ -671,10 +668,8 @@ const translations = {
       subtitle: "Retreat Studio",
       tagline: "Wo Inspiration entsteht",
       description: "Einzigartiger Raum mit Genius Loci in schöner Natur",
-      scrollHint: "Scrollen Sie nach unten für eine ungestörte Ansicht der Präsentationen",
-      threeSpaces: "Drei einzigartige Räume für Ihre Kreativität",
       vintageInstruments: "Vintage-Instrumente",
-      vintageDesc: "60er-80er Fender, Gibson, VOX",
+      vintageDesc: "60s-80s Fender, Gibson, VOX",
       accommodation: "Stilvolle Unterkunft",
       accommodationDesc: "4 Zimmer, Wintergarten 63m², finnische Sauna",
       locationCard: "Lage",
@@ -979,11 +974,14 @@ const translations = {
   },
 }
 
-export default function MlynNaPilePage() {
-  const [isVideoPlaying, setIsVideoPlaying] = useState(true)
+export default function Page() {
   const [currentSection, setCurrentSection] = useState("mlyn")
   const [isDarkMode, setIsDarkMode] = useState(false)
-  const [language, setLanguage] = useState<"cs" | "en" | "de">("cs")
+  const [currentLang, setCurrentLang] = useState("cs")
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [showEndMessage, setShowEndMessage] = useState(false)
+
+  const [isVideoPlaying, setIsVideoPlaying] = useState(true)
   const [showLanguageMenu, setShowLanguageMenu] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [currentVideoUrl, setCurrentVideoUrl] = useState(
@@ -1002,13 +1000,17 @@ export default function MlynNaPilePage() {
   const onasSectionRef = useRef<HTMLDivElement>(null)
 
   const [scrolled, setScrolled] = useState(false)
-  const [showMobileMenu, setShowMobileMenu] = useState(false) // Added for mobile menu toggle
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
 
-  const t = translations[language]
+  const [showPresentationMessage, setShowPresentationMessage] = useState(false)
+  const [presentationOpacity, setPresentationOpacity] = useState(0)
 
-  const [showEndMessage, setShowEndMessage] = React.useState(false)
+  const t = translations[currentLang as keyof typeof translations]
 
   const darkModeTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // The following variable `textOpacity` was not declared and has been removed.
+  // const textOpacity = 1; // Removed as it was undeclared.
 
   useEffect(() => {
     const tag = document.createElement("script")
@@ -1188,14 +1190,41 @@ export default function MlynNaPilePage() {
     }
   }, [currentSection, isDarkMode])
 
-  const [showPresentationMessage, setShowPresentationMessage] = useState(true)
-
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowPresentationMessage(false)
-    }, 3000)
-    return () => clearTimeout(timer)
-  }, [])
+    const handleScroll = () => {
+      if (currentSection === "mlyn" && mlynSectionRef.current) {
+        const scrollTop = mlynSectionRef.current.scrollTop
+        const scrollHeight = mlynSectionRef.current.scrollHeight
+        const clientHeight = mlynSectionRef.current.clientHeight
+
+        // Check if scrolled to bottom (within 50px tolerance)
+        const isAtBottom = scrollHeight - scrollTop - clientHeight < 50
+
+        if (isAtBottom && !showPresentationMessage) {
+          setShowPresentationMessage(true)
+          setPresentationOpacity(1)
+
+          setTimeout(() => {
+            setPresentationOpacity(0)
+            setTimeout(() => {
+              setShowPresentationMessage(false)
+            }, 1000) // Wait for fade out animation
+          }, 7000)
+        }
+      }
+    }
+
+    const currentRef = mlynSectionRef.current
+    if (currentRef) {
+      currentRef.addEventListener("scroll", handleScroll)
+    }
+
+    return () => {
+      if (currentRef) {
+        currentRef.removeEventListener("scroll", handleScroll)
+      }
+    }
+  }, [currentSection, showPresentationMessage])
 
   return (
     <div className="min-h-screen relative">
@@ -1268,9 +1297,9 @@ export default function MlynNaPilePage() {
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Navigation */}
         <nav className="fixed top-0 left-0 right-0 z-50 p-6 transition-all duration-300 bg-transparent">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            {/* Main menu - centered on desktop, full width on mobile */}
-            <div className="flex-1 flex justify-center">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-3 relative">
+            {/* Main menu - centered */}
+            <div className="flex justify-center">
               <div className="flex flex-wrap justify-center space-x-3 md:space-x-6 text-white/90 px-3 md:px-6 py-3 rounded-lg text-[10px] md:text-xs">
                 <button onClick={() => handleSectionChange("mlyn")} className="hover:text-white transition-colors">
                   {t.nav.mlyn}
@@ -1293,16 +1322,15 @@ export default function MlynNaPilePage() {
               </div>
             </div>
 
-            {/* Mobile controls - visible on small screens */}
-            <div className="flex md:hidden gap-2 justify-center">
+            <div className="flex md:hidden gap-2 justify-center md:absolute md:right-0">
               <div className="relative">
                 <Button
                   variant="outline"
-                  size="icon" // Reduced button size from size="sm" to size="icon" with smaller dimensions
+                  size="icon"
                   onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
+                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
                 >
-                  <Globe className="h-3 w-3" />
+                  <Globe className="h-2.5 w-2.5" />
                 </Button>
                 {showLanguageMenu && (
                   <div className="absolute top-full mt-1 right-0 bg-black/80 backdrop-blur-sm rounded-lg p-1 flex flex-col gap-1 min-w-[60px] z-50">
@@ -1310,10 +1338,10 @@ export default function MlynNaPilePage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setLanguage("cs")
+                        setCurrentLang("cs")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${language === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${currentLang === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       CS
                     </Button>
@@ -1321,10 +1349,10 @@ export default function MlynNaPilePage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setLanguage("en")
+                        setCurrentLang("en")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${language === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${currentLang === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       EN
                     </Button>
@@ -1332,10 +1360,10 @@ export default function MlynNaPilePage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setLanguage("de")
+                        setCurrentLang("de")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${language === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${currentLang === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       DE
                     </Button>
@@ -1345,36 +1373,35 @@ export default function MlynNaPilePage() {
 
               <Button
                 variant="outline"
-                size="icon" // Reduced desktop button size
+                size="icon"
                 onClick={toggleDarkMode}
-                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7 ${
+                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6 ${
                   isDarkMode ? "bg-blue-500/30 text-white" : "bg-amber-500/30 text-white"
                 }`}
                 title={isDarkMode ? t.mlyn.darkMode : t.mlyn.lightMode}
               >
-                {isDarkMode ? <Moon className="h-3 w-3" /> : <Sun className="h-3 w-3" />}
+                {isDarkMode ? <Moon className="h-2.5 w-2.5" /> : <Sun className="h-2.5 w-2.5" />}
               </Button>
 
               <Button
                 variant="outline"
-                size="icon" // Reduced desktop button size
+                size="icon"
                 onClick={toggleVideo}
-                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
+                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
               >
-                {isVideoPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
+                {isVideoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
               </Button>
             </div>
 
-            {/* Desktop controls - visible on medium screens and up */}
-            <div className="hidden md:flex gap-2 justify-end">
+            <div className="hidden md:flex gap-2 md:absolute md:right-0">
               <div className="relative">
                 <Button
                   variant="outline"
-                  size="icon" // Reduced desktop button size
+                  size="icon"
                   onClick={() => setShowLanguageMenu(!showLanguageMenu)}
-                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
+                  className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
                 >
-                  <Globe className="h-3 w-3" />
+                  <Globe className="h-2.5 w-2.5" />
                 </Button>
                 {showLanguageMenu && (
                   <div className="absolute top-full mt-1 right-0 bg-black/80 backdrop-blur-sm rounded-lg p-1 flex flex-col gap-1 min-w-[60px]">
@@ -1382,10 +1409,10 @@ export default function MlynNaPilePage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setLanguage("cs")
+                        setCurrentLang("cs")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${language === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${currentLang === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       CS
                     </Button>
@@ -1393,10 +1420,10 @@ export default function MlynNaPilePage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setLanguage("en")
+                        setCurrentLang("en")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${language === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${currentLang === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       EN
                     </Button>
@@ -1404,34 +1431,36 @@ export default function MlynNaPilePage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setLanguage("de")
+                        setCurrentLang("de")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${language === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${currentLang === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       DE
                     </Button>
                   </div>
                 )}
               </div>
+
               <Button
                 variant="outline"
-                size="icon" // Reduced desktop button size
+                size="icon"
                 onClick={toggleDarkMode}
-                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7 ${
+                className={`bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6 ${
                   isDarkMode ? "bg-blue-500/30 text-white" : "bg-amber-500/30 text-white"
                 }`}
                 title={isDarkMode ? t.mlyn.darkMode : t.mlyn.lightMode}
               >
-                {isDarkMode ? <Moon className="h-3 w-3" /> : <Sun className="h-3 w-3" />}
+                {isDarkMode ? <Moon className="h-2.5 w-2.5" /> : <Sun className="h-2.5 w-2.5" />}
               </Button>
+
               <Button
                 variant="outline"
-                size="icon" // Reduced desktop button size
+                size="icon"
                 onClick={toggleVideo}
-                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-7 w-7"
+                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
               >
-                {isVideoPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
+                {isVideoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
               </Button>
             </div>
           </div>
@@ -1446,7 +1475,10 @@ export default function MlynNaPilePage() {
         {/* </CHANGE> Adding h-screen flex flex-col to enable scroll in child sections */}
         <div className="h-screen flex flex-col">
           {showPresentationMessage && (
-            <div className="absolute left-1/2 -translate-x-1/2 top-20 text-white/90 text-xs animate-fade-in">
+            <div
+              className="absolute left-1/2 -translate-x-1/2 top-24 text-white text-xl font-light z-50 transition-opacity duration-1000"
+              style={{ opacity: presentationOpacity }}
+            >
               {t.mlyn.endMessage}
             </div>
           )}
@@ -1458,7 +1490,6 @@ export default function MlynNaPilePage() {
           )}
 
           <div className="">
-            {/* Removed pt-32 from here and applied it to the content sections */}
             {currentSection === "mlyn" ? (
               <div
                 ref={mlynSectionRef}
@@ -1467,36 +1498,30 @@ export default function MlynNaPilePage() {
                 <div className="px-6 py-12">
                   <div className="text-center max-w-5xl mx-auto mb-16">
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
-                    <p className="text-lg md:text-2xl text-white/90 font-light mb-4">{t.mlyn.subtitle}</p>
-                    <p className="text-lg md:text-2xl text-white/90 font-light mb-4">{t.mlyn.tagline}</p>
+                    <p className="text-lg md:text-2xl text-white/90 font-light mb-8">{t.mlyn.subtitle}</p>
                     <p className="text-base md:text-lg text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
                       {t.mlyn.description}
                     </p>
-                    <p className="text-xs text-white/50 animate-pulse">{t.mlyn.scrollHint}</p>
                   </div>
 
-                  <div className="max-w-6xl mx-auto mb-16">
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-12 text-center">
-                      {t.mlyn.threeSpaces}
-                    </h2>
-
-                    <div className="grid grid-cols-1 md:grid-grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="max-w-4xl mx-auto mb-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       <Card
-                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
                         onClick={() => handleSectionChange("equipment")}
                       >
-                        <CardContent className="p-6 text-center">
-                          <Guitar className="h-8 w-8 text-secondary mx-auto mb-4" />
+                        <CardContent className="p-4 text-center">
+                          <Music className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.vintageInstruments}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.vintageDesc}</p>
                         </CardContent>
                       </Card>
 
                       <Card
-                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
                         onClick={() => handleSectionChange("about")}
                       >
-                        <CardContent className="p-6 text-center">
+                        <CardContent className="p-4 text-center">
                           <Home className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.accommodation}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.accommodationDesc}</p>
@@ -1504,10 +1529,10 @@ export default function MlynNaPilePage() {
                       </Card>
 
                       <Card
-                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
                         onClick={() => handleSectionChange("lokalita")}
                       >
-                        <CardContent className="p-6 text-center">
+                        <CardContent className="p-4 text-center">
                           <MapPin className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.locationCard}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.locationDesc}</p>
@@ -1515,10 +1540,10 @@ export default function MlynNaPilePage() {
                       </Card>
 
                       <Card
-                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
                         onClick={() => handleSectionChange("equipment")}
                       >
-                        <CardContent className="p-6 text-center">
+                        <CardContent className="p-4 text-center">
                           <Headphones className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.studios}</h3>
                           <p className="text-white/80 text-xs whitespace-pre-line">{t.mlyn.studiosDesc}</p>
@@ -1526,18 +1551,18 @@ export default function MlynNaPilePage() {
                       </Card>
 
                       <Card
-                        className="bg-white/10 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/20 transition-colors"
+                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
                         onClick={() => handleSectionChange("equipment")}
                       >
-                        <CardContent className="p-6 text-center">
+                        <CardContent className="p-4 text-center">
                           <Mic className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.modernTech}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.modernTechDesc}</p>
                         </CardContent>
                       </Card>
 
-                      <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                        <CardContent className="p-6 text-center">
+                      <Card className="bg-white/5 backdrop-blur-sm border-white/20">
+                        <CardContent className="p-4 text-center">
                           <Calendar className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.benefits}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.benefitsDesc}</p>
@@ -1546,21 +1571,14 @@ export default function MlynNaPilePage() {
                     </div>
                   </div>
 
-                  <div className="text-center py-24">
-                    <p className="text-2xl md:text-4xl font-light text-white/90 mb-4">{t.mlyn.endMessage}</p>
-                    {/* Removed menuHint rendering */}
-                  </div>
-                </div>
-
-                <div className="flex justify-center pb-12">
-                  <Button
-                    onClick={() => handleSectionChange(getNextSection())}
-                    className="bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white"
-                    size="lg"
+                  <div
+                    className="text-center py-24 transition-opacity duration-300"
+                    style={{ opacity: presentationOpacity }}
                   >
-                    <ChevronDown className="h-5 w-5 mr-2" />
-                    Další sekce
-                  </Button>
+                    <p className="text-2xl md:text-4xl font-light text-white/90 mb-4">{t.mlyn.endMessage}</p>
+                  </div>
+
+                  <div className="h-32"></div>
                 </div>
               </div>
             ) : currentSection === "home" ? (
@@ -1639,8 +1657,8 @@ export default function MlynNaPilePage() {
                         <div className="space-y-2 text-xs text-white/90">
                           <h3 className="text-lg font-semibold text-white drop-shadow-lg">{t.studio.technology}</h3>
                           <ul className="space-y-1">
+                            <li>• Universal Audio Apollo x8p Gen2 Studio+</li>
                             <li>• MAC + Apple Pro Display XDR 6K monitor</li>
-                            <li>• Universal Audio Apollo Interface</li>
                             <li>• 76 UAD pluginů (kompletní kolekce)</li>
                             <li>• Logic Pro X + UA LUNA</li>
                             <li>• Projektor pro screening</li>
@@ -1714,7 +1732,11 @@ export default function MlynNaPilePage() {
                                       onClick={() => handleSectionChange("lokalita")}
                                       className="text-secondary hover:text-secondary/80 underline cursor-pointer"
                                     >
-                                      {language === "cs" ? "lokalita" : language === "en" ? "location" : "Standort"}
+                                      {currentLang === "cs"
+                                        ? "lokalita"
+                                        : currentLang === "en"
+                                          ? "location"
+                                          : "Standort"}
                                     </button>
                                     {pkg.details.split(/\[(lokalita|location|Standort)\]/)[2]}
                                   </>
@@ -2002,7 +2024,6 @@ export default function MlynNaPilePage() {
               </div>
             ) : currentSection === "equipment" ? (
               <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
-                {/* Applied pt-32 here */}
                 <div className="max-w-7xl mx-auto">
                   <div className="text-center mb-8">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 text-balance">{t.equipment.title}</h1>
@@ -2071,7 +2092,7 @@ export default function MlynNaPilePage() {
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
                         <h3 className="text-xl font-bold text-white mb-4">{t.equipment.ampsAndCabs}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-grid-cols-2 gap-6">
                           <div>
                             <h4 className="text-base font-semibold text-white mb-3">{t.equipment.amps}</h4>
                             <ul className="text-white/80 text-xs space-y-1.5">
@@ -2080,7 +2101,7 @@ export default function MlynNaPilePage() {
                               <li>• Mesa Boogie Dual Rectifier®Head, 3 Channels / 8 Modes, 100W</li>
                               <li>• Marshall AFD 100</li>
                               <li>• AMPEG V-4B Bass Head</li>
-                              <li>• Roland JC-22 (2x)</li>
+                              <li>• Roland JC-22</li>
                             </ul>
                           </div>
                           <div>
@@ -2877,6 +2898,44 @@ export default function MlynNaPilePage() {
           </div>
         </div>
       </div>
+
+      <footer className="fixed bottom-0 left-0 right-0 py-4 z-50">
+        <div className="flex justify-center items-center gap-8">
+          <a
+            href="https://www.instagram.com/mlynnapile"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/70 hover:text-white transition-colors"
+            aria-label="Instagram"
+          >
+            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+            </svg>
+          </a>
+          <a
+            href="https://www.facebook.com/share/1CWTAs8zoP/?mibextid=wwXIfr"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/70 hover:text-white transition-colors"
+            aria-label="Facebook"
+          >
+            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+            </svg>
+          </a>
+          <a
+            href="https://www.youtube.com/@mlynnapile"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/70 hover:text-white transition-colors"
+            aria-label="YouTube"
+          >
+            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
+          </a>
+        </div>
+      </footer>
     </div>
   )
 }
