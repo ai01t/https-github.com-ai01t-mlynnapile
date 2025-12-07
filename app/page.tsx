@@ -3,6 +3,7 @@
 import React from "react"
 
 import { useState, useEffect, useRef } from "react"
+import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { BusinessCardDownload } from "@/components/business-card-download"
@@ -214,7 +215,7 @@ const translations = {
       workflow: "Doporučené Workflow",
       thankYouNote: "Děkujeme",
       noraCollaboration: "Za spolupráci na textu děkujeme Nore z kapely",
-      cables: "Kabely a Stojany",
+      cables: "Kabely, sluchátka a stojany", // Renamed from "Kabely a Stojany" to include headphones
     },
     contact: {
       title: "Kontakt",
@@ -267,7 +268,7 @@ const translations = {
         { title: "Snídaně", desc: "Formou bufetu, s lokálními produkty." },
         {
           title: "Obědy a večeře",
-          desc: "Možnost zajištění cateringu dle Vašeho přání, od jednoduchých jídel po gurmánské zážitky. Specializujeme se na italskou kuchyni a grilování.",
+          desc: "Možnost zajištění cateringu dle Vašeho přání, od jednoduchých jídel po profi katering.",
         },
         { title: "Nápoje", desc: "Široký výběr nealkoholických a alkoholických nápojů, včetně místních piv a vín." },
       ],
@@ -518,7 +519,7 @@ const translations = {
       workflow: "Recommended Workflow",
       thankYouNote: "Thank you",
       noraCollaboration: "For the collaboration on the text, we thank Nora from the band",
-      cables: "Cables and Stands",
+      cables: "Cables, Headphones and Stands", // Renamed from "Cables and Stands" to include headphones
     },
     contact: {
       title: "Contact",
@@ -593,7 +594,7 @@ const translations = {
       jindrichQuote:
         "We are working to ensure that musicians find an inspiring space here, perfectly prepared for creation. The mill has its genius loci and soul – and the instruments and vintage amplifiers available here carry the same energy. In harmony with them, modern technologies subtly support comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful, and comfortable environment that people will want to return to. Our doors are open to all creative people, not just musicians. We believe that this combination – a space with soul, instruments with a story, and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
-        "Singer and bassist of the band Anteater, and also an archaeologist. It is precisely in the environment of the old mill that all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)). But seriously now: we complement each other and often draw inspiration from our different perspectives on the world.",
+        "Singer and bassist of the band Anteater, and also an archaeologist. It is precisely in the environment of the old mill that all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)). But seriously now: we complement each other and we often draw inspiration from our different perspectives on the world.",
       collaboration: "Collaboration and Reservations",
       collaborationPara1Strong: "The studio spaces",
       collaborationPara1: " are available for recording, workshops, residential stays, and other artistic projects.",
@@ -796,7 +797,7 @@ const translations = {
         "Kulturelle Veranstaltungen und Festivals",
       ],
       horsovskytynTitle: "Horšovský Týn (15 Min.)",
-      horsovskytynItems: ["Renaissance-Schloss", "Schlossbesichtigungen", "Sommerliche Kulturveranstaltungen"],
+      horsovskytynItems: ["Renaissance-Sch Schloss", "Schlossbesichtigungen", "Sommerliche Kulturveranstaltungen"],
       babylonTitle: "Babylon (10 Min.)",
       babylonItems: ["Babylon-Aquapark", "Babylon-Zentrum"],
       chamTitle: "Cham, Deutschland (20 Min.)",
@@ -838,7 +839,7 @@ const translations = {
       workflow: "Empfohlener Workflow",
       thankYouNote: "Danke",
       noraCollaboration: "Für die Zusammenarbeit am Text danken wir Nora von der Band",
-      cables: "Kabel und Ständer",
+      cables: "Kabel, Kopfhörer und Ständer", // Renamed from "Kabel und Ständer" to include headphones
     },
     contact: {
       title: "Kontakt",
@@ -975,9 +976,18 @@ const translations = {
 }
 
 export default function Page() {
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const getLanguageFromPath = () => {
+    if (pathname === "/en") return "en"
+    if (pathname === "/de") return "de"
+    return "cs"
+  }
+
+  const [language, setLanguage] = useState<"cs" | "en" | "de">(getLanguageFromPath())
   const [currentSection, setCurrentSection] = useState("mlyn")
   const [isDarkMode, setIsDarkMode] = useState(false)
-  const [currentLang, setCurrentLang] = useState("cs")
   const [isPlaying, setIsPlaying] = useState(true)
   const [showEndMessage, setShowEndMessage] = useState(false)
 
@@ -985,7 +995,7 @@ export default function Page() {
   const [showLanguageMenu, setShowLanguageMenu] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [currentVideoUrl, setCurrentVideoUrl] = useState(
-    "https://www.youtube.com/embed/Q6fS_hCaufA?autoplay=1&mute=1&loop=1&playlist=Q6fS_hCaufA&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1",
+    "https://www.youtube.com/embed/Q6fS_hCaufA?autoplay=1&mute=1&loop=1&playlist=Q6fS_hCaufA&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&hd=1",
   )
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [nextVideoUrl, setNextVideoUrl] = useState("")
@@ -1005,12 +1015,10 @@ export default function Page() {
   const [showPresentationMessage, setShowPresentationMessage] = useState(false)
   const [presentationOpacity, setPresentationOpacity] = useState(0)
 
-  const t = translations[currentLang as keyof typeof translations]
+  const t = translations[language as keyof typeof translations]
+  const currentLang = language // Added to fix lint error
 
   const darkModeTimerRef = useRef<NodeJS.Timeout | null>(null)
-
-  // The following variable `textOpacity` was not declared and has been removed.
-  // const textOpacity = 1; // Removed as it was undeclared.
 
   useEffect(() => {
     const tag = document.createElement("script")
@@ -1042,11 +1050,6 @@ export default function Page() {
     const newDarkMode = !isDarkMode
     setIsDarkMode(newDarkMode)
 
-    if (darkModeTimerRef.current) {
-      clearTimeout(darkModeTimerRef.current)
-      darkModeTimerRef.current = null
-    }
-
     let newVideoId = ""
     if (newDarkMode) {
       newVideoId = "yl1CN7_Y73s"
@@ -1063,7 +1066,7 @@ export default function Page() {
     console.log("[v0] Switching to dark mode:", newDarkMode, "video:", newVideoId)
 
     setIsTransitioning(true)
-    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1`
+    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080`
     setNextVideoUrl(newUrl)
 
     setTimeout(() => {
@@ -1072,12 +1075,6 @@ export default function Page() {
       setNextVideoUrl("")
       setIsVideoPlaying(true)
     }, 1000)
-  }
-
-  const getNextSection = () => {
-    const currentIndex = sectionOrder.indexOf(currentSection)
-    const nextIndex = (currentIndex + 1) % sectionOrder.length
-    return sectionOrder[nextIndex]
   }
 
   const handleSectionChange = React.useCallback(
@@ -1090,17 +1087,16 @@ export default function Page() {
       }
 
       setCurrentSection(section)
-      setShowMobileMenu(false) // Close mobile menu on section change
+      setShowMobileMenu(false)
 
       if (section === "spoluprace") {
-        const element = document.getElementById("collaboration") // Changed ID to match the actual ID used later
+        const element = document.getElementById("collaboration")
         if (element) {
           element.scrollIntoView({ behavior: "smooth", block: "start" })
         }
         return
       }
 
-      // Scroll to top for all other sections
       window.scrollTo({ top: 0, behavior: "smooth" })
 
       let newVideoId = ""
@@ -1114,7 +1110,6 @@ export default function Page() {
         } else if (section === "contact") {
           newVideoId = "Js0nD8lUKH8"
         } else {
-          // For uvod, home, equipment, lokalita - use default video
           newVideoId = "Q6fS_hCaufA"
         }
       }
@@ -1122,7 +1117,7 @@ export default function Page() {
       console.log("[v0] Switching to video:", newVideoId)
 
       setIsTransitioning(true)
-      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1`
+      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080`
       setNextVideoUrl(newUrl)
 
       setTimeout(() => {
@@ -1133,26 +1128,23 @@ export default function Page() {
       }, 1000)
     },
     [isDarkMode],
-  ) // Added dependencies for isDarkMode
+  )
 
   useEffect(() => {
-    // Clear any existing timer
     if (darkModeTimerRef.current) {
       clearTimeout(darkModeTimerRef.current)
       darkModeTimerRef.current = null
     }
 
-    // Only auto-switch if currently in light mode
     if (!isDarkMode) {
       if (currentSection === "home") {
-        // For photos: switch to dark mode after 10 seconds
         console.log("[v0] Starting 10s timer for photo dark mode switch")
         darkModeTimerRef.current = setTimeout(() => {
           console.log("[v0] Auto-switching to dark mode (photo)")
           setIsDarkMode(true)
           const newVideoId = "yl1CN7_Y73s"
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1162,14 +1154,13 @@ export default function Page() {
           }, 1000)
         }, 10000)
       } else {
-        // For videos: switch to dark mode after 45 seconds (estimated video length)
         console.log("[v0] Starting 45s timer for video dark mode switch")
         darkModeTimerRef.current = setTimeout(() => {
           console.log("[v0] Auto-switching to dark mode (video)")
           setIsDarkMode(true)
           const newVideoId = "yl1CN7_Y73s"
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1181,7 +1172,6 @@ export default function Page() {
       }
     }
 
-    // Cleanup timer on unmount or when dependencies change
     return () => {
       if (darkModeTimerRef.current) {
         clearTimeout(darkModeTimerRef.current)
@@ -1197,7 +1187,6 @@ export default function Page() {
         const scrollHeight = mlynSectionRef.current.scrollHeight
         const clientHeight = mlynSectionRef.current.clientHeight
 
-        // Check if scrolled to bottom (within 50px tolerance)
         const isAtBottom = scrollHeight - scrollTop - clientHeight < 50
 
         if (isAtBottom && !showPresentationMessage) {
@@ -1208,7 +1197,7 @@ export default function Page() {
             setPresentationOpacity(0)
             setTimeout(() => {
               setShowPresentationMessage(false)
-            }, 1000) // Wait for fade out animation
+            }, 1000)
           }, 7000)
         }
       }
@@ -1225,6 +1214,24 @@ export default function Page() {
       }
     }
   }, [currentSection, showPresentationMessage])
+
+  const toggleLanguage = () => {
+    const newLang = language === "cs" ? "en" : language === "en" ? "de" : "cs"
+    setLanguage(newLang)
+
+    if (newLang === "cs") {
+      router.push("/")
+    } else {
+      router.push(`/${newLang}`)
+    }
+  }
+
+  useEffect(() => {
+    const langFromPath = getLanguageFromPath()
+    if (langFromPath !== language) {
+      setLanguage(langFromPath)
+    }
+  }, [pathname])
 
   return (
     <div className="min-h-screen relative">
@@ -1327,7 +1334,7 @@ export default function Page() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                  onClick={toggleLanguage} // Changed to call toggleLanguage
                   className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
                 >
                   <Globe className="h-2.5 w-2.5" />
@@ -1338,10 +1345,11 @@ export default function Page() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setCurrentLang("cs")
+                        setLanguage("cs")
+                        router.push("/")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${currentLang === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${language === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       CS
                     </Button>
@@ -1349,10 +1357,11 @@ export default function Page() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setCurrentLang("en")
+                        setLanguage("en")
+                        router.push("/en")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${currentLang === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${language === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       EN
                     </Button>
@@ -1360,10 +1369,11 @@ export default function Page() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setCurrentLang("de")
+                        setLanguage("de")
+                        router.push("/de")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${currentLang === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${language === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       DE
                     </Button>
@@ -1398,7 +1408,7 @@ export default function Page() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => setShowLanguageMenu(!showLanguageMenu)}
+                  onClick={toggleLanguage} // Changed to call toggleLanguage
                   className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
                 >
                   <Globe className="h-2.5 w-2.5" />
@@ -1409,10 +1419,11 @@ export default function Page() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setCurrentLang("cs")
+                        setLanguage("cs")
+                        router.push("/")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${currentLang === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${language === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       CS
                     </Button>
@@ -1420,10 +1431,11 @@ export default function Page() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setCurrentLang("en")
+                        setLanguage("en")
+                        router.push("/en")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${currentLang === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${language === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       EN
                     </Button>
@@ -1431,10 +1443,11 @@ export default function Page() {
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        setCurrentLang("de")
+                        setLanguage("de")
+                        router.push("/de")
                         setShowLanguageMenu(false)
                       }}
-                      className={`${currentLang === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
+                      className={`${language === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
                     >
                       DE
                     </Button>
@@ -1582,9 +1595,7 @@ export default function Page() {
                 </div>
               </div>
             ) : currentSection === "home" ? (
-              // Removed uvod section, only keeping home (Studio) section
               <div ref={studioSectionRef} className="flex-1 overflow-y-auto pt-32">
-                {/* Applied pt-32 here */}
                 {/* Hero Section */}
                 <div className="flex items-center justify-center px-6 py-16 text-white">
                   <div className="text-center max-w-5xl">
@@ -1624,7 +1635,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/YWnYQDGHeLw?autoplay=1&mute=1&loop=1&playlist=YWnYQDGHeLw&controls=0&showinfo=0&rel=0&modestbranding=1"
+                          src="https://www.youtube.com/embed/YWnYQDGHeLw?autoplay=1&mute=1&loop=1&playlist=YWnYQDGHeLw&controls=0&showinfo=0&rel=0&modestbranding=1&vq=hd1080&hd=1"
                           title="Hlavní Studio"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -1640,7 +1651,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group order-2 lg:order-1">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1"
+                          src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1&vq=hd1080&hd=1"
                           title="Control Room"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -1684,7 +1695,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/sc0bCt6G9dM?autoplay=1&mute=1&loop=1&playlist=sc0bCt6G9dM&controls=0&showinfo=0&rel=0&modestbranding=1"
+                          src="https://www.youtube.com/embed/sc0bCt6G9dM?autoplay=1&mute=1&loop=1&playlist=sc0bCt6G9dM&controls=0&showinfo=0&rel=0&modestbranding=1&vq=hd1080&hd=1"
                           title="Millstone Studio"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -1713,7 +1724,6 @@ export default function Page() {
                         <div key={index} className="bg-black/40 backdrop-blur-sm rounded-xl p-8 border border-white/10">
                           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                             <div className="space-y-4">
-                              {/* Using translated package label instead of hardcoded "Balíček" */}
                               <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg">
                                 {index + 1}. {t.studio.accommodation.packageLabel} "{pkg.name}"
                               </h3>
@@ -1749,7 +1759,7 @@ export default function Page() {
                               {pkg.video ? (
                                 <iframe
                                   className="w-full h-full"
-                                  src={`${pkg.video.replace("youtu.be/", "www.youtube.com/embed/")}?autoplay=1&mute=1&loop=1&playlist=${pkg.video.split("/").pop()}&controls=0&showinfo=0&rel=0&modestbranding=1`}
+                                  src={`${pkg.video.replace("youtu.be/", "www.youtube.com/embed/")}?autoplay=1&mute=1&loop=1&playlist=${pkg.video.split("/").pop()}&controls=0&showinfo=0&rel=0&modestbranding=1&vq=hd1080&hd=1`}
                                   title={pkg.name}
                                   allow="autoplay; encrypted-media"
                                   allowFullScreen
@@ -1813,7 +1823,6 @@ export default function Page() {
               </div>
             ) : currentSection === "lokalita" ? (
               <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
-                {/* Applied pt-32 here */}
                 <div className="max-w-6xl mx-auto">
                   <div className="text-center mb-12">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">{t.location.title}</h1>
@@ -2444,7 +2453,7 @@ export default function Page() {
                     </Card>
                   </div>
 
-                  {/* Kabely a Stojany */}
+                  {/* Kabely, sluchátka a stojany */}
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
@@ -2464,6 +2473,15 @@ export default function Page() {
                           </div>
                           <div className="bg-white/5 p-3 rounded">
                             <p className="text-white/90">K&M stojany</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">Beyerdynamic DT-770 Pro 250 Ohm</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">KRK KNS-8402</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">Bezdrátové systémy Shure GLXD16+</p>
                           </div>
                         </div>
                       </CardContent>
@@ -2617,7 +2635,6 @@ export default function Page() {
                           {t.about.historyTimeline.map((item, index) => (
                             <div key={index} className="border-l-2 border-secondary pl-4">
                               <p className="font-semibold text-white">{item.year}</p>
-                              {/* Reduced history item description from text-sm to text-xs */}
                               <p className="text-xs">{item.desc}</p>
                             </div>
                           ))}
@@ -2637,14 +2654,11 @@ export default function Page() {
                             <h4 className="text-base font-bold text-white mb-4">{t.about.accommodationRooms}</h4>
                             <div className="space-y-4">
                               <div className="bg-white/5 p-4 rounded-lg">
-                                {/* Reduced room title from text-xl to text-lg */}
                                 <h5 className="font-semibold text-white mb-2">{t.about.masterSuite}</h5>
-                                {/* Reduced description from text-sm to text-xs */}
                                 <p className="text-white/80 text-xs">{t.about.masterSuiteDesc}</p>
                               </div>
                               <div className="bg-white/5 p-4 rounded-lg">
                                 <h5 className="font-semibold text-white mb-2">{t.about.fourRooms}</h5>
-                                {/* Reduced description from text-sm to text-xs */}
                                 <p className="text-white/80 text-xs">{t.about.fourRoomsDesc}</p>
                               </div>
                             </div>
@@ -2685,7 +2699,6 @@ export default function Page() {
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {t.about.cateringItems.map((item, index) => (
                               <div key={index} className="bg-white/5 p-4 rounded-lg">
-                                {/* Reduced description from text-sm to text-xs */}
                                 <p className="text-white/80 text-xs">
                                   <strong className="text-white">{item.title}</strong> {item.desc}
                                 </p>
@@ -2783,7 +2796,6 @@ export default function Page() {
                               </ul>
                             </div>
                             <div className="mt-6 pt-6 border-t border-white/20">
-                              {/* Reduced description from text-sm to text-xs */}
                               <p className="text-xs text-white/80 leading-relaxed">
                                 <strong className="text-secondary">{t.equipment.thankYouNote}:</strong>{" "}
                                 {t.equipment.noraCollaboration}{" "}
@@ -2872,7 +2884,6 @@ export default function Page() {
                                 >
                                   <div className="flex items-start gap-3">
                                     <Icon className="h-5 w-5 text-white/60 flex-shrink-0 mt-0.5" />
-                                    {/* Reduced FAQ question from text-sm to text-xs */}
                                     <h4 className="font-semibold text-white text-xs group-hover:text-secondary transition-colors">
                                       {faq.q}
                                     </h4>
@@ -2882,7 +2893,6 @@ export default function Page() {
                                   />
                                 </button>
                                 {openFaqIndex === index && (
-                                  // Reduced FAQ answer from text-sm to text-xs
                                   <p className="text-xs text-white/80 mt-2 ml-8 leading-relaxed">{faq.a}</p>
                                 )}
                               </div>

@@ -45,7 +45,7 @@ FN:Ing. Jindřích Traxmandl
 N:Traxmandl;Jindřích;;Ing.;
 ORG:Mlýn na Pile
 TEL;TYPE=CELL:+420724050093
-EMAIL:info@mlynnapile.cz
+EMAIL:mlynnapile@gmail.com
 ADR;TYPE=WORK:;;Pila 100;Trhanov;;34401;Česká republika
 URL:https://mlynnapile.cz
 NOTE:Prémiové nahrávací studio v historickém mlýně
