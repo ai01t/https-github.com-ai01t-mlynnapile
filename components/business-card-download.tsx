@@ -76,19 +76,19 @@ END:VCARD`
         />
 
         {/* Tlačítka pod vizitkou */}
-        <div className="p-3 flex gap-2 justify-center bg-gray-50">
+        <div className="p-2 flex gap-2 justify-center bg-gray-50">
           <button
             onClick={handleImageDownload}
-            className="px-3 py-2 bg-white text-gray-700 text-sm font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center gap-2 shadow-sm border border-gray-200"
+            className="px-2 py-1.5 bg-white text-gray-700 text-xs font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center gap-1.5 shadow-sm border border-gray-200"
           >
-            <Download className="h-4 w-4" />
+            <Download className="h-3 w-3" />
             Stáhnout obrázek
           </button>
           <button
             onClick={handleVCardDownload}
-            className="px-3 py-2 bg-white text-gray-700 text-sm font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center gap-2 shadow-sm border border-gray-200"
+            className="px-2 py-1.5 bg-white text-gray-700 text-xs font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center gap-1.5 shadow-sm border border-gray-200"
           >
-            <User className="h-4 w-4" />
+            <User className="h-3 w-3" />
             Uložit kontakt
           </button>
         </div>
