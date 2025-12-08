@@ -3,7 +3,7 @@
 import React from "react"
 
 import { useState, useEffect, useRef } from "react"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { BusinessCardDownload } from "@/components/business-card-download"
@@ -215,7 +215,7 @@ const translations = {
       workflow: "Doporučené Workflow",
       thankYouNote: "Děkujeme",
       noraCollaboration: "Za spolupráci na textu děkujeme Nore z kapely",
-      cables: "Kabely, sluchátka a stojany", // Renamed from "Kabely a Stojany" to include headphones
+      cables: "Odposlechy, sluchátka, kabely a stojany",
     },
     contact: {
       title: "Kontakt",
@@ -519,7 +519,7 @@ const translations = {
       workflow: "Recommended Workflow",
       thankYouNote: "Thank you",
       noraCollaboration: "For the collaboration on the text, we thank Nora from the band",
-      cables: "Cables, Headphones and Stands", // Renamed from "Cables and Stands" to include headphones
+      cables: "Monitors, Headphones, Cables and Stands",
     },
     contact: {
       title: "Contact",
@@ -839,7 +839,7 @@ const translations = {
       workflow: "Empfohlener Workflow",
       thankYouNote: "Danke",
       noraCollaboration: "Für die Zusammenarbeit am Text danken wir Nora von der Band",
-      cables: "Kabel, Kopfhörer und Ständer", // Renamed from "Kabel und Ständer" to include headphones
+      cables: "Monitore, Kopfhörer, Kabel und Ständer",
     },
     contact: {
       title: "Kontakt",
@@ -978,14 +978,20 @@ const translations = {
 export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
-  const getLanguageFromPath = () => {
-    if (pathname === "/en") return "en"
-    if (pathname === "/de") return "de"
+  const getLanguageFromQuery = () => {
+    const lang = searchParams.get("lang")
+    console.log("[v0] Query param lang:", lang)
+    if (lang === "en") return "en"
+    if (lang === "de") return "de"
     return "cs"
   }
 
-  const [language, setLanguage] = useState<"cs" | "en" | "de">(getLanguageFromPath())
+  const initialLanguage = getLanguageFromQuery()
+  console.log("[v0] Initial language from query:", initialLanguage)
+
+  const [language, setLanguage] = useState<"cs" | "en" | "de">(initialLanguage)
   const [currentSection, setCurrentSection] = useState("mlyn")
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isPlaying, setIsPlaying] = useState(true)
@@ -1019,6 +1025,16 @@ export default function Page() {
   const currentLang = language // Added to fix lint error
 
   const darkModeTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Sync language with URL changes
+  useEffect(() => {
+    const detectedLang = getLanguageFromQuery()
+    console.log("[v0] Query changed, detected language:", detectedLang)
+    if (detectedLang !== language) {
+      console.log("[v0] Updating language from", language, "to", detectedLang)
+      setLanguage(detectedLang)
+    }
+  }, [searchParams])
 
   useEffect(() => {
     const tag = document.createElement("script")
@@ -1220,11 +1236,9 @@ export default function Page() {
   }
 
   useEffect(() => {
-    const langFromPath = getLanguageFromPath()
-    if (langFromPath !== language) {
-      setLanguage(langFromPath)
-    }
-  }, [pathname])
+    const langFromPath = getLanguageFromQuery()
+    setLanguage(langFromPath)
+  }, [searchParams])
 
   return (
     <div className="min-h-screen relative">
@@ -1339,7 +1353,7 @@ export default function Page() {
                       size="sm"
                       onClick={() => {
                         setLanguage("cs")
-                        router.push("/")
+                        router.push("/?lang=cs")
                         setShowLanguageMenu(false)
                       }}
                       className={`${language === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
@@ -1351,7 +1365,7 @@ export default function Page() {
                       size="sm"
                       onClick={() => {
                         setLanguage("en")
-                        router.push("/en")
+                        router.push("/?lang=en")
                         setShowLanguageMenu(false)
                       }}
                       className={`${language === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
@@ -1363,7 +1377,7 @@ export default function Page() {
                       size="sm"
                       onClick={() => {
                         setLanguage("de")
-                        router.push("/de")
+                        router.push("/?lang=de")
                         setShowLanguageMenu(false)
                       }}
                       className={`${language === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
@@ -1407,13 +1421,13 @@ export default function Page() {
                   <Globe className="h-2.5 w-2.5" />
                 </Button>
                 {showLanguageMenu && (
-                  <div className="absolute top-full mt-1 right-0 bg-black/80 backdrop-blur-sm rounded-lg p-1 flex flex-col gap-1 min-w-[60px]">
+                  <div className="absolute top-full mt-1 right-0 bg-black/80 backdrop-blur-sm rounded-lg p-1 flex flex-col gap-1 min-w-[60px] z-50">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => {
                         setLanguage("cs")
-                        router.push("/")
+                        router.push("/?lang=cs")
                         setShowLanguageMenu(false)
                       }}
                       className={`${language === "cs" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
@@ -1425,7 +1439,7 @@ export default function Page() {
                       size="sm"
                       onClick={() => {
                         setLanguage("en")
-                        router.push("/en")
+                        router.push("/?lang=en")
                         setShowLanguageMenu(false)
                       }}
                       className={`${language === "en" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
@@ -1437,7 +1451,7 @@ export default function Page() {
                       size="sm"
                       onClick={() => {
                         setLanguage("de")
-                        router.push("/de")
+                        router.push("/?lang=de")
                         setShowLanguageMenu(false)
                       }}
                       className={`${language === "de" ? "bg-white/20" : ""} text-white/90 hover:bg-white/10`}
@@ -2453,6 +2467,12 @@ export default function Page() {
                         <h3 className="text-xl font-bold text-white mb-4">{t.equipment.cables}</h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                           <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">Mackie Thump15A (1300W) x2</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">Cromo 10+ (400W) 1x</p>
+                          </div>
+                          <div className="bg-white/5 p-3 rounded">
                             <p className="text-white/90">Mogami Platinum</p>
                           </div>
                           <div className="bg-white/5 p-3 rounded">
@@ -2525,8 +2545,8 @@ export default function Page() {
                       <CardContent className="p-6">
                         <h3 className="text-xl font-bold text-white mb-4">{t.equipment.infrastructure}</h3>
                         <div>
-                          <h4 className="text-base font-semibold text-white mb-3">Infrastruktura</h4>
-                          <ul className="text-white/80 text-xs space-y-2">
+                          <h4 className="text-base font-bold text-white mb-3">Infrastruktura</h4>
+                          <ul className="text-white/80 space-y-2">
                             <li>• Přepěťové ochrany</li>
                             <li>• Tesla charging station</li>
                             <li>• Off-grid capability</li>
@@ -2550,7 +2570,7 @@ export default function Page() {
                       <CardContent className="p-5">
                         <div className="space-y-3">
                           <div className="flex items-start space-x-2">
-                            <MapPin className="h-4 w-4 text-secondary mt-0.5 flex-shrink-0" />
+                            <MapPin className="h-3.5 w-3.5 text-white/40 mt-0.5 flex-shrink-0" />
                             <div>
                               <p className="text-white font-medium text-sm">Ing. Jindřich Traxmandl</p>
                               <p className="text-white/70 text-xs mt-1">
@@ -2564,13 +2584,13 @@ export default function Page() {
                           </div>
 
                           <div className="flex items-center space-x-2">
-                            <Phone className="h-4 w-4 text-secondary flex-shrink-0" />
+                            <Phone className="h-3.5 w-3.5 text-white/40 flex-shrink-0" />
                             <p className="text-white/70 text-xs">+420 724 050 093</p>
                           </div>
 
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
-                              <Mail className="h-4 w-4 text-secondary flex-shrink-0" />
+                              <Mail className="h-3.5 w-3.5 text-white/40 flex-shrink-0" />
                               <a
                                 href="mailto:mlynnapile@gmail.com"
                                 className="text-white/70 text-xs hover:text-white transition-colors"
@@ -2612,7 +2632,7 @@ export default function Page() {
 
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-xl font-bold text-white mb-6">{t.about.history}</h3>
+                        <h3 className="text-xl font-bold text-white mb-8 text-center">{t.about.history}</h3>
                         <div className="space-y-4 text-white/80">
                           {t.about.historyTimeline.map((item, index) => (
                             <div key={index} className="border-l-2 border-secondary pl-4">

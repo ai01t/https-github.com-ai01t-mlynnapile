@@ -63,54 +63,40 @@ END:VCARD`
   return (
     <div className="relative inline-block">
       <div
-        className={`absolute left-0 bottom-full mb-2 w-80 bg-white rounded-lg shadow-xl overflow-hidden transition-all duration-700 ease-in-out z-[9999] ${
-          isHovered ? "opacity-100 transform translate-y-0 visible" : "opacity-0 transform translate-y-2 invisible"
+        className={`fixed left-1/2 -translate-x-1/2 bottom-24 w-72 bg-white/95 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden transition-all duration-500 ease-out ${
+          isHovered ? "opacity-100 scale-100 visible z-[9999]" : "opacity-0 scale-95 invisible z-[-1]"
         }`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <img
-          src="/images/business-card.png"
-          alt="Vizitka Mlýn na Pile"
-          className="w-full h-auto transition-opacity duration-700"
-        />
-
-        {/* Tlačítka pod vizitkou */}
-        <div className="p-2 flex gap-2 justify-center bg-gray-50">
+        <div className="relative">
+          <img src="/images/business-card.png" alt="Vizitka Mlýn na Pile" className="w-full h-auto" />
+        </div>
+        <div className="p-2 flex gap-1.5 justify-center bg-white/80">
           <button
             onClick={handleImageDownload}
-            className="px-2 py-1.5 bg-white text-gray-700 text-xs font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center gap-1.5 shadow-sm border border-gray-200"
+            className="flex-1 px-2 py-1 text-gray-600 hover:text-gray-900 text-[10px] font-light transition-colors duration-200 flex items-center justify-center gap-1.5"
           >
-            <Download className="h-3 w-3" />
+            <Download className="h-2.5 w-2.5" />
             Stáhnout obrázek
           </button>
+          <div className="w-px bg-gray-300" />
           <button
             onClick={handleVCardDownload}
-            className="px-2 py-1.5 bg-white text-gray-700 text-xs font-medium rounded-md hover:bg-gray-100 transition-colors flex items-center gap-1.5 shadow-sm border border-gray-200"
+            className="flex-1 px-2 py-1 text-gray-600 hover:text-gray-900 text-[10px] font-light transition-colors duration-200 flex items-center justify-center gap-1.5"
           >
-            <User className="h-3 w-3" />
+            <User className="h-2.5 w-2.5" />
             Uložit kontakt
           </button>
         </div>
       </div>
-
-      {/* Hlavní text */}
-      <div
-        className={`cursor-pointer transition-all duration-300 ${
-          isHovered
-            ? "bg-primary text-primary-foreground px-4 py-2 rounded-md shadow-md"
-            : "text-lg font-medium text-white/80 hover:text-white"
-        }`}
+      <button
+        className="text-xs text-white/60 hover:text-white/90 transition-colors duration-300 font-light underline decoration-white/30 hover:decoration-white/60 underline-offset-2"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="flex items-center gap-2">
-          <span>Stáhnout vizitku</span>
-          <Download
-            className={`transition-all duration-300 ${isHovered ? "h-4 w-4 opacity-100" : "h-0 w-0 opacity-0"}`}
-          />
-        </div>
-      </div>
+        Stáhnout vizitku
+      </button>
     </div>
   )
 }
