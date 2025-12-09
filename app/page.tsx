@@ -154,6 +154,93 @@ const translations = {
         },
       },
     },
+    studio: {
+      title: "Mlýn na Pile",
+      subtitle: "Tři unikátní prostory pro vaši kreativitu",
+      description: "Od hlavního studia přes Millstone studio do control room",
+      mainStudio: "Hlavní Studio",
+      mainStudioSize: "64 m²",
+      mainStudioDesc:
+        "Hlavní studio se nachází v podkrovní galerii s odkrytými původními trámy, které prostoru dodávají autentickou atmosféru starého mlýna. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník. Místo, kde se propojuje vůně dřeva, teplo vintage nástrojů a ticho okolní přírody — ideální prostor pro tvorbu, nahrávání i soustředěnou práci.",
+      equipment: "Vybavení",
+      controlRoom: "Control Room",
+      controlRoomSize: "27 m²",
+      controlRoomDesc:
+        "Pristine acoustics pro critical listening. Vybaveno cutting-edge technologií pro mixing a mastering na nejvyšší úrovni.",
+      technology: "Technologie",
+      millstoneStudio: "Millstone studio",
+      millstoneSize: "25 m² - Bývalá mlýnice",
+      millstoneDesc:
+        "Vysoké stropy a unikátní akustika historické mlýnice. Ideální pro akustické nahrávky a experimentální projekty.",
+      ctaTitle: "Připraveni vytvořit něco úžasného?",
+      ctaDesc: "Kontaktujte nás a domluvme si návštěvu studia",
+      ctaButton: "Kontaktovat",
+      accommodation: {
+        title: "Nahrávání + Ubytování",
+        subtitle:
+          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Free wifi a parkování v areálu, s možností nabití EV.",
+        intro: "Jdeme na to:",
+        packageLabel: "Balíček",
+        parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
+        accommodationNote:
+          "Ubytování není veřejně ani samostatně poskytovaná služba. Přespání je určeno výhradně klientům nahrávacího studia jako zázemí během kreativní práce.",
+        packages: [
+          {
+            name: "Into the Wild",
+            tags: "#Main studio",
+            description:
+              "Nejekonomičtější - stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence, usínejte a probouzejte se do světa hudby s přírodou :-)",
+            details:
+              "Možnost přespání ve vlastním autě/karavanu/stanu. Main studio má vlastní sociální zařízení včetně sprchy.",
+            video: "https://youtu.be/qEc9SnmU4cM",
+          },
+          {
+            name: "Underwater",
+            tags: "#Main Studio #Sauna",
+            description:
+              "Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka :-) Skromné ale stylové a útulné přespání, jedná se o spaní přímo v prostorách bývalé mlýnice.",
+            details:
+              "Zde můžete usínat za zvuků protékající vody - stačí pootevřít okno :-) - součástí je i možnost využít saunu + posezení pod hrází vedle velké pece. 1x dvojlůžko, možnost dalších dvou přistýlek.",
+            video: "https://youtu.be/gI3204B7eNk",
+          },
+          {
+            name: "Otherside",
+            tags: "#Control room #Staročeská světnice #Dva pokoje",
+            description:
+              "Z druhé strany studia můžete využít pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple (Magic Trackpad, Magic Mouse, Apple Magic Keyboard) pro pohodlnou práci + ubytování ve staročeské světnici.",
+            details:
+              "Vhodné jak pro zpracování vaší práce ve studiích, tak i pro nehudební aktivity (např. grafiky, digitální tvůrce), finální zpracování nahrávek.",
+            video: "https://youtu.be/X7lvikbWnMQ",
+          },
+          {
+            name: "Fuel",
+            tags: "#VIP balíček",
+            description:
+              "Tato varianta se jmenuje podle našeho songu Fuel a i podle songu od Metallicy, protože tohle je fakt asi pro Metallicu, (ale nebojte napsat a určitě se domluvíme).",
+            details:
+              "Jedná se VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady kde si můžete dát výbornou kávu a vejdete se sem s celým týmem nebo si zde můžete užít klid mezitím co bude zbytek teamu pracovat ve studiu. Profi catering, roztopení velké pece. Vynikající pizza i chleba - který si můžete zkusit sami upéct a to nám věřte - to je radost a zážitek, který si užijete :-). Dále zapůjčení Tesla model X v ceně (200 km), popř. včetně řidiče s možností navštívit zajímavá místa v okolí (viz. [lokalita]) :-)",
+            video: "https://youtu.be/5INpfHr0lu4",
+          },
+        ],
+        bonuses: {
+          title: "Další bonusy",
+          items: [
+            "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
+            "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
+            "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
+            "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
+            "U sousedky Dády si můžete projet na koních. 🐴",
+            "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
+            "Můžete potkat i tlustou veverku, co vyvrací plaňky - zvířata se zde mají skvěle :-) Máme i volavky a u sousedů štěně a pár kamarádských koček (také od různých sousedů), žáby a krtky (naše) :-) 🐿️🐕🐈",
+            "Žijeme se zvířaty v symbióze a spolupracujeme, tento rok byl vstup do studia navíc zabezpečen i sršním hnízdem hned nad vstupem, které pro příští roky už neplánujeme a nahradíme ho modernějšími technologiemi. Děkujeme. (Žádní sršni nepřišli k úhoně – nechali jsme je dožít v klidu. 🐝) ⚡",
+            "Čerstvá bio zelenina, výborné hroznové víno, chmel. Celkově je tady tráva zelenější a díky krtkům je vidět krásná černozem. :-D 🥬🍇🌿",
+            "Vše podtrhuje ticho a klid, přitom do Domažlic je to jak z Národní na Palmovku (8 minut). 🤫🌳",
+            "V neposlední řadě, fajn sousedi ze všech stran a hospůdka Bidlo se sympatickou obsluhou a krásným výhledem na rybník a mlýn z druhé strany. Tady si můžete dát Plzeň a kdyby jste chtěli si dát víc piv a druhý den fungovat ve studiu, doporučujeme výlet do pivovaru v Domažlicích a držet se pouze Domažlické desítky, po které můžete bez problémů druhý den fungovat (Doporučeno paní sládkovou a několikrát pro vás otestováno, že je to pravda :-) 🍺🏡",
+            "Ráno můžete skočit i do rybníka, ale nikdo to nedělá... ale jako můžete :-) 🏊‍♂️",
+          ],
+        },
+      },
+    },
     location: {
       title: "Lokalita",
       subtitle: "Klidné místo v srdci Evropy, blízko všeho důležitého",
@@ -452,7 +539,7 @@ const translations = {
             "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for next years and will replace with more modern technologies. Thank you. (No hornets were harmed – we let them live out their lives in peace. 🐝) ⚡",
             "Fresh organic vegetables, excellent grapes, hops. Overall the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
             "At night, the sky is like North Korea – stars everywhere. ✨🌟",
-            "Last but not least, nice neighbors from all sides and Bidlo pub with friendly service and beautiful view of the pond and mill from the other side. Here you can have a Pilsen and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlice ten-degree beer, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
+            "Last but not least, nice neighbors from all sides and Bidlo pub with friendly service and beautiful view of the mill from the other side. Here you can have a Pilsen and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlice ten-degree beer, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
             "In the morning you can jump into the pond, but nobody does... but you can :-) 🏊‍♂️",
           ],
         },
@@ -465,7 +552,7 @@ const translations = {
       naturePara1:
         "Pila u Trhanov is an ideal location for lovers of beautiful nature, privacy, and active relaxation. The property covers over 6500 m² and offers a peaceful environment with several seating areas and two streams that complete the harmonious atmosphere.",
       naturePara2:
-        "From Pila, you can comfortably reach Domažlice on foot, as well as the summit of the highest mountain in the Bohemian Forest, Čerchov (1042 m), which attracts tourists with its observation tower and magnificent views. The surroundings are rich in marked cycling routes and hiking trails leading through picturesque landscapes, ideal for nature and history enthusiasts.",
+        "From Pila, you can comfortably reach Domažlice on foot, as well as the summit of the highest mountain in Bohemian Forest, Čerchov (1042 m), which attracts tourists with its observation tower and magnificent views. The surroundings are rich in marked cycling routes and hiking trails leading through picturesque landscapes, ideal for nature and history enthusiasts.",
       naturePara3:
         "The entire region is known for its greenery, fresh air, and tranquility, creating perfect conditions for anyone seeking an escape from the hustle and bustle of the city while also providing a quality base for excursions and exploration of the region's cultural and natural attractions.",
       quote:
@@ -1243,7 +1330,14 @@ export default function Page() {
   return (
     <div className="min-h-screen relative">
       <div className="fixed inset-0 z-0">
-        {currentSection !== "home" && (
+        {currentSection === "studio" ? (
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{
+              backgroundImage: 'url("/images/pila-59-7.webp")',
+            }}
+          />
+        ) : currentSection !== "home" ? (
           <>
             <div
               className="absolute inset-0 opacity-10"
@@ -1272,28 +1366,8 @@ export default function Page() {
               allow="autoplay; encrypted-media"
               allowFullScreen
             />
-            {isTransitioning && nextVideoUrl && (
-              <iframe
-                className="absolute pointer-events-none transition-opacity duration-1000 opacity-100"
-                style={{
-                  width: "177.77vh",
-                  height: "100vh",
-                  minWidth: "100vw",
-                  minHeight: "56.25vw",
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-                src={nextVideoUrl}
-                title="Mlýn na Pile Background Video Transition"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              />
-            )}
-            <div className="absolute inset-0 bg-black/40" />
           </>
-        )}
+        ) : null}
 
         {currentSection === "home" && (
           <div
@@ -1318,7 +1392,7 @@ export default function Page() {
                 <button onClick={() => handleSectionChange("mlyn")} className="hover:text-white transition-colors">
                   {t.nav.mlyn}
                 </button>
-                <button onClick={() => handleSectionChange("home")} className="hover:text-white transition-colors">
+                <button onClick={() => handleSectionChange("studio")} className="hover:text-white transition-colors">
                   {t.nav.studio}
                 </button>
                 <button onClick={() => handleSectionChange("equipment")} className="hover:text-white transition-colors">
@@ -1539,7 +1613,18 @@ export default function Page() {
 
                       <Card
                         className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
-                        onClick={() => handleSectionChange("about")}
+                        onClick={() => {
+                          handleSectionChange("studio")
+                          // Scroll to accommodation packages after section change
+                          setTimeout(() => {
+                            const accommodationSection = document.querySelector(
+                              '[data-section="accommodation-packages"]',
+                            )
+                            if (accommodationSection) {
+                              accommodationSection.scrollIntoView({ behavior: "smooth", block: "start" })
+                            }
+                          }, 100)
+                        }}
                       >
                         <CardContent className="p-4 text-center">
                           <Home className="h-8 w-8 text-secondary mx-auto mb-4" />
@@ -1561,7 +1646,7 @@ export default function Page() {
 
                       <Card
                         className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
-                        onClick={() => handleSectionChange("equipment")}
+                        onClick={() => handleSectionChange("studio")}
                       >
                         <CardContent className="p-4 text-center">
                           <Headphones className="h-8 w-8 text-secondary mx-auto mb-4" />
@@ -1581,7 +1666,21 @@ export default function Page() {
                         </CardContent>
                       </Card>
 
-                      <Card className="bg-white/5 backdrop-blur-sm border-white/20">
+                      <Card
+                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
+                        onClick={() => {
+                          handleSectionChange("studio")
+                          // Scroll to accommodation packages after section change
+                          setTimeout(() => {
+                            const accommodationSection = document.querySelector(
+                              '[data-section="accommodation-packages"]',
+                            )
+                            if (accommodationSection) {
+                              accommodationSection.scrollIntoView({ behavior: "smooth", block: "start" })
+                            }
+                          }, 300)
+                        }}
+                      >
                         <CardContent className="p-4 text-center">
                           <Calendar className="h-8 w-8 text-secondary mx-auto mb-4" />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.benefits}</h3>
@@ -1601,7 +1700,7 @@ export default function Page() {
                   <div className="h-32"></div>
                 </div>
               </div>
-            ) : currentSection === "home" ? (
+            ) : currentSection === "studio" ? (
               <div ref={studioSectionRef} className="flex-1 overflow-y-auto pt-32">
                 {/* Hero Section */}
                 <div className="flex items-center justify-center px-6 py-16 text-white">
@@ -1712,7 +1811,10 @@ export default function Page() {
                   </div>
                 </div>
                 {/* Accommodation Packages Section */}
-                <div className="px-6 py-16 bg-white/5 backdrop-blur-sm text-white">
+                <div
+                  className="px-6 py-16 bg-white/5 backdrop-blur-sm text-white"
+                  data-section="accommodation-packages"
+                >
                   <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-12">
                       <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 drop-shadow-lg">
