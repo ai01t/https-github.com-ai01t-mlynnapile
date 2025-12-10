@@ -43,6 +43,7 @@ import {
   Cable,
   Settings,
   Server,
+  Keyboard,
 } from "lucide-react"
 
 const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
@@ -881,7 +882,7 @@ const translations = {
       naturePara3:
         "Die gesamte Region ist bekannt für ihre Grünflächen, frische Luft und Ruhe, was perfekte Bedingungen für alle schafft, die eine Flucht aus dem Stadtleben suchen und gleichzeitig eine hochwertige Basis für Ausflüge und die Erkundung kultureller und natürlicher Sehenswürdigkeiten der Region benötigen.",
       quote:
-        "Ich habe hier den perfekten Standort und ein wunderschönes historisches Mühlengebäude gefunden, das wir teilen möchten. Wir wollen diesen Ort weiter verbessern – mit kreativen Menschen, die hier offene Türen finden und wo großartige Dinge entstehen werden.",
+        "Ich habe den perfekten Standort und ein wunderschönes historisches Mühlengebäude gefunden, das wir teilen möchten. Wir wollen diesen Ort weiter verbessern – mit kreativen Menschen, die hier offene Türen finden und wo großartige Dinge entstehen werden.",
       transport: "Verkehrsanbindung",
       byCar: "Mit dem Auto",
       byTrain: "Mit dem Zug",
@@ -1078,18 +1079,7 @@ export default function Page() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const getLanguageFromQuery = () => {
-    const lang = searchParams.get("lang")
-    console.log("[v0] Query param lang:", lang)
-    if (lang === "en") return "en"
-    if (lang === "de") return "de"
-    return "cs"
-  }
-
-  const initialLanguage = getLanguageFromQuery()
-  console.log("[v0] Initial language from query:", initialLanguage)
-
-  const [language, setLanguage] = useState<"cs" | "en" | "de">(initialLanguage)
+  const [language, setLanguage] = useState<"cs" | "en" | "de">("cs")
   const [currentSection, setCurrentSection] = useState("mlyn")
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isPlaying, setIsPlaying] = useState(true)
@@ -1126,25 +1116,17 @@ export default function Page() {
 
   // Sync language with URL changes
   useEffect(() => {
-    const detectedLang = getLanguageFromQuery()
-    console.log("[v0] Query changed, detected language:", detectedLang)
+    const lang = searchParams.get("lang")
+    let detectedLang: "cs" | "en" | "de" = "cs"
+    if (lang === "en") detectedLang = "en"
+    else if (lang === "de") detectedLang = "de"
+
     if (detectedLang !== language) {
-      console.log("[v0] Updating language from", language, "to", detectedLang)
       setLanguage(detectedLang)
     }
   }, [searchParams])
 
-  useEffect(() => {
-    const tag = document.createElement("script")
-    tag.src = "https://www.youtube.com/iframe_api"
-    const firstScriptTag = document.getElementsByTagName("script")[0]
-    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
-
-    // @ts-ignore
-    window.onYouTubeIframeAPIReady = () => {
-      console.log("[v0] YouTube IFrame API ready")
-    }
-  }, [])
+  // The API was not being used since videos are loaded via iframe src directly
 
   // Scroll detection didn't work because content fits on screen without scrolling
 
@@ -1334,8 +1316,11 @@ export default function Page() {
   }
 
   useEffect(() => {
-    const langFromPath = getLanguageFromQuery()
-    setLanguage(langFromPath)
+    const langFromPath = searchParams.get("lang")
+    let detectedLang: "cs" | "en" | "de" = "cs"
+    if (langFromPath === "en") detectedLang = "en"
+    else if (langFromPath === "de") detectedLang = "de"
+    setLanguage(detectedLang)
   }, [searchParams])
 
   return (
