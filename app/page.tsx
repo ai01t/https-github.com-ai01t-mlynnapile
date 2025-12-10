@@ -32,6 +32,17 @@ import {
   CigaretteOff,
   Hotel,
   Music,
+  Camera,
+  Medal as Pedal,
+  Drum as Drums,
+  Plug,
+  EqualIcon as Equalize,
+  Wand,
+  Waves,
+  Sparkles,
+  Cable,
+  Settings,
+  Server,
 } from "lucide-react"
 
 const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
@@ -60,7 +71,7 @@ const translations = {
       studios: "Studia",
       studiosDesc: "Velké studio 64m²\nStudio mlýnice 25m²\nControl Room 27m²",
       modernTech: "Moderní technologie",
-      modernTechDesc: "76 UAD pluginů, Universal Audio Apollo, Logic Pro X, Apple Pro Display XDR 6K",
+      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD pluginů, Logic Pro X\nApple Pro Display XDR 6K",
       benefits: "Další benefity",
       benefitsDesc: "Zapůjčení elektromobilu, kol, nabíjecí stanice, bateriový backup, zabezpečené prostory",
       endMessage: "Užijte si prezentaci!",
@@ -127,7 +138,7 @@ const translations = {
           },
           {
             name: "Fuel",
-            tags: "#VIP balíček #Main Studio #Millstone #Control room #Sauna #Zimní zahrada #Staročeská světnice #Další prostory mlýna včetně domácího kina #Catering #Tesla Model X #Support 24/7",
+            tags: "#VIP balíček",
             description:
               "Tato varianta se jmenuje podle našeho songu Fuel a i podle songu od Metallicy, protože tohle je fakt asi pro Metallicu, (ale nebojte napsat a určitě se domluvíme).",
             details:
@@ -451,7 +462,7 @@ const translations = {
       studios: "Studios",
       studiosDesc: "Main studio 64m²\nMillstone studio 25m²\nControl Room 27m²",
       modernTech: "Modern Technology",
-      modernTechDesc: "76 UAD plugins, Universal Audio Apollo, \nLogic Pro X, Apple Pro Display XDR 6K",
+      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD plugins, Logic Pro X\nApple Pro Display XDR 6K",
       benefits: "Additional Benefits",
       benefitsDesc: "Electric car rental, bikes, charging station, battery backup, secured premises",
       endMessage: "Enjoy the presentation!",
@@ -765,7 +776,7 @@ const translations = {
       studios: "Studios",
       studiosDesc: "Hauptstudio 64m²\nMühlstein-Studio 25m²\nControl Room 27m²",
       modernTech: "Moderne Technologie",
-      modernTechDesc: "76 UAD-Plugins, Universal Audio Apollo, Logic Pro X, Apple Pro Display XDR 6K",
+      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD-Plugins, Logic Pro X\nApple Pro Display XDR 6K",
       benefits: "Weitere Vorteile",
       benefitsDesc: "Elektroauto-Verleih, Fahrräder, Ladestation, Batterie-Backup, gesicherte Räumlichkeiten",
       endMessage: "Genießen Sie die Präsentation!",
@@ -1342,7 +1353,7 @@ export default function Page() {
             <div
               className="absolute inset-0 opacity-10"
               style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600'%3E%3Cpath d='M200 100 L250 80 L300 90 L350 85 L400 95 L450 100 L500 110 L550 120 L600 130 L650 140 L700 150 L750 160 L780 180 L790 200 L785 220 L780 240 L770 260 L760 280 L750 300 L740 320 L730 340 L720 360 L710 380 L700 400 L690 420 L680 440 L670 460 L660 480 L650 500 L640 520 L630 540 L620 560 L610 580 L600 590 L580 595 L560 590 L540 585 L520 580 L500 575 L480 570 L460 565 L440 560 L420 555 L400 550 L380 545 L360 540 L340 535 L320 530 L300 525 L280 520 L260 515 L240 510 L220 505 L200 500 L180 495 L160 490 L140 485 L120 480 L100 475 L80 470 L60 465 L40 460 L20 455 L10 450 L5 440 L10 430 L15 420 L20 410 L25 400 L30 390 L35 380 L40 370 L45 360 L50 350 L55 340 L60 330 L65 320 L70 310 L75 300 L80 290 L85 280 L90 270 L95 260 L100 250 L105 240 L110 230 L115 220 L120 210 L125 200 L130 190 L135 180 L140 170 L145 160 L150 150 L155 140 L160 130 L165 120 L170 110 L175 100 Z' fill='%23ffffff' stroke='%23ffffff' strokeWidth='1'/%3E%3Ccircle cx='400' cy='300' r='3' fill='%23ff6b35'/%3E%3C/svg%3E")`,
+                background: "linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
@@ -1605,7 +1616,9 @@ export default function Page() {
                         onClick={() => handleSectionChange("equipment")}
                       >
                         <CardContent className="p-4 text-center">
-                          <Music className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <Music
+                            className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                          />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.vintageInstruments}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.vintageDesc}</p>
                         </CardContent>
@@ -1627,7 +1640,7 @@ export default function Page() {
                         }}
                       >
                         <CardContent className="p-4 text-center">
-                          <Home className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <Home className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.accommodation}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.accommodationDesc}</p>
                         </CardContent>
@@ -1638,7 +1651,9 @@ export default function Page() {
                         onClick={() => handleSectionChange("lokalita")}
                       >
                         <CardContent className="p-4 text-center">
-                          <MapPin className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <MapPin
+                            className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                          />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.locationCard}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.locationDesc}</p>
                         </CardContent>
@@ -1649,7 +1664,9 @@ export default function Page() {
                         onClick={() => handleSectionChange("studio")}
                       >
                         <CardContent className="p-4 text-center">
-                          <Headphones className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <Headphones
+                            className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                          />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.studios}</h3>
                           <p className="text-white/80 text-xs whitespace-pre-line">{t.mlyn.studiosDesc}</p>
                         </CardContent>
@@ -1660,7 +1677,7 @@ export default function Page() {
                         onClick={() => handleSectionChange("equipment")}
                       >
                         <CardContent className="p-4 text-center">
-                          <Mic className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <Mic className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.modernTech}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.modernTechDesc}</p>
                         </CardContent>
@@ -1682,7 +1699,9 @@ export default function Page() {
                         }}
                       >
                         <CardContent className="p-4 text-center">
-                          <Calendar className="h-8 w-8 text-secondary mx-auto mb-4" />
+                          <Calendar
+                            className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                          />
                           <h3 className="text-white font-semibold mb-2">{t.mlyn.benefits}</h3>
                           <p className="text-white/80 text-xs">{t.mlyn.benefitsDesc}</p>
                         </CardContent>
@@ -1838,7 +1857,22 @@ export default function Page() {
                               </h3>
                               <p className="text-xs text-secondary/90 font-mono">{pkg.tags}</p>
                               <p className="text-base leading-relaxed text-white/90 drop-shadow-md">
-                                {pkg.description}
+                                {pkg.description.includes("Fuel") ? (
+                                  <>
+                                    {pkg.description.split("Fuel")[0]}
+                                    <a
+                                      href="https://www.youtube.com/watch?v=UkekVsnQuaM&list=RDUkekVsnQuaM&start_radio=1"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-secondary hover:text-secondary/80 underline cursor-pointer"
+                                    >
+                                      Fuel
+                                    </a>
+                                    {pkg.description.split("Fuel")[1]}
+                                  </>
+                                ) : (
+                                  pkg.description
+                                )}
                               </p>
 
                               <p className="text-sm leading-relaxed text-white/80">
@@ -1941,7 +1975,9 @@ export default function Page() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <MapPin className="h-8 w-8 text-secondary mx-auto mb-4" />
+                        <MapPin
+                          className={`h-8 w-8 text-secondary mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                        />
                         <h3 className="text-white font-semibold mb-4 text-center text-lg">{t.location.nature}</h3>
                         <div className="text-white/80 text-xs space-y-4 leading-relaxed">
                           <p>{t.location.naturePara1}</p>
@@ -2002,7 +2038,9 @@ export default function Page() {
                       <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
-                            <MapPin className="h-6 w-6 text-secondary" />
+                            <MapPin
+                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                            />
                             <h3 className="text-xl font-bold text-white">{t.location.domazliceTitle}</h3>
                           </div>
                           <ul className="text-white/80 space-y-2 text-xs">
@@ -2017,7 +2055,9 @@ export default function Page() {
                       <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
-                            <MapPin className="h-6 w-6 text-secondary" />
+                            <MapPin
+                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                            />
                             <h3 className="text-xl font-bold text-white">{t.location.horsovskytynTitle}</h3>
                           </div>
                           <ul className="text-white/80 space-y-2 text-xs">
@@ -2032,7 +2072,9 @@ export default function Page() {
                       <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
-                            <MapPin className="h-6 w-6 text-secondary" />
+                            <MapPin
+                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                            />
                             <h3 className="text-xl font-bold text-white">{t.location.babylonTitle}</h3>
                           </div>
                           <ul className="text-white/80 space-y-2 text-xs">
@@ -2047,7 +2089,9 @@ export default function Page() {
                       <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
-                            <MapPin className="h-6 w-6 text-secondary" />
+                            <MapPin
+                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                            />
                             <h3 className="text-xl font-bold text-white">{t.location.germanyTitle}</h3>
                           </div>
                           <ul className="text-white/80 space-y-2 text-xs">
@@ -2068,7 +2112,9 @@ export default function Page() {
                       <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
-                            <Calendar className="h-6 w-6 text-secondary" />
+                            <Calendar
+                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                            />
                             <h3 className="text-xl font-bold text-white">Domažlice</h3>
                           </div>
                           <ul className="text-white/80 space-y-3 text-xs">
@@ -2085,7 +2131,9 @@ export default function Page() {
                       <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
-                            <Calendar className="h-6 w-6 text-secondary" />
+                            <Calendar
+                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                            />
                             <h3 className="text-xl font-bold text-white">Horšovský Týn</h3>
                           </div>
                           <ul className="text-white/80 space-y-3 text-xs">
@@ -2102,7 +2150,9 @@ export default function Page() {
                       <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
-                            <Calendar className="h-6 w-6 text-secondary" />
+                            <Calendar
+                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                            />
                             <h3 className="text-xl font-bold text-white">Babylon</h3>
                           </div>
                           <ul className="text-white/80 space-y-3 text-xs">
@@ -2118,7 +2168,9 @@ export default function Page() {
                       <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
-                            <Calendar className="h-6 w-6 text-secondary" />
+                            <Calendar
+                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                            />
                             <h3 className="text-xl font-bold text-white">{t.location.chamTitle}</h3>
                           </div>
                           <div className="text-white/80 space-y-3 text-xs">
@@ -2166,7 +2218,7 @@ export default function Page() {
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                          <Guitar className="h-6 w-6 text-secondary" />
+                          <Guitar className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
                           {t.equipment.vintageInstruments}
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -2209,7 +2261,10 @@ export default function Page() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.ampsAndCabs}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Guitar className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          {t.equipment.ampsAndCabs}
+                        </h3>
                         <div className="grid grid-cols-1 md:grid-grid-cols-2 gap-6">
                           <div>
                             <h4 className="text-base font-semibold text-white mb-3">{t.equipment.amps}</h4>
@@ -2239,7 +2294,10 @@ export default function Page() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.effects}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Pedal className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          {t.equipment.effects}
+                        </h3>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[10px]">
                           <div className="space-y-1.5">
@@ -2320,7 +2378,7 @@ export default function Page() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                              <Mic className="h-6 w-6 text-secondary" />
+                              <Mic className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
                               {t.equipment.mics}
                             </h3>
                             <ul className="text-white/80 text-xs space-y-1.5">
@@ -2331,7 +2389,10 @@ export default function Page() {
                             </ul>
                           </div>
                           <div>
-                            <h3 className="text-xl font-bold text-white mb-4">{t.equipment.drums}</h3>
+                            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                              <Drums className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                              {t.equipment.drums}
+                            </h3>
                             <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Mapex Saturn</li>
                               <li>• K-Zildjian činely</li>
@@ -2346,7 +2407,10 @@ export default function Page() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">VIDEO PRODUCTION</h3>
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Camera className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          VIDEO PRODUCTION
+                        </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <h4 className="text-base font-semibold text-white mb-3">Hardware</h4>
@@ -2374,12 +2438,15 @@ export default function Page() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.uaPlugins}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Plug className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          {t.equipment.uaPlugins}
+                        </h3>
 
                         {/* Microphone Preamps */}
                         <div className="mb-6">
                           <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
-                            <Mic className="h-5 w-5 text-secondary" />
+                            <Mic className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
                             Microphone Preamps (7)
                           </h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px]">
@@ -2401,7 +2468,10 @@ export default function Page() {
 
                         {/* Compressors */}
                         <div className="mb-6">
-                          <h4 className="text-base font-semibold text-white mb-2">Kompresory (24)</h4>
+                          <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
+                            <Shield className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                            Kompresory (24)
+                          </h4>
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                               <p className="text-white/80 text-xs mb-2">Teletronix (6)</p>
@@ -2463,7 +2533,10 @@ export default function Page() {
 
                         {/* Equalizers */}
                         <div className="mb-6">
-                          <h4 className="text-base font-semibold text-white mb-2">Ekvalizéry (9)</h4>
+                          <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
+                            <Equalize className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                            Ekvalizéry (9)
+                          </h4>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-[10px]">
                             {[
                               "Pultec EQP-1A Legacy",
@@ -2484,7 +2557,10 @@ export default function Page() {
 
                         {/* Virtual Instruments */}
                         <div className="mb-6">
-                          <h4 className="text-base font-semibold text-white mb-2">Virtuální Nástroje (6)</h4>
+                          <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
+                            <Keyboard className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                            Virtuální Nástroje (6)
+                          </h4>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-[10px]">
                             {[
                               "Electra 88 Keyboard",
@@ -2503,7 +2579,10 @@ export default function Page() {
 
                         {/* Special Processors */}
                         <div className="mb-6">
-                          <h4 className="text-base font-semibold text-white mb-2">Speciální Procesory (11)</h4>
+                          <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
+                            <Wand className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                            Speciální Procesory (11)
+                          </h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px]">
                             {[
                               "Oxide Tape",
@@ -2527,7 +2606,10 @@ export default function Page() {
 
                         {/* Delay & Modulation */}
                         <div className="mb-6">
-                          <h4 className="text-base font-semibold text-white mb-2">Delay a Modulace (7)</h4>
+                          <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
+                            <Waves className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                            Delay a Modulace (7)
+                          </h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px]">
                             {[
                               "Cooper Time Cube",
@@ -2547,7 +2629,10 @@ export default function Page() {
 
                         {/* Reverbs */}
                         <div>
-                          <h4 className="text-base font-semibold text-white mb-2">Reverby (4)</h4>
+                          <h4 className="text-base font-semibold text-white mb-2 flex items-center gap-2">
+                            <Sparkles className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                            Reverby (4)
+                          </h4>
                           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-[10px]">
                             {["Lexicon 224", "Precision Reflection", "Pure Plate Reverb", "RealVerb Pro"].map(
                               (item, i) => (
@@ -2566,7 +2651,10 @@ export default function Page() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.cables}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Cable className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          {t.equipment.cables}
+                        </h3>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
                           <div className="bg-white/5 p-3 rounded">
                             <p className="text-white/90">Mackie Thump15A (1300W) x2</p>
@@ -2607,7 +2695,10 @@ export default function Page() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.workflow}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Settings className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          {t.equipment.workflow}
+                        </h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                           <div>
                             <h4 className="text-base font-semibold text-white mb-2">Tracking Chain</h4>
@@ -2645,7 +2736,10 @@ export default function Page() {
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-4">{t.equipment.infrastructure}</h3>
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Server className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          {t.equipment.infrastructure}
+                        </h3>
                         <div>
                           <h4 className="text-base font-bold text-white mb-3">Infrastruktura</h4>
                           <ul className="text-white/80 space-y-2">
@@ -2672,7 +2766,9 @@ export default function Page() {
                       <CardContent className="p-5">
                         <div className="space-y-3">
                           <div className="flex items-start space-x-2">
-                            <MapPin className="h-3.5 w-3.5 text-white/40 mt-0.5 flex-shrink-0" />
+                            <MapPin
+                              className={`h-3.5 w-3.5 ${isDarkMode ? "text-blue-400" : "text-white/40"} mt-0.5 flex-shrink-0`}
+                            />
                             <div>
                               <p className="text-white font-medium text-sm">Ing. Jindřich Traxmandl</p>
                               <p className="text-white/70 text-xs mt-1">
@@ -2686,13 +2782,17 @@ export default function Page() {
                           </div>
 
                           <div className="flex items-center space-x-2">
-                            <Phone className="h-3.5 w-3.5 text-white/40 flex-shrink-0" />
+                            <Phone
+                              className={`h-3.5 w-3.5 ${isDarkMode ? "text-blue-400" : "text-white/40"} flex-shrink-0`}
+                            />
                             <p className="text-white/70 text-xs">+420 724 050 093</p>
                           </div>
 
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
-                              <Mail className="h-3.5 w-3.5 text-white/40 flex-shrink-0" />
+                              <Mail
+                                className={`h-3.5 w-3.5 ${isDarkMode ? "text-blue-400" : "text-white/40"} flex-shrink-0`}
+                              />
                               <a
                                 href="mailto:mlynnapile@gmail.com"
                                 className="text-white/70 text-xs hover:text-white transition-colors"
@@ -2987,7 +3087,9 @@ export default function Page() {
                                   className="w-full text-left flex justify-between items-start gap-2 group"
                                 >
                                   <div className="flex items-start gap-3">
-                                    <Icon className="h-5 w-5 text-white/60 flex-shrink-0 mt-0.5" />
+                                    <Icon
+                                      className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-white/60"} flex-shrink-0 mt-0.5`}
+                                    />
                                     <h4 className="font-semibold text-white text-xs group-hover:text-secondary transition-colors">
                                       {faq.q}
                                     </h4>
