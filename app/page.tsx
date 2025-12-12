@@ -166,93 +166,6 @@ const translations = {
         },
       },
     },
-    studio: {
-      title: "Mlýn na Pile",
-      subtitle: "Tři unikátní prostory pro vaši kreativitu",
-      description: "Od hlavního studia přes Millstone studio do control room",
-      mainStudio: "Hlavní Studio",
-      mainStudioSize: "64 m²",
-      mainStudioDesc:
-        "Hlavní studio se nachází v podkrovní galerii s odkrytými původními trámy, které prostoru dodávají autentickou atmosféru starého mlýna. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník. Místo, kde se propojuje vůně dřeva, teplo vintage nástrojů a ticho okolní přírody — ideální prostor pro tvorbu, nahrávání i soustředěnou práci.",
-      equipment: "Vybavení",
-      controlRoom: "Control Room",
-      controlRoomSize: "27 m²",
-      controlRoomDesc:
-        "Pristine acoustics pro critical listening. Vybaveno cutting-edge technologií pro mixing a mastering na nejvyšší úrovni.",
-      technology: "Technologie",
-      millstoneStudio: "Millstone studio",
-      millstoneSize: "25 m² - Bývalá mlýnice",
-      millstoneDesc:
-        "Vysoké stropy a unikátní akustika historické mlýnice. Ideální pro akustické nahrávky a experimentální projekty.",
-      ctaTitle: "Připraveni vytvořit něco úžasného?",
-      ctaDesc: "Kontaktujte nás a domluvme si návštěvu studia",
-      ctaButton: "Kontaktovat",
-      accommodation: {
-        title: "Nahrávání + Ubytování",
-        subtitle:
-          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Free wifi a parkování v areálu, s možností nabití EV.",
-        intro: "Jdeme na to:",
-        packageLabel: "Balíček",
-        parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
-        accommodationNote:
-          "Ubytování není veřejně ani samostatně poskytovaná služba. Přespání je určeno výhradně klientům nahrávacího studia jako zázemí během kreativní práce.",
-        packages: [
-          {
-            name: "Into the Wild",
-            tags: "#Main studio",
-            description:
-              "Nejekonomičtější - stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence, usínejte a probouzejte se do světa hudby s přírodou :-)",
-            details:
-              "Možnost přespání ve vlastním autě/karavanu/stanu. Main studio má vlastní sociální zařízení včetně sprchy.",
-            video: "https://youtu.be/qEc9SnmU4cM",
-          },
-          {
-            name: "Underwater",
-            tags: "#Main Studio #Sauna",
-            description:
-              "Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka :-) Skromné ale stylové a útulné přespání, jedná se o spaní přímo v prostorách bývalé mlýnice.",
-            details:
-              "Zde můžete usínat za zvuků protékající vody - stačí pootevřít okno :-) - součástí je i možnost využít saunu + posezení pod hrází vedle velké pece. 1x dvojlůžko, možnost dalších dvou přistýlek.",
-            video: "https://youtu.be/gI3204B7eNk",
-          },
-          {
-            name: "Otherside",
-            tags: "#Control room #Staročeská světnice #Dva pokoje",
-            description:
-              "Z druhé strany studia můžete využít pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple (Magic Trackpad, Magic Mouse, Apple Magic Keyboard) pro pohodlnou práci + ubytování ve staročeské světnici.",
-            details:
-              "Vhodné jak pro zpracování vaší práce ve studiích, tak i pro nehudební aktivity (např. grafiky, digitální tvůrce), finální zpracování nahrávek.",
-            video: "https://youtu.be/X7lvikbWnMQ",
-          },
-          {
-            name: "Fuel",
-            tags: "#VIP balíček",
-            description:
-              "Tato varianta se jmenuje podle našeho songu Fuel a i podle songu od Metallicy, protože tohle je fakt asi pro Metallicu, (ale nebojte napsat a určitě se domluvíme).",
-            details:
-              "Jedná se VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady kde si můžete dát výbornou kávu a vejdete se sem s celým týmem nebo si zde můžete užít klid mezitím co bude zbytek teamu pracovat ve studiu. Profi catering, roztopení velké pece. Vynikající pizza i chleba - který si můžete zkusit sami upéct a to nám věřte - to je radost a zážitek, který si užijete :-). Dále zapůjčení Tesla model X v ceně (200 km), popř. včetně řidiče s možností navštívit zajímavá místa v okolí (viz. [lokalita]) :-)",
-            video: "https://youtu.be/5INpfHr0lu4",
-          },
-        ],
-        bonuses: {
-          title: "Další bonusy",
-          items: [
-            "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
-            "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
-            "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
-            "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
-            "U sousedky Dády si můžete projet na koních. 🐴",
-            "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
-            "Můžete potkat i tlustou veverku, co vyvrací plaňky - zvířata se zde mají skvěle :-) Máme i volavky a u sousedů štěně a pár kamarádských koček (také od různých sousedů), žáby a krtky (naše) :-) 🐿️🐕🐈",
-            "Žijeme se zvířaty v symbióze a spolupracujeme, tento rok byl vstup do studia navíc zabezpečen i sršním hnízdem hned nad vstupem, které pro příští roky už neplánujeme a nahradíme ho modernějšími technologiemi. Děkujeme. (Žádní sršni nepřišli k úhoně – nechali jsme je dožít v klidu. 🐝) ⚡",
-            "Čerstvá bio zelenina, výborné hroznové víno, chmel. Celkově je tady tráva zelenější a díky krtkům je vidět krásná černozem. :-D 🥬🍇🌿",
-            "Vše podtrhuje ticho a klid, přitom do Domažlic je to jak z Národní na Palmovku (8 minut). 🤫🌳",
-            "V neposlední řadě, fajn sousedi ze všech stran a hospůdka Bidlo se sympatickou obsluhou a krásným výhledem na rybník a mlýn z druhé strany. Tady si můžete dát Plzeň a kdyby jste chtěli si dát víc piv a druhý den fungovat ve studiu, doporučujeme výlet do pivovaru v Domažlicích a držet se pouze Domažlické desítky, po které můžete bez problémů druhý den fungovat (Doporučeno paní sládkovou a několikrát pro vás otestováno, že je to pravda :-) 🍺🏡",
-            "Ráno můžete skočit i do rybníka, ale nikdo to nedělá... ale jako můžete :-) 🏊‍♂️",
-          ],
-        },
-      },
-    },
     location: {
       title: "Lokalita",
       subtitle: "Klidné místo v srdci Evropy, blízko všeho důležitého",
@@ -1162,7 +1075,7 @@ export default function Page() {
     console.log("[v0] Switching to dark mode:", newDarkMode, "video:", newVideoId)
 
     setIsTransitioning(true)
-    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080`
+    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
     setNextVideoUrl(newUrl)
 
     setTimeout(() => {
@@ -1213,7 +1126,7 @@ export default function Page() {
       console.log("[v0] Switching to video:", newVideoId)
 
       setIsTransitioning(true)
-      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080`
+      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
       setNextVideoUrl(newUrl)
 
       setTimeout(() => {
@@ -1240,7 +1153,7 @@ export default function Page() {
           setIsDarkMode(true)
           const newVideoId = "yl1CN7_Y73s"
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1256,7 +1169,7 @@ export default function Page() {
           setIsDarkMode(true)
           const newVideoId = "yl1CN7_Y73s"
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1282,20 +1195,6 @@ export default function Page() {
         const scrollTop = mlynSectionRef.current.scrollTop
         const scrollHeight = mlynSectionRef.current.scrollHeight
         const clientHeight = mlynSectionRef.current.clientHeight
-
-        const isAtBottom = scrollHeight - scrollTop - clientHeight < 50
-
-        if (isAtBottom && !showPresentationMessage) {
-          setShowPresentationMessage(true)
-          setPresentationOpacity(1)
-
-          setTimeout(() => {
-            setPresentationOpacity(0)
-            setTimeout(() => {
-              setShowPresentationMessage(false)
-            }, 1000)
-          }, 7000)
-        }
       }
     }
 
@@ -1309,7 +1208,7 @@ export default function Page() {
         currentRef.removeEventListener("scroll", handleScroll)
       }
     }
-  }, [currentSection, showPresentationMessage])
+  }, [currentSection])
 
   const toggleLanguage = () => {
     setShowLanguageMenu(!showLanguageMenu)
@@ -1694,14 +1593,11 @@ export default function Page() {
                     </div>
                   </div>
 
-                  <div
-                    className="text-center py-24 transition-opacity duration-300"
-                    style={{ opacity: presentationOpacity }}
-                  >
-                    <p className="text-2xl md:text-4xl font-light text-white/90 mb-4">{t.mlyn.endMessage}</p>
+                  <div className="text-center py-8 sticky top-[82px] z-10">
+                    <p className="text-sm font-light text-white/60">{t.mlyn.endMessage}</p>
                   </div>
 
-                  <div className="h-32"></div>
+                  <div className="h-8"></div>
                 </div>
               </div>
             ) : currentSection === "studio" ? (
@@ -1840,24 +1736,34 @@ export default function Page() {
                               <h3 className="text-xl md:text-2xl font-bold text-white drop-shadow-lg">
                                 {index + 1}. {t.studio.accommodation.packageLabel} "{pkg.name}"
                               </h3>
-                              <p className="text-xs text-secondary/90 font-mono">{pkg.tags}</p>
-                              <p className="text-base leading-relaxed text-white/90 drop-shadow-md">
-                                {pkg.description.includes("Fuel") ? (
-                                  <>
-                                    {pkg.description.split("Fuel")[0]}
-                                    <a
-                                      href="https://www.youtube.com/watch?v=UkekVsnQuaM&list=RDUkekVsnQuaM&start_radio=1"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-secondary hover:text-secondary/80 underline cursor-pointer"
-                                    >
-                                      Fuel
-                                    </a>
-                                    {pkg.description.split("Fuel")[1]}
-                                  </>
-                                ) : (
-                                  pkg.description
-                                )}
+                              <p className="text-xs text-white/90 font-mono">{pkg.tags}</p>
+                              <p className="text-xs text-white/80 leading-relaxed mt-4">
+                                {pkg.description.split(/(\[lokalita\]|Fuel)/g).map((part, i) => {
+                                  if (part === "[lokalita]") {
+                                    return (
+                                      <span
+                                        key={i}
+                                        onClick={() => handleSectionChange("location")}
+                                        className={`cursor-pointer underline ${isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-secondary hover:text-secondary/80"}`}
+                                      >
+                                        lokalita
+                                      </span>
+                                    )
+                                  } else if (part === "Fuel") {
+                                    return (
+                                      <a
+                                        key={i}
+                                        href="https://www.youtube.com/watch?v=UkekVsnQuaM&list=RDUkekVsnQuaM&start_radio=1"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`underline ${isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-secondary hover:text-secondary/80"}`}
+                                      >
+                                        {part}
+                                      </a>
+                                    )
+                                  }
+                                  return part
+                                })}
                               </p>
 
                               <p className="text-sm leading-relaxed text-white/80">
@@ -1960,15 +1866,16 @@ export default function Page() {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
-                        <MapPin
-                          className={`h-8 w-8 text-secondary mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
-                        />
                         <h3 className="text-white font-semibold mb-4 text-center text-lg">{t.location.nature}</h3>
                         <div className="text-white/80 text-xs space-y-4 leading-relaxed">
                           <p>{t.location.naturePara1}</p>
                           <p>{t.location.naturePara2}</p>
                           <p>{t.location.naturePara3}</p>
-                          <p className="italic border-l-2 border-secondary pl-4 mt-4">"{t.location.quote}"</p>
+                          <p
+                            className={`italic pl-4 mt-4 border-l-2 ${isDarkMode ? "border-blue-400" : "border-secondary"}`}
+                          >
+                            "{t.location.quote}"
+                          </p>
                         </div>
                       </CardContent>
                     </Card>
@@ -1978,7 +1885,9 @@ export default function Page() {
                         <h3 className="text-xl font-bold text-white mb-6">{t.location.transport}</h3>
                         <div className="space-y-4">
                           <div className="flex items-start space-x-4">
-                            <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
+                            <MapPin
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
+                            />
                             <div>
                               <h4 className="font-semibold text-white mb-2">{t.location.byCar}</h4>
                               <ul className="space-y-1 text-xs text-white">
@@ -1990,7 +1899,9 @@ export default function Page() {
                             </div>
                           </div>
                           <div className="flex items-start space-x-4">
-                            <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
+                            <MapPin
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
+                            />
                             <div>
                               <h4 className="font-semibold text-white mb-2">{t.location.byTrain}</h4>
                               <ul className="space-y-1 text-xs text-white">
@@ -2000,7 +1911,9 @@ export default function Page() {
                             </div>
                           </div>
                           <div className="flex items-start space-x-4">
-                            <MapPin className="h-6 w-6 text-secondary mt-1 flex-shrink-0" />
+                            <MapPin
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
+                            />
                             <div>
                               <h4 className="font-semibold text-white mb-2">{t.location.byPlane}</h4>
                               <ul className="space-y-1 text-xs text-white">
@@ -2024,7 +1937,7 @@ export default function Page() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <MapPin
-                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <h3 className="text-xl font-bold text-white">{t.location.domazliceTitle}</h3>
                           </div>
@@ -2041,7 +1954,7 @@ export default function Page() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <MapPin
-                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <h3 className="text-xl font-bold text-white">{t.location.horsovskytynTitle}</h3>
                           </div>
@@ -2058,7 +1971,7 @@ export default function Page() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <MapPin
-                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <h3 className="text-xl font-bold text-white">{t.location.babylonTitle}</h3>
                           </div>
@@ -2075,7 +1988,7 @@ export default function Page() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <MapPin
-                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <h3 className="text-xl font-bold text-white">{t.location.germanyTitle}</h3>
                           </div>
@@ -2098,7 +2011,7 @@ export default function Page() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <Calendar
-                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <h3 className="text-xl font-bold text-white">Domažlice</h3>
                           </div>
@@ -2117,7 +2030,7 @@ export default function Page() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <Calendar
-                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <h3 className="text-xl font-bold text-white">Horšovský Týn</h3>
                           </div>
@@ -2136,7 +2049,7 @@ export default function Page() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <Calendar
-                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <h3 className="text-xl font-bold text-white">Babylon</h3>
                           </div>
@@ -2154,7 +2067,7 @@ export default function Page() {
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3 mb-4">
                             <Calendar
-                              className={`h-6 w-6 text-secondary ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <h3 className="text-xl font-bold text-white">{t.location.chamTitle}</h3>
                           </div>
@@ -2186,12 +2099,19 @@ export default function Page() {
                     <p className="text-xs md:text-sm text-white/80 mt-4 max-w-4xl mx-auto leading-relaxed">
                       {t.equipment.collectionNote}{" "}
                       <button
-                        onClick={() => handleSectionChange("spoluprace")}
-                        className="text-secondary hover:text-secondary/80 underline"
+                        onClick={() => {
+                          handleSectionChange("about")
+                          setTimeout(() => {
+                            const element = document.querySelector('[data-section="collaboration"]')
+                            if (element) {
+                              element.scrollIntoView({ behavior: "smooth", block: "start" })
+                            }
+                          }, 100)
+                        }}
+                        className={`underline ${isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-secondary hover:text-secondary/80"}`}
                       >
                         {t.equipment.collaborationLink}
                       </button>
-                      .
                     </p>
                     <p className="text-xs md:text-sm text-white/80 mt-2 max-w-4xl mx-auto leading-relaxed">
                       {t.equipment.detailsNote}
@@ -2215,7 +2135,7 @@ export default function Page() {
                                   href="https://equipboard.com/items/telecaster-deluxe-73"
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="hover:text-secondary transition-colors"
+                                  className={`hover:text-secondary transition-colors ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
                                 >
                                   • Fender 1973 Telecaster Deluxe
                                 </a>
@@ -2780,7 +2700,7 @@ export default function Page() {
                               />
                               <a
                                 href="mailto:mlynnapile@gmail.com"
-                                className="text-white/70 text-xs hover:text-white transition-colors"
+                                className={`text-white/70 text-xs hover:text-white transition-colors ${isDarkMode ? "hover:text-blue-300" : "hover:text-white"}`}
                               >
                                 mlynnapile@gmail.com
                               </a>
@@ -2822,7 +2742,10 @@ export default function Page() {
                         <h3 className="text-xl font-bold text-white mb-8 text-center">{t.about.history}</h3>
                         <div className="space-y-4 text-white/80">
                           {t.about.historyTimeline.map((item, index) => (
-                            <div key={index} className="border-l-2 border-secondary pl-4">
+                            <div
+                              key={index}
+                              className={`border-l-2 pl-4 ${isDarkMode ? "border-blue-400" : "border-secondary"}`}
+                            >
                               <p className="font-semibold text-white">{item.year}</p>
                               <p className="text-xs">{item.desc}</p>
                             </div>
@@ -2918,11 +2841,13 @@ export default function Page() {
                                   dangerouslySetInnerHTML={{
                                     __html: t.about.jindrichDesc.replace(
                                       /Anteater/g,
-                                      '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
+                                      `<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="underline ${isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-secondary hover:text-secondary/80"}">Anteater</a>`,
                                     ),
                                   }}
                                 />
-                                <blockquote className="border-l-2 border-secondary pl-4 italic">
+                                <blockquote
+                                  className={`border-l-2 pl-4 italic ${isDarkMode ? "border-blue-400" : "border-secondary"}`}
+                                >
                                   "{t.about.jindrichQuote}"
                                 </blockquote>
                               </div>
@@ -2935,7 +2860,7 @@ export default function Page() {
                                   dangerouslySetInnerHTML={{
                                     __html: t.about.andreaDesc.replace(
                                       /Anteater/g,
-                                      '<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-secondary/80 underline">Anteater</a>',
+                                      `<a href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer" class="underline ${isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-secondary hover:text-secondary/80"}">Anteater</a>`,
                                     ),
                                   }}
                                 />
@@ -2986,13 +2911,15 @@ export default function Page() {
                             </div>
                             <div className="mt-6 pt-6 border-t border-white/20">
                               <p className="text-xs text-white/80 leading-relaxed">
-                                <strong className="text-secondary">{t.equipment.thankYouNote}:</strong>{" "}
+                                <strong className={isDarkMode ? "text-blue-400" : "text-secondary"}>
+                                  {t.equipment.thankYouNote}:
+                                </strong>{" "}
                                 {t.equipment.noraCollaboration}{" "}
                                 <a
                                   href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f"
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-secondary hover:text-secondary/80 underline font-semibold"
+                                  className={`underline font-semibold ${isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-secondary hover:text-secondary/80"}`}
                                 >
                                   Nora
                                 </a>
@@ -3075,7 +3002,9 @@ export default function Page() {
                                     <Icon
                                       className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-white/60"} flex-shrink-0 mt-0.5`}
                                     />
-                                    <h4 className="font-semibold text-white text-xs group-hover:text-secondary transition-colors">
+                                    <h4
+                                      className={`font-semibold text-white text-xs transition-colors ${isDarkMode ? "group-hover:text-blue-400" : "group-hover:text-secondary"}`}
+                                    >
                                       {faq.q}
                                     </h4>
                                   </div>
@@ -3106,7 +3035,7 @@ export default function Page() {
             href="https://www.instagram.com/mlynnapile"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/70 hover:text-white transition-colors"
+            className={`text-white/70 hover:text-white transition-colors ${isDarkMode ? "hover:text-blue-400" : "hover:text-secondary"}`}
             aria-label="Instagram"
           >
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -3117,7 +3046,7 @@ export default function Page() {
             href="https://www.facebook.com/share/1CWTAs8zoP/?mibextid=wwXIfr"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/70 hover:text-white transition-colors"
+            className={`text-white/70 hover:text-white transition-colors ${isDarkMode ? "hover:text-blue-400" : "hover:text-secondary"}`}
             aria-label="Facebook"
           >
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -3128,7 +3057,7 @@ export default function Page() {
             href="https://www.youtube.com/@mlynnapile"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-white/70 hover:text-white transition-colors"
+            className={`text-white/70 hover:text-white transition-colors ${isDarkMode ? "hover:text-blue-400" : "hover:text-secondary"}`}
             aria-label="YouTube"
           >
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
