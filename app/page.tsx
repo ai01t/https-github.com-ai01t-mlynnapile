@@ -152,7 +152,7 @@ const translations = {
           items: [
             "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
             "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
-            "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
+            "For nature lovers and entomologists: There are dragonflies here, beautiful and plentiful :-) 🦋 They fly into the winter garden and are smart enough to fly back out after their inspection without hitting the glass. Besides them, you'll find invasive plants (Japanese knotweed and sumac) that we bravely fight. 🌿⚔️ But here grow also giant sequoias, which – we admit – we don't have the heart to cut down. 🌲💚",
             "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
             "U sousedky Dády si můžete projet na koních. 🐴",
             "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
@@ -331,7 +331,7 @@ const translations = {
           a: "Nesmí. Mlýn je z velké části ze dřeva.",
         },
         {
-          q: "Mohu si dovést vlastní aparaturu a je objekt dostatečně zabezpečen?",
+          q: "Mohu si dovézt vlastní aparaturu a je objekt dostatečně zabezpečen?",
           a: "Samozřejmě můžete, aparatura se dá vyložit přímo před studiem. Objekt je zabezpečen na několika úrovních, současně je na hrázy kde projede jen jedno auto. Vykrást takový objekt s aparaturou, která by opravdu těžko veřejně prodávala úplně nedává smysl... Zlodějům bychom nedoporučovali s ohledem na výše zmíněné okolnosti, nad tím vůbec uvažovat.... ;-)",
         },
         {
@@ -456,7 +456,7 @@ const translations = {
           items: [
             "You can raise the weir and let water flow to the mill. 😄💧",
             "At night, the sky is like North Korea – stars everywhere. ✨🌟",
-            "For Dan Bárta (and other nature lovers): There are dragonflies here, beautiful and plentiful :-) 🦋 They fly into the winter garden and are smart enough to fly back out after their inspection without hitting the glass. Besides them, you'll find invasive plants (Japanese knotweed and sumac) that we bravely fight. 🌿⚔️ But here grow also giant sequoias, which – we admit – we don't have the heart to cut down. 🌲💚",
+            "For nature lovers and entomologists: There are dragonflies here, beautiful and plentiful :-) 🦋 They fly into the winter garden and are smart enough to fly back out after their inspection without hitting the glass. Besides them, you'll find invasive plants (Japanese knotweed and sumac) that we bravely fight. 🌿⚔️ But here grow also giant sequoias, which – we admit – we don't have the heart to cut down. 🌲💚",
             "Under the studio windows, there are often swans with cygnets that let you feed them. 🦢",
             "At neighbor Dáda's, you can go horse riding. 🐴",
             "Even during the day, you can encounter hedgehogs, martens, deer right in the garden. When Dáda's horses escape, you can have coffee with them practically in the winter garden :-) 🦔🦌☕",
@@ -770,7 +770,7 @@ const translations = {
           items: [
             "Sie können das Wehr heben und Wasser zur Mühle lassen. 😄💧",
             "Nachts ist der Himmel wie in Nordkorea – Sterne überall. ✨🌟",
-            "Für Dan Bárta (und andere Naturliebhaber): Hier gibt es Libellen, schön und viele davon :-) 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen (Knöterich und Sumach), gegen die wir tapfer kämpfen. 🌿⚔️ Aber hier wachsen auch Riesenmammutbäume, die – wir geben zu – wir nicht übers Herz bringen, sie zu fällen. 🌲💚",
+            "Für Naturliebhaber und Entomologen: Hier gibt es Libellen, schön und viele davon :-) 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen (Knöterich und Sumach), gegen die wir tapfer kämpfen. 🌿⚔️ Aber hier wachsen auch Riesenmammutbäume, die – wir geben zu – wir nicht übers Herz bringen, sie zu fällen. 🌲💚",
             "Unter den Studiofenstern sind oft Schwäne mit Jungschwänen, die sich füttern lassen. 🦢",
             "Bei Nachbarin Dáda können Sie reiten. 🐴",
             "Selbst am helllichten Tag können Sie Igel, Marder, Rehe direkt im Garten begegnen. Wenn Dádas Pferde entkommen, können Sie praktisch im Wintergarten mit ihnen Kaffee trinken :-) 🦔🦌☕",
@@ -852,19 +852,6 @@ const translations = {
       thankYouNote: "Danke",
       noraCollaboration: "Für die Zusammenarbeit am Text danken wir Nora von der Band",
       cables: "Monitore, Kopfhörer, Kabel und Ständer",
-    },
-    contact: {
-      title: "Kontakt",
-      info: "Informationen",
-      address: "Adresse",
-      phone: "Telefon",
-      availability: "Verfügbarkeit",
-      availabilityItems: [
-        "10 min zum Zentrum von Domažlice",
-        "10 min zur deutschen Grenze",
-        "Bahnhof direkt bei Pila",
-        "1h 45min vom Prager Flughafen",
-      ],
     },
     about: {
       title: "Über uns",
@@ -1061,7 +1048,7 @@ export default function Page() {
 
     let newVideoId = ""
     if (newDarkMode) {
-      newVideoId = "yl1CN7_Y73s"
+      newVideoId = "M4QkWhz7CDo"
     } else {
       if (currentSection === "about") {
         newVideoId = "qcbDEWXmPdE"
@@ -1110,7 +1097,7 @@ export default function Page() {
 
       let newVideoId = ""
       if (isDarkMode) {
-        newVideoId = "yl1CN7_Y73s"
+        newVideoId = "M4QkWhz7CDo"
       } else {
         if (section === "mlyn") {
           newVideoId = "HQUoxExYlEM"
@@ -1151,7 +1138,7 @@ export default function Page() {
         darkModeTimerRef.current = setTimeout(() => {
           console.log("[v0] Auto-switching to dark mode (photo)")
           setIsDarkMode(true)
-          const newVideoId = "yl1CN7_Y73s"
+          const newVideoId = "M4QkWhz7CDo" // Changed dark mode video
           setIsTransitioning(true)
           const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
           setNextVideoUrl(newUrl)
@@ -1167,7 +1154,7 @@ export default function Page() {
         darkModeTimerRef.current = setTimeout(() => {
           console.log("[v0] Auto-switching to dark mode (video)")
           setIsDarkMode(true)
-          const newVideoId = "yl1CN7_Y73s"
+          const newVideoId = "M4QkWhz7CDo" // Changed dark mode video
           setIsTransitioning(true)
           const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
           setNextVideoUrl(newUrl)
@@ -1738,7 +1725,7 @@ export default function Page() {
                               </h3>
                               <p className="text-xs text-white/90 font-mono">{pkg.tags}</p>
                               <p className="text-xs text-white/80 leading-relaxed mt-4">
-                                {pkg.description.split(/(\[lokalita\]|Fuel)/g).map((part, i) => {
+                                {pkg.description.split(/(\[lokalita\]|Fuel)/).map((part, i) => {
                                   if (part === "[lokalita]") {
                                     return (
                                       <span
