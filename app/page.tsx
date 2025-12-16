@@ -44,6 +44,8 @@ import {
   Settings,
   Server,
   Keyboard,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-react"
 
 const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
@@ -152,7 +154,7 @@ const translations = {
           items: [
             "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
             "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
-            "For nature lovers and entomologists: There are dragonflies here, beautiful and plentiful :-) 🦋 They fly into the winter garden and are smart enough to fly back out after their inspection without hitting the glass. Besides them, you'll find invasive plants (Japanese knotweed and sumac) that we bravely fight. 🌿⚔️ But here grow also giant sequoias, which – we admit – we don't have the heart to cut down. 🌲💚",
+            "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
             "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
             "U sousedky Dády si můžete projet na koních. 🐴",
             "I za bílého dne, zde můžete potkat ježky, kuny, srnky přímo na zahradě. Když utečou Dádě koně, tak si s nimi můžete dát kafe prakticky v zimní zahradě :-) 🦔🦌☕",
@@ -182,6 +184,13 @@ const translations = {
       byCar: "Autem",
       byTrain: "Vlakem",
       byPlane: "Letadlem",
+      availabilityItems: [
+        "Autem: 10 min do centra Domažlic",
+        "10 min na německé hranice",
+        "Vlakem: Vlaková zastávka přímo na Pile",
+        "Letadlem: 1h 45min z Prague Airport",
+        "Letadlem: 2h 30min z Mnichov Airport (MUC), Německo",
+      ],
       events: "Tipy na výlety",
       domazliceTitle: "Domažlice (8 min)",
       domazliceItems: ["Historické náměstí", "Muzeum Chodska", "Kostel sv. Vavřince", "Kulturní akce a festivaly"],
@@ -228,19 +237,6 @@ const translations = {
       thankYouNote: "Děkujeme",
       noraCollaboration: "Za spolupráci na textu děkujeme Nore z kapely",
       cables: "Odposlechy, sluchátka, kabely a stojany",
-    },
-    contact: {
-      title: "Kontakt",
-      info: "Informace",
-      address: "Adresa",
-      phone: "Telefon",
-      availability: "Dostupnost",
-      availabilityItems: [
-        "10 min do centra Domažlic",
-        "10 min na německé hranice",
-        "Vlaková zastávka přímo na Pile",
-        "1h 45min z Prague Airport",
-      ],
     },
     about: {
       title: "O nás",
@@ -350,6 +346,17 @@ const translations = {
           q: "Mluvíte anglicky/německy?",
           a: "Vícejazyčný tým: Čeština - rodilí mluvčí, Angličtina - plynule (Jindřich, Andrea, tech tým), Němčina - konverzační úroveň (regionální výhoda), překladatelské služby pro smlouvy.",
         },
+      ],
+    },
+    contact: {
+      title: "Kontakt",
+      availability: "Dopravní dostupnost",
+      availabilityItems: [
+        "Autem: 10 min do centra Domažlic",
+        "10 min na německé hranice",
+        "Vlakem: Vlaková zastávka přímo na Pile",
+        "Letadlem: 1h 45min z Prague Airport",
+        "Letadlem: 2h 30min z Mnichov Airport (MUC), Německo",
       ],
     },
   },
@@ -472,21 +479,28 @@ const translations = {
     },
     location: {
       title: "Location",
-      subtitle: "Quiet place in the heart of Europe, close to everything important",
-      nature: "Beautiful nature - recreational area, privacy and private park",
+      subtitle: "Peaceful place in the heart of Europe, close to everything important",
+      nature: "Beautiful Nature - Recreational Area, Privacy, and Private Park",
       naturePara1:
-        "Pila u Trhanov is an ideal location for lovers of beautiful nature, privacy, and active relaxation. The property covers over 6500 m² and offers a peaceful environment with several seating areas and two streams that complete the harmonious atmosphere.",
+        "Pila near Trhanov is an ideal location for nature lovers, privacy, and active recreation. The property spans over 6,500 m² and offers a tranquil environment with several seating areas and two streams that create a harmonious atmosphere.",
       naturePara2:
-        "From Pila, you can comfortably reach Domažlice on foot, as well as the summit of the highest mountain in Bohemian Forest, Čerchov (1042 m), which attracts tourists with its observation tower and magnificent views. The surroundings are rich in marked cycling routes and hiking trails leading through picturesque landscapes, ideal for nature and history enthusiasts.",
+        "From Pila, you can easily walk to Domažlice or hike to the summit of Čerchov (1,042 m), the highest mountain in the Bohemian Forest, which attracts tourists with its observation tower and stunning views. The area is rich in marked cycling routes and hiking trails through picturesque countryside, ideal for nature and history enthusiasts.",
       naturePara3:
-        "The entire region is known for its greenery, fresh air, and tranquility, creating perfect conditions for anyone seeking an escape from the hustle and bustle of the city while also providing a quality base for excursions and exploration of the region's cultural and natural attractions.",
+        "The entire region is known for its greenery, fresh air, and tranquility, creating perfect conditions for those seeking an escape from city hustle while providing an excellent base for trips and exploring the region's cultural and natural attractions.",
       quote:
-        "I found the perfect location and a beautiful historic mill building that we want to share. We want to elevate this place further – with creative people who will have open doors here and where great things will be created.",
-      transport: "Transport accessibility",
+        "We found the perfect location and beautiful historic mill building that we want to share. We want to elevate this place further - with creative people who will have open doors here and where great things will be created.",
+      transport: "Transport Accessibility",
       byCar: "By Car",
       byTrain: "By Train",
       byPlane: "By Plane",
-      events: "Excursion tips",
+      availabilityItems: [
+        "By Car: 10 min to Domažlice center",
+        "10 min to German border",
+        "By Train: Train station directly at Pile",
+        "By Plane: 1h 45min from Prague Airport",
+        "By Plane: 2h 30min from Munich Airport (MUC), Germany",
+      ],
+      events: "Trip Suggestions",
       domazliceTitle: "Domažlice (8 min)",
       domazliceItems: ["Historic square", "Chodsko Museum", "Church of St. Lawrence", "Cultural events and festivals"],
       horsovskytynTitle: "Horšovský Týn (15 min)",
@@ -532,19 +546,6 @@ const translations = {
       thankYouNote: "Thank you",
       noraCollaboration: "For the collaboration on the text, we thank Nora from the band",
       cables: "Monitors, Headphones, Cables and Stands",
-    },
-    contact: {
-      title: "Contact",
-      info: "Information",
-      address: "Address",
-      phone: "Phone",
-      availability: "Availability",
-      availabilityItems: [
-        "10 min to Domažlice center",
-        "10 min to German border",
-        "Train station directly at Pila",
-        "1h 45min from Prague Airport",
-      ],
     },
     about: {
       title: "About Us",
@@ -606,7 +607,7 @@ const translations = {
       jindrichQuote:
         "We are working to ensure that musicians find an inspiring space here, perfectly prepared for creation. The mill has its genius loci and soul – and the instruments and vintage amplifiers available here carry the same energy. In harmony with them, modern technologies subtly support comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful, and comfortable environment that people will want to return to. Our doors are open to all creative people, not just musicians. We believe that this combination – a space with soul, instruments with a story, and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
-        "Singer and bassist of the band Anteater, and also an archaeologist. It is precisely in the environment of the old mill that all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)). But seriously now: we complement each other and we often draw inspiration from our different perspectives on the world.",
+        "Singer and bassist of the band Anteater, and also an archaeologist. It is precisely in the environment of the old mill that all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)). But seriously now: we complement each other and we draw inspiration from our different perspectives on the world.",
       collaboration: "Collaboration and Reservations",
       collaborationPara1Strong: "The studio spaces",
       collaborationPara1: " are available for recording, workshops, residential stays, and other artistic projects.",
@@ -664,6 +665,17 @@ const translations = {
           q: "Do you speak English/German?",
           a: "Multilingual team: Czech - native speakers, English - fluent (Jindřich, Andrea, tech team), German - conversational level (regional advantage), translation services for contracts.",
         },
+      ],
+    },
+    contact: {
+      title: "Contact",
+      availability: "Transport Accessibility",
+      availabilityItems: [
+        "By Car: 10 min to Domažlice center",
+        "10 min to German border",
+        "By Train: Train station directly at Pile",
+        "By Plane: 1h 45min from Prague Airport",
+        "By Plane: 2h 30min from Munich Airport (MUC), Germany",
       ],
     },
   },
@@ -789,17 +801,24 @@ const translations = {
       subtitle: "Ruhiger Ort im Herzen Europas, nahe allem Wichtigen",
       nature: "Schöne Natur - Erholungsgebiet, Privatsphäre und eigener Park",
       naturePara1:
-        "Pila u Trhanov ist ein idealer Standort für Liebhaber schöner Natur, Privatsphäre und aktiver Erholung. Das Grundstück erstreckt sich über 6500 m² und bietet eine ruhige Umgebung mit mehreren Sitzbereichen und zwei Bächen, die die harmonische Atmosphäre abrunden.",
+        "Pila bei Trhanov ist ein idealer Ort für Naturliebhaber, Privatsphäre und aktive Erholung. Das Grundstück erstreckt sich über 6.500 m² und bietet eine ruhige Umgebung mit mehreren Sitzbereichen und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
       naturePara2:
-        "Von Pila aus erreichen Sie bequem zu Fuß sowohl Domažlice als auch den Gipfel des höchsten Berges des Böhmischen Waldes, den Čerchov (1042 m), der Touristen mit seinem Aussichtsturm und herrlichen Ausblicken anlockt. Die Umgebung ist reich an markierten Radwegen und Wanderwegen, die durch malerische Landschaften führen, ideal für Naturliebhaber und Geschichtsinteressierte.",
+        "Von Pila aus können Sie bequem zu Fuß nach Domažlice oder auf den Gipfel des Čerchov (1.042 m), dem höchsten Berg des Böhmerwaldes, wandern, der Touristen mit seinem Aussichtsturm und herrlichen Ausblicken anzieht. Die Umgebung ist reich an markierten Radwegen und Wanderwegen durch malerische Landschaften, ideal für Natur- und Geschichtsliebhaber.",
       naturePara3:
-        "Die gesamte Region ist bekannt für ihre Grünflächen, frische Luft und Ruhe, was perfekte Bedingungen für alle schafft, die eine Flucht aus dem Stadtleben suchen und gleichzeitig eine hochwertige Basis für Ausflüge und die Erkundung kultureller und natürlicher Sehenswürdigkeiten der Region benötigen.",
+        "Die gesamte Region ist bekannt für ihre Grünflächen, frische Luft und Ruhe, was perfekte Bedingungen für diejenigen schafft, die dem Stadttrubel entfliehen möchten und gleichzeitig eine hervorragende Basis für Ausflüge und die Erkundung der kulturellen und natürlichen Sehenswürdigkeiten der Region bieten.",
       quote:
-        "Ich habe den perfekten Standort und ein wunderschönes historisches Mühlengebäude gefunden, das wir teilen möchten. Wir wollen diesen Ort weiter verbessern – mit kreativen Menschen, die hier offene Türen finden und wo großartige Dinge entstehen werden.",
+        "Wir haben den perfekten Ort und ein wunderschönes historisches Mühlengebäude gefunden, das wir teilen möchten. Wir möchten diesen Ort noch weiter aufwerten - mit kreativen Menschen, die hier offene Türen haben werden und wo großartige Dinge entstehen werden.",
       transport: "Verkehrsanbindung",
       byCar: "Mit dem Auto",
       byTrain: "Mit dem Zug",
       byPlane: "Mit dem Flugzeug",
+      availabilityItems: [
+        "Mit dem Auto: 10 Min. zum Zentrum von Domažlice",
+        "10 Min. zur deutschen Grenze",
+        "Mit dem Zug: Bahnhof direkt in Pile",
+        "Mit dem Flugzeug: 1h 45min vom Flughafen Prag",
+        "Mit dem Flugzeug: 2h 30min vom Flughafen München (MUC), Deutschland",
+      ],
       events: "Ausflugstipps",
       domazliceTitle: "Domažlice (8 Min.)",
       domazliceItems: [
@@ -837,7 +856,7 @@ const translations = {
         "Die Sammlung wird ständig aktualisiert, aber kontaktieren Sie bitte Jindřich für die aktuelle Liste.",
       collaborationLink: "Zusammenarbeit",
       detailsNote: "Alles ist voll funktionsfähig, regelmäßig gewartet und einsatzbereit.",
-      vintageInstruments: "Vintage-Instrumente (60er-80er)",
+      vintageInstruments: "Vintage-Instrumente (60s-80s)",
       guitars: "Gitarren",
       basses: "Bass",
       ampsAndCabs: "Verstärker und Boxen",
@@ -959,7 +978,7 @@ const translations = {
         },
         {
           q: "Wie komme ich zu Ihnen?",
-          a: "Mit dem Auto: direkter Zugang, private Parkplätze, Tesla-Ladestation. Mit dem Zug: 10 Min. zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h 45min vom Flughafen Prag, 2h vom Flughafen München, Abholservice verfügbar.",
+          a: "Mit dem Auto: direkter Zugang, private Parkplätze, Tesla-Ladestation. Mit dem Zug: 10 Min. zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h 45min vom Flughafen Prag, 2h 30min vom Flughafen München (MUC), Deutschland, Abholservice verfügbar.",
         },
         {
           q: "Haben Sie Catering, oder muss ich das Essen selbst organisieren?",
@@ -971,6 +990,17 @@ const translations = {
         },
       ],
     },
+    contact: {
+      title: "Kontakt",
+      availability: "Verkehrsanbindung",
+      availabilityItems: [
+        "Mit dem Auto: 10 Min. zum Zentrum von Domažlice",
+        "10 Min. zur deutschen Grenze",
+        "Mit dem Zug: Bahnhof direkt in Pile",
+        "Mit dem Flugzeug: 1h 45min vom Flughafen Prag",
+        "Mit dem Flugzeug: 2h 30min vom Flughafen München (MUC), Deutschland",
+      ],
+    },
   },
 }
 
@@ -978,6 +1008,9 @@ export default function Page() {
   const pathname = usePathname()
   const router = useRouter()
   const searchParams = useSearchParams()
+
+  const [showDraftBanner, setShowDraftBanner] = useState(true)
+  const [draftBannerDismissed, setDraftBannerDismissed] = useState(false)
 
   const [language, setLanguage] = useState<"cs" | "en" | "de">("cs")
   const [currentSection, setCurrentSection] = useState("mlyn")
@@ -989,7 +1022,7 @@ export default function Page() {
   const [showLanguageMenu, setShowLanguageMenu] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [currentVideoUrl, setCurrentVideoUrl] = useState(
-    "https://www.youtube.com/embed/Q6fS_hCaufA?autoplay=1&mute=1&loop=1&playlist=Q6fS_hCaufA&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&hd=1",
+    "https://www.youtube.com/embed/Q6fS_hCaufA?autoplay=1&mute=1&loop=1&playlist=Q6fS_hCaufA&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1",
   )
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [nextVideoUrl, setNextVideoUrl] = useState("")
@@ -1025,6 +1058,16 @@ export default function Page() {
       setLanguage(detectedLang)
     }
   }, [searchParams])
+
+  useEffect(() => {
+    if (showDraftBanner) {
+      const timer = setTimeout(() => {
+        setShowDraftBanner(false)
+        setDraftBannerDismissed(true)
+      }, 8000) // Hide after 8 seconds
+      return () => clearTimeout(timer)
+    }
+  }, [showDraftBanner])
 
   // The API was not being used since videos are loaded via iframe src directly
 
@@ -1062,7 +1105,7 @@ export default function Page() {
     console.log("[v0] Switching to dark mode:", newDarkMode, "video:", newVideoId)
 
     setIsTransitioning(true)
-    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
+    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1`
     setNextVideoUrl(newUrl)
 
     setTimeout(() => {
@@ -1113,7 +1156,7 @@ export default function Page() {
       console.log("[v0] Switching to video:", newVideoId)
 
       setIsTransitioning(true)
-      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
+      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1`
       setNextVideoUrl(newUrl)
 
       setTimeout(() => {
@@ -1138,9 +1181,9 @@ export default function Page() {
         darkModeTimerRef.current = setTimeout(() => {
           console.log("[v0] Auto-switching to dark mode (photo)")
           setIsDarkMode(true)
-          const newVideoId = "M4QkWhz7CDo" // Changed dark mode video
+          const newVideoId = "M4QkWhz7CDo"
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1154,9 +1197,9 @@ export default function Page() {
         darkModeTimerRef.current = setTimeout(() => {
           console.log("[v0] Auto-switching to dark mode (video)")
           setIsDarkMode(true)
-          const newVideoId = "M4QkWhz7CDo" // Changed dark mode video
+          const newVideoId = "M4QkWhz7CDo"
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&hd=1&quality=hd1080&playsinline=1`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1211,6 +1254,47 @@ export default function Page() {
 
   return (
     <div className="min-h-screen relative">
+      {showDraftBanner && (
+        <div className="fixed top-16 left-0 z-40 animate-in slide-in-from-left duration-700">
+          <div className="bg-black/20 backdrop-blur-md px-4 py-2 shadow-sm border-r border-white/10">
+            <div className="max-w-md flex items-start justify-between gap-3">
+              <div className="flex-1">
+                <p className="text-xs text-white/90 font-normal">
+                  {language === "cs" ? "Draft verze" : language === "en" ? "Draft Version" : "Entwurfsversion"}
+                </p>
+                <p className="text-[10px] text-white/70 mt-0.5 leading-relaxed">
+                  {language === "cs"
+                    ? "Web slouží pro navázání spoluprací a získání feedbacku před oficiálním spuštěním."
+                    : language === "en"
+                      ? "This website serves for establishing collaborations and gathering feedback before official launch."
+                      : "Diese Website dient der Zusammenarbeit und dem Feedback vor dem offiziellen Start."}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowDraftBanner(false)
+                  setDraftBannerDismissed(true)
+                }}
+                className="text-white/60 hover:text-white/90 transition-colors mt-0.5"
+                aria-label="Close banner"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {draftBannerDismissed && !showDraftBanner && (
+        <button
+          onClick={() => setShowDraftBanner(true)}
+          className="fixed top-20 left-0 z-40 bg-black/20 backdrop-blur-md hover:bg-black/30 text-white/60 hover:text-white/90 p-2 rounded-r-lg shadow-sm border-r border-t border-b border-white/10 transition-all duration-300"
+          aria-label="Show draft info"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+      )}
+
       <div className="fixed inset-0 z-0">
         {currentSection === "studio" ? (
           <div
@@ -1297,7 +1381,7 @@ export default function Page() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={toggleLanguage} // Changed to call toggleLanguage
+                  onClick={toggleLanguage}
                   className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
                 >
                   <Globe className="h-2.5 w-2.5" />
@@ -1371,7 +1455,7 @@ export default function Page() {
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={toggleLanguage} // Changed to call toggleLanguage
+                  onClick={toggleLanguage}
                   className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
                 >
                   <Globe className="h-2.5 w-2.5" />
@@ -1452,7 +1536,7 @@ export default function Page() {
         <div className="h-screen flex flex-col">
           {showPresentationMessage && (
             <div
-              className="absolute left-1/2 -translate-x-1/2 top-24 text-white text-xl font-light z-50 transition-opacity duration-1000"
+              className="absolute left-1/2 -translate-x-1/2 top-16 text-white text-xl font-light z-50 transition-opacity duration-1000"
               style={{ opacity: presentationOpacity }}
             >
               {t.mlyn.endMessage}
@@ -1467,10 +1551,7 @@ export default function Page() {
 
           <div className="">
             {currentSection === "mlyn" ? (
-              <div
-                ref={mlynSectionRef}
-                className="flex-1 pt-32 overflow-y-auto" // Applied pt-32 here for section content spacing
-              >
+              <div ref={mlynSectionRef} className="flex-1 min-h-screen pt-32 overflow-y-auto">
                 <div className="px-6 py-12">
                   <div className="text-center max-w-5xl mx-auto mb-16">
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
@@ -1480,111 +1561,96 @@ export default function Page() {
                     </p>
                   </div>
 
-                  <div className="max-w-4xl mx-auto mb-16">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      <Card
-                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
-                        onClick={() => handleSectionChange("equipment")}
-                      >
-                        <CardContent className="p-4 text-center">
-                          <Music
-                            className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
-                          />
-                          <h3 className="text-white font-semibold mb-2">{t.mlyn.vintageInstruments}</h3>
-                          <p className="text-white/80 text-xs">{t.mlyn.vintageDesc}</p>
-                        </CardContent>
-                      </Card>
+                  {/* Benefits Cards Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 pb-16">
+                    <Card
+                      className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
+                      onClick={() => handleSectionChange("equipment")}
+                    >
+                      <CardContent className="p-4 text-center">
+                        <Music className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                        <h3 className="text-white font-semibold mb-2">{t.mlyn.vintageInstruments}</h3>
+                        <p className="text-white/80 text-xs">{t.mlyn.vintageDesc}</p>
+                      </CardContent>
+                    </Card>
 
-                      <Card
-                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
-                        onClick={() => {
-                          handleSectionChange("studio")
-                          // Scroll to accommodation packages after section change
-                          setTimeout(() => {
-                            const accommodationSection = document.querySelector(
-                              '[data-section="accommodation-packages"]',
-                            )
-                            if (accommodationSection) {
-                              accommodationSection.scrollIntoView({ behavior: "smooth", block: "start" })
-                            }
-                          }, 100)
-                        }}
-                      >
-                        <CardContent className="p-4 text-center">
-                          <Home className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
-                          <h3 className="text-white font-semibold mb-2">{t.mlyn.accommodation}</h3>
-                          <p className="text-white/80 text-xs">{t.mlyn.accommodationDesc}</p>
-                        </CardContent>
-                      </Card>
+                    <Card
+                      className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
+                      onClick={() => {
+                        handleSectionChange("studio")
+                        // Scroll to accommodation packages after section change
+                        setTimeout(() => {
+                          const accommodationSection = document.querySelector('[data-section="accommodation-packages"]')
+                          if (accommodationSection) {
+                            accommodationSection.scrollIntoView({ behavior: "smooth", block: "start" })
+                          }
+                        }, 100)
+                      }}
+                    >
+                      <CardContent className="p-4 text-center">
+                        <Home className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                        <h3 className="text-white font-semibold mb-2">{t.mlyn.accommodation}</h3>
+                        <p className="text-white/80 text-xs">{t.mlyn.accommodationDesc}</p>
+                      </CardContent>
+                    </Card>
 
-                      <Card
-                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
-                        onClick={() => handleSectionChange("lokalita")}
-                      >
-                        <CardContent className="p-4 text-center">
-                          <MapPin
-                            className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
-                          />
-                          <h3 className="text-white font-semibold mb-2">{t.mlyn.locationCard}</h3>
-                          <p className="text-white/80 text-xs">{t.mlyn.locationDesc}</p>
-                        </CardContent>
-                      </Card>
+                    <Card
+                      className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
+                      onClick={() => handleSectionChange("lokalita")}
+                    >
+                      <CardContent className="p-4 text-center">
+                        <MapPin className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                        <h3 className="text-white font-semibold mb-2">{t.mlyn.locationCard}</h3>
+                        <p className="text-white/80 text-xs">{t.mlyn.locationDesc}</p>
+                      </CardContent>
+                    </Card>
 
-                      <Card
-                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
-                        onClick={() => handleSectionChange("studio")}
-                      >
-                        <CardContent className="p-4 text-center">
-                          <Headphones
-                            className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
-                          />
-                          <h3 className="text-white font-semibold mb-2">{t.mlyn.studios}</h3>
-                          <p className="text-white/80 text-xs whitespace-pre-line">{t.mlyn.studiosDesc}</p>
-                        </CardContent>
-                      </Card>
+                    <Card
+                      className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
+                      onClick={() => handleSectionChange("studio")}
+                    >
+                      <CardContent className="p-4 text-center">
+                        <Headphones
+                          className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                        />
+                        <h3 className="text-white font-semibold mb-2">{t.mlyn.studios}</h3>
+                        <p className="text-white/80 text-xs whitespace-pre-line">{t.mlyn.studiosDesc}</p>
+                      </CardContent>
+                    </Card>
 
-                      <Card
-                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
-                        onClick={() => handleSectionChange("equipment")}
-                      >
-                        <CardContent className="p-4 text-center">
-                          <Mic className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
-                          <h3 className="text-white font-semibold mb-2">{t.mlyn.modernTech}</h3>
-                          <p className="text-white/80 text-xs">{t.mlyn.modernTechDesc}</p>
-                        </CardContent>
-                      </Card>
+                    <Card
+                      className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
+                      onClick={() => handleSectionChange("equipment")}
+                    >
+                      <CardContent className="p-4 text-center">
+                        <Mic className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                        <h3 className="text-white font-semibold mb-2">{t.mlyn.modernTech}</h3>
+                        <p className="text-white/80 text-xs">{t.mlyn.modernTechDesc}</p>
+                      </CardContent>
+                    </Card>
 
-                      <Card
-                        className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
-                        onClick={() => {
-                          handleSectionChange("studio")
-                          // Scroll to accommodation packages after section change
-                          setTimeout(() => {
-                            const accommodationSection = document.querySelector(
-                              '[data-section="accommodation-packages"]',
-                            )
-                            if (accommodationSection) {
-                              accommodationSection.scrollIntoView({ behavior: "smooth", block: "start" })
-                            }
-                          }, 300)
-                        }}
-                      >
-                        <CardContent className="p-4 text-center">
-                          <Calendar
-                            className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
-                          />
-                          <h3 className="text-white font-semibold mb-2">{t.mlyn.benefits}</h3>
-                          <p className="text-white/80 text-xs">{t.mlyn.benefitsDesc}</p>
-                        </CardContent>
-                      </Card>
-                    </div>
+                    <Card
+                      className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
+                      onClick={() => {
+                        handleSectionChange("studio")
+                        // Scroll to accommodation packages after section change
+                        setTimeout(() => {
+                          const accommodationSection = document.querySelector('[data-section="accommodation-packages"]')
+                          if (accommodationSection) {
+                            accommodationSection.scrollIntoView({ behavior: "smooth", block: "start" })
+                          }
+                        }, 300)
+                      }}
+                    >
+                      <CardContent className="p-4 text-center">
+                        <Calendar
+                          className={`h-8 w-8 mx-auto mb-4 ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                        />
+                        <h3 className="text-white font-semibold mb-2">{t.mlyn.benefits}</h3>
+                        <p className="text-white/80 text-xs">{t.mlyn.benefitsDesc}</p>
+                      </CardContent>
+                    </Card>
                   </div>
-
-                  <div className="text-center py-8 sticky top-[82px] z-10">
-                    <p className="text-sm font-light text-white/60">{t.mlyn.endMessage}</p>
-                  </div>
-
-                  <div className="h-8"></div>
                 </div>
               </div>
             ) : currentSection === "studio" ? (
@@ -1621,7 +1687,7 @@ export default function Page() {
                             <li>• Gibson Explorer</li>
                             <li>• Marshall AFD 100, Mesa Boogie</li>
                             <li>• Rozsáhlá kolekce efektů</li>
-                            <li>• Mapex Saturn bicí s K-Zildjian činely</li>
+                            <li>• Mapex Saturn bicí & K-Zildjian činely</li>
                           </ul>
                         </div>
                       </div>
@@ -1663,7 +1729,7 @@ export default function Page() {
                           <ul className="space-y-1">
                             <li>• Universal Audio Apollo x8p Gen2 Studio+</li>
                             <li>• MAC + Apple Pro Display XDR 6K monitor</li>
-                            <li>• 76 UAD pluginů (kompletní kolekce)</li>
+                            <li>• 76 UAD plug-ins</li>
                             <li>• Logic Pro X + UA LUNA</li>
                             <li>• Projektor pro screening</li>
                           </ul>
@@ -1878,10 +1944,9 @@ export default function Page() {
                             <div>
                               <h4 className="font-semibold text-white mb-2">{t.location.byCar}</h4>
                               <ul className="space-y-1 text-xs text-white">
-                                <li>• 10 min do centra Domažlic</li>
-                                <li>• 10 min na německé hranice</li>
-                                <li>• Vlaková zastávka přímo na Pile</li>
-                                <li>• Tesla charging station</li>
+                                {t.location.availabilityItems.slice(0, 2).map((item, i) => (
+                                  <li key={i}>• {item.replace("Autem: ", "")}</li>
+                                ))}
                               </ul>
                             </div>
                           </div>
@@ -1892,8 +1957,9 @@ export default function Page() {
                             <div>
                               <h4 className="font-semibold text-white mb-2">{t.location.byTrain}</h4>
                               <ul className="space-y-1 text-xs text-white">
-                                <li>• Vlaková zastávka přímo na Pile</li>
-                                <li>• 10 min walk z Trhanov station</li>
+                                {t.location.availabilityItems.slice(2, 3).map((item, i) => (
+                                  <li key={i}>• {item.replace("Vlakem: ", "")}</li>
+                                ))}
                               </ul>
                             </div>
                           </div>
@@ -1904,9 +1970,9 @@ export default function Page() {
                             <div>
                               <h4 className="font-semibold text-white mb-2">{t.location.byPlane}</h4>
                               <ul className="space-y-1 text-xs text-white">
-                                <li>• 1h 45min z Prague Airport</li>
-                                <li>• 2h z Munich Airport</li>
-                                <li>• Pick-up service available</li>
+                                {t.location.availabilityItems.slice(3, 6).map((item, i) => (
+                                  <li key={i}>• {item.replace("Letadlem: ", "")}</li>
+                                ))}
                               </ul>
                             </div>
                           </div>
@@ -2287,7 +2353,7 @@ export default function Page() {
                             </h3>
                             <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Mapex Saturn</li>
-                              <li>• K-Zildjian činely</li>
+                              <li>• K-Zildjian činely</li> {/* FIX: German translation */}
                             </ul>
                           </div>
                         </div>
