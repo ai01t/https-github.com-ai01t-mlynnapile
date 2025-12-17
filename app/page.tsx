@@ -218,7 +218,24 @@ const translations = {
     },
     equipment: {
       title: "Vybavení",
-      subtitle: "Profesionální technika pro vaše projekty",
+      subtitle: "Profesionální nástroje a technologie",
+      recordingHardware: "Audio Interface", // Renamed "Recording Hardware" to "Audio Interface" in Czech
+      apolloTitle: "Universal Audio Apollo X8P Studio+ Gen 2",
+      apolloSpecs: [
+        "Elite-class Apollo X Gen 2 AD/DA převodníky s 24-bit / 192 kHz rozlišením",
+        "Dual-Crystal Clocking pro ultra nízký jitter při všech vzorkovacích frekvencích",
+        "16 x 22 Thunderbolt 3 audio interface s HEXA Core DSP procesorem",
+        "8 Unison™ mikrofonních předzesilovačů, 2 Hi-Z instrumentální vstupy",
+        "DB-25 vstup (line 1-8), 2 optické Toslink I/O (ADAT S/MUX nebo S/PDIF)",
+        "Word clock I/O (BNC)",
+        '2x 1/4" monitor výstupy, DB-25 výstup (ALT / 7.1 surround)',
+        '2x 1/4" TRS sluchátkové výstupy',
+        "Vylepšené D/A pro kritické monitorování a přehrávání se 130 dB dynamickým rozsahem a THD -127 dB",
+        "Kalibrace hlavních monitorových a sluchátkových výstupů pomocí Apollo Monitor Correction od Sonarworks",
+        "Plně vybavený monitor controller s přepínáním reproduktorů a integrovaným talkbackem",
+        "Aktualizovaná UAD Console aplikace s Auto-Gain, Plug-In Scenes, subwoofer integrací s Bass Management, podporou immersive audio a dalšími funkcemi",
+        "Onboard DSP podporuje přes 200 UAD plug-inů přes VST, AU a AAX 64 formáty ve všech hlavních DAW",
+      ],
       collectionNote: "Sbírka je průběžně aktualizována, viz.",
       collaborationLink: "spolupráce",
       detailsNote: "Nástroje jsou pravidelně servisované a připravené k použití.",
@@ -337,6 +354,10 @@ const translations = {
         {
           q: "Jak se k nám dostanu?",
           a: "Autem: přímý přístup, soukromé parkování, Tesla nabíjení. Vlakem: 10 min pěšky ze stanice Trhanov. Letecky: 1h 45min z letiště Praha, 2h z letiště Mnichov, pick-up služba k dispozici.",
+        },
+        {
+          q: "Mohu přijet i sám, nebo je akce určena pouze pro kapely a týmy?",
+          a: "Jasně - pro sólový umělec je k dispozici i looper Plethora X5 od TC Electronic. ;-)",
         },
         {
           q: "Máte catering, nebo si musím řešit jídlo sám?",
@@ -527,7 +548,24 @@ const translations = {
     },
     equipment: {
       title: "Equipment",
-      subtitle: "Professional technology for your projects",
+      subtitle: "Professional instruments and technology",
+      recordingHardware: "Audio Interface", // Renamed "Recording Hardware" to "Audio Interface" in English
+      apolloTitle: "Universal Audio Apollo X8P Studio+ Gen 2",
+      apolloSpecs: [
+        "Elite-class Apollo X Gen 2 AD/DA converters with 24-bit / 192 kHz resolution",
+        "Dual-Crystal Clocking for ultra-low jitter at all sample rates",
+        "16 x 22 Thunderbolt 3 audio interface with HEXA Core DSP processor",
+        "8 Unison™ mic preamps, 2 Hi-Z instrument inputs",
+        "DB-25 input (line 1-8), 2 optical Toslink I/O (ADAT S/MUX or S/PDIF)",
+        "Word clock I/O (BNC)",
+        '2x 1/4" monitor outputs, DB-25 output (ALT / 7.1 surround)',
+        '2x 1/4" TRS headphone outputs',
+        "Enhanced D/A for critical monitoring and playback with 130 dB dynamic range and THD of -127 dB",
+        "Calibrate main monitor and headphone outputs with Apollo Monitor Correction powered by Sonarworks",
+        "Fully-featured monitor controller with alternate speaker switching and integrated talkback",
+        "Updated UAD Console app featuring Auto-Gain, Plug-In Scenes, subwoofer integration with Bass Management, immersive audio support, and more",
+        "Onboard DSP supports over 200 UAD plug-ins via VST, AU, and AAX 64 formats in all major DAWs",
+      ],
       collectionNote: "The collection is constantly updated, but please contact Jindřich for the current list.",
       collaborationLink: "collaboration",
       detailsNote: "Everything is fully functional, regularly serviced, and ready for use.",
@@ -656,6 +694,10 @@ const translations = {
         {
           q: "How do I get to you?",
           a: "By car: direct access, private parking, Tesla charging. By train: 10 min walk from Trhanov station. By plane: 1h 45min from Prague Airport, 2h from Munich Airport, pick-up service available.",
+        },
+        {
+          q: "Can I come alone, or is this only for bands and teams?",
+          a: "Of course - for solo artists, we also have the Plethora X5 looper from TC Electronic available. ;-)",
         },
         {
           q: "Do you have catering, or do I need to arrange food myself?",
@@ -807,7 +849,7 @@ const translations = {
       naturePara3:
         "Die gesamte Region ist bekannt für ihre Grünflächen, frische Luft und Ruhe, was perfekte Bedingungen für diejenigen schafft, die dem Stadttrubel entfliehen möchten und gleichzeitig eine hervorragende Basis für Ausflüge und die Erkundung der kulturellen und natürlichen Sehenswürdigkeiten der Region bieten.",
       quote:
-        "Wir haben den perfekten Ort und ein wunderschönes historisches Mühlengebäude gefunden, das wir teilen möchten. Wir möchten diesen Ort noch weiter aufwerten - mit kreativen Menschen, die hier offene Türen haben werden und wo großartige Dinge entstehen werden.",
+        "Wir haben den perfekten Ort und ein wunderschönes historisches Mühlengebäude gefunden, das wir teilen möchten. Wir möchten diesen Ort noch weiter aufwerten - mit kreativen Menschen, die hier offene Türen haben und wo großartige Dinge entstehen werden.",
       transport: "Verkehrsanbindung",
       byCar: "Mit dem Auto",
       byTrain: "Mit dem Zug",
@@ -851,12 +893,29 @@ const translations = {
     },
     equipment: {
       title: "Ausstattung",
-      subtitle: "Professionelle Technologie für Ihre Projekte",
+      subtitle: "Professionelle Instrumente und Technologie",
+      recordingHardware: "Audio Interface", // Renamed "Recording Hardware" to "Audio Interface" in German
+      apolloTitle: "Universal Audio Apollo X8P Studio+ Gen 2",
+      apolloSpecs: [
+        "Elite-Class Apollo X Gen 2 AD/DA-Wandler mit 24-Bit / 192 kHz Auflösung",
+        "Dual-Crystal Clocking für ultra-niedrigen Jitter bei allen Sample-Raten",
+        "16 x 22 Thunderbolt 3 Audio-Interface mit HEXA Core DSP-Prozessor",
+        "8 Unison™ Mikrofonvorverstärker, 2 Hi-Z Instrumenteneingänge",
+        "DB-25 Eingang (Line 1-8), 2 optische Toslink I/O (ADAT S/MUX oder S/PDIF)",
+        "Word Clock I/O (BNC)",
+        '2x 1/4" Monitor-Ausgänge, DB-25 Ausgang (ALT / 7.1 Surround)',
+        '2x 1/4" Kopfhörerausgänge',
+        "Verbesserter D/A für kritisches Monitoring und Wiedergabe mit 130 dB Dynamikbereich und THD von -127 dB",
+        "Kalibrierung der Hauptmonitor- und Kopfhörerausgänge mit Apollo Monitor Correction powered by Sonarworks",
+        "Vollständig ausgestatteter Monitor-Controller mit alternativer Lautsprecher-Umschaltung und integriertem Talkback",
+        "Aktualisierte UAD Console-App mit Auto-Gain, Plug-In Scenes, Subwoofer-Integration mit Bass Management, Immersive-Audio-Unterstützung und mehr",
+        "Onboard-DSP unterstützt über 200 UAD-Plug-ins über VST, AU und AAX 64-Formate in allen wichtigen DAWs",
+      ],
       collectionNote:
         "Die Sammlung wird ständig aktualisiert, aber kontaktieren Sie bitte Jindřich für die aktuelle Liste.",
       collaborationLink: "Zusammenarbeit",
       detailsNote: "Alles ist voll funktionsfähig, regelmäßig gewartet und einsatzbereit.",
-      vintageInstruments: "Vintage-Instrumente (60s-80s)",
+      vintageInstruments: "Vintage Instrumente (60s-80s)",
       guitars: "Gitarren",
       basses: "Bass",
       ampsAndCabs: "Verstärker und Boxen",
@@ -979,6 +1038,10 @@ const translations = {
         {
           q: "Wie komme ich zu Ihnen?",
           a: "Mit dem Auto: direkter Zugang, private Parkplätze, Tesla-Ladestation. Mit dem Zug: 10 Min. zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h 45min vom Flughafen Prag, 2h 30min vom Flughafen München (MUC), Deutschland, Abholservice verfügbar.",
+        },
+        {
+          q: "Kann ich auch alleine kommen, oder ist das nur für Bands und Teams?",
+          a: "Natürlich - für Solo-Künstler steht auch der Plethora X5 Looper von TC Electronic zur Verfügung. ;-)",
         },
         {
           q: "Haben Sie Catering, oder muss ich das Essen selbst organisieren?",
@@ -2171,7 +2234,7 @@ export default function Page() {
                     </p>
                   </div>
 
-                  {/* Vintage Nástroje - FIRST */}
+                  {/* Vintage Nástroje - NOW FIRST */}
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
@@ -2215,7 +2278,7 @@ export default function Page() {
                     </Card>
                   </div>
 
-                  {/* Kytara a Basa (Zesilovače a Boxy) - SECOND */}
+                  {/* Kytara a Basa (Zesilovače a Boxy) - THIRD */}
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
@@ -2324,6 +2387,26 @@ export default function Page() {
                               <p className="text-white/60 italic">...a další</p>
                             </div>
                           </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Audio Interface - Recording Hardware */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Music className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          {t.equipment.recordingHardware}
+                        </h3>
+                        <div>
+                          <h4 className="text-base font-semibold text-white mb-3">{t.equipment.apolloTitle}</h4>
+                          <ul className="text-white/80 text-xs space-y-1.5">
+                            {t.equipment.apolloSpecs.map((spec, index) => (
+                              <li key={index}>• {spec}</li>
+                            ))}
+                          </ul>
                         </div>
                       </CardContent>
                     </Card>
@@ -3066,7 +3149,15 @@ export default function Page() {
                                   />
                                 </button>
                                 {openFaqIndex === index && (
-                                  <p className="text-xs text-white/80 mt-2 ml-8 leading-relaxed">{faq.a}</p>
+                                  <p
+                                    className="text-xs text-white/80 mt-2 ml-8 leading-relaxed"
+                                    dangerouslySetInnerHTML={{
+                                      __html: faq.a.replace(
+                                        /Plethora X5/g,
+                                        `<a href="https://www.tcelectronic.com/product.html?modelCode=0709-AIK" target="_blank" rel="noopener noreferrer" class="underline ${isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-secondary hover:text-secondary/80"}">Plethora X5</a>`,
+                                      ),
+                                    }}
+                                  />
                                 )}
                               </div>
                             )
