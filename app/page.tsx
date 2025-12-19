@@ -99,8 +99,8 @@ const translations = {
       millstoneSize: "25 m² - Bývalá mlýnice",
       millstoneDesc:
         "Vysoké stropy a unikátní akustika historické mlýnice. Ideální pro akustické nahrávky a experimentální projekty.",
-      ctaTitle: "Připraveni vytvořit něco úžasného?",
-      ctaDesc: "Kontaktujte nás a domluvme si návštěvu studia",
+      ctaTitle: "Kontaktujte nás a domluvme si návštěvu studia",
+      ctaDesc: "",
       ctaButton: "Kontaktovat",
       accommodation: {
         title: "Nahrávání + Ubytování",
@@ -257,8 +257,8 @@ const translations = {
     },
     about: {
       title: "O nás",
-      subtitle: "Mlýn Šnajberk Studios - místo s historií a budoucností",
-      tagline: "Kde se snoubí historie s moderním uměním a klidná příroda s pulzující kreativitou.",
+      subtitle: "Kde se rodí inspirace v srdci Evropy",
+      tagline: "Vintage duše, moderní technologie",
       history: "Historie mlýna",
       historyTimeline: [
         { year: "1653", desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena" },
@@ -429,9 +429,9 @@ const translations = {
       millstoneSize: "25 m² - Former mill room",
       millstoneDesc:
         "High ceilings and unique acoustics of the historic mill room. Ideal for acoustic recordings and experimental projects.",
-      ctaTitle: "Ready to create something amazing?",
-      ctaDesc: "Contact us and let's arrange a studio visit",
-      ctaButton: "Contact",
+      ctaTitle: "Contact us and let's arrange a studio visit",
+      ctaDesc: "",
+      ctaButton: "Contact Us",
       accommodation: {
         title: "RECORDING + ACCOMMODATION",
         subtitle:
@@ -559,7 +559,7 @@ const translations = {
         "DB-25 input (line 1-8), 2 optical Toslink I/O (ADAT S/MUX or S/PDIF)",
         "Word clock I/O (BNC)",
         '2x 1/4" monitor outputs, DB-25 output (ALT / 7.1 surround)',
-        '2x 1/4" TRS headphone outputs',
+        '2x 1/4" headphone outputs',
         "Enhanced D/A for critical monitoring and playback with 130 dB dynamic range and THD of -127 dB",
         "Calibrate main monitor and headphone outputs with Apollo Monitor Correction powered by Sonarworks",
         "Fully-featured monitor controller with alternate speaker switching and integrated talkback",
@@ -587,11 +587,11 @@ const translations = {
     },
     about: {
       title: "About Us",
-      subtitle: "Mlýn Šnajberk Studios - a place with history and future",
-      tagline: "Where history blends with modern art, and peaceful nature meets vibrant creativity.",
+      subtitle: "Where inspiration is born in the heart of Europe",
+      tagline: "Vintage soul, modern technology",
       history: "History of the mill",
       historyTimeline: [
-        { year: "1653", desc: "Founding of ponds and construction of the blast furnace and hammer mill of Lamingen" },
+        { year: "1653", desc: "Founding of ponds and construction of the blast furnace and hammer mill of Lamingena" },
         { year: "1810", desc: "Mill with a sawmill powered by water force" },
         {
           year: "1990",
@@ -760,7 +760,7 @@ const translations = {
       mainStudioDesc:
         "Das Hauptstudio befindet sich in einer Dachgalerie mit freiliegenden Originalbalken, die dem Raum eine authentische Atmosphäre einer alten Mühle verleihen. Natürliches Licht dringt durch Dachfenster und ein großes französisches Fenster mit Balkon ein, von dem aus man einen Blick auf einen ruhigen Teich hat. Ein Ort, an dem sich der Duft von Holz, die Wärme von Vintage-Instrumenten und die Stille der umgebenden Natur verbinden — idealer Raum für Kreation, Aufnahme und konzentrierte Arbeit.",
       equipment: "Ausstattung",
-      controlRoom: "Control Room",
+      controlRoom: "Kontrollraum",
       controlRoomSize: "27 m²",
       controlRoomDesc:
         "Makellose Akustik für kritisches Hören. Ausgestattet mit modernster Technologie für Mixing und Mastering auf höchstem Niveau.",
@@ -769,8 +769,8 @@ const translations = {
       millstoneSize: "25 m² - Ehemaliger Mühlenraum",
       millstoneDesc:
         "Hohe Decken und einzigartige Akustik des historischen Mühlenraums. Ideal für akustische Aufnahmen und experimentelle Projekte.",
-      ctaTitle: "Bereit, etwas Erstaunliches zu schaffen?",
-      ctaDesc: "Kontaktieren Sie uns und vereinbaren Sie einen Studiobesuch",
+      ctaTitle: "Kontaktieren Sie uns und vereinbaren Sie einen Studiobesuch",
+      ctaDesc: "",
       ctaButton: "Kontakt",
       accommodation: {
         title: "AUFNAHME + UNTERKUNFT",
@@ -933,8 +933,8 @@ const translations = {
     },
     about: {
       title: "Über uns",
-      subtitle: "Mlýn Šnajberk Studios - ein Ort mit Geschichte und Zukunft",
-      tagline: "Wo Geschichte auf moderne Kunst trifft und friedliche Natur auf pulsierende Kreativität.",
+      subtitle: "Wo Inspiration im Herzen Europas geboren wird",
+      tagline: "Vintage-Seele, moderne Technologie",
       history: "Geschichte der Mühle",
       historyTimeline: [
         { year: "1653", desc: "Anlage von Teichen und Bau des Hochofens und Hammerwerks Lamingen" },
@@ -1614,7 +1614,7 @@ export default function Page() {
 
           <div className="">
             {currentSection === "mlyn" ? (
-              <div ref={mlynSectionRef} className="flex-1 min-h-screen pt-32 overflow-y-auto">
+              <div ref={mlynSectionRef} className="flex-1 min-h-screen pt-32 pb-32 overflow-y-auto">
                 <div className="px-6 py-12">
                   <div className="text-center max-w-5xl mx-auto mb-16">
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
@@ -1625,7 +1625,7 @@ export default function Page() {
                   </div>
 
                   {/* Benefits Cards Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 pb-16">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 pb-32">
                     <Card
                       className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
                       onClick={() => handleSectionChange("equipment")}
@@ -1957,14 +1957,14 @@ export default function Page() {
                 {/* CTA Section */}
                 <div className="flex items-center justify-center px-6 py-12 bg-black/70 text-white">
                   <div className="text-center max-w-3xl">
-                    <h2 className="text-xl md:text-2xl font-bold mb-4 text-white drop-shadow-lg">
+                    <h2 className="text-[10px] md:text-xs font-bold mb-4 text-white drop-shadow-lg">
                       {t.studio.ctaTitle}
                     </h2>
-                    <p className="text-base mb-6 text-white/90 drop-shadow-md">{t.studio.ctaDesc}</p>
+                    <p className="text-base mb-3 text-white/90 drop-shadow-md">{t.studio.ctaDesc}</p>
                     <Button
-                      size="lg"
+                      size="default"
                       onClick={() => handleSectionChange("contact")}
-                      className="px-8 py-4 text-sm bg-white text-black hover:bg-gray-200"
+                      className="px-6 py-2 text-sm bg-white text-black hover:bg-gray-200"
                     >
                       {t.studio.ctaButton}
                     </Button>
@@ -3183,7 +3183,7 @@ export default function Page() {
             aria-label="Instagram"
           >
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s-.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
             </svg>
           </a>
           <a
