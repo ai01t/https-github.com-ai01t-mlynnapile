@@ -252,7 +252,10 @@ const translations = {
       uaPlugins: "Universal Audio Pluginy",
       workflow: "Doporučené Workflow",
       thankYouNote: "Děkujeme",
-      noraCollaboration: "Za spolupráci na textu děkujeme Nore z kapely",
+      noraCollaboration: "Děkujeme kytaristovi Radkovi Fořtovi z kapely",
+      noraBand: "NORA",
+      noraLink: "https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&nd=1&dlsi=1ca88705a71d401c",
+      noraCollaborationEnd: "za zapůjčení nástrojů z jeho sbírky",
       cables: "Odposlechy, sluchátka, kabely a stojany",
     },
     about: {
@@ -263,7 +266,10 @@ const translations = {
       historyTimeline: [
         { year: "1653", desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena" },
         { year: "1810", desc: "Mlýn s pilou poháněnou vodní silou" },
-        { year: "1990", desc: "Pila vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice" },
+        {
+          year: "1990",
+          desc: "Pila vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice",
+        },
         // </CHANGE>
         { year: "2024", desc: "Transformace na prémiové kreativní retreat studio" },
       ],
@@ -393,7 +399,7 @@ const translations = {
       contact: "Contact",
     },
     mlyn: {
-      title: "Mlýn na Pile",
+      title: "Mill at Pila",
       subtitle: "Retreat Studio",
       tagline: "Where inspiration is born",
       description: "Unique space with genius loci in beautiful nature",
@@ -414,7 +420,7 @@ const translations = {
       lightMode: "Light mode enabled - click to switch to dark mode",
     },
     studio: {
-      title: "Mlýn na Pile",
+      title: "Mill at Pila",
       subtitle: "Three unique spaces for your creativity",
       description: "From main studio through Millstone studio to control room",
       mainStudio: "Main Studio",
@@ -505,13 +511,13 @@ const translations = {
       subtitle: "Peaceful place in the heart of Europe, close to everything important",
       nature: "Beautiful Nature - Recreational Area, Privacy, and Private Park",
       naturePara1:
-        "Pila near Trhanov is an ideal location for nature lovers, privacy, and active recreation. The property spans over 6,500 m² and offers a tranquil environment with several seating areas and two streams that create a harmonious atmosphere.",
+        "Pila (auf Deutsch 'Sägewerk', lokal auch heute noch 'Šnajberk' genannt) bei Trhanov ist ein idealer Ort für Naturliebhaber, Privatsphäre und aktive Erholung. Das Grundstück erstreckt sich über 6.500 m² und bietet eine ruhige Umgebung mit mehreren Sitzbereichen und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
       naturePara2:
-        "From Pila, you can easily walk to Domažlice or hike to the summit of Čerchov (1,042 m), the highest mountain in the Bohemian Forest, which attracts tourists with its observation tower and stunning views. The area is rich in marked cycling routes and hiking trails through picturesque countryside, ideal for nature and history enthusiasts.",
+        "Z Pily se pohodlně dostanete pěšky jak do Domažlic, tak na vrchol nejvyšší hory Českého lesa, Čerchov (1042 m), která láká turisty rozhlednou a nádhernými výhledy. Okolí je bohaté na značené cyklotrasy i pěší stezky vedoucí malebnou krajinou, ideální pro vyznavače přírody a historie.",
       naturePara3:
-        "The entire region is known for its greenery, fresh air, and tranquility, creating perfect conditions for those seeking an escape from city hustle while providing an excellent base for trips and exploring the region's cultural and natural attractions.",
+        "Celý kraj je známý svou zelení, čerstvým vzduchem a klidem, což vytváří perfektní podmínky pro všechny hledající únik z ruchu města a zároveň kvalitní základnu pro výlety a poznávání kulturních i přírodních zajímavostí regionu.",
       quote:
-        "We found the perfect location and beautiful historic mill building that we want to share. We want to elevate this place further - with creative people who will have open doors here and where great things will be created.",
+        "Našli jsme za mě dokonalou lokalitu a nádherný historický objekt starého mlýna o který se chceme podělit. Chceme toto místo ještě pozvednout dál - o kreativní lidi, kteří zde budou mít otevřené dveře a kde budou vznikat skvělé věci.",
       transport: "Transport Accessibility",
       byCar: "By Car",
       byTrain: "By Train",
@@ -525,9 +531,9 @@ const translations = {
       ],
       events: "Trip Suggestions",
       domazliceTitle: "Domažlice (8 min)",
-      domazliceItems: ["Historic square", "Chodsko Museum", "Church of St. Lawrence", "Cultural events and festivals"],
+      domazliceItems: ["Historické náměstí", "Muzeum Chodska", "Kostel sv. Vavřince", "Kulturní akce a festivaly"],
       horsovskytynTitle: "Horšovský Týn (15 min)",
-      horsovskytynItems: ["Renaissance castle", "Castle tours", "Summer cultural events"],
+      horsovskytynItems: ["Renesanční zámek", "Prohlídky zámku", "Letní kulturní akce"],
       babylonTitle: "Babylon (10 min)",
       babylonItems: ["Babylon Aquapark", "Babylon Centre"],
       chamTitle: "Cham, Germany (20 min)",
@@ -584,8 +590,11 @@ const translations = {
       uaPlugins: "Universal Audio Plugins",
       workflow: "Recommended Workflow",
       thankYouNote: "Thank you",
-      noraCollaboration: "For the collaboration on the text, we thank Nora from the band",
-      cables: "Monitors, Headphones, Cables and Stands",
+      noraCollaboration: "We thank guitarist Radek Fořt from the band",
+      noraBand: "NORA",
+      noraLink: "https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&nd=1&dlsi=1ca88705a71d401c",
+      noraCollaborationEnd: "for lending instruments from his collection",
+      cables: "Monitors, headphones, cables and stands",
     },
     about: {
       title: "About Us",
@@ -597,7 +606,7 @@ const translations = {
         { year: "1810", desc: "Mill with a sawmill powered by water force" },
         {
           year: "1990",
-          desc: "The sawmill was established on November 24, 1990, as part of the village of Trhanov in the Domažlice district",
+          desc: "The village of Pila (meaning 'Saw' in English) was established on November 24, 1990, as part of the municipality of Trhanov in the Domažlice district",
         },
         // </CHANGE>
         { year: "2024", desc: "Transformation into a premium creative retreat studio" },
@@ -648,7 +657,7 @@ const translations = {
       jindrichQuote:
         "We are working to ensure that musicians find an inspiring space here, perfectly prepared for creation. The mill has its genius loci and soul – and the instruments and vintage amplifiers available here carry the same energy. In harmony with them, modern technologies subtly support comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful, and comfortable environment that people will want to return to. Our doors are open to all creative people, not just musicians. We believe that this combination – a space with soul, instruments with a story, and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
-        "Singer and bassist of the band Anteater, and also an archaeologist. It is precisely in the environment of the old mill that all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)). But seriously now: we complement each other and we draw inspiration from our different perspectives on the world.",
+        "Singer and bassist of the band Anteater, and also an archaeologist. It is precisely in the environment of the old mill that all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)) But seriously now: we complement each other and we draw inspiration from our different perspectives on the world.",
       collaboration: "Collaboration and Reservations",
       collaborationPara1Strong: "The studio spaces",
       collaborationPara1: " are available for recording, workshops, residential stays, and other artistic projects.",
@@ -847,13 +856,13 @@ const translations = {
       subtitle: "Ruhiger Ort im Herzen Europas, nahe allem Wichtigen",
       nature: "Schöne Natur - Erholungsgebiet, Privatsphäre und eigener Park",
       naturePara1:
-        "Pila bei Trhanov ist ein idealer Ort für Naturliebhaber, Privatsphäre und aktive Erholung. Das Grundstück erstreckt sich über 6.500 m² und bietet eine ruhige Umgebung mit mehreren Sitzbereichen und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
+        "Pila (auf Deutsch 'Sägewerk', lokal auch heute noch 'Šnajberk' genannt) bei Trhanov ist ein idealer Ort für Naturliebhaber, Privatsphäre und aktive Erholung. Das Grundstück erstreckt sich über 6.500 m² und bietet eine ruhige Umgebung mit mehreren Sitzbereichen und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
       naturePara2:
-        "Von Pila aus können Sie bequem zu Fuß nach Domažlice oder auf den Gipfel des Čerchov (1.042 m), dem höchsten Berg des Böhmerwaldes, wandern, der Touristen mit seinem Aussichtsturm und herrlichen Ausblicken anzieht. Die Umgebung ist reich an markierten Radwegen und Wanderwegen durch malerische Landschaften, ideal für Natur- und Geschichtsliebhaber.",
+        "Z Pily se pohodlně dostanete pěšky jak do Domažlic, tak na vrchol nejvyšší hory Českého lesa, Čerchov (1042 m), která láká turisty rozhlednou a nádhernými výhledy. Okolí je bohaté na značené cyklotrasy i pěší stezky vedoucí malebnou krajinou, ideální pro vyznavače přírody a historie.",
       naturePara3:
-        "Die gesamte Region ist bekannt für ihre Grünflächen, frische Luft und Ruhe, was perfekte Bedingungen für diejenigen schafft, die dem Stadttrubel entfliehen möchten und gleichzeitig eine hervorragende Basis für Ausflüge und die Erkundung der kulturellen und natürlichen Sehenswürdigkeiten der Region bieten.",
+        "Celý kraj je známý svou zelení, čerstvým vzduchem a klidem, což vytváří perfektní podmínky pro všechny hledající únik z ruchu města a zároveň kvalitní základnu pro výlety a poznávání kulturních i přírodních zajímavostí regionu.",
       quote:
-        "Wir haben den perfekten Ort und ein wunderschönes historisches Mühlengebäude gefunden, das wir teilen möchten. Wir möchten diesen Ort noch weiter aufwerten - mit kreativen Menschen, die hier offene Türen haben und wo großartige Dinge entstehen werden.",
+        "Našli jsme za mě dokonalou lokalitu a nádherný historický objekt starého mlýna o který se chceme podělit. Chceme toto místo ještě pozvednout dál - o kreativní lidi, kteří zde budou mít otevřené dveře a kde budou vznikat skvělé věci.",
       transport: "Verkehrsanbindung",
       byCar: "Mit dem Auto",
       byTrain: "Mit dem Zug",
@@ -932,7 +941,10 @@ const translations = {
       uaPlugins: "Universal Audio Plugins",
       workflow: "Empfohlener Workflow",
       thankYouNote: "Danke",
-      noraCollaboration: "Für die Zusammenarbeit am Text danken wir Nora von der Band",
+      noraCollaboration: "Wir danken dem Gitarristen Radek Fořt von der Band",
+      noraBand: "NORA",
+      noraLink: "https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&nd=1&dlsi=1ca88705a71d401c",
+      noraCollaborationEnd: "für das Ausleihen von Instrumenten aus seiner Sammlung",
       cables: "Monitore, Kopfhörer, Kabel und Ständer",
     },
     about: {
@@ -945,7 +957,7 @@ const translations = {
         { year: "1810", desc: "Mühle mit Sägewerk, angetrieben durch Wasserkraft" },
         {
           year: "1990",
-          desc: "Das Sägewerk wurde am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice gegründet",
+          desc: "Das Dorf Pila (auf Deutsch: Sägewerk) wurde am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice gegründet",
         },
         // </CHANGE>
         { year: "2024", desc: "Transformation in ein Premium-Kreativ-Retreat-Studio" },
@@ -1066,7 +1078,7 @@ const translations = {
       title: "Kontakt",
       availability: "Verkehrsanbindung",
       availabilityItems: [
-        "Mit dem Auto: 10 Min. zum Zentrum von Domažlice",
+        "Mit dem Auto: 10 Min. zum Zentrum von Domažlic",
         "10 Min. zur deutschen Grenze",
         "Mit dem Zug: Bahnhof direkt in Pile",
         "Mit dem Flugzeug: 1h 45min vom Flughafen Prag",
@@ -3071,14 +3083,14 @@ export default function Page() {
                                 </strong>{" "}
                                 {t.equipment.noraCollaboration}{" "}
                                 <a
-                                  href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f"
+                                  href={t.equipment.noraLink}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className={`underline font-semibold ${isDarkMode ? "text-blue-400 hover:text-blue-300" : "text-secondary hover:text-secondary/80"}`}
+                                  className="text-blue-400 hover:text-blue-300 underline transition-colors"
                                 >
-                                  Nora
-                                </a>
-                                .
+                                  {t.equipment.noraBand}
+                                </a>{" "}
+                                {t.equipment.noraCollaborationEnd}
                               </p>
                             </div>
                           </div>
