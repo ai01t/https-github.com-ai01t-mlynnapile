@@ -250,7 +250,7 @@ const translations = {
       drums: "Bicí",
       drumsKit: "Bicí souprava: Mapex Saturn V MH Exotic",
       drumsKitDetails: [
-        'Basový buben: 22" x 18" (nevrtaný)',
+        'Basový buben: 22" x 18"',
         'Tomy: 10" x 7" a 12" x 8"',
         'Floor tomy (kotle): 14" x 12" a 16" x 14"',
         "Korpusy: Kombinace javoru a ořechu (tomy 6 vrstev / 5,1 mm, basový buben 8 vrstev / 7,5 mm)",
@@ -614,7 +614,7 @@ const translations = {
       drums: "Drums",
       drumsKit: "Drum Kit: Mapex Saturn V MH Exotic",
       drumsKitDetails: [
-        'Bass drum: 22" x 18" (undrilled)',
+        'Bass drum: 22" x 18"',
         'Toms: 10" x 7" and 12" x 8"',
         'Floor toms: 14" x 12" and 16" x 14"',
         "Shells: Maple and walnut combination (toms 6 plies / 5.1 mm, bass drum 8 plies / 7.5 mm)",
@@ -991,7 +991,7 @@ const translations = {
       drums: "Schlagzeug",
       drumsKit: "Schlagzeug-Set: Mapex Saturn V MH Exotic",
       drumsKitDetails: [
-        'Bassdrum: 22" x 18" (ungebohrt)',
+        'Bassdrum: 22" x 18"',
         'Toms: 10" x 7" und 12" x 8"',
         'Floor-Toms: 14" x 12" und 16" x 14"',
         "Kessel: Kombination aus Ahorn und Nussbaum (Toms 6 Lagen / 5,1 mm, Bassdrum 8 Lagen / 7,5 mm)",
