@@ -248,6 +248,32 @@ const translations = {
       effects: "Efekty",
       mics: "Mikrofony",
       drums: "Bicí",
+      drumsKit: "Bicí souprava: Mapex Saturn V MH Exotic",
+      drumsKitDetails: [
+        'Basový buben: 22" x 18" (nevrtaný)',
+        'Tomy: 10" x 7" a 12" x 8"',
+        'Floor tomy (kotle): 14" x 12" a 16" x 14"',
+        "Korpusy: Kombinace javoru a ořechu (tomy 6 vrstev / 5,1 mm, basový buben 8 vrstev / 7,5 mm)",
+        "Technologie: Hrany SONIClear™ pro lepší rezonanci a snadnější ladění",
+        "Konfigurace: Studioease",
+      ],
+      drumsSnare: "Snare Drum (Rytmičák)",
+      drumsSnareDetails: ["Model: Tama S.L.P. LST148 Big Black Steel", 'Rozměr: 14" x 8" (ocelový korpus)'],
+      drumsCymbals: "Činely",
+      drumsCymbalsDetails: [
+        'Hi-hat: 14" Zildjian K Sweet Hi-Hat',
+        'Crash: 18" Zildjian K Custom Hybrid Crash',
+        'Ride: 20" Sabian AAX Heavy Ride',
+        "China: Istanbul Mehmet (Handmade Turkey)",
+        'Splash: 10" Meinl Mb8 Splash',
+      ],
+      drumsHardware: "Hardware a doplňky",
+      drumsHardwareDetails: [
+        "Sedačka: DW 9000 Series Air Lift (pneumatická stolička)",
+        "Pedál: Mapex (řada Armory)",
+        "Blány: Remo Powerstroke (basový buben) a Evans (snare)",
+        "Stojany: Kombinace značek Mapex a Tama",
+      ],
       infrastructure: "Infrastruktura",
       uaPlugins: "Universal Audio Pluginy",
       workflow: "Doporučené Workflow",
@@ -586,6 +612,32 @@ const translations = {
       effects: "Effects",
       mics: "Microphones",
       drums: "Drums",
+      drumsKit: "Drum Kit: Mapex Saturn V MH Exotic",
+      drumsKitDetails: [
+        'Bass drum: 22" x 18" (undrilled)',
+        'Toms: 10" x 7" and 12" x 8"',
+        'Floor toms: 14" x 12" and 16" x 14"',
+        "Shells: Maple and walnut combination (toms 6 plies / 5.1 mm, bass drum 8 plies / 7.5 mm)",
+        "Technology: SONIClear™ edges for better resonance and easier tuning",
+        "Configuration: Studioease",
+      ],
+      drumsSnare: "Snare Drum",
+      drumsSnareDetails: ["Model: Tama S.L.P. LST148 Big Black Steel", 'Size: 14" x 8" (steel shell)'],
+      drumsCymbals: "Cymbals",
+      drumsCymbalsDetails: [
+        'Hi-hat: 14" Zildjian K Sweet Hi-Hat',
+        'Crash: 18" Zildjian K Custom Hybrid Crash',
+        'Ride: 20" Sabian AAX Heavy Ride',
+        "China: Istanbul Mehmet (Handmade Turkey)",
+        'Splash: 10" Meinl Mb8 Splash',
+      ],
+      drumsHardware: "Hardware and Accessories",
+      drumsHardwareDetails: [
+        "Throne: DW 9000 Series Air Lift (pneumatic throne)",
+        "Pedal: Mapex (Armory series)",
+        "Drumheads: Remo Powerstroke (bass drum) and Evans (snare)",
+        "Stands: Combination of Mapex and Tama brands",
+      ],
       infrastructure: "Infrastructure",
       uaPlugins: "Universal Audio Plugins",
       workflow: "Recommended Workflow",
@@ -937,6 +989,32 @@ const translations = {
       effects: "Effekte",
       mics: "Mikrofone",
       drums: "Schlagzeug",
+      drumsKit: "Schlagzeug-Set: Mapex Saturn V MH Exotic",
+      drumsKitDetails: [
+        'Bassdrum: 22" x 18" (ungebohrt)',
+        'Toms: 10" x 7" und 12" x 8"',
+        'Floor-Toms: 14" x 12" und 16" x 14"',
+        "Kessel: Kombination aus Ahorn und Nussbaum (Toms 6 Lagen / 5,1 mm, Bassdrum 8 Lagen / 7,5 mm)",
+        "Technologie: SONIClear™ Kanten für bessere Resonanz und einfacheres Stimmen",
+        "Konfiguration: Studioease",
+      ],
+      drumsSnare: "Snare Drum",
+      drumsSnareDetails: ["Modell: Tama S.L.P. LST148 Big Black Steel", 'Größe: 14" x 8" (Stahlkessel)'],
+      drumsCymbals: "Becken",
+      drumsCymbalsDetails: [
+        'Hi-Hat: 14" Zildjian K Sweet Hi-Hat',
+        'Crash: 18" Zildjian K Custom Hybrid Crash',
+        'Ride: 20" Sabian AAX Heavy Ride',
+        "China: Istanbul Mehmet (Handmade Turkey)",
+        'Splash: 10" Meinl Mb8 Splash',
+      ],
+      drumsHardware: "Hardware und Zubehör",
+      drumsHardwareDetails: [
+        "Hocker: DW 9000 Series Air Lift (pneumatischer Hocker)",
+        "Pedal: Mapex (Armory-Serie)",
+        "Felle: Remo Powerstroke (Bassdrum) und Evans (Snare)",
+        "Ständer: Kombination der Marken Mapex und Tama",
+      ],
       infrastructure: "Infrastruktur",
       uaPlugins: "Universal Audio Plugins",
       workflow: "Empfohlener Workflow",
@@ -2423,6 +2501,72 @@ export default function Page() {
                     </Card>
                   </div>
 
+                  {/* Bicí - Drums Section */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Drums className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          {t.equipment.drums}
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <h4 className="text-base font-semibold text-white mb-3">{t.equipment.drumsKit}</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
+                              {t.equipment.drumsKitDetails.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="text-base font-semibold text-white mb-3">{t.equipment.drumsSnare}</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
+                              {t.equipment.drumsSnareDetails.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                          <div>
+                            <h4 className="text-base font-semibold text-white mb-3">{t.equipment.drumsCymbals}</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
+                              {t.equipment.drumsCymbalsDetails.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <h4 className="text-base font-semibold text-white mb-3">{t.equipment.drumsHardware}</h4>
+                            <ul className="text-white/80 text-xs space-y-1.5">
+                              {t.equipment.drumsHardwareDetails.map((item, index) => (
+                                <li key={index}>• {item}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Mikrofony - FOURTH */}
+                  <div className="mb-8">
+                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+                      <CardContent className="p-6">
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                          <Mic className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          {t.equipment.mics}
+                        </h3>
+                        <ul className="text-white/80 text-xs space-y-1.5">
+                          <li>• Sennheiser e 906</li>
+                          <li>• Shure Beta 58</li>
+                          <li>• Shure SM 7 B</li>
+                          <li>• 2x SHURE SM57</li>
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </div>
+
                   {/* Audio Interface - Recording Hardware */}
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
@@ -2438,38 +2582,6 @@ export default function Page() {
                               <li key={index}>• {spec}</li>
                             ))}
                           </ul>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Mikrofony a Bicí */}
-                  <div className="mb-8">
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div>
-                            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                              <Mic className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
-                              {t.equipment.mics}
-                            </h3>
-                            <ul className="text-white/80 text-xs space-y-1.5">
-                              <li>• Sennheiser e 906</li>
-                              <li>• Shure Beta 58</li>
-                              <li>• Shure SM 7 B</li>
-                              <li>• 2x SHURE SM57</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                              <Drums className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
-                              {t.equipment.drums}
-                            </h3>
-                            <ul className="text-white/80 text-xs space-y-1.5">
-                              <li>• Mapex Saturn</li>
-                              <li>• K-Zildjian činely</li>
-                            </ul>
-                          </div>
                         </div>
                       </CardContent>
                     </Card>
