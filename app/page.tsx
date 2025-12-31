@@ -241,9 +241,10 @@ const translations = {
       detailsNote: "Nástroje jsou pravidelně servisované a připravené k použití.",
       vintageInstruments: "Vintage Nástroje (60s-80s)",
       guitars: "Kytary",
+      acousticGuitars: "Akustické kytary", // Added acoustic guitars
       basses: "Basa",
       ampsAndCabs: "Zesilovače a Boxy",
-      amps: "Zesilovače (Lampové / Hybridní)",
+      amps: "Zesilovače", // Changed from "Zesilovače (Lampové / Hybridní)" to just "Zesilovače"
       cabs: "Boxy",
       effects: "Efekty",
       mics: "Mikrofony",
@@ -605,9 +606,10 @@ const translations = {
       detailsNote: "Everything is fully functional, regularly serviced, and ready for use.",
       vintageInstruments: "Vintage Instruments (60s-80s)",
       guitars: "Guitars",
+      acousticGuitars: "Acoustic Guitars", // Added acoustic guitars
       basses: "Bass",
       ampsAndCabs: "Amps and Cabinets",
-      amps: "Amplifiers (Tube / Hybrid)",
+      amps: "Amplifiers", // Changed from "Amplifiers (Tube / Hybrid)" to just "Amplifiers"
       cabs: "Cabinets",
       effects: "Effects",
       mics: "Microphones",
@@ -982,9 +984,10 @@ const translations = {
       detailsNote: "Alles ist voll funktionsfähig, regelmäßig gewartet und einsatzbereit.",
       vintageInstruments: "Vintage Instrumente (60s-80s)",
       guitars: "Gitarren",
+      acousticGuitars: "Akustische Gitarren", // Added acoustic guitars
       basses: "Bass",
       ampsAndCabs: "Verstärker und Boxen",
-      amps: "Verstärker (Röhren / Hybrid)",
+      amps: "Verstärker", // Changed from "Verstärker (Röhren / Hybrid)" to just "Verstärker"
       cabs: "Boxen",
       effects: "Effekte",
       mics: "Mikrofone",
@@ -1184,7 +1187,7 @@ export default function Page() {
   const [showLanguageMenu, setShowLanguageMenu] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [currentVideoUrl, setCurrentVideoUrl] = useState(
-    "https://www.youtube.com/embed/Q6fS_hCaufA?autoplay=1&mute=1&loop=1&playlist=Q6fS_hCaufA&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1",
+    "https://www.youtube.com/embed/Q6fS_hCaufA?autoplay=1&mute=1&loop=1&playlist=Q6fS_hCaufA&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1",
   )
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [nextVideoUrl, setNextVideoUrl] = useState("")
@@ -1267,7 +1270,7 @@ export default function Page() {
     console.log("[v0] Switching to dark mode:", newDarkMode, "video:", newVideoId)
 
     setIsTransitioning(true)
-    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1`
+    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
     setNextVideoUrl(newUrl)
 
     setTimeout(() => {
@@ -1318,7 +1321,7 @@ export default function Page() {
       console.log("[v0] Switching to video:", newVideoId)
 
       setIsTransitioning(true)
-      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1`
+      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
       setNextVideoUrl(newUrl)
 
       setTimeout(() => {
@@ -1345,7 +1348,7 @@ export default function Page() {
           setIsDarkMode(true)
           const newVideoId = "M4QkWhz7CDo"
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1361,7 +1364,7 @@ export default function Page() {
           setIsDarkMode(true)
           const newVideoId = "M4QkWhz7CDo"
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&enablejsapi=1&vq=hd1080&playsinline=1`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1725,7 +1728,7 @@ export default function Page() {
 
                   {/* Benefits Cards Grid */}
                   <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-6 pb-32">
+                    <div className="grid grid-cols-1 md:grid-grid-cols-2 lg:grid-cols-3 gap-6 px-6 pb-32">
                       <Card
                         className="bg-white/5 backdrop-blur-sm border-white/20 cursor-pointer hover:bg-white/15 transition-colors"
                         onClick={() => handleSectionChange("equipment")}
@@ -1866,7 +1869,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/YWnYQDGHeLw?autoplay=1&mute=1&loop=1&playlist=YWnYQDGHeLw&controls=0&showinfo=0&rel=0&modestbranding=1&vq=hd1080&hd=1"
+                          src="https://www.youtube.com/embed/YWnYQDGHeLw?autoplay=1&mute=1&loop=1&playlist=YWnYQDGHeLw&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1"
                           title="Hlavní Studio"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -1882,7 +1885,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group order-2 lg:order-1">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1&vq=hd1080&hd=1"
+                          src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1"
                           title="Control Room"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -1926,7 +1929,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/sc0bCt6G9dM?autoplay=1&mute=1&loop=1&playlist=sc0bCt6G9dM&controls=0&showinfo=0&rel=0&modestbranding=1&vq=hd1080&hd=1"
+                          src="https://www.youtube.com/embed/sc0bCt6G9dM?autoplay=1&mute=1&loop=1&playlist=sc0bCt6G9dM&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1"
                           title="Millstone Studio"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -2018,7 +2021,7 @@ export default function Page() {
                               {pkg.video ? (
                                 <iframe
                                   className="w-full h-full"
-                                  src={`${pkg.video.replace("youtu.be/", "www.youtube.com/embed/")}?autoplay=1&mute=1&loop=1&playlist=${pkg.video.split("/").pop()}&controls=0&showinfo=0&rel=0&modestbranding=1&vq=hd1080&hd=1`}
+                                  src={`${pkg.video.replace("youtu.be/", "www.youtube.com/embed/")}?autoplay=1&mute=1&loop=1&playlist=${pkg.video.split("/").pop()}&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1`}
                                   title={pkg.name}
                                   allow="autoplay; encrypted-media"
                                   allowFullScreen
@@ -2354,33 +2357,74 @@ export default function Page() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <h4 className="text-base font-semibold text-white mb-3">{t.equipment.guitars}</h4>
-                            <ul className="text-white/80 text-xs space-y-1.5">
-                              <li className="cursor-pointer hover:text-secondary transition-colors">
-                                <a
-                                  href="https://equipboard.com/items/telecaster-deluxe-73"
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className={`hover:text-secondary transition-colors ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
-                                >
-                                  • Fender 1973 Telecaster Deluxe
-                                </a>
-                              </li>
-                              <li>• Fender Custom Shop - Jeff Beck (Surf Green)</li>
-                              <li>• Fender Custom Shop - LTD 67 HSS Strat AB HR</li>
-                              <li>• Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)</li>
-                              <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
-                              <li>• Gibson Explorer</li>
-                              <li>• Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)</li>
-                              <li className="text-white/60 italic">...a další</li>
-                            </ul>
+                            <div className="space-y-3">
+                              <div>
+                                <p className="text-white font-medium text-sm mb-1">Fender:</p>
+                                <ul className="text-white/80 text-xs space-y-1.5">
+                                  <li className="cursor-pointer hover:text-secondary transition-colors">
+                                    <a
+                                      href="https://equipboard.com/items/fender-telecaster-deluxe-73"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className={`hover:text-secondary transition-colors ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
+                                    >
+                                      • Fender Telecaster Deluxe (1973)
+                                    </a>
+                                  </li>
+                                  <li>• Fender Custom Shop - Jeff Beck (Surf Green)</li>
+                                  <li>• Fender Custom Shop - LTD 67 HSS Strat AB HR</li>
+                                  <li>• Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)</li>
+                                  <li>• Fender Duo-Sonic (1964-65)</li>
+                                  <li>• Fender Mustang (1967)</li>
+                                  <li>• Fender Mustang (1986)</li>
+                                </ul>
+                              </div>
+                              <div>
+                                <p className="text-white font-medium text-sm mb-1">Gibson:</p>
+                                <ul className="text-white/80 text-xs space-y-1.5">
+                                  <li>• Gibson TAG SG (1979)</li>
+                                  <li>• Gibson Sonex (1981)</li>
+                                  <li>• Gibson Firebird Studio Special (2004)</li>
+                                  <li>• Gibson Firebird Studio (2006)</li>
+                                  <li>• Gibson Les Paul Traditional (2009)</li>
+                                  <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
+                                  <li>• Gibson Explorer</li>
+                                </ul>
+                              </div>
+                              <div>
+                                <p className="text-white font-medium text-sm mb-1">Ostatní elektrické:</p>
+                                <ul className="text-white/80 text-xs space-y-1.5">
+                                  <li>• Harmony H14 (1984)</li>
+                                  <li>• Maybach Teleman</li>
+                                  <li>• Wanda Ford (1964)</li>
+                                  <li>• Washburn WI-75</li>
+                                  <li>• Harley Benton Thinline</li>
+                                  <li>• Samick Warlock (1994)</li>
+                                  <li>• Stratocaster Alto</li>
+                                  <li>• Telecaster Country</li>
+                                </ul>
+                              </div>
+                            </div>
                           </div>
 
-                          <div>
-                            <h4 className="text-base font-semibold text-white mb-3">{t.equipment.basses}</h4>
-                            <ul className="text-white/80 text-xs space-y-1.5">
-                              <li>• Fender Precision (1993)</li>
-                              <li>• Squier short scale bass</li>
-                            </ul>
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="text-base font-semibold text-white mb-3">{t.equipment.acousticGuitars}</h4>
+                              <ul className="text-white/80 text-xs space-y-1.5">
+                                <li>• Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)</li>
+                                <li>• Fender FA-125 Nat</li>
+                                <li>• K-Yairi 180</li>
+                                <li>• Cremona</li>
+                              </ul>
+                            </div>
+
+                            <div>
+                              <h4 className="text-base font-semibold text-white mb-3">{t.equipment.basses}</h4>
+                              <ul className="text-white/80 text-xs space-y-1.5">
+                                <li>• Fender Precision (1993)</li>
+                                <li>• Squier short scale bass</li>
+                              </ul>
+                            </div>
                           </div>
                         </div>
                       </CardContent>
@@ -2395,16 +2439,19 @@ export default function Page() {
                           <Guitar className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
                           {t.equipment.ampsAndCabs}
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
                             <h4 className="text-base font-semibold text-white mb-3">{t.equipment.amps}</h4>
                             <ul className="text-white/80 text-xs space-y-1.5">
                               <li>• Fender 64 Custom Deluxe Reverb</li>
-                              <li>• Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)</li>
-                              <li>• Mesa Boogie Dual Rectifier®Head, 3 Channels / 8 Modes, 100W</li>
                               <li>• Marshall AFD 100</li>
-                              <li>• AMPEG V-4B Bass Head</li>
+                              <li>• Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)</li>
+                              <li>• Mesa Boogie Dual Rectifier® Head, 3 Channels / 8 Modes, 100W</li>
+                              <li>• Tone King Imperial</li>
                               <li>• Roland JC-22</li>
+                              <li>• Ampeg Reverbrocket R212</li>
+                              <li>• Ampeg GVT5</li>
+                              <li>• AMPEG V-4B Bass Head</li>
                             </ul>
                           </div>
                           <div>
