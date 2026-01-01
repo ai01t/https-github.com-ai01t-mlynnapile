@@ -2376,13 +2376,13 @@ export default function Page() {
                                   <li>• Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)</li>
                                   <li>• Fender Duo-Sonic (1964-65)</li>
                                   <li>• Fender Mustang (1967)</li>
-                                  <li>• Fender Mustang (1986)</li>
+                                  <li>• Fender Mustang (1966)</li>
                                 </ul>
                               </div>
                               <div>
                                 <p className="text-white font-medium text-sm mb-1">Gibson:</p>
                                 <ul className="text-white/80 text-xs space-y-1.5">
-                                  <li>• Gibson TAG SG (1979)</li>
+                                  <li>• Gibson THE SG (1979)</li>
                                   <li>• Gibson Sonex (1981)</li>
                                   <li>• Gibson Firebird Studio Special (2004)</li>
                                   <li>• Gibson Firebird Studio (2006)</li>
@@ -2396,8 +2396,8 @@ export default function Page() {
                                 <ul className="text-white/80 text-xs space-y-1.5">
                                   <li>• Harmony H14 (1984)</li>
                                   <li>• Maybach Teleman</li>
-                                  <li>• Wanda Ford (1964)</li>
-                                  <li>• Washburn WI-75</li>
+                                  <li>• Wandre Cobra (1964)</li>
+                                  <li>• Washburn WJ7S</li>
                                   <li>• Harley Benton Thinline</li>
                                   <li>• Samick Warlock (1994)</li>
                                   <li>• Stratocaster Alto</li>
@@ -2413,7 +2413,7 @@ export default function Page() {
                               <ul className="text-white/80 text-xs space-y-1.5">
                                 <li>• Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)</li>
                                 <li>• Fender FA-125 Nat</li>
-                                <li>• K-Yairi 180</li>
+                                <li>• K Yairi 180</li>
                                 <li>• Cremona</li>
                               </ul>
                             </div>
