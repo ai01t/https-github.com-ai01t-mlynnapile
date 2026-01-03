@@ -1,7 +1,5 @@
 "use client"
 
-import React from "react"
-
 import { useState, useEffect, useRef } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -341,24 +339,21 @@ const translations = {
       andreaDesc:
         "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na svět inspirovat.",
       collaboration: "Spolupráce a Rezervace",
-      collaborationPara1Strong: "Prostory studia",
-      collaborationPara1: " jsou k dispozici pro nahrávání, workshopy, rezidenční pobyty a další umělecké projekty.",
-      collaborationPara2Strong: "Individuální přístup",
+      collaborationPara1Strong: "Hledáme partnery,",
+      collaborationPara1:
+        " ne pouze dodavatele. Věříme v dlouhodobé vztahy založené na společné vášni pro hudbu a kvalitu.",
+      collaborationPara2Strong: "Ve studiu se snažíme mít co nejlepší vybavení",
       collaborationPara2:
-        " a flexibilita jsou pro nás samozřejmostí. Jsme připraveni přizpůsobit se Vašim specifickým potřebám a požadavkům, abychom zajistili co nejlepší výsledek.",
-      collaborationPara2End: " Neváhejte se na nás obrátit s jakýmikoliv dotazy nebo požadavky.",
-      collaborationPara3Strong: "Pro komplexní balíčky",
-      collaborationPara3: " zahrnující nahrávání, ubytování a catering, nás prosím kontaktujte.",
-      collaborationFormsTitle: "Formy spolupráce",
+        " - průběžně upravujeme setup a stále hledáme to nejlepší na trhu. Stavíte kytary, efektové krabičky, zesilovače? Chcete, aby se k vašim produktům dostali zajímaví zákazníci?",
+      collaborationPara2End:
+        " Neváhejte nás kontaktovat! Přijeďte se za námi podívat a nezávazně si popovídat - rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si chceme nejdříve důkladně vyzkoušet.",
+      collaborationFormsTitle: "Formy spolupráce:",
       collaborationForms: [
-        "Nahrávání hudby",
-        "Produkce a mastering",
-        "Workshopy a masterclassy",
-        // "Umělecké rezidence",
-        // </CHANGE>
-        "Natáčení videoklipů",
-        "Fotografování",
-        "Pořádání menších koncertů a akcí",
+        "Integrace značky – autentické umístění produktu",
+        "Tvorba obsahu – dokumentární projekty a výukové návody",
+        "Umělecké rezidence – dlouhodobá kreativní partnerství",
+        "Testování vybavení – ověřování v reálném provozu se zpětnou vazbou",
+        "Vzdělávací programy – mistrovské kurzy a workshopy",
       ],
       faq: "Často kladené otázky",
       faqItems: [
@@ -439,7 +434,7 @@ const translations = {
       studios: "Studios",
       studiosDesc: "Main studio 64m²\nMillstone studio 25m²\nControl Room 27m²",
       modernTech: "Modern Technology",
-      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD plugins, Logic Pro X\nApple Pro Display XDR 6K",
+      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD plugins, Logic Pro X,\nApple Pro Display XDR 6K",
       benefits: "Additional Benefits",
       benefitsDesc: "Electric car rental, bikes, charging station, battery backup, secured premises",
       endMessage: "Enjoy the presentation!",
@@ -713,24 +708,21 @@ const translations = {
       andreaDesc:
         "Singer and bassist of the band Anteater, and also an archaeologist. It is precisely in the environment of the old mill that all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)) But seriously now: we complement each other and we draw inspiration from our different perspectives on the world.",
       collaboration: "Collaboration and Reservations",
-      collaborationPara1Strong: "The studio spaces",
-      collaborationPara1: " are available for recording, workshops, residential stays, and other artistic projects.",
-      collaborationPara2Strong: "Individual approach",
+      collaborationPara1Strong: "We are looking for partners,",
+      collaborationPara1:
+        " not just suppliers. We believe in long-term relationships based on a shared passion for music and quality.",
+      collaborationPara2Strong: "We strive to have the best equipment in the studio",
       collaborationPara2:
-        " and flexibility are a matter of course for us. We are ready to adapt to your specific needs and requirements to ensure the best possible outcome.",
-      collaborationPara2End: " Do not hesitate to contact us with any questions or requests.",
-      collaborationPara3Strong: "For comprehensive packages",
-      collaborationPara3: " including recording, accommodation, and catering, please contact us.",
-      collaborationFormsTitle: "Forms of Collaboration",
+        " - we continuously adjust our setup and are always looking for the best on the market. Do you build guitars, effect pedals, amplifiers? Do you want interesting customers to discover your products?",
+      collaborationPara2End:
+        " Don't hesitate to contact us! Come visit us and have a casual chat - we love meeting interesting people who create. We want to thoroughly test everything first.",
+      collaborationFormsTitle: "Forms of Collaboration:",
       collaborationForms: [
-        "Music recording",
-        "Production and mastering",
-        "Workshops and masterclasses",
-        // "Artist residencies",
-        // </CHANGE>
-        "Music video shooting",
-        "Photography",
-        "Organizing small concerts and events",
+        "Brand integration – authentic product placement",
+        "Content creation – documentary projects and educational guides",
+        "Artistic residences – long-term creative partnerships",
+        "Equipment testing – verification in real operation with feedback",
+        "Educational programs – masterclasses and workshops",
       ],
       faq: "Frequently Asked Questions",
       faqItems: [
@@ -1091,25 +1083,21 @@ const translations = {
       andreaDesc:
         "Sängerin und Bassistin der Band Anteater und auch Archäologin. Gerade in der Umgebung der alten Mühle verbinden sich all diese Leidenschaften auf natürliche Weise. Andrea trägt zur gemütlichen und inspirierenden Atmosphäre des Studios bei. Wenn Sie um Mitternacht Kakao machen wollen (oder zweite Stimmen singen wollen), zögern Sie nicht, sich an Andrea zu wenden (bei technischen Problemen dann an Jindřich :)). Aber jetzt im Ernst: Wir ergänzen uns gegenseitig und lassen uns oft von unseren unterschiedlichen Weltanschauungen inspirieren.",
       collaboration: "Zusammenarbeit und Buchungen",
-      collaborationPara1Strong: "Die Studioräume",
+      collaborationPara1Strong: "Wir suchen Partner,",
       collaborationPara1:
-        " stehen für Aufnahmen, Workshops, Künstlerresidenzen und andere künstlerische Projekte zur Verfügung.",
-      collaborationPara2Strong: "Individueller Ansatz",
+        " nicht nur Lieferanten. Wir glauben an langfristige Beziehungen, die auf einer gemeinsamen Leidenschaft für Musik und Qualität basieren.",
+      collaborationPara2Strong: "Wir bemühen uns, die beste Ausrüstung im Studio zu haben",
       collaborationPara2:
-        " und Flexibilität sind für uns selbstverständlich. Wir sind bereit, uns an Ihre spezifischen Bedürfnisse und Anforderungen anzupassen, um das bestmögliche Ergebnis zu erzielen.",
-      collaborationPara2End: " Zögern Sie nicht, uns bei Fragen oder Anfragen zu kontaktieren.",
-      collaborationPara3Strong: "Für umfassende Pakete",
-      collaborationPara3: " einschließlich Aufnahme, Unterkunft und Catering, kontaktieren Sie uns bitte.",
-      collaborationFormsTitle: "Formen der Zusammenarbeit",
+        " - wir passen unser Setup kontinuierlich an und suchen immer nach dem Besten auf dem Markt. Bauen Sie Gitarren, Effektpedale, Verstärker? Möchten Sie, dass interessante Kunden Ihre Produkte entdecken?",
+      collaborationPara2End:
+        " Zögern Sie nicht, uns zu kontaktieren! Besuchen Sie uns und führen Sie ein ungezwungenes Gespräch - wir treffen gerne interessante Menschen, die etwas schaffen. Wir möchten zuerst alles gründlich testen.",
+      collaborationFormsTitle: "Formen der Zusammenarbeit:",
       collaborationForms: [
-        "Musikaufnahmen",
-        "Produktion und Mastering",
-        "Workshops und Masterclasses",
-        // "Künstlerresidenzen",
-        // </CHANGE>
-        "Dreh von Musikvideos",
-        "Fotografie",
-        "Organisation kleiner Konzerte und Veranstaltungen",
+        "Markenintegration – authentische Produktplatzierung",
+        "Content-Erstellung – Dokumentarprojekte und Lernleitfäden",
+        "Künstlerresidenzen – langfristige kreative Partnerschaften",
+        "Ausrüstungstests – Verifizierung im realen Betrieb mit Feedback",
+        "Bildungsprogramme – Meisterkurse und Workshops",
       ],
       faq: "Häufig gestellte Fragen",
       faqItems: [
@@ -1212,6 +1200,13 @@ export default function Page() {
 
   const darkModeTimerRef = useRef<NodeJS.Timeout | null>(null)
 
+  useEffect(() => {
+    const sectionParam = searchParams.get("section")
+    if (sectionParam && sectionOrder.includes(sectionParam)) {
+      setCurrentSection(sectionParam)
+    }
+  }, [searchParams])
+
   // Sync language with URL changes
   useEffect(() => {
     const lang = searchParams.get("lang")
@@ -1281,58 +1276,60 @@ export default function Page() {
     }, 1000)
   }
 
-  const handleSectionChange = React.useCallback(
-    (section: string) => {
-      console.log("[v0] Changing section to:", section, "dark mode:", isDarkMode)
+  const handleSectionChange = (section: string) => {
+    const currentParams = new URLSearchParams(window.location.search)
+    currentParams.set("section", section)
 
-      if (darkModeTimerRef.current) {
-        clearTimeout(darkModeTimerRef.current)
-        darkModeTimerRef.current = null
+    const newUrl = `${window.location.pathname}?${currentParams.toString()}`
+    window.history.pushState({}, "", newUrl)
+
+    setCurrentSection(section)
+    setShowMobileMenu(false)
+    setShowLanguageMenu(false)
+
+    if (darkModeTimerRef.current) {
+      clearTimeout(darkModeTimerRef.current)
+      darkModeTimerRef.current = null
+    }
+
+    if (section === "spoluprace") {
+      const element = document.getElementById("collaboration")
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" })
       }
+      return
+    }
 
-      setCurrentSection(section)
-      setShowMobileMenu(false)
+    window.scrollTo({ top: 0, behavior: "smooth" })
 
-      if (section === "spoluprace") {
-        const element = document.getElementById("collaboration")
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" })
-        }
-        return
-      }
-
-      window.scrollTo({ top: 0, behavior: "smooth" })
-
-      let newVideoId = ""
-      if (isDarkMode) {
-        newVideoId = "M4QkWhz7CDo"
+    let newVideoId = ""
+    if (isDarkMode) {
+      newVideoId = "M4QkWhz7CDo"
+    } else {
+      if (section === "mlyn") {
+        newVideoId = "HQUoxExYlEM"
+      } else if (section === "about") {
+        newVideoId = "qcbDEWXmPdE"
+      } else if (section === "contact") {
+        newVideoId = "Js0nD8lUKH8"
       } else {
-        if (section === "mlyn") {
-          newVideoId = "HQUoxExYlEM"
-        } else if (section === "about") {
-          newVideoId = "qcbDEWXmPdE"
-        } else if (section === "contact") {
-          newVideoId = "Js0nD8lUKH8"
-        } else {
-          newVideoId = "Q6fS_hCaufA"
-        }
+        newVideoId = "Q6fS_hCaufA"
       }
+    }
 
-      console.log("[v0] Switching to video:", newVideoId)
+    console.log("[v0] Switching to video:", newVideoId)
 
-      setIsTransitioning(true)
-      const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
-      setNextVideoUrl(newUrl)
+    setIsTransitioning(true)
+    const videoUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
+    setNextVideoUrl(videoUrl)
 
-      setTimeout(() => {
-        setCurrentVideoUrl(newUrl)
-        setIsTransitioning(false)
-        setNextVideoUrl("")
-        setIsVideoPlaying(true)
-      }, 1000)
-    },
-    [isDarkMode],
-  )
+    setTimeout(() => {
+      setCurrentVideoUrl(videoUrl)
+      setIsTransitioning(false)
+      setNextVideoUrl("")
+      setIsVideoPlaying(true)
+    }, 1000)
+  }
 
   useEffect(() => {
     if (darkModeTimerRef.current) {
@@ -1382,7 +1379,7 @@ export default function Page() {
         darkModeTimerRef.current = null
       }
     }
-  }, [currentSection, isDarkMode])
+  }, [currentSection, isDarkMode]) // Fixed lint error: 'cu' removed, 'currentSection' added
 
   useEffect(() => {
     const handleScroll = () => {
