@@ -74,7 +74,8 @@ const translations = {
       modernTech: "Moderní technologie",
       modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD pluginů, Logic Pro X\nApple Pro Display XDR 6K",
       benefits: "Další benefity",
-      benefitsDesc: "Zapůjčení elektromobilu, kol, nabíjecí stanice, bateriový backup, zabezpečené prostory",
+      benefitsDesc:
+        "Zapůjčení elektromobilu, kol, nabíjecí stanice, vlastní zdroj elektrické energie, zabezpečené prostory",
       endMessage: "Užijte si prezentaci!",
       darkMode: "Noční režim zapnutý - klikněte pro denní režim",
       lightMode: "Denní režim zapnutý - klikněte pro noční režim",
@@ -188,6 +189,8 @@ const translations = {
         "Vlakem: Vlaková zastávka přímo na Pile",
         "Letadlem: 1h 45min z Prague Airport",
         "Letadlem: 2h 30min z Mnichov Airport (MUC), Německo",
+        "Tesla nabíjecí stanice",
+        "Nezávislost na energetické síti",
       ],
       events: "Tipy na výlety",
       domazliceTitle: "Domažlice (8 min)",
@@ -217,7 +220,7 @@ const translations = {
     equipment: {
       title: "Vybavení",
       subtitle: "Profesionální nástroje a technologie",
-      recordingHardware: "Audio Interface", // Renamed "Recording Hardware" to "Audio Interface" in Czech
+      recordingHardware: "Audio Interface",
       apolloTitle: "Universal Audio Apollo X8P Studio+ Gen 2",
       apolloSpecs: [
         "Elite-class Apollo X Gen 2 AD/DA převodníky s 24-bit / 192 kHz rozlišením",
@@ -239,10 +242,10 @@ const translations = {
       detailsNote: "Nástroje jsou pravidelně servisované a připravené k použití.",
       vintageInstruments: "Vintage Nástroje (60s-80s)",
       guitars: "Kytary",
-      acousticGuitars: "Akustické kytary", // Added acoustic guitars
+      acousticGuitars: "Akustické kytary",
       basses: "Basa",
       ampsAndCabs: "Zesilovače a Boxy",
-      amps: "Zesilovače", // Changed from "Zesilovače (Lampové / Hybridní)" to just "Zesilovače"
+      amps: "Zesilovače",
       cabs: "Boxy",
       effects: "Efekty",
       mics: "Mikrofony",
@@ -295,7 +298,6 @@ const translations = {
           year: "1990",
           desc: "Pila vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice",
         },
-        // </CHANGE>
         { year: "2024", desc: "Transformace na prémiové kreativní retreat studio" },
       ],
       accommodation: "Ubytování",
@@ -367,11 +369,11 @@ const translations = {
         },
         {
           q: "Lze pronajmout celý objekt?",
-          a: "Samozřejmě! Celý komplex lze rezervovat minimálně na 3 dny.",
+          a: "Ano. Celý komplex lze rezervovat minimálně na 3 dny.",
         },
         {
           q: "Smí se v mlýně kouřit?",
-          a: "Nesmí. Mlýn je z velké části ze dřeva.",
+          a: "Nesmí. Mlýn je z velké části ze dřeva, je tam hodně protipožárních ochran, které by okamžitě spustili hlasitý poplacha vzdálené notifikace - tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.",
         },
         {
           q: "Mohu si dovézt vlastní aparaturu a je objekt dostatečně zabezpečen?",
@@ -434,9 +436,9 @@ const translations = {
       studios: "Studios",
       studiosDesc: "Main studio 64m²\nMillstone studio 25m²\nControl Room 27m²",
       modernTech: "Modern Technology",
-      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD plugins, Logic Pro X,\nApple Pro Display XDR 6K",
+      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD plugins, Logic Pro X\nApple Pro Display XDR 6K",
       benefits: "Additional Benefits",
-      benefitsDesc: "Electric car rental, bikes, charging station, battery backup, secured premises",
+      benefitsDesc: "Electric car rental, bikes, charging station, own power source, secured premises",
       endMessage: "Enjoy the presentation!",
       darkMode: "Dark mode enabled - click to switch to light mode",
       lightMode: "Light mode enabled - click to switch to dark mode",
@@ -521,7 +523,6 @@ const translations = {
             "You might meet a fat squirrel that digs up planks - animals have it great here :-) We also have herons and neighbors have a puppy and a few friendly cats (also from various neighbors), frogs and moles (ours) :-) 🐿️🐕🐈",
             "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for next years and will replace with more modern technologies. Thank you. (No hornets were harmed – we let them live out their lives in peace. 🐝) ⚡",
             "Fresh organic vegetables, excellent grapes, hops. Overall the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
-            "At night, the sky is like North Korea – stars everywhere. ✨🌟",
             "Last but not least, nice neighbors from all sides and Bidlo pub with friendly service and beautiful view of the mill from the other side. Here you can have a Pilsen and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlice ten-degree beer, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
             "In the morning you can jump into the pond, but nobody does... but you can :-) 🏊‍♂️",
           ],
@@ -550,6 +551,8 @@ const translations = {
         "By Train: Train station directly at Pile",
         "By Plane: 1h 45min from Prague Airport",
         "By Plane: 2h 30min from Munich Airport (MUC), Germany",
+        "Tesla charging station",
+        "Energy grid independence",
       ],
       events: "Trip Suggestions",
       domazliceTitle: "Domažlice (8 min)",
@@ -579,7 +582,7 @@ const translations = {
     equipment: {
       title: "Equipment",
       subtitle: "Professional instruments and technology",
-      recordingHardware: "Audio Interface", // Renamed "Recording Hardware" to "Audio Interface" in English
+      recordingHardware: "Audio Interface",
       apolloTitle: "Universal Audio Apollo X8P Studio+ Gen 2",
       apolloSpecs: [
         "Elite-class Apollo X Gen 2 AD/DA converters with 24-bit / 192 kHz resolution",
@@ -601,10 +604,10 @@ const translations = {
       detailsNote: "Everything is fully functional, regularly serviced, and ready for use.",
       vintageInstruments: "Vintage Instruments (60s-80s)",
       guitars: "Guitars",
-      acousticGuitars: "Acoustic Guitars", // Added acoustic guitars
+      acousticGuitars: "Acoustic Guitars",
       basses: "Bass",
       ampsAndCabs: "Amps and Cabinets",
-      amps: "Amplifiers", // Changed from "Amplifiers (Tube / Hybrid)" to just "Amplifiers"
+      amps: "Amplifiers",
       cabs: "Cabinets",
       effects: "Effects",
       mics: "Microphones",
@@ -657,7 +660,6 @@ const translations = {
           year: "1990",
           desc: "The village of Pila (meaning 'Saw' in English) was established on November 24, 1990, as part of the municipality of Trhanov in the Domažlice district",
         },
-        // </CHANGE>
         { year: "2024", desc: "Transformation into a premium creative retreat studio" },
       ],
       accommodation: "Accommodation",
@@ -736,11 +738,11 @@ const translations = {
         },
         {
           q: "Is it possible to rent the entire property?",
-          a: "Of course! The entire complex can be booked for a minimum of 3 days.",
+          a: "Yes. The entire complex can be booked for a minimum of 3 days.",
         },
         {
           q: "Is smoking allowed in the mill?",
-          a: "No. The mill is largely made of wood.",
+          a: "No. The mill is largely made of wood and has extensive fire protection systems that would immediately trigger loud alarms and remote notifications - meaning if you bring your own instruments, they will be safe.",
         },
         {
           q: "Can I bring my own equipment and is the property sufficiently secured?",
@@ -805,7 +807,7 @@ const translations = {
       modernTech: "Moderne Technologie",
       modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD-Plugins, Logic Pro X\nApple Pro Display XDR 6K",
       benefits: "Weitere Vorteile",
-      benefitsDesc: "Elektroauto-Verleih, Fahrräder, Ladestation, Batterie-Backup, gesicherte Räumlichkeiten",
+      benefitsDesc: "Elektroauto-Verleih, Fahrräder, Ladestation, eigene Stromquelle, gesicherte Räumlichkeiten",
       endMessage: "Genießen Sie die Präsentation!",
       darkMode: "Dunkelmodus aktiviert - klicken Sie, um zum hellen Modus zu wechseln",
       lightMode: "Heller Modus aktiviert - klicken Sie, um zum dunklen Modus zu wechseln",
@@ -916,9 +918,11 @@ const translations = {
       availabilityItems: [
         "Mit dem Auto: 10 Min. zum Zentrum von Domažlice",
         "10 Min. zur deutschen Grenze",
-        "Mit dem Zug: Bahnhof direkt in Pile",
+        "Mit dem Zug: Bahnhof direkt in Pila",
         "Mit dem Flugzeug: 1h 45min vom Flughafen Prag",
         "Mit dem Flugzeug: 2h 30min vom Flughafen München (MUC), Deutschland",
+        "Tesla Ladestation",
+        "Unabhängigkeit vom Stromnetz",
       ],
       events: "Ausflugstipps",
       domazliceTitle: "Domažlice (8 Min.)",
@@ -953,7 +957,7 @@ const translations = {
     equipment: {
       title: "Ausstattung",
       subtitle: "Professionelle Instrumente und Technologie",
-      recordingHardware: "Audio Interface", // Renamed "Recording Hardware" to "Audio Interface" in German
+      recordingHardware: "Audio Interface",
       apolloTitle: "Universal Audio Apollo X8P Studio+ Gen 2",
       apolloSpecs: [
         "Elite-Class Apollo X Gen 2 AD/DA-Wandler mit 24-Bit / 192 kHz Auflösung",
@@ -976,10 +980,10 @@ const translations = {
       detailsNote: "Alles ist voll funktionsfähig, regelmäßig gewartet und einsatzbereit.",
       vintageInstruments: "Vintage Instrumente (60s-80s)",
       guitars: "Gitarren",
-      acousticGuitars: "Akustische Gitarren", // Added acoustic guitars
+      acousticGuitars: "Akustische Gitarren",
       basses: "Bass",
       ampsAndCabs: "Verstärker und Boxen",
-      amps: "Verstärker", // Changed from "Verstärker (Röhren / Hybrid)" to just "Verstärker"
+      amps: "Verstärker",
       cabs: "Boxen",
       effects: "Effekte",
       mics: "Mikrofone",
@@ -1032,7 +1036,6 @@ const translations = {
           year: "1990",
           desc: "Das Dorf Pila (auf Deutsch: Sägewerk) wurde am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice gegründet",
         },
-        // </CHANGE>
         { year: "2024", desc: "Transformation in ein Premium-Kreativ-Retreat-Studio" },
       ],
       accommodation: "Unterkunft",
@@ -1103,7 +1106,7 @@ const translations = {
       faqItems: [
         {
           q: "Spukt es in der Mühle?",
-          a: "Nein ;-)",
+          a: "Ne ;-)",
         },
         {
           q: "Sind Sie umsatzsteuerpflichtig?",
@@ -1111,11 +1114,11 @@ const translations = {
         },
         {
           q: "Kann das gesamte Objekt gemietet werden?",
-          a: "Selbstverständlich! Der gesamte Komplex kann für mindestens 3 Tage gebucht werden.",
+          a: "Ja. Der gesamte Komplex kann für mindestens 3 Tage gebucht werden.",
         },
         {
           q: "Ist Rauchen in der Mühle erlaubt?",
-          a: "Nein. Die Mühle besteht größtenteils aus Holz.",
+          a: "Nein. Die Mühle besteht größtenteils aus Holz und verfügt über umfangreiche Brandschutzsysteme, die sofort laute Alarme und Fernbenachrichtigungen auslösen würden - das bedeutet, wenn Sie Ihre eigenen Instrumente mitbringen, sind sie in Sicherheit.",
         },
         {
           q: "Kann ich meine eigene Ausrüstung mitbringen und ist das Objekt ausreichend gesichert?",
@@ -1147,9 +1150,9 @@ const translations = {
       title: "Kontakt",
       availability: "Verkehrsanbindung",
       availabilityItems: [
-        "Mit dem Auto: 10 Min. zum Zentrum von Domažlic",
+        "Mit dem Auto: 10 Min. zum Zentrum von Domažlice",
         "10 Min. zur deutschen Grenze",
-        "Mit dem Zug: Bahnhof direkt in Pile",
+        "Mit dem Zug: Bahnhof direkt in Pila",
         "Mit dem Flugzeug: 1h 45min vom Flughafen Prag",
         "Mit dem Flugzeug: 2h 30min vom Flughafen München (MUC), Deutschland",
       ],
@@ -1379,7 +1382,7 @@ export default function Page() {
         darkModeTimerRef.current = null
       }
     }
-  }, [currentSection, isDarkMode]) // Fixed lint error: 'cu' removed, 'currentSection' added
+  }, [currentSection, isDarkMode])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -1694,7 +1697,6 @@ export default function Page() {
             background: "linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)",
           }}
         />
-        {/* </CHANGE> Adding h-screen flex flex-col to enable scroll in child sections */}
         <div className="h-screen flex flex-col">
           {showPresentationMessage && (
             <div
@@ -2117,7 +2119,7 @@ export default function Page() {
                               <h4 className="font-semibold text-white mb-2">{t.location.byCar}</h4>
                               <ul className="space-y-1 text-xs text-white">
                                 {t.location.availabilityItems.slice(0, 2).map((item, i) => (
-                                  <li key={i}>• {item.replace("Autem: ", "")}</li>
+                                  <li key={i}>• {item}</li>
                                 ))}
                               </ul>
                             </div>
@@ -2130,7 +2132,7 @@ export default function Page() {
                               <h4 className="font-semibold text-white mb-2">{t.location.byTrain}</h4>
                               <ul className="space-y-1 text-xs text-white">
                                 {t.location.availabilityItems.slice(2, 3).map((item, i) => (
-                                  <li key={i}>• {item.replace("Vlakem: ", "")}</li>
+                                  <li key={i}>• {item}</li>
                                 ))}
                               </ul>
                             </div>
@@ -2143,8 +2145,31 @@ export default function Page() {
                               <h4 className="font-semibold text-white mb-2">{t.location.byPlane}</h4>
                               <ul className="space-y-1 text-xs text-white">
                                 {t.location.availabilityItems.slice(3, 6).map((item, i) => (
-                                  <li key={i}>• {item.replace("Letadlem: ", "")}</li>
+                                  <li key={i}>• {item}</li>
                                 ))}
+                              </ul>
+                            </div>
+                          </div>
+                          {/* Added Tesla and Off-grid to DE and EN versions */}
+                          <div className="flex items-start space-x-4">
+                            <Car
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
+                            />
+                            <div>
+                              <h4 className="font-semibold text-white mb-2">Tesla Charging Station</h4>
+                              <ul className="space-y-1 text-xs text-white">
+                                <li>• On-site Tesla charging</li>
+                              </ul>
+                            </div>
+                          </div>
+                          <div className="flex items-start space-x-4">
+                            <Server
+                              className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
+                            />
+                            <div>
+                              <h4 className="font-semibold text-white mb-2">Energy grid independence</h4>
+                              <ul className="space-y-1 text-xs text-white">
+                                <li>• Backup power for uninterrupted workflow</li>
                               </ul>
                             </div>
                           </div>
@@ -2972,8 +2997,8 @@ export default function Page() {
                           <h4 className="text-sm font-semibold text-white mb-3">Infrastruktura</h4>
                           <ul className="text-white/80 text-xs space-y-2">
                             <li>• Přepěťové ochrany</li>
-                            <li>• Tesla charging station</li>
-                            <li>• Off-grid capability</li>
+                            <li>• Tesla nabíjecí stanice</li>
+                            <li>• {t.location.availabilityItems[6]}</li>
                             <li>• Security systém</li>
                           </ul>
                         </div>
