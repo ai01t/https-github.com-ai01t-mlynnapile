@@ -1,5 +1,7 @@
 "use client"
 
+import React from "react"
+
 import { useState, useEffect, useRef } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -746,7 +748,7 @@ const translations = {
         },
         {
           q: "Can I bring my own equipment and is the property sufficiently secured?",
-          a: "Of course, you can. Equipment can be unloaded directly in front of the studio. The property is secured on several levels, and there is only one access road. Stealing such a property with equipment that would be difficult to sell publicly wouldn't make much sense... We would not recommend thieves to even consider it, given the aforementioned circumstances.... ;-)",
+          a: "Of course, you can. Equipment can be unloaded directly in front of the studio. The property is secured on several levels, and there is only one access road. Stealing such a property with equipment that would be difficult to sell publicly wouldn't make much sense... We would not recommend thieves to even consider it, given the above circumstances.... ;-)",
         },
         {
           q: "Do you provide accommodation separately?",
@@ -916,13 +918,13 @@ const translations = {
       byTrain: "Mit dem Zug",
       byPlane: "Mit dem Flugzeug",
       availabilityItems: [
-        "Mit dem Auto: 10 Min. zum Zentrum von Domažlice",
-        "10 Min. zur deutschen Grenze",
-        "Mit dem Zug: Bahnhof direkt in Pila",
-        "Mit dem Flugzeug: 1h 45min vom Flughafen Prag",
-        "Mit dem Flugzeug: 2h 30min vom Flughafen München (MUC), Deutschland",
-        "Tesla Ladestation",
-        "Unabhängigkeit vom Stromnetz",
+        "By Car: 10 min to Domažlice center",
+        "10 min to German border",
+        "By Train: Train station directly at Pile",
+        "By Plane: 1h 45min from Prague Airport",
+        "By Plane: 2h 30min from Munich Airport (MUC), Germany",
+        "Tesla charging station",
+        "Energy grid independence",
       ],
       events: "Ausflugstipps",
       domazliceTitle: "Domažlice (8 Min.)",
@@ -1165,6 +1167,8 @@ export default function Page() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1920)
+
   const [showDraftBanner, setShowDraftBanner] = useState(true)
   const [draftBannerDismissed, setDraftBannerDismissed] = useState(false)
 
@@ -1174,11 +1178,13 @@ export default function Page() {
   const [isPlaying, setIsPlaying] = useState(true)
   const [showEndMessage, setShowEndMessage] = useState(false)
 
+  const [videoEnded, setVideoEnded] = React.useState(false)
+
   const [isVideoPlaying, setIsVideoPlaying] = useState(true)
   const [showLanguageMenu, setShowLanguageMenu] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [currentVideoUrl, setCurrentVideoUrl] = useState(
-    "https://www.youtube.com/embed/Q6fS_hCaufA?autoplay=1&mute=1&loop=1&playlist=Q6fS_hCaufA&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1",
+    "https://www.youtube.com/embed/VDj9aKHnpcw?autoplay=1&mute=1&loop=1&playlist=VDj9aKHnpcw&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1",
   )
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [nextVideoUrl, setNextVideoUrl] = useState("")
@@ -1202,6 +1208,12 @@ export default function Page() {
   const currentLang = language // Added to fix lint error
 
   const darkModeTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   useEffect(() => {
     const sectionParam = searchParams.get("section")
@@ -1251,24 +1263,57 @@ export default function Page() {
   const toggleDarkMode = () => {
     const newDarkMode = !isDarkMode
     setIsDarkMode(newDarkMode)
+    const isHorizontal = window.innerWidth >= 768
+    let newVideoId = currentVideoUrl // Use currentVideoUrl for the current video
 
-    let newVideoId = ""
     if (newDarkMode) {
-      newVideoId = "M4QkWhz7CDo"
-    } else {
-      if (currentSection === "about") {
-        newVideoId = "qcbDEWXmPdE"
+      // Dark mode videos
+      if (currentSection === "mlyn") {
+        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "HQUoxExYlEM"
       } else if (currentSection === "contact") {
-        newVideoId = "NZkXMLz0uKk"
+        newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+      } else if (currentSection === "lokalita") {
+        newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+      } else if (currentSection === "equipment") {
+        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "DY09nnytbjc"
+      } else if (currentSection === "about") {
+        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "M4QkWhz7CDo"
       } else {
-        newVideoId = "Q6fS_hCaufA"
+        newVideoId = "M4QkWhz7CDo"
+      }
+    } else {
+      // Light/Day mode videos
+      if (currentSection === "mlyn") {
+        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM" // UPDATED mlyn light video
+      } else if (currentSection === "about") {
+        newVideoId = isHorizontal ? "M4QapdIvjkM" : "qcbDEWXmPdE"
+      } else if (currentSection === "contact") {
+        // This part was incomplete in the original updates, but we'll assume it's intended
+        // to remain the same for now based on context.
+        newVideoId = isHorizontal ? "7UU7KmxEE6s" : "Js0nD8lUKH8"
+      } else if (currentSection === "lokalita") {
+        newVideoId = isHorizontal ? "tWtT7cB1Tus" : "yYFR6g6jlaA"
+      } else if (currentSection === "equipment") {
+        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "yYFR6g6jlaA" // UPDATED equipment light video
+      } else {
+        // Default for home and other sections not explicitly listed
+        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
       }
     }
 
-    console.log("[v0] Switching to dark mode:", newDarkMode, "video:", newVideoId)
+    console.log(
+      "[v0] Switching to dark mode:",
+      newDarkMode,
+      "video:",
+      newVideoId,
+      "Section:",
+      currentSection,
+      "Horizontal:",
+      isHorizontal,
+    )
 
     setIsTransitioning(true)
-    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
+    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
     setNextVideoUrl(newUrl)
 
     setTimeout(() => {
@@ -1280,6 +1325,11 @@ export default function Page() {
   }
 
   const handleSectionChange = (section: string) => {
+    console.log("[v0] Switching to section:", section)
+    if (section === currentSection) {
+      return
+    }
+
     const currentParams = new URLSearchParams(window.location.search)
     currentParams.set("section", section)
 
@@ -1305,25 +1355,58 @@ export default function Page() {
 
     window.scrollTo({ top: 0, behavior: "smooth" })
 
+    const isHorizontal = window.innerWidth >= 768
     let newVideoId = ""
+
     if (isDarkMode) {
-      newVideoId = "M4QkWhz7CDo"
-    } else {
-      if (section === "mlyn") {
-        newVideoId = "HQUoxExYlEM"
-      } else if (section === "about") {
-        newVideoId = "qcbDEWXmPdE"
-      } else if (section === "contact") {
-        newVideoId = "Js0nD8lUKH8"
+      // Dark mode videos
+      if (currentSection === "mlyn") {
+        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "HQUoxExYlEM"
+      } else if (currentSection === "contact") {
+        newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+      } else if (currentSection === "lokalita") {
+        // ADDED lokalita dark mode video
+        newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+      } else if (currentSection === "equipment") {
+        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "DY09nnytbjc" // Ensure consistency with toggleDarkMode
+      } else if (currentSection === "about") {
+        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "M4QkWhz7CDo"
       } else {
-        newVideoId = "Q6fS_hCaufA"
+        newVideoId = "M4QkWhz7CDo"
+      }
+    } else {
+      // Light/Day mode videos
+      if (currentSection === "mlyn") {
+        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
+      } else if (currentSection === "about") {
+        newVideoId = isHorizontal ? "M4QapdIvjkM" : "qcbDEWXmPdE"
+      } else if (currentSection === "contact") {
+        // This part was incomplete in the original updates, but we'll assume it's intended
+        // to remain the same for now based on context.
+        newVideoId = isHorizontal ? "7UU7KmxEE6s" : "Js0nD8lUKH8"
+      } else if (currentSection === "lokalita") {
+        newVideoId = isHorizontal ? "tWtT7cB1Tus" : "yYFR6g6jlaA"
+      } else if (currentSection === "equipment") {
+        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "yYFR6g6jlaA" // UPDATED equipment light video
+      } else {
+        // Default for home and other sections not explicitly listed
+        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
       }
     }
 
-    console.log("[v0] Switching to video:", newVideoId)
+    console.log(
+      "[v0] Switching to video:",
+      newVideoId,
+      "Section:",
+      section,
+      "Horizontal:",
+      isHorizontal,
+      "Dark:",
+      isDarkMode,
+    )
 
     setIsTransitioning(true)
-    const videoUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
+    const videoUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
     setNextVideoUrl(videoUrl)
 
     setTimeout(() => {
@@ -1333,6 +1416,40 @@ export default function Page() {
       setIsVideoPlaying(true)
     }, 1000)
   }
+
+  React.useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.origin !== "https://www.youtube.com") return
+
+      try {
+        const data = JSON.parse(event.data)
+        // YouTube Player API sends events like {"event":"onStateChange","info":0}
+        // 0 = ended, 1 = playing, 2 = paused
+        if (data.event === "onStateChange" && data.info === 0) {
+          console.log("[v0] Video ended, moving to next section")
+          setVideoEnded(true)
+
+          // Auto-advance to next section
+          const sections = ["mlyn", "about", "lokalita", "equipment", "contact"]
+          const currentIndex = sections.indexOf(currentSection)
+          if (currentIndex < sections.length - 1) {
+            const nextSection = sections[currentIndex + 1]
+            console.log("[v0] Auto-advancing to section:", nextSection)
+            handleSectionChange(nextSection)
+            setVideoEnded(false) // Reset for the next video
+          } else {
+            console.log("[v0] Video ended, but it was the last section.")
+            setVideoEnded(false) // Reset for the next video
+          }
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+
+    window.addEventListener("message", handleMessage)
+    return () => window.removeEventListener("message", handleMessage)
+  }, [currentSection]) // Removed handleSectionChange from dependencies
 
   useEffect(() => {
     if (darkModeTimerRef.current) {
@@ -1348,7 +1465,7 @@ export default function Page() {
           setIsDarkMode(true)
           const newVideoId = "M4QkWhz7CDo"
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1362,9 +1479,23 @@ export default function Page() {
         darkModeTimerRef.current = setTimeout(() => {
           console.log("[v0] Auto-switching to dark mode (video)")
           setIsDarkMode(true)
-          const newVideoId = "M4QkWhz7CDo"
+
+          const isHorizontal = windowWidth >= 768
+          let newVideoId = ""
+
+          if (currentSection === "contact") {
+            newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+          } else if (currentSection === "lokalita") {
+            // ADDED lokalita dark mode video
+            newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+          } else if (currentSection === "equipment") {
+            newVideoId = isHorizontal ? "a-bBDcZvg5U" : "DY09nnytbjc" // Ensure consistency with toggleDarkMode
+          } else {
+            newVideoId = "M4QkWhz7CDo"
+          }
+
           setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1`
+          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
           setNextVideoUrl(newUrl)
           setTimeout(() => {
             setCurrentVideoUrl(newUrl)
@@ -1382,7 +1513,7 @@ export default function Page() {
         darkModeTimerRef.current = null
       }
     }
-  }, [currentSection, isDarkMode])
+  }, [currentSection, isDarkMode, windowWidth]) // Added windowWidth dependency
 
   useEffect(() => {
     const handleScroll = () => {
@@ -1496,6 +1627,11 @@ export default function Page() {
               title="Mlýn na Pile Background Video"
               allow="autoplay; encrypted-media"
               allowFullScreen
+            />
+            <div
+              className={`absolute inset-0 bg-black/60 transition-opacity duration-500 pointer-events-none ${
+                !isVideoPlaying ? "opacity-100" : "opacity-0"
+              }`}
             />
           </>
         ) : null}
@@ -1868,7 +2004,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/YWnYQDGHeLw?autoplay=1&mute=1&loop=1&playlist=YWnYQDGHeLw&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1"
+                          src="https://www.youtube.com/embed/YWnYQDGHeLw?autoplay=1&mute=1&loop=1&playlist=YWnYQDGHeLw&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
                           title="Hlavní Studio"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -1884,7 +2020,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group order-2 lg:order-1">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1"
+                          src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
                           title="Control Room"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -1928,7 +2064,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/sc0bCt6G9dM?autoplay=1&mute=1&loop=1&playlist=sc0bCt6G9dM&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1"
+                          src="https://www.youtube.com/embed/sc0bCt6G9dM?autoplay=1&mute=1&loop=1&playlist=sc0bCt6G9dM&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
                           title="Millstone Studio"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -2020,7 +2156,7 @@ export default function Page() {
                               {pkg.video ? (
                                 <iframe
                                   className="w-full h-full"
-                                  src={`${pkg.video.replace("youtu.be/", "www.youtube.com/embed/")}?autoplay=1&mute=1&loop=1&playlist=${pkg.video.split("/").pop()}&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1`}
+                                  src={`${pkg.video.replace("youtu.be/", "www.youtube.com/embed/")}?autoplay=1&mute=1&loop=1&playlist=${pkg.video.split("/").pop()}&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`}
                                   title={pkg.name}
                                   allow="autoplay; encrypted-media"
                                   allowFullScreen
@@ -2376,10 +2512,10 @@ export default function Page() {
                           <Guitar className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
                           {t.equipment.vintageInstruments}
                         </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-grid-cols-2 gap-6">
                           <div>
                             <h4 className="text-base font-semibold text-white mb-3">{t.equipment.guitars}</h4>
-                            <div className="space-y-3">
+                            <div className="space-y-4">
                               <div>
                                 <p className="text-white font-medium text-sm mb-1">Fender:</p>
                                 <ul className="text-white/80 text-xs space-y-1.5">
@@ -3395,7 +3531,7 @@ export default function Page() {
             aria-label="Instagram"
           >
             <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s-.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
             </svg>
           </a>
           <a
