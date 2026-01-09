@@ -2765,7 +2765,7 @@ export default function Page() {
                         <ul className="text-white/80 text-xs space-y-1.5">
                           <li>• Shure SM 7 B</li>
                           <li>• Shure Beta 58</li>
-                          <li>• SHURE SM57</li>
+                          <li>• SHURE SM57 </li>
                           <li>• Sennheiser e 906</li>
                           <li>• AKG D5 </li>
                         </ul>
