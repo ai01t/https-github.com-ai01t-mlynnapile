@@ -2763,10 +2763,11 @@ export default function Page() {
                           {t.equipment.mics}
                         </h3>
                         <ul className="text-white/80 text-xs space-y-1.5">
-                          <li>• Sennheiser e 906</li>
-                          <li>• Shure Beta 58</li>
                           <li>• Shure SM 7 B</li>
-                          <li>• 2x SHURE SM57</li>
+                          <li>• Shure Beta 58</li>
+                          <li>• SHURE SM57</li>
+                          <li>• Sennheiser e 906</li>
+                          <li>• AKG D5 </li>
                         </ul>
                       </CardContent>
                     </Card>
