@@ -7,46 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { BusinessCardDownload } from "@/components/business-card-download"
-import {
-  Play,
-  Pause,
-  Home,
-  Guitar,
-  Mic,
-  Headphones,
-  Calendar,
-  MapPin,
-  Phone,
-  Moon,
-  Sun,
-  ChevronDown,
-  Globe,
-  Car,
-  UtensilsCrossed,
-  Languages,
-  Ghost,
-  FileText,
-  Shield,
-  Mail,
-  HelpCircle,
-  CigaretteOff,
-  Hotel,
-  Music,
-  Camera,
-  Medal as Pedal,
-  Drum as Drums,
-  Plug,
-  EqualIcon as Equalize,
-  Wand,
-  Waves,
-  Sparkles,
-  Cable,
-  Settings,
-  Server,
-  Keyboard,
-  ChevronRight,
-  ChevronLeft,
-} from "lucide-react"
+import { Play, Pause, Home, Guitar, Mic, Headphones, Calendar, MapPin, Phone, Moon, Sun, ChevronDown, Globe, Car, UtensilsCrossed, Languages, Ghost, FileText, Shield, Mail, HelpCircle, CigaretteOff, Hotel, Music, Camera, Medal as Pedal, Drum as Drums, Plug, EqualIcon as Equalize, Wand, Waves, Sparkles, Cable, Settings, Server, Keyboard, ChevronRight, ChevronLeft } from "lucide-react"
 
 const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
 
@@ -77,7 +38,7 @@ const translations = {
       modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD pluginů, Logic Pro X\nApple Pro Display XDR 6K",
       benefits: "Další benefity",
       benefitsDesc:
-        "Zapůjčení elektromobilu, kol, nabíjecí stanice, vlastní zdroj elektrické energie, zabezpečené prostory",
+        " Vlastní zdroj elektrické energie, zapůjčení elektromobilu, kol, nabíjecí stanice, zabezpečené prostory",
       endMessage: "Užijte si prezentaci!",
       darkMode: "Noční režim zapnutý - klikněte pro denní režim",
       lightMode: "Denní režim zapnutý - klikněte pro noční režim",
@@ -106,7 +67,7 @@ const translations = {
       accommodation: {
         title: "Nahrávání + Ubytování",
         subtitle:
-          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Free wifi a parkování v areálu, s možností nabití EV.",
+          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Ke všem balíčkům je snídaně v zimní zahradě :-). Free wifi a parkování v areálu, s možností nabití EV.",
         intro: "Jdeme na to:",
         packageLabel: "Balíček",
         parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
@@ -375,7 +336,7 @@ const translations = {
         },
         {
           q: "Smí se v mlýně kouřit?",
-          a: "Nesmí. Mlýn je z velké části ze dřeva, je tam hodně protipožárních ochran, které by okamžitě spustili hlasitý poplacha vzdálené notifikace - tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.",
+          a: "Nesmí. Mlýn je z velké části ze dřeva, je zde hodně protipožárních ochran, které by okamžitě spustili hlasitý poplacha a vzdálené notifikace - tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.",
         },
         {
           q: "Mohu si dovézt vlastní aparaturu a je objekt dostatečně zabezpečen?",
@@ -391,7 +352,7 @@ const translations = {
         },
         {
           q: "Mohu přijet i sám, nebo je akce určena pouze pro kapely a týmy?",
-          a: "Jasně - pro sólový umělec je k dispozici i looper Plethora X5 od TC Electronic. ;-)",
+          a: "Jasně - pro sólo umělce je k dispozici i looper Plethora X5 od TC Electronic. ;-)",
         },
         {
           q: "Máte catering, nebo si musím řešit jídlo sám?",
@@ -400,6 +361,10 @@ const translations = {
         {
           q: "Mluvíte anglicky/německy?",
           a: "Vícejazyčný tým: Čeština - rodilí mluvčí, Angličtina - plynule (Jindřich, Andrea, tech tým), Němčina - konverzační úroveň (regionální výhoda), překladatelské služby pro smlouvy.",
+        },
+        {
+          q: "Mohu přijet s dětmi i se psem?",
+          a: "Ano, všichni jsou vítáni. Jsou zde omalovánky, knížky, hračky na zahradu i na ven. Pejsci jsou také vítáni, ale pozor - pozemek není komplet oplocen.",
         },
       ],
     },
@@ -769,6 +734,10 @@ const translations = {
         {
           q: "Do you speak English/German?",
           a: "Multilingual team: Czech - native speakers, English - fluent (Jindřich, Andrea, tech team), German - conversational level (regional advantage), translation services for contracts.",
+        },
+        {
+          q: "Can I come with children and a dog?",
+          a: "Yes, everyone is welcome. There are coloring books, books, toys for the garden and outdoors. Dogs are also welcome, but please note - the property is not fully fenced.",
         },
       ],
     },
@@ -1146,6 +1115,10 @@ const translations = {
           q: "Sprechen Sie Englisch/Deutsch?",
           a: "Mehrsprachiges Team: Tschechisch - Muttersprachler, Englisch - fließend (Jindřich, Andrea, Tech-Team), Deutsch - Konversationsniveau (regionaler Vorteil), Übersetzungsdienste für Verträge.",
         },
+        {
+          q: "Kann ich mit Kindern und Hund kommen?",
+          a: "Ja, alle sind willkommen. Es gibt Malbücher, Bücher, Spielzeug für den Garten und draußen. Hunde sind auch willkommen, aber bitte beachten Sie - das Grundstück ist nicht vollständig eingezäunt.",
+        },
       ],
     },
     contact: {
@@ -1290,7 +1263,7 @@ export default function Page() {
       } else if (currentSection === "contact") {
         // This part was incomplete in the original updates, but we'll assume it's intended
         // to remain the same for now based on context.
-        newVideoId = isHorizontal ? "7UU7KmxEE6s" : "Js0nD8lUKH8"
+        newVideoId = isHorizontal ? "IJMzgLBpymc" : "Js0nD8lUKH8"
       } else if (currentSection === "lokalita") {
         newVideoId = isHorizontal ? "tWtT7cB1Tus" : "yYFR6g6jlaA"
       } else if (currentSection === "equipment") {
@@ -1383,7 +1356,7 @@ export default function Page() {
       } else if (currentSection === "contact") {
         // This part was incomplete in the original updates, but we'll assume it's intended
         // to remain the same for now based on context.
-        newVideoId = isHorizontal ? "7UU7KmxEE6s" : "Js0nD8lUKH8"
+        newVideoId = isHorizontal ? "IJMzgLBpymc" : "Js0nD8lUKH8"
       } else if (currentSection === "lokalita") {
         newVideoId = isHorizontal ? "tWtT7cB1Tus" : "yYFR6g6jlaA"
       } else if (currentSection === "equipment") {
@@ -2810,6 +2783,7 @@ export default function Page() {
                               <li>• DJI Gimbal stabilizátor pro smooth camera movements</li>
                               <li>• Projektor pro screening a presentations</li>
                               <li>• Lighting equipment pro professional video shoots</li>
+                              <li>• Reflektory Varytec LED Studio 150 2900K</li>
                             </ul>
                           </div>
                           <div>
