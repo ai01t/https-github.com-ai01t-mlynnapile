@@ -76,7 +76,7 @@ const translations = {
         packages: [
           {
             name: "Into the Wild",
-            tags: "#Main studio #Snídaně v zimnní zahradě",
+            tags: "#Main studio #Snídaně v zimnní zahradě ",
             description:
               "Nejekonomičtější - stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence, usínejte a probouzejte se do světa hudby s přírodou :-)",
             details:
