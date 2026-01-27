@@ -67,7 +67,7 @@ const translations = {
       accommodation: {
         title: "Nahrávání + Ubytování",
         subtitle:
-          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Ke všem balíčkům je snídaně v zimní zahradě :-). Free wifi a parkování v areálu, s možností nabití EV.",
+          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Ke všem balíčkům je snídaně v zimní zahradě, včetně domácího chleba z pece :-). Free wifi a parkování v areálu, s možností nabití EV.",
         intro: "Jdeme na to:",
         packageLabel: "Balíček",
         parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
