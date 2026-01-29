@@ -67,7 +67,7 @@ const translations = {
       accommodation: {
         title: "Nahrávání + Ubytování",
         subtitle:
-          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Ke všem balíčkům je snídaně v zimní zahradě :-). Free wifi a parkování v areálu, s možností nabití EV.",
+          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Ke všem balíčkům je snídaně/brunch  v zimní zahradě, včetně domácího chleba z pece :-). Free wifi a parkování v areálu, s možností nabití EV. Studia jsou energeticky soběstačná, takže vaše nahrávání není ohroženo případnými výpadky proudu. ",
         intro: "Jdeme na to:",
         packageLabel: "Balíček",
         parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
@@ -76,7 +76,7 @@ const translations = {
         packages: [
           {
             name: "Into the Wild",
-            tags: "#Main studio",
+            tags: "#Main studio #Snídaně v zimnní zahradě ",
             description:
               "Nejekonomičtější - stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence, usínejte a probouzejte se do světa hudby s přírodou :-)",
             details:
