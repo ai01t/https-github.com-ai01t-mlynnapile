@@ -1,93 +1,92 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { DM_Sans } from "next/font/google"
-import { Merriweather } from "next/font/google"
-import { Suspense } from "react"
+
+import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
-  weight: ["400", "500", "600", "700"],
-})
+import { Poppins } from "next/font/google"
 
-const merriweather = Merriweather({
-  subsets: ["latin"],
-  variable: "--font-merriweather",
-  weight: ["300", "400", "700"],
-})
+// Initialize fonts
+const _poppins = Poppins({ weight: ["400", "600", "700"], subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Mlýn na Pile - Retreat Studio | Recording Studio & Accommodation Czech Republic",
+  title: "ANTEATER - Female-Fronted Rock Band | Prague | Alternative Rock",
   description:
-    "Historický mlýn ze 17. století v srdci Evropy – unikátní prostředí pro exkluzivní hudební tvůrčí zážitky. Professional recording studio with vintage instruments, accommodation, and stunning nature near Domažlice.",
+    "Anteater - Award-winning female-fronted rock/post-grunge band from Prague (est. 2018). Winners of Strahov Open Air 2019 & 27th Múza. Spotify & Apple Music available.",
   keywords: [
-    "recording studio",
-    "nahrávací studio",
-    "Domažlice",
-    "Czech Republic",
-    "vintage instruments",
-    "studio accommodation",
-    "music production",
-    "retreat studio",
-    "Universal Audio",
-    "vintage gear",
-    "Fender",
-    "Gibson",
-    "VOX",
-    "historic mill",
-    "kreativní prostor",
+    "rock band Prague",
+    "female-fronted rock",
+    "post-grunge band",
+    "alternative rock",
+    "Anteater band",
+    "Czech rock",
+    "Andrea Kohoutová",
+    "rock concerts",
+    "Strahov Open Air",
+    "Múza 2019",
+    "female rock singers",
+    "grunge rock",
+    "metal rock",
+    "Guano Apes",
+    "Paramore",
+    "Jinjer",
+    "rock band booking",
   ],
-  authors: [{ name: "Jindřich Traxmandl & Andrea Kohoutová" }],
-  creator: "Mlýn na Pile",
-  publisher: "Mlýn na Pile",
+  generator: "v0.app",
+
+  openGraph: {
+    type: "website",
+    title: "ANTEATER - Female-Fronted Rock Band from Prague",
+    description: "Award-winning rock band with stunning live performances. Available on Spotify, Apple Music, YouTube.",
+    url: "https://www.anteaterofficial.com",
+    siteName: "ANTEATER Official",
+    images: [
+      {
+        url: "/images/anteater-promo-2025.jpg",
+        width: 1200,
+        height: 630,
+        alt: "ANTEATER Band - Prague Rock Band",
+      },
+    ],
+    locale: "en_US",
+    alternateLocale: ["cs_CZ", "de_DE"],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "ANTEATER - Award-Winning Rock Band",
+    description: "Female-fronted rock band. Winners of Strahov Open Air 2019.",
+    images: ["/images/anteater-promo-2025.jpg"],
+    creator: "@anteatercz1659",
+  },
+
+  alternates: {
+    languages: {
+      "en-US": "/en",
+      "cs-CZ": "/cs",
+      "de-DE": "/de",
+    },
+    canonical: "https://www.anteaterofficial.com",
+  },
+
+  authors: [
+    {
+      name: "Anteater",
+      url: "https://www.anteaterofficial.com",
+    },
+  ],
+
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
   },
-  openGraph: {
-    type: "website",
-    locale: "cs_CZ",
-    alternateLocale: ["en_US", "de_DE"],
-    url: "https://mlynnapile.cz",
-    siteName: "Mlýn na Pile - Retreat Studio",
-    title: "Mlýn na Pile - Retreat Studio | Professional Recording Studio",
-    description:
-      "Historic 17th century mill transformed into a unique recording studio. Vintage instruments, professional equipment, and stylish accommodation in beautiful Czech countryside.",
-    images: [
-      {
-        url: "/images/aerial-view.jpeg",
-        width: 1200,
-        height: 630,
-        alt: "Mlýn na Pile - Aerial view of historic mill studio",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Mlýn na Pile - Retreat Studio | Professional Recording Studio",
-    description: "Historic 17th century mill recording studio with vintage gear, accommodation, and stunning nature.",
-    images: ["/images/aerial-view.jpeg"],
-  },
+
   verification: {
-    google: "your-google-verification-code",
+    google: "anteater-google-verification",
   },
-  alternates: {
-    canonical: "https://mlynnapile.cz",
-    languages: {
-      cs: "https://mlynnapile.cz",
-      en: "https://mlynnapile.cz/en",
-      de: "https://mlynnapile.cz/de",
-    },
-  },
-  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -95,84 +94,134 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "MusicGroup",
+        "@id": "https://www.anteaterofficial.com/#musicgroup",
+        name: "Anteater",
+        url: "https://www.anteaterofficial.com",
+        description:
+          "Female-fronted rock/post-grunge band from Prague. Winners of Strahov Open Air Band Contest 2019 and 27th Múza 2019.",
+        image: "/images/anteater-promo-2025.jpg",
+        sameAs: [
+          "https://www.spotify.com/artist/0ZNouScAQI1pQCLbWWJr3g",
+          "https://music.apple.com/us/artist/anteater/1482398618",
+          "https://www.youtube.com/channel/anteatercz1659",
+          "https://www.instagram.com/anteaterofficial/",
+          "https://www.facebook.com/anteaterofficial",
+          "https://www.bandsintown.com/a/15580598",
+        ],
+        member: [
+          {
+            "@type": "Person",
+            name: "Andrea Kohoutová",
+            description: "Vocals, Bass Guitar, Guitar",
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": "https://www.anteaterofficial.com",
+            },
+          },
+          {
+            "@type": "Person",
+            name: "Jindřich Traxmandl",
+            description: "Guitar, Bass, Drums",
+          },
+          {
+            "@type": "Person",
+            name: "Jan Oršek",
+            description: "Drums, Percussion",
+          },
+        ],
+        foundingDate: "2018",
+        foundingLocation: {
+          "@type": "Place",
+          name: "Prague",
+          address: {
+            "@type": "PostalAddress",
+            addressCountry: "CZ",
+          },
+        },
+        genre: ["Rock", "Post-grunge", "Alternative Rock", "Stoner", "Metal"],
+        award: [
+          {
+            "@type": "Award",
+            name: "Strahov Open Air Band Contest Winner",
+            awardDate: "2019",
+          },
+          {
+            "@type": "Award",
+            name: "27th Múza Winner",
+            awardDate: "2019",
+          },
+          {
+            "@type": "Award",
+            name: "Planetrox CZ/SK Finalist",
+            awardDate: "2019",
+          },
+        ],
+        contactPoint: {
+          "@type": "ContactPoint",
+          contactType: "Booking",
+          name: "Jindřich Traxmandl",
+          telephone: "+420-724-050-093",
+          url: "https://www.anteaterofficial.com",
+        },
+      },
+      {
+        "@type": "MusicRecording",
+        name: "Fuel",
+        byArtist: {
+          "@type": "MusicGroup",
+          name: "Anteater",
+        },
+        url: "https://www.youtube.com/watch?v=UkekVsnQuaM",
+        datePublished: "2024",
+        producer: [
+          { "@type": "Person", name: "Damián Kučera" },
+          { "@type": "Person", name: "Jindřich Traxmandl" },
+          { "@type": "Person", name: "Andrea Kohoutová" },
+          { "@type": "Person", name: "Jan Oršek" },
+        ],
+      },
+      {
+        "@type": "MusicAlbum",
+        name: "Other Words",
+        byArtist: {
+          "@type": "MusicGroup",
+          name: "Anteater",
+        },
+        url: "https://open.spotify.com/album/3ostNQqH1tMCeShj622dMg",
+        producer: { "@type": "Person", name: "Thom Fröde" },
+        datePublished: "2024",
+      },
+      {
+        "@type": "Event",
+        name: "Anteater Concert Tour 2025",
+        description: "Rock band live performances across Czech Republic, Germany, and Europe",
+        performer: {
+          "@type": "MusicGroup",
+          name: "Anteater",
+        },
+        eventStatus: "EventScheduled",
+        url: "https://www.bandsintown.com/a/15580598",
+      },
+    ],
+  }
+
   return (
-    <html lang="cs">
+    <html lang="en">
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "MusicVenue",
-              "@id": "https://mlynnapile.cz",
-              name: "Mlýn na Pile - Retreat Studio",
-              alternateName: "Mlýn na Pile Recording Studio",
-              description:
-                "Professional recording studio in historic 17th century mill with vintage instruments, accommodation, and beautiful Czech countryside location.",
-              url: "https://mlynnapile.cz",
-              telephone: "+420775050059",
-              email: "mlynnapile@gmail.com",
-              address: {
-                "@type": "PostalAddress",
-                streetAddress: "Trhanov - Pile",
-                addressLocality: "Domažlice",
-                postalCode: "34401",
-                addressCountry: "CZ",
-              },
-              geo: {
-                "@type": "GeoCoordinates",
-                latitude: "49.4394",
-                longitude: "12.9742",
-              },
-              image: [
-                "https://mlynnapile.cz/images/aerial-view.jpeg",
-                "https://mlynnapile.cz/images/twilight-lake.jpeg",
-              ],
-              priceRange: "€€€",
-              amenityFeature: [
-                {
-                  "@type": "LocationFeatureSpecification",
-                  name: "Recording Studio",
-                  value: true,
-                },
-                {
-                  "@type": "LocationFeatureSpecification",
-                  name: "Accommodation",
-                  value: true,
-                },
-                {
-                  "@type": "LocationFeatureSpecification",
-                  name: "Vintage Instruments",
-                  value: true,
-                },
-                {
-                  "@type": "LocationFeatureSpecification",
-                  name: "Free WiFi",
-                  value: true,
-                },
-                {
-                  "@type": "LocationFeatureSpecification",
-                  name: "Parking",
-                  value: true,
-                },
-                {
-                  "@type": "LocationFeatureSpecification",
-                  name: "EV Charging",
-                  value: true,
-                },
-              ],
-              hasMap: "https://maps.app.goo.gl/uXBpBkPwM15MJQQU7",
-              sameAs: [
-                "https://www.instagram.com/mlynnapile",
-                "https://www.facebook.com/share/1CWTAs8zoP",
-                "https://www.youtube.com/@mlynnapile",
-              ],
-            }),
-          }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+        {/* Preconnect to CDNs for performance */}
+        <link rel="preconnect" href="https://widgetv3.bandsintown.com" />
+        <link rel="preconnect" href="https://open.spotify.com" />
+        <link rel="preconnect" href="https://music.apple.com" />
       </head>
-      <body className={`font-sans ${dmSans.variable} ${merriweather.variable}`}>
-        <Suspense fallback={null}>{children}</Suspense>
+      <body className={`font-sans antialiased`}>
+        {children}
+        <Analytics />
       </body>
     </html>
   )

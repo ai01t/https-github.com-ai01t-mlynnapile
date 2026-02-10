@@ -1,9 +1,9 @@
-# Mlýn_01
+# Anteater band website
 
 *Automatically synced with your [v0.app](https://v0.app) deployments*
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/ai01ts-projects/v0-mlyn-01-48)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/projects/QJJTo3glf55)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/anteaterofficial-gmailcoms-projects/v0-web-for-anteater-band-from-prag)
+[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/juEv8GbMQSC)
 
 ## Overview
 
@@ -14,13 +14,13 @@ Any changes you make to your deployed app will be automatically pushed to this r
 
 Your project is live at:
 
-**[https://vercel.com/ai01ts-projects/v0-mlyn-01-48](https://vercel.com/ai01ts-projects/v0-mlyn-01-48)**
+**[https://vercel.com/anteaterofficial-gmailcoms-projects/v0-web-for-anteater-band-from-prag](https://vercel.com/anteaterofficial-gmailcoms-projects/v0-web-for-anteater-band-from-prag)**
 
 ## Build your app
 
 Continue building your app on:
 
-**[https://v0.app/chat/projects/QJJTo3glf55](https://v0.app/chat/projects/QJJTo3glf55)**
+**[https://v0.app/chat/juEv8GbMQSC](https://v0.app/chat/juEv8GbMQSC)**
 
 ## How It Works
 
