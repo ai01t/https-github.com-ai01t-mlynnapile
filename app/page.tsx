@@ -4191,6 +4191,17 @@ export default function Page() {
         </div>
       </div>
 
+      <div
+        className={`fixed bottom-0 left-0 right-0 h-28 pointer-events-none z-40 transition-opacity duration-300 ${
+          currentSection === "home" || currentSection === "mlyn" || currentSection === "contact"
+            ? "opacity-0"
+            : "opacity-100"
+        }`}
+        style={{
+          background: "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 50%, transparent 100%)",
+        }}
+      />
+
       <footer className="fixed bottom-0 left-0 right-0 py-4 z-50">
         <div className="flex flex-col items-center gap-2">
           <div className="flex justify-center items-center gap-8">
