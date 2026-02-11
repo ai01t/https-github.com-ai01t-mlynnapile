@@ -2011,41 +2011,27 @@ export default function Page() {
       darkModeTimerRef.current = null
     }
 
-    if (!isDarkMode) {
-      if (currentSection === "home") {
-        console.log("[v0] Starting 10s timer for photo dark mode switch")
-        darkModeTimerRef.current = setTimeout(() => {
-          console.log("[v0] Auto-switching to dark mode (photo)")
-          setIsDarkMode(true)
-          const newVideoId = getBackgroundVideoId(currentSection, true, isHorizontal)
-          setIsTransitioning(true)
-          const newUrl = buildVideoUrl(newVideoId)
-          setNextVideoUrl(newUrl)
-          setTimeout(() => {
-            setCurrentVideoUrl(newUrl)
-            setIsTransitioning(false)
-            setNextVideoUrl("")
-            setIsVideoPlaying(true)
-          }, 1000)
-        }, 10000)
-      } else {
-        console.log("[v0] Starting 45s timer for video dark mode switch")
-        darkModeTimerRef.current = setTimeout(() => {
-          console.log("[v0] Auto-switching to dark mode (video)")
-          setIsDarkMode(true)
+    if (currentSection === "home") {
+      return
+    }
 
-          const newVideoId = getBackgroundVideoId(currentSection, true, isHorizontal)
-          setIsTransitioning(true)
-          const newUrl = buildVideoUrl(newVideoId)
-          setNextVideoUrl(newUrl)
-          setTimeout(() => {
-            setCurrentVideoUrl(newUrl)
-            setIsTransitioning(false)
-            setNextVideoUrl("")
-            setIsVideoPlaying(true)
-          }, 1000)
-        }, 45000)
-      }
+    if (!isDarkMode) {
+      console.log("[v0] Starting 45s timer for video dark mode switch")
+      darkModeTimerRef.current = setTimeout(() => {
+        console.log("[v0] Auto-switching to dark mode (video)")
+        setIsDarkMode(true)
+
+        const newVideoId = getBackgroundVideoId(currentSection, true, isHorizontal)
+        setIsTransitioning(true)
+        const newUrl = buildVideoUrl(newVideoId)
+        setNextVideoUrl(newUrl)
+        setTimeout(() => {
+          setCurrentVideoUrl(newUrl)
+          setIsTransitioning(false)
+          setNextVideoUrl("")
+          setIsVideoPlaying(true)
+        }, 1000)
+      }, 45000)
     }
 
     return () => {
@@ -4190,6 +4176,13 @@ export default function Page() {
           </div>
         </div>
       </div>
+
+      <div
+        className="fixed bottom-0 left-0 right-0 h-28 pointer-events-none z-40"
+        style={{
+          background: "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 50%, transparent 100%)",
+        }}
+      />
 
       <footer className="fixed bottom-0 left-0 right-0 py-4 z-50">
         <div className="flex flex-col items-center gap-2">
