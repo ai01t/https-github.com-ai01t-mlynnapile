@@ -25,7 +25,7 @@ const translations = {
       title: "Mlýn na Pile",
       subtitle: "Retreat Studio",
       tagline: "Kde se rodí inspirace",
-      description: "Unikátní prostor s genius loci, jehož historie sahá až do 17. století.",
+      description: "Unikátní prostor s genius loci, jehož historie sahá do 17. století.",
       vintageInstruments: "Vintage Nástroje",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
       accommodation: "Stylové ubytování",
