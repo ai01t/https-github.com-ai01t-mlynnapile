@@ -77,7 +77,7 @@ const translations = {
       accommodation: {
         title: "Nahrávání + Ubytování",
         subtitle:
-          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Ke všem balíčkům je snídaně/brunch  v zimní zahradě, včetně domácího chleba z pece :-). Free wifi a parkování v areálu, s možností nabití EV. Studia jsou energeticky soběstačná, takže vaše nahrávání není ohroženo případnými výpadky proudu. ",
+          "Jednotlivé balíčky jsou seřazeny od nejekonomičtějších až po VIP - pojmenovali jsme je podle našich songů :-) Zapůjčení studia je včetně hudební aparatury a nástrojů. Ke všem balíčkům je snídaně/brunch  v zimní zahradě, včetně domácího chleba z pece a neomezené konzumace kávy a nápojů :-). Free wifi a parkování v areálu, s možností nabití EV. Studia jsou energeticky soběstačná, takže vaše nahrávání není ohroženo případnými výpadky proudu. Cena za zapůjčení studia, včetně veškerého vybavení je od 29900,-/den pro kapelu včetně jejího týmu, plus podpora z naší strany - vše je koncpiováno tak aby jste sem doslova mohli přijet vlakem bez ničeho a začít tvořit a nahrávat a ničím se nezdržovat. Cena je pro variantu pro max 7 lidí. Další varianty jsou k jednání. ",
         intro: "Jdeme na to:",
         packageLabel: "Balíček",
         parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
