@@ -1,0 +1,2037 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mlýn na Pile | Creative Mill Residency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07060a;--stone:#c9b99a;--gold:#b08d57;--gold-light:#d4aa72;--cream:#f0ebe2;--muted:#6a6060;--border:rgba(201,185,154,0.12);--res-card-h:332px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory;overflow-y:scroll;}
+body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:none;}
+
+/* CURSOR */
+.cursor{position:fixed;width:7px;height:7px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s;mix-blend-mode:screen;}
+.cursor-ring{position:fixed;width:34px;height:34px;border:1px solid rgba(176,141,87,.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .38s cubic-bezier(.25,.46,.45,.94),width .3s,height .3s,border-color .3s;}
+
+/* GRAIN */
+body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.55;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");}
+
+/* PROGRESS */
+#prog{position:fixed;top:0;left:0;height:1px;background:var(--gold);z-index:200;width:0;transition:width .2s;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:28px 52px;transition:padding .4s,background .4s,border-color .4s;border-bottom:1px solid rgba(201,185,154,.16);background:linear-gradient(to bottom,rgba(7,6,10,.72) 0%,rgba(7,6,10,.44) 70%,rgba(7,6,10,.18) 100%);backdrop-filter:blur(10px);}
+nav.scrolled{background:rgba(7,6,10,.9);backdrop-filter:blur(16px);padding:18px 52px;border-color:rgba(201,185,154,.22);}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;letter-spacing:.1em;color:var(--cream);text-decoration:none;}
+.nav-logo em{font-style:normal;color:var(--gold);}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,235,226,.76);font-weight:400;text-shadow:0 1px 8px rgba(0,0,0,.35);text-decoration:none;transition:color .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--cream);}
+.nav-actions{display:flex;align-items:center;gap:16px;}
+.btn-lang,.btn-pause,.btn-mode{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;background:none;border:1px solid var(--border);color:var(--muted);padding:7px 16px;cursor:none;font-family:'Manrope',sans-serif;transition:border-color .2s,color .2s;}
+.btn-lang:hover,.btn-pause:hover,.btn-pause.on,.btn-mode:hover,.btn-mode.on{border-color:rgba(176,141,87,.5);color:var(--gold);}
+.btn-pause{padding:7px 12px;}
+.pause-icon{display:inline-block;min-width:11px;text-align:center;font-weight:600;letter-spacing:0;font-size:.72rem;line-height:1;}
+.btn-mode{padding:7px 10px;min-width:42px;display:inline-flex;align-items:center;justify-content:center;}
+.btn-lang{padding:7px 10px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;position:relative;gap:4px;}
+.lang-icon svg{width:14px;height:14px;display:block;}
+.lang-caret{font-size:8px;line-height:1;opacity:.72;transform:translateY(-1px);}
+.lang-switch{position:relative;}
+.lang-menu{
+  position:absolute;
+  top:calc(100% + 8px);
+  right:0;
+  min-width:124px;
+  border:1px solid var(--border);
+  background:rgba(7,6,10,.92);
+  backdrop-filter:blur(12px);
+  display:none;
+  flex-direction:column;
+  z-index:120;
+}
+.lang-switch.open .lang-menu{display:flex;}
+.lang-option{
+  appearance:none;
+  background:none;
+  border:0;
+  border-bottom:1px solid var(--border);
+  color:rgba(240,235,226,.82);
+  font-family:'Manrope',sans-serif;
+  font-size:.62rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  text-align:left;
+  padding:11px 14px;
+  cursor:none;
+}
+.lang-option:last-child{border-bottom:0;}
+.lang-option:hover,.lang-option.active{color:var(--gold);background:rgba(176,141,87,.12);}
+.mode-icon{display:none;width:14px;height:14px;line-height:0;}
+.mode-icon svg{display:block;width:14px;height:14px;}
+/* Show target mode icon: moon in day mode, sun in night mode. */
+body.night-mode .mode-icon-sun{display:inline-block;}
+body:not(.night-mode) .mode-icon-moon{display:inline-block;}
+
+/* SIDE DOTS */
+.side-nav{position:fixed;right:28px;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:14px;}
+.dot{width:4px;height:4px;border-radius:50%;background:rgba(201,185,154,.22);cursor:none;transition:background .3s,height .3s,border-radius .3s;}
+.dot.active{background:var(--gold);height:20px;border-radius:2px;}
+
+/* SECTIONS */
+section{position:relative;min-height:100svh;scroll-snap-align:start;overflow:hidden;display:flex;align-items:center;}
+.content{position:relative;z-index:10;width:100%;max-width:1360px;margin:0 auto;padding:120px 60px 80px;}
+
+/* ═══════════════════════
+   BG SYSTEM
+═══════════════════════ */
+.bg-css{position:absolute;inset:0;z-index:0;}
+
+#hero .bg-css{background:radial-gradient(ellipse 130% 90% at 65% 35%,#16112e 0%,#0c0918 45%,#07060a 100%);}
+#hero .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 15% 75%,rgba(70,40,110,.28) 0%,transparent 65%),radial-gradient(ellipse 45% 40% at 85% 25%,rgba(110,75,30,.22) 0%,transparent 60%);animation:hA 20s ease-in-out infinite alternate;}
+@keyframes hA{0%{opacity:.75;transform:scale(1);}100%{opacity:1;transform:scale(1.07) translateX(-1.5%);}}
+
+#place .bg-css{background:radial-gradient(ellipse 110% 90% at 25% 55%,#0e1c0d 0%,#091008 50%,#07060a 100%);}
+#place .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 65% 55% at 75% 20%,rgba(50,88,35,.32) 0%,transparent 60%);animation:pA 22s ease-in-out infinite alternate;}
+@keyframes pA{0%{opacity:.65;transform:scale(1);}100%{opacity:1;transform:scale(1.06);}}
+
+#studio .bg-css{background:radial-gradient(ellipse 120% 90% at 50% 65%,#1e1108 0%,#120a04 45%,#07060a 100%);}
+#studio .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 45% at 78% 32%,rgba(190,105,18,.24) 0%,transparent 60%);animation:sA 15s ease-in-out infinite alternate;}
+@keyframes sA{0%{opacity:.65;transform:scale(1);}100%{opacity:1;transform:scale(1.09);}}
+
+#equipment .bg-css{background:radial-gradient(ellipse 130% 90% at 58% 52%,#171307 0%,#0f0c06 48%,#07060a 100%);}
+#equipment .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 18% 30%,rgba(160,112,22,.26) 0%,transparent 62%),radial-gradient(ellipse 60% 40% at 82% 70%,rgba(80,58,20,.24) 0%,transparent 60%);animation:eA 20s ease-in-out infinite alternate;}
+@keyframes eA{0%{opacity:.55;transform:scale(1);}100%{opacity:1;transform:scale(1.07);}}
+
+#residency .bg-css{background:radial-gradient(ellipse 130% 90% at 42% 45%,#0d0e1e 0%,#080812 50%,#07060a 100%);}
+#residency .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 48% at 82% 62%,rgba(38,58,145,.22) 0%,transparent 62%);animation:rA 18s ease-in-out infinite alternate;}
+@keyframes rA{0%{opacity:.55;}100%{opacity:1;transform:scale(1.06);}}
+
+#location .bg-css{background:radial-gradient(ellipse 140% 75% at 50% 85%,#171008 0%,#0e0a06 50%,#07060a 100%);}
+#location .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 95% 48% at 50% 92%,rgba(110,72,18,.28) 0%,transparent 58%);animation:lA 24s ease-in-out infinite alternate;}
+@keyframes lA{0%{opacity:.55;}100%{opacity:1;transform:scaleY(1.08);}}
+
+#contact .bg-css{background:radial-gradient(ellipse 110% 85% at 28% 68%,#160f08 0%,#0b0806 50%,#07060a 100%);}
+#contact .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 52% 44% at 72% 42%,rgba(128,82,18,.22) 0%,transparent 58%);animation:cA 20s ease-in-out infinite alternate;}
+@keyframes cA{0%{opacity:.45;transform:scale(1);}100%{opacity:1;transform:scale(1.09);}}
+
+.bg-css::after{content:'';position:absolute;inset:0;background:linear-gradient(175deg,transparent 45%,rgba(7,6,10,.88) 100%);}
+
+/* YouTube layer */
+.bg-video{position:absolute;inset:0;z-index:1;overflow:hidden;opacity:1;transition:none;}
+.bg-video.loaded{opacity:1;}
+.bg-video iframe,.bg-video video,.bg-video .bg-fallback{position:absolute;top:50%;left:50%;width:177.78vh;height:56.25vw;min-width:100%;min-height:100%;transform:translate(-50%,-50%) scale(1.06);pointer-events:none;border:none;object-fit:cover;}
+.bg-video video,.bg-video .bg-fallback{animation:bgPan 22s ease-in-out infinite alternate;will-change:transform;}
+@keyframes bgPan{0%{transform:translate(-50%,-50%) scale(1.06);}100%{transform:translate(-50.7%,-49.4%) scale(1.1);}}
+.bg-video .bg-fallback{opacity:0;transition:opacity .35s ease;}
+.bg-video.blocked video:not(.history-overlay),
+.bg-video.needs-gesture video:not(.history-overlay){opacity:0;}
+.bg-video.blocked .bg-fallback:not(.history-overlay-fallback),
+.bg-video.needs-gesture .bg-fallback:not(.history-overlay-fallback){opacity:1;}
+.bg-video .history-overlay,.bg-video .history-overlay-fallback{opacity:0;transition:opacity .78s ease;}
+.bg-video.history-on .history-overlay{opacity:1;}
+.bg-video.history-on.history-blocked .history-overlay{opacity:0;}
+.bg-video.history-on.history-blocked .history-overlay-fallback{opacity:1;}
+.bg-video .chleba-overlay,.bg-video .chleba-overlay-fallback{opacity:0;transition:opacity .68s ease;}
+.bg-video.chleba-on .chleba-overlay{opacity:1;}
+.bg-video.chleba-on.chleba-blocked .chleba-overlay{opacity:0;}
+.bg-video.chleba-on.chleba-blocked .chleba-overlay-fallback{opacity:1;}
+.bg-video .pkg-overlay,.bg-video .pkg-overlay-fallback{opacity:0;transition:opacity .68s ease;}
+.bg-video.pkg-on.pkg-into .pkg-overlay-into,
+.bg-video.pkg-on.pkg-underwater .pkg-overlay-underwater,
+.bg-video.pkg-on.pkg-otherside .pkg-overlay-otherside,
+.bg-video.pkg-on.pkg-fuel .pkg-overlay-fuel{opacity:1;}
+.bg-video.pkg-on.pkg-into.pkg-blocked-into .pkg-overlay-into,
+.bg-video.pkg-on.pkg-underwater.pkg-blocked-underwater .pkg-overlay-underwater,
+.bg-video.pkg-on.pkg-otherside.pkg-blocked-otherside .pkg-overlay-otherside,
+.bg-video.pkg-on.pkg-fuel.pkg-blocked-fuel .pkg-overlay-fuel{opacity:0;}
+.bg-video.pkg-on.pkg-into.pkg-blocked-into .pkg-overlay-fallback-into,
+.bg-video.pkg-on.pkg-underwater.pkg-blocked-underwater .pkg-overlay-fallback-underwater,
+.bg-video.pkg-on.pkg-otherside.pkg-blocked-otherside .pkg-overlay-fallback-otherside,
+.bg-video.pkg-on.pkg-fuel.pkg-blocked-fuel .pkg-overlay-fallback-fuel{opacity:1;}
+.bg-video video::-webkit-media-controls,
+.bg-video video::-webkit-media-controls-start-playback-button,
+.bg-video video::-webkit-media-controls-overlay-play-button,
+.bg-video video::-webkit-media-controls-enclosure{display:none !important;-webkit-appearance:none;}
+.bg-video::after{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(7,6,10,.45) 0%,rgba(7,6,10,.1) 30%,rgba(7,6,10,.1) 65%,rgba(7,6,10,.82) 100%),linear-gradient(to right,rgba(7,6,10,.3) 0%,transparent 55%);}
+#residency.inline-video-on .bg-video::after{background:linear-gradient(to bottom,rgba(7,6,10,.78) 0%,rgba(7,6,10,.62) 38%,rgba(7,6,10,.92) 100%),linear-gradient(to right,rgba(7,6,10,.56) 0%,rgba(7,6,10,.24) 56%);}
+body.pause-preview .bg-video::after,
+body.pause-active .bg-video::after{background:linear-gradient(to bottom,rgba(7,6,10,.72) 0%,rgba(7,6,10,.54) 45%,rgba(7,6,10,.9) 100%),linear-gradient(to right,rgba(7,6,10,.52) 0%,rgba(7,6,10,.2) 55%);}
+body.pause-preview nav,
+body.pause-active nav,
+body.pause-preview section .content,
+body.pause-active section .content{filter:brightness(1.14);}
+.chleba-trigger{color:var(--gold-light);text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:rgba(212,170,114,.55);text-underline-offset:2px;}
+.pkg-card[data-pkg]{cursor:none;}
+
+/* Keep gradient layer static (no ambient motion under video). */
+#hero .bg-css::before,
+#place .bg-css::before,
+#studio .bg-css::before,
+#equipment .bg-css::before,
+#residency .bg-css::before,
+#location .bg-css::before,
+#contact .bg-css::before{animation:none !important;transform:none !important;}
+
+
+
+/* HERO */
+#hero .content{display:flex;flex-direction:column;justify-content:center;min-height:100svh;padding-bottom:0;}
+.hero-badge{display:inline-block;align-self:flex-start;font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(176,141,87,.35);padding:7px 18px;margin-bottom:40px;font-family:'Manrope',sans-serif;font-weight:400;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(5rem,14vw,15rem);line-height:.85;letter-spacing:-.025em;color:var(--cream);margin-bottom:44px;}
+.hero-title em{font-style:italic;color:var(--stone);display:block;}
+.hero-sub{max-width:500px;font-size:.9rem;line-height:1.82;color:rgba(240,235,226,.62);margin-bottom:48px;font-weight:300;}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
+.btn-primary{font-family:'Manrope',sans-serif;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;background:var(--gold);color:var(--bg);border:none;padding:16px 38px;cursor:none;text-decoration:none;display:inline-block;transition:background .2s,transform .2s;font-weight:500;}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-2px);}
+.btn-secondary{font-family:'Manrope',sans-serif;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;background:none;color:rgba(240,235,226,.7);border:1px solid var(--border);padding:16px 38px;cursor:none;text-decoration:none;display:inline-block;transition:border-color .2s,color .2s;font-weight:400;}
+.btn-secondary:hover{border-color:rgba(201,185,154,.5);color:var(--cream);}
+.hero-note{font-size:.77rem;letter-spacing:.13em;color:var(--muted);margin-top:28px;}
+.hero-stats{position:absolute;right:60px;bottom:96px;z-index:10;display:flex;flex-direction:column;gap:14px;border-left:1px solid var(--border);padding-left:24px;}
+.hero-stats span{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(201,185,154,.5);}
+.scroll-cue{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px;animation:cu 2.8s ease-in-out infinite;}
+.scroll-cue span{font-size:.56rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(201,185,154,.38);}
+.scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,var(--gold),transparent);}
+@keyframes cu{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(9px);}}
+
+/* SECTION HEADERS */
+.sec-label{font-size:.58rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:block;font-family:'Manrope',sans-serif;}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(3rem,7.5vw,8rem);font-weight:300;line-height:.88;color:var(--cream);}
+.sec-title em{font-style:italic;color:var(--stone);}
+.sec-title .alias-small{
+  font-family:inherit;
+  font-size:.42em;
+  font-style:italic;
+  letter-spacing:0;
+  text-transform:none;
+  color:var(--stone);
+  font-weight:400;
+  vertical-align:middle;
+}
+
+/* PLACE */
+#place .content{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;padding-top:150px;}
+.place-intro{font-size:.9rem;line-height:1.88;color:rgba(240,235,226,.62);margin-top:32px;max-width:460px;font-weight:300;}
+.place-quote{margin-top:44px;border-left:2px solid var(--gold);padding-left:26px;font-family:'Cormorant Garamond',serif;font-size:1.22rem;font-style:italic;line-height:1.75;color:var(--stone);font-weight:300;}
+.place-right{padding-top:60px;position:relative;}
+.tl-label{font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:32px;display:block;}
+.tl-item{display:grid;grid-template-columns:72px 1fr;gap:20px;align-items:start;padding:18px 0;border-bottom:1px solid var(--border);transition:opacity .65s,transform .65s;}
+.tl-item.vis{opacity:1;transform:translateY(0);}
+.tl-year{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--gold);}
+.tl-text{font-size:.8rem;line-height:1.72;color:rgba(240,235,226,.58);padding-top:3px;}
+.values-block{margin-top:44px;}
+.val-label{font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;display:block;}
+.val-list{list-style:none;display:flex;flex-direction:column;gap:13px;}
+.val-list li{font-size:.8rem;line-height:1.68;color:rgba(240,235,226,.55);padding-left:18px;position:relative;}
+.val-list li::before{content:'—';position:absolute;left:0;color:var(--gold);font-size:.68rem;}
+
+/* STUDIO */
+#studio .content{
+  padding-top:96px;
+  padding-bottom:96px;
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.studio-intro{max-width:540px;font-size:.9rem;line-height:1.85;color:rgba(240,235,226,.62);margin-top:24px;margin-bottom:44px;}
+.rooms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:64px;}
+.room-card{background:rgba(7,6,10,.8);padding:40px 32px;transition:background .35s;display:flex;flex-direction:column;}
+.room-card:hover{background:rgba(28,22,14,.92);}
+.room-name{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:400;color:var(--cream);margin-bottom:8px;}
+.room-size{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:block;}
+.room-text{font-size:.79rem;line-height:1.78;color:rgba(240,235,226,.5);}
+.room-video-wrap{margin-top:auto;padding-top:20px;}
+.room-video-frame{position:relative;aspect-ratio:16 / 9;border:1px solid var(--border);background:#000;overflow:hidden;}
+.room-video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.gear-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;}
+
+/* ═══ STUDIO ═══ */
+.studio-track{position:relative;z-index:10;display:block;width:100%;height:auto;min-height:100svh;}
+.studio-panel{width:100%;height:auto;min-height:100svh;overflow:visible;display:flex;align-items:center;}
+.studio-main-panel .content{position:relative;}
+
+/* EQUIPMENT */
+#equipment{min-height:100svh;align-items:center;}
+#equipment .content{padding-top:132px;padding-bottom:34px;}
+.eq-intro{max-width:900px;font-size:.88rem;line-height:1.82;color:rgba(240,235,226,.62);margin-top:22px;}
+.eq-text-wrap{margin-top:26px;border:1px solid rgba(201,185,154,.28);border-radius:22px;overflow:hidden;background:linear-gradient(180deg,rgba(10,9,13,.95),rgba(7,6,10,.9));}
+.eq-text-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--border);align-items:start;}
+.eq-text-card{background:rgba(7,6,10,.74);padding:22px 20px;}
+.eq-text-title{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:block;}
+.eq-text-copy{font-size:.78rem;line-height:1.68;color:rgba(240,235,226,.58);margin-bottom:12px;}
+.eq-samples{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.eq-samples li{font-size:.73rem;line-height:1.45;color:rgba(240,235,226,.58);padding-bottom:6px;border-bottom:1px solid var(--border);overflow-wrap:anywhere;}
+.eq-samples li:last-child{border-bottom:none;}
+.eq-thanks{margin-top:14px;font-size:.68rem;line-height:1.55;color:rgba(240,235,226,.5);}
+.eq-embed-wrap{margin-top:26px;border:1px solid rgba(201,185,154,.24);border-radius:0;overflow:auto;background:rgba(7,6,10,.58);height:clamp(360px,calc(100svh - 380px),66svh);min-height:360px;max-height:66svh;}
+.eq-embed-frame{display:block;width:100%;height:100%;border:0;background:transparent;opacity:1;}
+/* RESIDENCY */
+#residency .content{padding-top:140px;position:relative;}
+#residency .big-n{position:absolute;left:60px;top:118px;margin:0;z-index:0;pointer-events:none;}
+#residency .sec-label,
+#residency .sec-title,
+#residency .res-intro,
+#residency .pkg-grid,
+#residency .rules-box{position:relative;z-index:1;}
+.res-intro{max-width:520px;font-size:.9rem;line-height:1.85;color:rgba(240,235,226,.62);margin-top:28px;margin-bottom:64px;}
+.pkg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);margin-bottom:52px;}
+.pkg-card{background:rgba(7,6,10,.75);padding:40px 28px;position:relative;overflow:hidden;transition:background .4s;cursor:none;min-height:var(--res-card-h);}
+.pkg-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s;}
+.pkg-card:hover::before{transform:scaleX(1);}
+.pkg-card:hover{background:rgba(22,17,10,.92);}
+.pkg-card.is-selected{background:rgba(22,17,10,.92);}
+.pkg-num{font-family:'Cormorant Garamond',serif;font-size:3.2rem;font-weight:300;color:rgba(176,141,87,.12);line-height:1;margin-bottom:18px;}
+.pkg-name{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:400;color:var(--cream);margin-bottom:12px;line-height:1.2;}
+.pkg-tags{font-size:.6rem;letter-spacing:.14em;color:var(--gold);margin-bottom:18px;display:block;font-family:'Manrope',sans-serif;line-height:1.9;}
+.pkg-text{font-size:.78rem;line-height:1.75;color:rgba(240,235,226,.48);}
+.pkg-inline-video{display:none;position:relative;margin-top:16px;border:1px solid var(--border);aspect-ratio:16/9;background:#000;overflow:hidden;}
+.pkg-card.has-inline-video .pkg-inline-video{display:block;}
+.pkg-inline-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.rules-box{border:1px solid var(--border);padding:14px 18px;height:var(--res-card-h);display:flex;flex-direction:column;overflow:hidden;}
+.rules-box.rules-list-tight{height:auto;min-height:0;padding:36px 44px;}
+.rules-label{font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:22px;display:block;}
+.rules-list{list-style:none;}
+.rules-list li{font-size:.8rem;line-height:1.72;color:rgba(240,235,226,.55);padding:13px 0;border-bottom:1px solid var(--border);}
+.rules-list li:last-child{border-bottom:none;}
+.rules-list-tight li{line-height:1.55;padding:8px 0;}
+.resfaq-tabs{display:flex;gap:10px;flex-wrap:wrap;padding:0 0 8px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.resfaq-tab{appearance:none;border:0;background:transparent;color:rgba(240,235,226,.62);padding:2px 2px;font-size:.53rem;line-height:1;cursor:none;text-transform:uppercase;letter-spacing:.17em;position:relative;font-family:'Manrope',sans-serif;transition:color .16s ease;}
+.resfaq-tab:hover{color:rgba(240,235,226,.86);}
+.resfaq-tab[aria-selected="true"]{color:rgba(240,235,226,.92);}
+.resfaq-tab[aria-selected="true"]::after{content:'';position:absolute;left:0;right:0;bottom:-9px;height:2px;background:rgba(199,163,99,.75);border-radius:999px;}
+.resfaq-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px;}
+.rules-box #resFaqList{flex:1 1 auto;min-height:0;overflow:auto;padding-right:4px;}
+.resfaq-item{border:none;border-radius:0;background:transparent;overflow:hidden;transition:background .18s ease;}
+.resfaq-item:hover{background:rgba(255,255,255,.02);}
+.resfaq-item[open]{background:rgba(199,163,99,.06);}
+.resfaq-q{cursor:none;list-style:none;padding:7px 10px;color:rgba(240,235,226,.9);font-family:'Manrope',sans-serif;font-weight:300;font-size:.8rem;line-height:1.58;display:flex;align-items:flex-start;gap:8px;}
+.resfaq-q::-webkit-details-marker{display:none;}
+.resfaq-q::after{content:'▾';margin-left:auto;color:rgba(240,235,226,.62);transition:transform .16s ease;padding-left:8px;font-size:.78rem;line-height:1.35;}
+.resfaq-item[open] .resfaq-q::after{transform:rotate(180deg);}
+.resfaq-a{padding:0 10px 8px;color:rgba(199,163,99,.82);font-family:'Manrope',sans-serif;font-weight:300;font-size:.72rem;line-height:1.45;}
+.resfaq-a p{margin:0;}
+.resfaq-a a{color:rgba(199,163,99,.95);text-decoration:underline;}
+
+/* LOCATION */
+#location .content{display:grid;grid-template-columns:1fr 1fr;gap:96px;align-items:center;padding-top:130px;}
+#location .loc-text-fx{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:68%;
+  z-index:8;
+  pointer-events:none;
+  overflow:visible;
+}
+#location .loc-text-fx::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(7,6,10,0) 0%,
+    rgba(7,6,10,.02) 18%,
+    rgba(7,6,10,.08) 38%,
+    rgba(7,6,10,.24) 62%,
+    rgba(7,6,10,.56) 100%
+  );
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.14) 24%,rgba(0,0,0,.55) 58%,#000 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.14) 24%,rgba(0,0,0,.55) 58%,#000 100%);
+}
+.big-n{font-family:'Cormorant Garamond',serif;font-size:clamp(4rem,11vw,11rem);font-weight:300;color:rgba(176,141,87,.07);line-height:1;margin-bottom:-16px;}
+.loc-intro{font-size:.9rem;line-height:1.85;color:rgba(240,235,226,.62);margin-top:28px;}
+.loc-paras{margin-top:28px;display:flex;flex-direction:column;gap:14px;}
+.loc-paras p{font-size:.82rem;line-height:1.82;color:rgba(240,235,226,.5);}
+.acc-label{font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:block;}
+.acc-list{list-style:none;}
+.acc-item{display:flex;align-items:flex-start;gap:18px;padding:20px 0;border-bottom:1px solid var(--border);}
+.acc-icon{width:36px;height:36px;flex-shrink:0;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--gold);}
+.acc-icon svg{width:16px;height:16px;stroke:var(--gold);stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.acc-text{font-size:.8rem;line-height:1.65;color:rgba(240,235,226,.58);padding-top:8px;}
+
+/* CONTACT */
+#contact .content{display:block;padding-top:130px;position:static;}
+#contact .contact-text-fx{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:72%;
+  z-index:8;
+  pointer-events:none;
+}
+#contact .contact-text-fx::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(7,6,10,0) 0%,
+    rgba(7,6,10,.06) 24%,
+    rgba(7,6,10,.22) 52%,
+    rgba(7,6,10,.58) 100%
+  );
+  backdrop-filter:blur(13px);
+  -webkit-backdrop-filter:blur(13px);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.18) 22%,rgba(0,0,0,.62) 58%,#000 100%);
+  mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.18) 22%,rgba(0,0,0,.62) 58%,#000 100%);
+}
+.about-head{max-width:960px;}
+.about-layout{margin-top:24px;max-width:920px;}
+.contact-slider{overflow:hidden;max-width:880px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.contact-track{display:flex;width:200%;transform:translateX(0);transition:transform .62s cubic-bezier(.22,.61,.36,1);}
+#contact.view-about .contact-track{transform:translateX(-50%);}
+.contact-pane{padding:20px 0;min-width:0;}
+.contact-pane .con-details{margin-top:0;}
+.contact-pane .con-detail:first-child{padding-top:0;}
+.contact-pane-about .about-lead{max-width:860px;}
+.contact-pane{width:50%;}
+.contact-view-toggles{display:flex;gap:10px;margin-top:14px;}
+.contact-view-toggles .soc-link{padding:8px 14px;}
+.about-lead{font-size:.83rem;line-height:1.75;color:rgba(240,235,226,.65);max-width:780px;}
+.con-intro{font-size:.9rem;line-height:1.85;color:rgba(240,235,226,.62);margin-top:28px;}
+.con-details{margin-top:18px;display:flex;flex-direction:column;}
+.contact-address-block{order:1;}
+.contact-faq-inline{
+  order:2;
+  margin-top:12px;
+  height:auto;
+  min-height:0;
+  padding:12px 0 8px;
+  border:none;
+  background:transparent;
+}
+.contact-faq-head{margin-bottom:10px;}
+.contact-faq-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.36rem,2.72vw,2.32rem);
+  font-weight:300;
+  line-height:.9;
+  color:var(--cream);
+  margin:0 0 8px;
+}
+.contact-faq-inline .rules-label{
+  font-size:.66rem;
+  letter-spacing:.2em;
+  color:rgba(240,235,226,.74);
+  margin-bottom:0;
+}
+#contact.view-faq .contact-faq-inline{order:0;margin-top:0;margin-bottom:12px;}
+#contact.view-faq .contact-address-block{order:1;}
+.contact-faq-inline #resFaqList{max-height:170px;overflow:auto;padding-right:4px;}
+.contact-faq-inline .resfaq-q{padding:7px 0;}
+.contact-faq-inline .resfaq-a{padding:0 0 8px;}
+.con-detail{padding:16px 0;border-bottom:1px solid var(--border);}
+.con-detail a{font-size:.83rem;color:rgba(240,235,226,.65);text-decoration:none;transition:color .2s;}
+.con-detail a:hover{color:var(--gold);}
+.socials{display:flex;gap:12px;margin-top:28px;}
+.contact-social-icons{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:max(0px,env(safe-area-inset-bottom));
+  justify-content:center;
+  margin-top:0;
+  gap:14px;
+  z-index:12;
+  padding:0;
+}
+.soc-link{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);border:1px solid var(--border);padding:10px 20px;text-decoration:none;transition:border-color .2s,color .2s;font-family:'Manrope',sans-serif;}
+.soc-link:hover{border-color:rgba(176,141,87,.5);color:var(--cream);}
+.soc-toggle{background:none;cursor:none;}
+.soc-toggle[aria-pressed="true"]{border-color:rgba(176,141,87,.5);color:var(--gold);}
+.soc-icon{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;border:0;color:rgba(240,235,226,.8);text-decoration:none;background:transparent;transition:color .2s,opacity .2s;opacity:.88;}
+.soc-icon svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.soc-icon:hover{color:var(--gold-light);opacity:1;}
+.founder-block{border-top:1px solid rgba(201,185,154,.22);padding-top:12px;margin-top:12px;}
+.founder-block:first-of-type{border-top:none;padding-top:0;margin-top:0;}
+.founder-name{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;color:var(--cream);margin-bottom:6px;}
+.founder-text{font-size:.78rem;line-height:1.58;color:rgba(240,235,226,.86);}
+.anteater-link{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(176,141,87,.45);}
+.anteater-link:hover{color:var(--gold-light);border-bottom-color:rgba(212,170,114,.7);}
+.founders-bio{margin-top:28px;border:none;padding:0;background:transparent;}
+.founders-bio .founder-block{border-top:1px solid var(--border);}
+
+/* FOOTER */
+footer{
+  position:relative;
+  z-index:12;
+  margin-top:0;
+  background:#000;
+  border-top:1px solid rgba(201,185,154,.14);
+  padding:24px 60px 26px;
+  min-height:96px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  pointer-events:auto;
+}
+.ft-copy{font-size:.6rem;letter-spacing:.12em;color:var(--muted);}
+.ft-mark{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:rgba(176,141,87,.3);letter-spacing:.08em;}
+
+/* REVEAL */
+.rev{opacity:0;transform:translateY(22px);transition:opacity .85s cubic-bezier(.25,.46,.45,.94),transform .85s cubic-bezier(.25,.46,.45,.94);}
+.rev.vis{opacity:1;transform:translateY(0);}
+.rev-d1{transition-delay:.1s;}.rev-d2{transition-delay:.22s;}.rev-d3{transition-delay:.34s;}
+/* Fallback — vždy viditelné pokud JS nesepne */
+.rev{opacity:1;transform:none;}
+
+/* LANGUAGE */
+.en,.de{display:none;}
+body.en .cs,body.en .de{display:none;}
+body.en .en{display:revert;}
+body.de .cs,body.de .en{display:none;}
+body.de .de{display:revert;}
+
+/* RESPONSIVE — layout */
+@media(max-width:1024px){
+  .content{padding:110px 28px 60px;}
+  #place .content,#location .content,#contact .content{grid-template-columns:1fr;gap:44px;}
+  #location .loc-text-fx{height:74%;}
+  #contact .contact-text-fx{height:82%;}
+  #residency .big-n{left:28px;top:96px;}
+  .about-layout{max-width:100%;}
+  .contact-slider{max-width:100%;}
+  .contact-faq-inline #resFaqList{max-height:220px;}
+  .contact-social-icons{bottom:max(0px,env(safe-area-inset-bottom));}
+  .pkg-grid{grid-template-columns:repeat(2,1fr);}
+  .rooms-grid{grid-template-columns:1fr;}
+  .studio-main-panel .content{overflow:visible;min-height:auto;justify-content:flex-start;padding-top:110px;padding-bottom:60px;}
+  .eq-text-grid{grid-template-columns:1fr;}
+  .eq-embed-wrap{height:clamp(300px,calc(100svh - 350px),56svh);min-height:300px;max-height:56svh;}
+
+  .gear-grid{grid-template-columns:1fr;gap:36px;}
+  .hero-stats{display:none;}
+  footer{margin-top:0;padding:18px 28px 20px;min-height:84px;}
+}
+/* RESPONSIVE — nav (hamburger when menu stops fitting) */
+@media(max-width:1100px){
+  nav{padding:20px 28px;}
+  nav.scrolled{padding:14px 28px;}
+  .nav-links{display:none;}
+  .nav-actions{gap:8px;}
+  .btn-lang,.btn-pause,.btn-mode{padding:7px 10px;}
+  .hamburger{display:flex !important;}
+}
+@media(orientation:portrait){
+  .nav-links{display:none;}
+  .hamburger{display:flex !important;}
+}
+
+/* HAMBURGER */
+.hamburger{display:none;align-items:center;justify-content:center;min-width:64px;height:34px;background:rgba(7,6,10,.34);border:1px solid rgba(201,185,154,.26);cursor:none;padding:0 12px;}
+.hamburger-label{display:block;font-size:.54rem;letter-spacing:.2em;color:rgba(240,235,226,.78);font-family:'Manrope',sans-serif;line-height:1;}
+.mobile-nav{display:none;position:fixed;inset:0;z-index:99;background:rgba(7,6,10,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:36px;}
+.mobile-nav.open{display:flex;}
+.nav-compact .nav-links{display:none;}
+.nav-compact .hamburger{display:flex;}
+.mobile-nav a{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--cream);text-decoration:none;letter-spacing:.04em;transition:color .2s;}
+.mobile-nav a:hover{color:var(--gold);}
+.mobile-nav .close-nav{position:absolute;top:28px;right:28px;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--border);padding:8px 18px;cursor:none;font-family:'Manrope',sans-serif;}
+@media(max-width:600px){
+  .pkg-grid{grid-template-columns:1fr;}
+  .rules-box{height:auto;min-height:0;}
+  .hero-title{font-size:clamp(4rem,20vw,8rem);}
+  .hero-ctas{flex-direction:column;align-items:flex-start;}
+  .eq-text-grid{grid-template-columns:1fr;}
+  .founders-overlay{padding:12px 12px 18px;}
+  .founder-name{font-size:1.22rem;}
+  .founder-text{font-size:.72rem;line-height:1.45;}
+
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="c"></div>
+<div class="cursor-ring" id="cr"></div>
+<div id="prog"></div>
+
+<nav id="nav">
+  <a href="#hero" class="nav-logo">Mlýn <em>na Pile</em></a>
+  <ul class="nav-links">
+    <li><a href="#place" data-s="place"><span class="cs">Mlýn</span><span class="en">The Mill</span><span class="de">Mühle</span></a></li>
+    <li><a href="#studio" data-s="studio"><span class="cs">Studio</span><span class="en">Studio</span><span class="de">Studio</span></a></li>
+    <li><a href="#equipment" data-s="equipment"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></a></li>
+    <li><a href="#residency" data-s="residency"><span class="cs">Ubytování</span><span class="en">Accommodation</span><span class="de">Unterkunft</span></a></li>
+    <li><a href="#location" data-s="location"><span class="cs">Lokalita</span><span class="en">Location</span><span class="de">Lage</span></a></li>
+    <li><a href="#contact" data-s="contact"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-pause" id="pbtn" aria-pressed="false" aria-label="Pause"><span class="pause-icon" aria-hidden="true">II</span></button>
+    <button class="btn-mode" id="modeBtn" aria-pressed="false" aria-label="Switch to night mode" title="Switch to night mode">
+      <span class="mode-icon mode-icon-sun" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="12" cy="12" r="4.2"></circle>
+          <path d="M12 2.5v3"></path><path d="M12 18.5v3"></path>
+          <path d="M2.5 12h3"></path><path d="M18.5 12h3"></path>
+          <path d="M5.2 5.2l2.1 2.1"></path><path d="M16.7 16.7l2.1 2.1"></path>
+          <path d="M18.8 5.2l-2.1 2.1"></path><path d="M7.3 16.7l-2.1 2.1"></path>
+        </svg>
+      </span>
+      <span class="mode-icon mode-icon-moon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path fill="currentColor" d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a7 7 0 1 0 9.7 9.7Z"></path>
+          <path fill="currentColor" d="M18.3 4.2l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z"></path>
+        </svg>
+      </span>
+    </button>
+    <div class="lang-switch" id="langSwitch">
+      <button class="btn-lang" id="lbtn" aria-label="Select language" aria-haspopup="true" aria-expanded="false">
+        <span class="lang-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M3 12h18"></path>
+            <path d="M12 3a14 14 0 0 1 0 18"></path>
+            <path d="M12 3a14 14 0 0 0 0 18"></path>
+          </svg>
+        </span>
+        <span class="lang-caret" aria-hidden="true">▾</span>
+      </button>
+      <div class="lang-menu" id="langMenu" role="menu" aria-label="Language menu">
+        <button type="button" class="lang-option" data-lang="cs" role="menuitem">Čeština</button>
+        <button type="button" class="lang-option" data-lang="en" role="menuitem">English</button>
+        <button type="button" class="lang-option" data-lang="de" role="menuitem">Deutsch</button>
+      </div>
+    </div>
+    <button class="hamburger" id="hbtn" aria-label="Menu"><span class="hamburger-label">MENU</span></button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="close-nav" id="closeNav"><span class="cs">Zavřít</span><span class="en">Close</span><span class="de">Schließen</span></button>
+  <a href="#place" onclick="closeMobileNav()"><span class="cs">Mlýn</span><span class="en">The Mill</span><span class="de">Mühle</span></a>
+  <a href="#studio" onclick="closeMobileNav()"><span class="cs">Studio</span><span class="en">Studio</span><span class="de">Studio</span></a>
+  <a href="#equipment" onclick="closeMobileNav()"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></a>
+  <a href="#residency" onclick="closeMobileNav()"><span class="cs">Ubytování</span><span class="en">Accommodation</span><span class="de">Unterkunft</span></a>
+  <a href="#location" onclick="closeMobileNav()"><span class="cs">Lokalita</span><span class="en">Location</span><span class="de">Lage</span></a>
+  <a href="#contact" onclick="closeMobileNav()"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></a>
+</div>
+
+<div class="side-nav">
+  <div class="dot active" data-t="hero"></div>
+  <div class="dot" data-t="place"></div>
+  <div class="dot" data-t="studio"></div>
+  <div class="dot" data-t="equipment"></div>
+  <div class="dot" data-t="residency"></div>
+  <div class="dot" data-t="location"></div>
+  <div class="dot" data-t="contact"></div>
+</div>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="bg-css"></div>
+  <div class="bg-video">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/VDj9aKHnpcw.mp4?v=20260220c" type="video/mp4">
+    </video>
+    <img class="bg-fallback" src="/videos/bg/VDj9aKHnpcw.gif?v=20260221a" alt="" aria-hidden="true">
+  </div>
+  <div class="content">
+    <div class="hero-badge cs">Retreat Studio</div>
+    <div class="hero-badge en">Retreat Studio</div>
+    <div class="hero-badge de">Retreat Studio</div>
+    <h1 class="hero-title">Mlýn<br><em>na Pile</em></h1>
+    <p class="hero-note cs">Unikátní prostor s historií sahající do 17. století.</p>
+    <p class="hero-note en">A unique space with a history dating back to the 17th century.</p>
+    <p class="hero-note de">Ein einzigartiger Ort mit Geschichte bis ins 17. Jahrhundert.</p>
+  </div>
+  <div class="hero-stats">
+    <span><span class="cs">64 m² — Hlavní studio</span><span class="en">64 m² — Main Studio</span><span class="de">64 m² — Hauptstudio</span></span>
+    <span><span class="cs">25 m² — Studio mlýnice</span><span class="en">25 m² — Mill Studio</span><span class="de">25 m² — Mühlenstudio</span></span>
+    <span><span class="cs">27 m² — Kontrolní místnost</span><span class="en">27 m² — Control Room</span><span class="de">27 m² — Regieraum</span></span>
+    <span><span class="cs">63 m² — Zimní zahrada</span><span class="en">63 m² — Winter Garden</span><span class="de">63 m² — Wintergarten</span></span>
+  </div>
+  <div class="scroll-cue">
+    <span class="cs">pokračujte dolů</span><span class="en">scroll down</span><span class="de">nach unten scrollen</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ══ PLACE ══ -->
+<section id="place">
+  <div class="bg-css"></div>
+  <div class="bg-video">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/b4tTKrUevzM.mp4?v=20260221e" type="video/mp4">
+    </video>
+    <img class="bg-fallback" src="/videos/bg/b4tTKrUevzM.gif?v=20260221e" alt="" aria-hidden="true">
+    <video class="history-overlay" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny">
+      <source src="/videos/bg/M4QapdIvjkM.mp4?v=20260221e" type="video/mp4">
+    </video>
+    <img class="bg-fallback history-overlay-fallback" src="/videos/bg/M4QapdIvjkM.gif?v=20260221e" alt="" aria-hidden="true">
+  </div>
+  <div class="content">
+    <div>
+      <div class="big-n">1653</div>
+      <h2 class="sec-title rev">Pila <span class="alias-small">alias</span> <em>Šnajberk</em></h2>
+      <p class="place-intro en rev rev-d1">Three unique spaces for your creativity. From the main studio through the mill studio to the control room.</p>
+      <p class="place-intro de rev rev-d1">Drei einzigartige Räume für eure Kreativität. Vom Hauptstudio über das Mühlenstudio bis zum Regieraum.</p>
+      <div class="values-block rev rev-d3">
+        <span class="val-label cs">Co zde najdete</span><span class="val-label en">What you'll find here</span><span class="val-label de">Was Sie hier finden</span>
+        <ul class="val-list">
+          <li><span class="cs">Vintage nástroje — 60s–80s Fender, Gibson, VOX.</span><span class="en">Vintage instruments — 60s–80s Fender, Gibson, VOX.</span><span class="de">Vintage-Instrumente — 60er–80er Fender, Gibson, VOX.</span></li>
+          <li><span class="cs">Stylové ubytování — 4 pokoje, zimní zahrada 63 m², finská sauna.</span><span class="en">Stylish accommodation — 4 rooms, winter garden 63 m², Finnish sauna.</span><span class="de">Stilvolle Unterkunft — 4 Zimmer, Wintergarten 63 m², finnische Sauna.</span></li>
+          <li><span class="cs">Moderní technologie — Universal Audio Apollo x8p Studio+, 76 UAD pluginů, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="en">Modern technology — Universal Audio Apollo x8p Studio+, 76 UAD plugins, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="de">Moderne Technologie — Universal Audio Apollo x8p Studio+, 76 UAD-Plugins, Logic Pro X, Apple Pro Display XDR 6K.</span></li>
+          <li><span class="cs">Vlastní zdroj elektrické energie pro zajištění provozu studia.</span><span class="en">Own power source ensuring uninterrupted studio operation.</span><span class="de">Eigene Stromquelle für einen unterbrechungsfreien Studiobetrieb.</span></li>
+          <li><span class="cs">Zázemí, zabezpečené prostory, výborné snídaně s domácím chlebem z pece</span><span class="en">Facilities, secured spaces, and excellent breakfasts with homemade oven-baked bread.</span><span class="de">Komfort, gesicherte Räume und ausgezeichnetes Frühstück mit hausgebackenem Ofenbrot.</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="place-right">
+      <span class="tl-label cs">Historická osa</span><span class="tl-label en">Historical Timeline</span><span class="tl-label de">Historische Zeitleiste</span>
+      <div>
+        <div class="tl-item"><span class="tl-year">1653</span><span class="tl-text cs">Založení rybníků, vysoké pece a hamru.</span><span class="tl-text en">Founding of ponds, blast furnace and hammer.</span><span class="tl-text de">Gründung der Teiche, des Hochofens und des Hammerwerks.</span></div>
+        <div class="tl-item"><span class="tl-year">1810</span><span class="tl-text cs">Mlýn s pilou poháněnou vodní silou.</span><span class="tl-text en">Mill with water-powered sawmill.</span><span class="tl-text de">Mühle mit wasserbetriebener Säge.</span></div>
+        <div class="tl-item"><span class="tl-year">1990</span><span class="tl-text cs">Pila vzniká jako část obce Trhanov v okrese Domažlice.</span><span class="tl-text en">Sawmill established as part of Trhanov village, Domažlice district.</span><span class="tl-text de">Pila entsteht als Teil der Gemeinde Trhanov im Bezirk Domažlice.</span></div>
+        <div class="tl-item"><span class="tl-year">2026</span><span class="tl-text cs">Transformace na hudební a kreativní retreat studio.</span><span class="tl-text en">Transformation into a music and creative retreat studio.</span><span class="tl-text de">Umwandlung in ein Musik- und Kreativ-Retreat-Studio.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STUDIO ══ -->
+<section id="studio" style="overflow:hidden;padding:0;">
+  <div class="bg-css"></div>
+  <div class="bg-video">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/O431B93W9UY.mp4?v=20260220c" type="video/mp4">
+    </video>
+    <img class="bg-fallback" src="/videos/bg/O431B93W9UY.gif?v=20260221a" alt="" aria-hidden="true">
+  </div>
+
+  <!-- horizontal track -->
+  <div class="studio-track" id="studioTrack">
+
+    <!-- PANEL 1 — přehled -->
+    <div class="studio-panel studio-main-panel">
+      <div class="content">
+        <span class="sec-label cs">Studio a technologie</span><span class="sec-label en">Studio & Technology</span><span class="sec-label de">Studio & Technologie</span>
+        <h2 class="sec-title"><span class="cs">Tři unikátní<br><em>prostory</em></span><span class="en">Three unique<br><em>spaces</em></span><span class="de">Drei einzigartige<br><em>Räume</em></span></h2>
+        <p class="studio-intro cs">Tři unikátní prostory pro vaši kreativitu. Od hlavního studia přes studio mlýnice do kontrolní místnosti.</p>
+        <p class="studio-intro en">From the main studio through the mill studio to the control room. Instruments are regularly serviced and ready for use.</p>
+        <p class="studio-intro de">Vom Hauptstudio über das Mühlenstudio bis zum Regieraum. Die Instrumente werden regelmäßig gewartet und sind jederzeit einsatzbereit.</p>
+        <div class="rooms-grid">
+          <div class="room-card">
+            <div class="room-name cs">Hlavní studio</div><div class="room-name en">Main Studio</div><div class="room-name de">Hauptstudio</div>
+            <span class="room-size">64 m²</span>
+            <p class="room-text cs">Hlavní studio se nachází v podkrovní galerii, přímo nad mlýnicí. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník.</p>
+            <p class="room-text en">The main studio is located in the attic gallery, directly above the mill. Natural light enters through skylights and a large French window with a balcony overlooking the quiet pond.</p>
+            <p class="room-text de">Das Hauptstudio befindet sich in der Dachgalerie direkt über der Mühle. Natürliches Licht fällt durch Dachfenster und ein großes französisches Fenster mit Balkon und Blick auf den ruhigen Teich.</p>
+            <div class="room-video-wrap">
+              <div class="room-video-frame">
+                <iframe src="https://www.youtube-nocookie.com/embed/O431B93W9UY?autoplay=1&mute=1&loop=1&playlist=O431B93W9UY&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
+                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="room-card">
+            <div class="room-name cs">Studio mlýnice</div><div class="room-name en">Mill Studio</div><div class="room-name de">Mühlenstudio</div>
+            <span class="room-size">25 m²</span>
+            <p class="room-text cs">Vysoké stropy a unikátní akustika historické mlýnice. Ideální pro akustické nahrávky a experimentální projekty.</p>
+            <p class="room-text en">High ceilings and unique acoustics of the historic mill. Ideal for acoustic recordings and experimental projects.</p>
+            <p class="room-text de">Hohe Decken und die einzigartige Akustik der historischen Mühle. Ideal für akustische Aufnahmen und experimentelle Projekte.</p>
+            <div class="room-video-wrap">
+              <div class="room-video-frame">
+                <iframe src="https://www.youtube-nocookie.com/embed/mndh51Ug7zg?autoplay=1&mute=1&loop=1&playlist=mndh51Ug7zg&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
+                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="room-card">
+            <div class="room-name cs">Kontrolní místnost</div><div class="room-name en">Control Room</div><div class="room-name de">Regieraum</div>
+            <span class="room-size">27 m²</span>
+            <p class="room-text cs">Apple Pro Display XDR 6K pro střih videa, grafiku i postprodukci. K dispozici plná Apple sestava periferií pro pohodlnou práci. Prostor je dělaný pro soustředěnou kreativní tvorbu: plynule regulovatelné osvětlení, klidná atmosféra, krásný výhled a knihovna.</p>
+            <p class="room-text en">Apple Pro Display XDR 6K for video editing, graphics and post-production. Full Apple peripherals are available for comfortable work. The room is built for focused creative work: smoothly adjustable lighting, calm atmosphere, beautiful view and a library.</p>
+            <p class="room-text de">Apple Pro Display XDR 6K für Videoschnitt, Grafik und Postproduktion. Vollständiges Apple-Peripherie-Setup für komfortables Arbeiten. Sanft regulierbares Licht, ruhige Atmosphäre, schöner Ausblick und Bibliothek.</p>
+            <div class="room-video-wrap">
+              <div class="room-video-frame">
+                <iframe src="https://www.youtube-nocookie.com/embed/u2ylGCNnV50?autoplay=1&mute=1&loop=1&playlist=u2ylGCNnV50&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
+                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /studio-track -->
+
+</section>
+
+
+<!-- ══ EQUIPMENT ══ -->
+<section id="equipment">
+  <div class="bg-css"></div>
+  <div class="bg-video">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/MczOR3DstPg.mp4?v=20260221e" type="video/mp4">
+    </video>
+    <img class="bg-fallback" src="/videos/bg/MczOR3DstPg.gif?v=20260221e" alt="" aria-hidden="true">
+  </div>
+  <div class="content">
+    <span class="sec-label cs">Vybavení</span><span class="sec-label en">Equipment</span><span class="sec-label de">Ausstattung</span>
+    <h2 class="sec-title rev"><span class="cs">Vybavení<br><em>studia</em></span><span class="en">Studio<br><em>equipment</em></span><span class="de">Studio-<br><em>Ausstattung</em></span></h2>
+    <p class="eq-intro cs rev rev-d1">Přehled vybavení v textové podobě s ukázkami klíčových nástrojů a studiových technologií.</p>
+    <p class="eq-intro en rev rev-d1">Equipment overview in text format with examples of key instruments and studio technologies.</p>
+    <p class="eq-intro de rev rev-d1">Ausstattungsübersicht in Textform mit Beispielen wichtiger Instrumente und Studiotechnologien.</p>
+
+    <div class="eq-embed-wrap rev rev-d2">
+      <iframe class="eq-embed-frame" src="/equipment-table/studio-equipment.html?lang=cs" title="Studio equipment"></iframe>
+    </div>
+    <p class="eq-thanks cs">Děkujeme kytaristovi Radkovi Fořtovi z kapely <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> za zapůjčení nástrojů z jeho sbírky.</p>
+    <p class="eq-thanks en">We thank guitarist Radek Fort from the band <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> for lending instruments from his collection.</p>
+    <p class="eq-thanks de">Wir danken dem Gitarristen Radek Fořt von der Band <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> für das Leihen von Instrumenten aus seiner Sammlung.</p>
+  </div>
+</section>
+
+<!-- ══ LOCATION ══ -->
+<section id="location">
+  <div class="bg-css"></div>
+  <div class="bg-video">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/tWtT7cB1Tus.mp4?v=20260221e" type="video/mp4">
+    </video>
+    <img class="bg-fallback" src="/videos/bg/tWtT7cB1Tus.gif?v=20260221e" alt="" aria-hidden="true">
+  </div>
+  <div class="loc-text-fx" aria-hidden="true"></div>
+  <div class="content">
+    <div>
+      <div class="big-n">Pila</div>
+      <span class="sec-label cs">Lokalita a dostupnost</span><span class="sec-label en">Location & Accessibility</span><span class="sec-label de">Lage & Erreichbarkeit</span>
+      <h2 class="sec-title rev"><span class="cs">Klidné místo<br><em>v srdci Evropy</em></span><span class="en">A quiet place<br><em>in the heart of Europe</em></span><span class="de">Ein ruhiger Ort<br><em>im Herzen Europas</em></span></h2>
+      <p class="loc-intro en rev rev-d1">A quiet place in the heart of Europe, close to everything important.</p>
+      <p class="loc-intro de rev rev-d1">Ein ruhiger Ort im Herzen Europas, nah an allem Wichtigen.</p>
+      <div class="loc-paras rev rev-d2">
+        <p class="cs">Pila u Trhanova je ideální lokalitou pro milovníky krásné přírody, soukromí a aktivního odpočinku.</p>
+        <p class="en">Pila near Trhanov is an ideal location for lovers of beautiful nature, privacy and active relaxation.</p>
+        <p class="de">Pila bei Trhanov ist ein idealer Ort für Liebhaber schöner Natur, Privatsphäre und aktiver Erholung.</p>
+        <p class="cs">Celý kraj je známý svou zelení, čerstvým vzduchem a klidem, což vytváří perfektní podmínky pro všechny hledající únik z ruchu města.</p>
+        <p class="en">The whole region is known for its greenery, fresh air and tranquility, creating perfect conditions for those seeking an escape from city noise.</p>
+        <p class="de">Die gesamte Region ist für ihr Grün, frische Luft und Ruhe bekannt und bietet perfekte Bedingungen für alle, die dem Stadtlärm entfliehen möchten.</p>
+      </div>
+    </div>
+    <div class="rev rev-d2">
+      <span class="acc-label cs">Dostupnost</span><span class="acc-label en">Availability</span><span class="acc-label de">Erreichbarkeit</span>
+      <ul class="acc-list">
+        <li class="acc-item">
+          <div class="acc-icon">
+            <svg viewBox="0 0 24 24"><path d="M5 11l1.5-4.5h11L19 11M5 11H3v3h1m15-3h2v3h-1M5 11h14M7 17a1 1 0 100-2 1 1 0 000 2zm10 0a1 1 0 100-2 1 1 0 000 2z"/><path d="M4 14v2a1 1 0 001 1h1m10 0h1a1 1 0 001-1v-2"/></svg>
+          </div>
+          <div class="acc-text cs">Autem: 10 min do centra Domažlic, 10 min na německé hranice</div>
+          <div class="acc-text en">By car: 10 min to Domažlice center, 10 min to German border</div>
+          <div class="acc-text de">Mit dem Auto: 10 Min. ins Zentrum von Domažlice, 10 Min. zur deutschen Grenze</div>
+        </li>
+        <li class="acc-item">
+          <div class="acc-icon">
+            <svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="14" rx="2"/><path d="M4 11h16M8 17l-2 4m10-4l2 4M8 7h8"/><circle cx="8.5" cy="14.5" r=".5" fill="currentColor"/><circle cx="15.5" cy="14.5" r=".5" fill="currentColor"/></svg>
+          </div>
+          <div class="acc-text cs">Vlakem: zastávka přímo na Pile</div>
+          <div class="acc-text en">By train: station directly at Pila</div>
+          <div class="acc-text de">Mit dem Zug: Haltestelle direkt in Pila</div>
+        </li>
+        <li class="acc-item">
+          <div class="acc-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V4a1 1 0 00-2 0v5l-8 5v2l8-2.5V19l-2 1.5V22l4-1 4 1v-1.5L15 19v-5.5l8 2.5z"/></svg>
+          </div>
+          <div class="acc-text cs">Letadlem: ~1h 45min z Prahy, ~2h 30min z Mnichova</div>
+          <div class="acc-text en">By plane: ~1h 45min from Prague, ~2h 30min from Munich</div>
+          <div class="acc-text de">Mit dem Flugzeug: ~1 Std. 45 Min. von Prag, ~2 Std. 30 Min. von München</div>
+        </li>
+        <li class="acc-item">
+          <div class="acc-icon">
+            <svg viewBox="0 0 24 24"><path d="M13 2L4.5 13.5H11L10 22l9-12h-6.5L13 2z"/></svg>
+          </div>
+          <div class="acc-text cs">Nabíjení EV v areálu + vlastní zdroj energie</div>
+          <div class="acc-text en">EV charging on site + own energy source</div>
+          <div class="acc-text de">EV-Ladung im Areal + eigene Energiequelle</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══ RESIDENCY ══ -->
+<section id="residency">
+  <div class="bg-css"></div>
+  <div class="bg-video">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/gTqXu9xU_7k.mp4?v=20260221e" type="video/mp4">
+    </video>
+    <img class="bg-fallback" src="/videos/bg/gTqXu9xU_7k.gif?v=20260221e" alt="" aria-hidden="true">
+    <video class="chleba-overlay" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/NYqybmh85G4.mp4?v=20260221e" type="video/mp4">
+    </video>
+    <img class="bg-fallback chleba-overlay-fallback" src="/videos/bg/NYqybmh85G4.gif?v=20260221e" alt="" aria-hidden="true">
+    <video class="pkg-overlay pkg-overlay-into" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/7RVXPBnHb-c.mp4?v=20260224a" type="video/mp4">
+    </video>
+    <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-into" src="/videos/bg/7RVXPBnHb-c.gif?v=20260224a" alt="" aria-hidden="true">
+    <video class="pkg-overlay pkg-overlay-underwater" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/uQiXLcspREY.mp4?v=20260224a" type="video/mp4">
+    </video>
+    <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-underwater" src="/videos/bg/uQiXLcspREY.gif?v=20260224a" alt="" aria-hidden="true">
+    <video class="pkg-overlay pkg-overlay-otherside" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/X7lvikbWnMQ.mp4?v=20260224a" type="video/mp4">
+    </video>
+    <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-otherside" src="/videos/bg/X7lvikbWnMQ.gif?v=20260224a" alt="" aria-hidden="true">
+    <video class="pkg-overlay pkg-overlay-fuel" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/5INpfHr0lu4.mp4?v=20260224a" type="video/mp4">
+    </video>
+    <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-fuel" src="/videos/bg/5INpfHr0lu4.gif?v=20260224a" alt="" aria-hidden="true">
+  </div>
+  <div class="content">
+    <div class="big-n">6500<span style="font-size:.35em;opacity:.5">m²</span></div>
+    <span class="sec-label cs">Nahrávání + Ubytování</span><span class="sec-label en">Recording + Accommodation</span><span class="sec-label de">Recording + Unterkunft</span>
+    <h2 class="sec-title rev"><span class="cs">Čtyři<br><em>balíčky</em></span><span class="en">Four<br><em>packages</em></span><span class="de">Vier<br><em>Pakete</em></span></h2>
+    <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <span class="chleba-trigger">chléb</span> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+    <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <span class="chleba-trigger">bread</span>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+    <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <span class="chleba-trigger">Brot</span> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
+    <div class="pkg-grid rev rev-d2">
+      <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Into the Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
+      <div class="pkg-card" data-pkg="underwater"><div class="pkg-num">02</div><div class="pkg-name">Underwater</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Sauna</span><span class="en">#Main studio #Sauna</span><span class="de">#Hauptstudio #Sauna</span></span><p class="pkg-text cs">Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka. Skromné ale stylové a útulné přespání přímo v prostorách bývalé mlýnice.</p><p class="pkg-text en">Closest to the music, sleeping literally beneath the studio floor and below the pond level. Modest but stylish accommodation in the former mill.</p><p class="pkg-text de">Ganz nah an der Musik: Schlafen direkt unter dem Studioboden und unter der Teichoberfläche. Schlicht, aber stilvoll und gemütlich in der ehemaligen Mühle.</p></div>
+      <div class="pkg-card" data-pkg="otherside"><div class="pkg-num">03</div><div class="pkg-name">Otherside</div><span class="pkg-tags"><span class="cs">#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV</span><span class="en">#Control room #Traditional Czech room #Two rooms #TV</span><span class="de">#Regieraum #Traditionelle Stube #Zwei Zimmer #TV</span></span><p class="pkg-text cs">Pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple + ubytování ve staročeské světnici. Vhodné i pro nehudební kreativní aktivity.</p><p class="pkg-text en">For post-production: 6K Apple Pro XDR with full Apple peripherals + accommodation in a traditional Czech room. Suitable for non-musical creative activities too.</p><p class="pkg-text de">Für Postproduktion: 6K Apple Pro XDR inkl. kompletter Apple-Peripherie + Unterkunft in einer traditionellen tschechischen Stube. Auch für nicht-musikalische Kreativarbeit geeignet.</p></div>
+      <div class="pkg-card" data-pkg="fuel"><div class="pkg-num">04</div><div class="pkg-name">Fuel</div><span class="pkg-tags"><span class="cs">#VIP balíček</span><span class="en">#VIP package</span><span class="de">#VIP-Paket</span></span><p class="pkg-text cs">VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady a zapůjčení Tesla Model X. Profi catering, roztopení velké pece, pizza i <span class="chleba-trigger">chleba</span> z pece.</p><p class="pkg-text en">VIP rental of the entire property with full service, including the winter garden and Tesla Model X. Professional catering, pizza and <span class="chleba-trigger">bread</span> from the stone oven.</p><p class="pkg-text de">VIP-Miete der gesamten Anlage mit Full-Service inklusive Wintergarten und Tesla Model X. Professionelles Catering, Pizza und <span class="chleba-trigger">Brot</span> aus dem Steinofen.</p></div>
+    </div>
+    <div class="rules-box rules-list-tight rev rev-d3">
+      <span class="rules-label"><span class="cs">DŮLEŽITÉ</span><span class="en">IMPORTANT</span><span class="de">WICHTIG</span></span>
+      <ul class="rules-list">
+        <li><span class="cs">Ubytování je součástí pobytu ve studiu během kreativní práce.</span><span class="en">Accommodation is part of the studio stay during creative work.</span><span class="de">Die Unterkunft ist Teil des Studioaufenthalts während der kreativen Arbeit.</span></li>
+        <li><span class="cs">Energetická nezávislost - zřízena dostatečná kapacita pro nerušený provoz studia.</span><span class="en">Energy independence — sufficient capacity is installed for uninterrupted studio operation.</span><span class="de">Energieunabhängigkeit — ausreichende Kapazität für einen ungestörten Studiobetrieb ist vorhanden.</span></li>
+        <li><span class="cs">U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.</span><span class="en">All packages include parking in the mill area under CCTV surveillance.</span><span class="de">Bei allen Paketen ist Parken im kameragesicherten Mühlenareal möglich.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="bg-css"></div>
+  <div class="bg-video">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/7UU7KmxEE6s.mp4?v=20260221e" type="video/mp4">
+    </video>
+    <img class="bg-fallback" src="/videos/bg/7UU7KmxEE6s.gif?v=20260221e" alt="" aria-hidden="true">
+  </div>
+  <div class="contact-text-fx" aria-hidden="true"></div>
+  <div class="content">
+    <div class="about-head">
+      <span class="sec-label cs">Kontakt</span><span class="sec-label en">Contact</span><span class="sec-label de">Kontakt</span>
+      <h2 class="sec-title rev"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></h2>
+      <div class="contact-view-toggles rev rev-d1">
+        <button type="button" id="aboutToggleBtn" class="soc-link soc-toggle" aria-pressed="false" aria-label="Zobrazit O nás">O nás</button>
+        <button type="button" id="faqToggleBtn" class="soc-link soc-toggle" aria-pressed="false" aria-label="Zobrazit FAQ">FAQ - Často kladené otázky</button>
+      </div>
+    </div>
+    <div class="about-layout">
+      <div class="contact-slider rev rev-d1" id="contactSlider">
+        <div class="contact-track">
+          <div class="contact-pane contact-pane-details">
+            <div class="con-details">
+              <div class="contact-address-block">
+                <div class="con-detail">
+                  <span style="font-size:.83rem;color:rgba(240,235,226,.65);"><span class="cs">Ing. Jindřich Traxmandl<br>Pila 100 – Mlýn<br>Trhanov 344 01<br>Česká republika</span><span class="en">Ing. Jindřich Traxmandl<br>Pila 100 – Mill<br>Trhanov 344 01<br>Czech Republic</span><span class="de">Ing. Jindřich Traxmandl<br>Pila 100 – Mühle<br>Trhanov 344 01<br>Tschechische Republik</span></span>
+                </div>
+                <div class="con-detail"><a href="mailto:mlynnapile@gmail.com">mlynnapile@gmail.com</a></div>
+                <div class="con-detail"><a href="tel:+420724050093">+420 724 050 093</a></div>
+              </div>
+              <div class="rules-box contact-faq-inline">
+                <div class="contact-faq-head">
+                  <h3 class="contact-faq-title"><span class="cs">FAQ</span><span class="en">FAQ</span><span class="de">FAQ</span></h3>
+                  <span class="rules-label"><span class="cs">Často kladené otázky</span><span class="en">Frequently asked questions</span><span class="de">Häufig gestellte Fragen</span></span>
+                </div>
+                <ul class="resfaq-list" id="resFaqList"></ul>
+              </div>
+            </div>
+          </div>
+          <div class="contact-pane contact-pane-about">
+            <p class="about-lead"><span class="cs">Dveře máme otevřené všem kreativním duším. Věříme, že kombinace krásné přírody, nástrojů s příběhem a moderní technologie v pozadí, zajišťující aby se jediný nápad neztratil, vytváří tu pravou synergii pro vznik něčeho výjimečného.</span><span class="en">Our doors are open to all creative souls. We believe that the combination of beautiful nature, instruments with a story, and modern background technology that ensures no idea gets lost creates true synergy for something exceptional.</span><span class="de">Unsere Türen stehen allen kreativen Menschen offen. Wir glauben, dass die Kombination aus schöner Natur, Instrumenten mit Geschichte und moderner Technik im Hintergrund, damit kein Einfall verloren geht, die richtige Synergie für etwas Besonderes schafft.</span></p>
+            <div class="founders-bio">
+              <div class="founder-block">
+                <h3 class="founder-name">Jindřich Traxmandl</h3>
+                <p class="founder-text"><span class="cs">Kytarista kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, nadšenec do moderních technologií, který nedá dopustit na klasické vintage nástroje a aparáty.</span><span class="en">Guitarist of the band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, enthusiastic about modern technologies and devoted to classic vintage instruments and amps.</span><span class="de">Gitarrist der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, begeistert von moderner Technik und zugleich überzeugt von klassischen Vintage-Instrumenten und Verstärkern.</span></p>
+              </div>
+              <div class="founder-block">
+                <h3 class="founder-name">Andrea Kohoutová</h3>
+                <p class="founder-text"><span class="cs">Andrea je zpěvačka, baskytaristka kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, archeoložka a aktuálně hlavní pekařka mlýna :-). Stará se o provoz a zázemí mlýna, kde peče skvělý domácí chléb - důležitý bonus pro naše hosty.</span><span class="en">Andrea is a singer and bassist in <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, an archaeologist, and currently the head baker at the mill :-). She takes care of mill operations and facilities, where she bakes great homemade bread — an important bonus for our guests.</span><span class="de">Andrea ist Sängerin und Bassistin der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, Archäologin und aktuell Hauptbäckerin der Mühle :-). Sie kümmert sich um den Betrieb und das Umfeld der Mühle, wo sie hervorragendes hausgemachtes Brot backt — ein wichtiger Bonus für unsere Gäste.</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="socials contact-social-icons rev rev-d2">
+      <a href="https://www.instagram.com/mlynnapile" target="_blank" rel="noopener noreferrer" class="soc-icon" aria-label="Instagram" title="Instagram">
+        <svg viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"></rect><circle cx="12" cy="12" r="4.1"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg>
+      </a>
+      <a href="https://www.youtube.com/@mlynnapile" target="_blank" rel="noopener noreferrer" class="soc-icon" aria-label="YouTube" title="YouTube">
+        <svg viewBox="0 0 24 24"><path d="M21 12s0-3.2-.4-4.7a2.7 2.7 0 0 0-1.9-1.9C17.2 5 12 5 12 5s-5.2 0-6.7.4a2.7 2.7 0 0 0-1.9 1.9C3 8.8 3 12 3 12s0 3.2.4 4.7a2.7 2.7 0 0 0 1.9 1.9C6.8 19 12 19 12 19s5.2 0 6.7-.4a2.7 2.7 0 0 0 1.9-1.9c.4-1.5.4-4.7.4-4.7Z"></path><path d="m10 9.3 5 2.7-5 2.7Z"></path></svg>
+      </a>
+      <a href="https://www.facebook.com/share/1CWTAs8zoP/" target="_blank" rel="noopener noreferrer" class="soc-icon" aria-label="Facebook" title="Facebook">
+        <svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3c-2.8 0-5 2.2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.6.4-1 1-1Z"></path></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="ft-copy"><span class="cs">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="en">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="de">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span></span>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
+/* CURSOR */
+const C=document.getElementById('c'),R=document.getElementById('cr');
+document.addEventListener('mousemove',e=>{C.style.left=e.clientX+'px';C.style.top=e.clientY+'px';R.style.left=e.clientX+'px';R.style.top=e.clientY+'px';});
+document.querySelectorAll('a,button,.pkg-card,.room-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{C.style.transform='translate(-50%,-50%) scale(2.8)';R.style.width='52px';R.style.height='52px';R.style.borderColor='rgba(176,141,87,.75)';});
+  el.addEventListener('mouseleave',()=>{C.style.transform='translate(-50%,-50%) scale(1)';R.style.width='34px';R.style.height='34px';R.style.borderColor='rgba(176,141,87,.45)';});
+});
+
+/* SCROLL / PROGRESS / NAV */
+const nav=document.getElementById('nav'),prog=document.getElementById('prog');
+const locationSectionDom=document.getElementById('location');
+const contactSectionDom=document.getElementById('contact');
+if(locationSectionDom&&contactSectionDom&&locationSectionDom.nextElementSibling!==contactSectionDom){
+  locationSectionDom.parentNode.insertBefore(locationSectionDom,contactSectionDom);
+}
+const secs=[...document.querySelectorAll('section')];
+const dots=[...document.querySelectorAll('.dot')];
+const links=[...document.querySelectorAll('.nav-links a')];
+window.addEventListener('scroll',()=>{
+  const st=window.scrollY,dh=document.documentElement.scrollHeight-innerHeight;
+  prog.style.width=(st/dh*100)+'%';
+  nav.classList.toggle('scrolled',st>60);
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=innerHeight*.55)cur=s.id;});
+  if(cur&&cur!==currentSectionId){
+    currentSectionId=cur;
+    if(cur!=='place')hidePlaceHistoryOverlay(true);
+    if(cur!=='residency'){
+      hideResidencyChlebaOverlay(true);
+      hideResidencyPackageOverlay(true);
+      closeInlineResidencyVideo(true);
+    }
+    syncBackgroundVideos();
+  }
+  dots.forEach(d=>d.classList.toggle('active',d.dataset.t===cur));
+  links.forEach(a=>a.classList.toggle('active',a.dataset.s===cur));
+});
+dots.forEach(d=>d.addEventListener('click',()=>document.getElementById(d.dataset.t).scrollIntoView({behavior:'smooth'})));
+
+/* BG VIDEOS */
+const bgVideoFrames=[...document.querySelectorAll('.bg-video video')];
+const bgFrameBySectionId=new Map(
+  [...document.querySelectorAll('section')].map(section=>[section.id,section.querySelector('.bg-video video')]).filter(([,frame])=>Boolean(frame))
+);
+const bgMediaBySectionId=new Map(
+  [...document.querySelectorAll('section')].map(section=>{
+    const video=section.querySelector('.bg-video video');
+    const source=video?.querySelector('source')||null;
+    const fallback=section.querySelector('.bg-video .bg-fallback')||null;
+    return [section.id,{video,source,fallback}];
+  }).filter(([,media])=>Boolean(media.video&&media.source))
+);
+const pbtn=document.getElementById('pbtn');
+const picon=pbtn?.querySelector('.pause-icon')||null;
+const modeBtn=document.getElementById('modeBtn');
+const contactSection=document.getElementById('contact');
+const aboutToggleBtn=document.getElementById('aboutToggleBtn');
+const faqToggleBtn=document.getElementById('faqToggleBtn');
+const eqEmbedFrame=document.querySelector('.eq-embed-frame');
+const placeSection=document.getElementById('place');
+const placeBgWrap=placeSection?.querySelector('.bg-video')||null;
+const placeTimeline=placeSection?.querySelector('.place-right')||null;
+const placeHistoryVideo=placeSection?.querySelector('.history-overlay')||null;
+const residencySection=document.getElementById('residency');
+const residencyBgWrap=residencySection?.querySelector('.bg-video')||null;
+const residencyChlebaVideo=residencySection?.querySelector('.chleba-overlay')||null;
+const chlebaTriggers=[...document.querySelectorAll('#residency .chleba-trigger')];
+const residencyPkgCards=[...document.querySelectorAll('#residency .pkg-card[data-pkg]')];
+const residencyPkgVideos={
+  into:residencySection?.querySelector('.pkg-overlay-into')||null,
+  underwater:residencySection?.querySelector('.pkg-overlay-underwater')||null,
+  otherside:residencySection?.querySelector('.pkg-overlay-otherside')||null,
+  fuel:residencySection?.querySelector('.pkg-overlay-fuel')||null
+};
+const residencyPkgKeys=['into','underwater','otherside','fuel'];
+const residencyPkgInlineVideoIds={
+  into:'7RVXPBnHb-c',
+  underwater:'uQiXLcspREY',
+  otherside:'X7lvikbWnMQ',
+  fuel:'5INpfHr0lu4'
+};
+let activeInlineResidencyPkg=null;
+const resFaqList=document.getElementById('resFaqList');
+const BG_ASSET_REV='20260221e';
+const BG_VARIANTS={
+  hero:{
+    day:{horizontal:'VDj9aKHnpcw',vertical:'M4QkWhz7CDo'},
+    night:{horizontal:'bPBM5J8v_aQ',vertical:'DY09nnytbjc'}
+  },
+  studio:{
+    day:{horizontal:'O431B93W9UY',vertical:'PNnMOPbABZo'},
+    night:{horizontal:'b4tTKrUevzM',vertical:'PNnMOPbABZo'}
+  },
+  location:{
+    day:{horizontal:'tWtT7cB1Tus',vertical:'yYFR6g6jlaA'},
+    night:{horizontal:'bPBM5J8v_aQ',vertical:'DY09nnytbjc'}
+  },
+  equipment:{
+    day:{horizontal:'MczOR3DstPg',vertical:'PNnMOPbABZo'},
+    night:{horizontal:'h4IbWPSWMJE',vertical:'DY09nnytbjc'}
+  },
+  place:{
+    day:{horizontal:'b4tTKrUevzM',vertical:'b4tTKrUevzM'},
+    night:{horizontal:'b4tTKrUevzM',vertical:'b4tTKrUevzM'}
+  },
+  contact:{
+    day:{horizontal:'7UU7KmxEE6s',vertical:'t7PjeLMeBKc'},
+    night:{horizontal:'CJzYKr3JWC8',vertical:'QsHqEEj4-60'}
+  },
+  residency:{
+    day:{horizontal:'gTqXu9xU_7k',vertical:'gTqXu9xU_7k'},
+    night:{horizontal:'gTqXu9xU_7k',vertical:'gTqXu9xU_7k'}
+  }
+};
+let visualMode=localStorage.getItem('mlyn_mode')==='night'?'night':'day';
+let pauseAllVideos=false;
+let currentSectionId='hero';
+let bgAutoplayWatchdog=null;
+let placeHistoryPinned=false;
+let placeHistoryHideTimer=null;
+let residencyChlebaHideTimer=null;
+let residencyPkgHideTimer=null;
+let activeResidencyPkg=null;
+const bgVideoProgressState=new WeakMap();
+const lbtn=document.getElementById('lbtn');
+const langSwitch=document.getElementById('langSwitch');
+const langMenu=document.getElementById('langMenu');
+const langOptions=[...document.querySelectorAll('.lang-option')];
+const LANG_STORAGE_KEY='mlyn_lang';
+const SUPPORTED_LANGS=['cs','en','de'];
+const EQUIPMENT_EMBED_BASE='/equipment-table/studio-equipment.html';
+const UI_TEXTS={
+  cs:{
+    about:'O nás',
+    contact:'Kontakt',
+    faq:'FAQ - Často kladené otázky',
+    showAbout:'Zobrazit O nás',
+    showContact:'Zobrazit kontakt',
+    showFaq:'Zobrazit FAQ',
+    langMenu:'Jazykové menu',
+    menu:'Menu',
+    pause:'Pauza',
+    resume:'Přehrát',
+    switchToNight:'Přepnout na noční režim',
+    switchToDay:'Přepnout na denní režim',
+    equipmentTableTitle:'Vybavení studia'
+  },
+  en:{
+    about:'About',
+    contact:'Contact',
+    faq:'FAQ - Frequently asked questions',
+    showAbout:'Show about',
+    showContact:'Show contact',
+    showFaq:'Show FAQ',
+    langMenu:'Language menu',
+    menu:'Menu',
+    pause:'Pause',
+    resume:'Play',
+    switchToNight:'Switch to night mode',
+    switchToDay:'Switch to day mode',
+    equipmentTableTitle:'Studio equipment'
+  },
+  de:{
+    about:'Über uns',
+    contact:'Kontakt',
+    faq:'FAQ - Häufig gestellte Fragen',
+    showAbout:'Über uns anzeigen',
+    showContact:'Kontakt anzeigen',
+    showFaq:'FAQ anzeigen',
+    langMenu:'Sprachauswahl',
+    menu:'Menü',
+    pause:'Pause',
+    resume:'Abspielen',
+    switchToNight:'Zum Nachtmodus wechseln',
+    switchToDay:'Zum Tagmodus wechseln',
+    equipmentTableTitle:'Studioausstattung'
+  }
+};
+const TITLE_BY_LANG={
+  cs:'Mlýn na Pile | Creative Mill Residency',
+  en:'Mlýn na Pile | Creative Mill Residency',
+  de:'Mlýn na Pile | Kreatives Mill Retreat'
+};
+let lang='cs';
+const RES_FAQ_ITEMS_BY_LANG={
+  cs:[
+    {q:'Straší na mlýně?',a:'Ne ;-)'},
+    {q:'Jste plátci DPH?',a:'Ano, jsme plátci DPH. Všechny ceny na webu jsou uvedeny včetně DPH.'},
+    {q:'Lze pronajmout celý objekt?',a:'Ano. Celý komplex lze rezervovat minimálně na 3 dny.'},
+    {q:'Smí se v mlýně kouřit?',a:'Nesmí. Mlýn je z velké části ze dřeva, je zde hodně protipožárních ochran, které by okamžitě spustili hlasitý poplacha a vzdálené notifikace - tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.'},
+    {q:'Mohu si dovézt vlastní aparaturu a je objekt dostatečně zabezpečen?',a:'Samozřejmě můžete, aparatura se dá vyložit přímo před studiem. Objekt je zabezpečen na několika úrovních, současně je na hrázy kde projede jen jedno auto. Vykrást takový objekt s aparaturou, která by opravdu těžko veřejně prodávala úplně nedává smysl... Zlodějům bychom nedoporučovali s ohledem na výše zmíněné okolnosti, nad tím vůbec uvažovat.... ;-)'},
+    {q:'Poskytujete ubytování i samostatně?',a:'Ubytování je součástí pobytu ve studiu během kreativní práce.'},
+    {q:'Jak se k nám dostanu?',a:'Autem: přímý přístup, soukromé parkování. Vlakem: 10 min pěšky ze stanice Trhanov. Letecky: 1h 45min z letiště Praha, 2h z letiště Mnichov, pick-up služba k dispozici.'},
+    {q:'Mohu přijet i sám, nebo je akce určena pouze pro kapely a týmy?',a:'Jasně - pro sólo umělce je k dispozici i looper Plethora X5 od TC Electronic. ;-)'},
+    {q:'Máte catering, nebo si musím řešit jídlo sám?',aHtml:'Součástí pobytu je vždy snídaně nebo brunch a vždy domácí kváskový <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">chleba</a>, který pečeme ve venkovní peci. Flexibilní možnosti stravování: In-house catering s lokálními ingrediencemi, pizza pec pro společné večeře (až 8 pizz), plně vybavená kuchyň pro vlastní vaření, rozvoz z místních restaurací z Domažlic.'},
+    {q:'Mluvíte anglicky/německy?',a:'Vícejazyčný tým: Čeština - rodilí mluvčí, Angličtina - plynule (Jindřich, Andrea, tech tým), Němčina - konverzační úroveň (regionální výhoda), překladatelské služby pro smlouvy.'},
+    {q:'Mohu přijet s dětmi i se psem?',a:'Ano, všichni jsou vítáni. Jsou zde omalovánky, knížky, hračky na zahradu i na ven. Pejsci jsou také vítáni, ale pozor - pozemek není komplet oplocen.'},
+    {q:'Během pobytu jsme si u vás oblíbili konkrétní kytarový rig. Je možné zapůjčení na dohrávky ve studiu, kde dokončujeme materiál k desce?',a:'Ano, samozřejmě. Po předchozí domluvě je možné vybraný kytarový chain zapůjčit i na následné dohrávky. (Pozn. pouze nástroje,které vlastníme, zbytek je na dohodě.)'}
+  ],
+  en:[
+    {q:'Is the mill haunted?',a:'No ;-)'},
+    {q:'Are you VAT registered?',a:'Yes, we are VAT registered. All prices on the website include VAT.'},
+    {q:'Can the entire property be rented?',a:'Yes. The entire complex can be booked for a minimum of 3 days.'},
+    {q:'Is smoking allowed in the mill?',a:'No. The mill is largely wooden and has extensive fire protection systems that would immediately trigger loud alarms and remote notifications, so your own instruments are safe.'},
+    {q:'Can I bring my own equipment and is the property secure enough?',a:'Of course. Equipment can be unloaded directly in front of the studio. The property is secured on several levels and has a single access road over the dam.'},
+    {q:'Do you provide accommodation separately?',a:'Accommodation is part of the studio stay during creative work.'},
+    {q:'How do I get there?',a:'By car: direct access, private parking. By train: 10 minutes on foot from Trhanov station. By plane: 1h 45m from Prague Airport, 2h from Munich Airport, pick-up service available.'},
+    {q:'Can I come alone, or is this only for bands and teams?',a:'Sure. For solo artists we also have the TC Electronic Plethora X5 looper available. ;-)'},
+    {q:'Do you provide catering, or do I need to arrange my own food?',aHtml:'Every stay includes breakfast or brunch and always homemade sourdough <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">bread</a> baked in our outdoor oven. Flexible dining options include in-house catering with local ingredients, pizza oven dinners, a fully equipped kitchen, and delivery from Domažlice restaurants.'},
+    {q:'Do you speak English/German?',a:'Multilingual team: Czech native speakers, fluent English (Jindřich, Andrea, tech team), conversational German (regional advantage), and translation support for contracts.'},
+    {q:'Can I come with children and a dog?',a:'Yes, everyone is welcome. We have coloring books, toys, and outdoor games. Dogs are welcome too, but note that the land is not fully fenced.'},
+    {q:'During our stay we loved a specific guitar rig. Can we borrow it for overdubs elsewhere?',a:'Yes. By prior arrangement, selected guitar chains can be borrowed for follow-up overdubs. (Only instruments we own; the rest by agreement.)'}
+  ],
+  de:[
+    {q:'Spukt es in der Mühle?',a:'Nein ;-)'},
+    {q:'Sind Sie umsatzsteuerpflichtig?',a:'Ja, wir sind umsatzsteuerpflichtig. Alle Preise auf der Website verstehen sich inklusive MwSt.'},
+    {q:'Kann man das gesamte Objekt mieten?',a:'Ja. Der gesamte Komplex kann für mindestens 3 Tage gebucht werden.'},
+    {q:'Ist Rauchen in der Mühle erlaubt?',a:'Nein. Die Mühle besteht größtenteils aus Holz und ist mit Brandschutzsystemen ausgestattet, die sofort Alarme und Fernbenachrichtigungen auslösen würden.'},
+    {q:'Kann ich eigenes Equipment mitbringen und ist das Objekt ausreichend gesichert?',a:'Natürlich. Das Equipment kann direkt vor dem Studio ausgeladen werden. Das Objekt ist auf mehreren Ebenen gesichert und hat nur eine Zufahrt über den Damm.'},
+    {q:'Bieten Sie Unterkunft auch separat an?',a:'Die Unterkunft ist Teil des Studioaufenthalts während der kreativen Arbeit.'},
+    {q:'Wie komme ich zu Ihnen?',a:'Mit dem Auto: direkte Zufahrt, privater Parkplatz. Mit dem Zug: 10 Minuten zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h45 von Prag, 2h von München, Abholservice verfügbar.'},
+    {q:'Kann ich auch alleine kommen oder ist das nur für Bands und Teams?',a:'Natürlich. Für Solo-Künstler steht auch der Plethora X5 Looper von TC Electronic bereit. ;-)'},
+    {q:'Gibt es Catering oder muss ich mich selbst um Essen kümmern?',aHtml:'Zum Aufenthalt gehört immer Frühstück oder Brunch sowie hausgebackenes Sauerteig-<a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">Brot</a> aus dem Ofen. Flexible Verpflegung: Inhouse-Catering mit lokalen Zutaten, Pizzaofen, voll ausgestattete Küche und Lieferdienste aus Domažlice.'},
+    {q:'Sprechen Sie Englisch/Deutsch?',a:'Mehrsprachiges Team: Tschechisch (Muttersprache), fließend Englisch (Jindřich, Andrea, Tech-Team), Deutsch auf Konversationsniveau und Übersetzungshilfe für Verträge.'},
+    {q:'Kann ich mit Kindern und Hund kommen?',a:'Ja, alle sind willkommen. Es gibt Malbücher, Bücher und Spielzeug. Hunde sind ebenfalls willkommen, das Gelände ist jedoch nicht vollständig eingezäunt.'},
+    {q:'Wir mochten bei unserem Aufenthalt ein bestimmtes Gitarren-Rig. Ist Ausleihe für Overdubs möglich?',a:'Ja, nach vorheriger Absprache können ausgewählte Gitarren-Chains auch für spätere Overdubs ausgeliehen werden. (Nur Instrumente in unserem Besitz, der Rest nach Vereinbarung.)'}
+  ]
+};
+
+function detectLangFromPathname(){
+  const path=(window.location.pathname||'/').replace(/\/+$/,'');
+  if(path.endsWith('/en'))return'en';
+  if(path.endsWith('/de'))return'de';
+  return'cs';
+}
+
+function getBasePathWithoutLang(pathname){
+  const clean=(pathname||'/').replace(/\/+$/,'')||'/';
+  const parts=clean.split('/').filter(Boolean);
+  if(parts.length&&/\.html?$/i.test(parts[parts.length-1]))parts.pop();
+  if(parts.length&&SUPPORTED_LANGS.includes(parts[parts.length-1]))parts.pop();
+  return '/'+parts.join('/');
+}
+
+function getPathForLang(nextLang){
+  const base=getBasePathWithoutLang(window.location.pathname);
+  if(nextLang==='cs')return base==='/'?'/':base;
+  return base==='/'?`/${nextLang}`:`${base}/${nextLang}`;
+}
+
+function renderResFaq(){
+  if(!resFaqList)return;
+  const items=RES_FAQ_ITEMS_BY_LANG[lang]||RES_FAQ_ITEMS_BY_LANG.cs;
+  resFaqList.innerHTML='';
+  items.forEach((item)=>{
+    const li=document.createElement('li');
+    const details=document.createElement('details');
+    details.className='resfaq-item';
+    const summary=document.createElement('summary');
+    summary.className='resfaq-q';
+    summary.textContent=item.q;
+    const ans=document.createElement('div');
+    ans.className='resfaq-a';
+    ans.innerHTML=item.aHtml||`<p>${(item.a||'').replace(/\n/g,'<br>')}</p>`;
+    details.appendChild(summary);
+    details.appendChild(ans);
+    details.addEventListener('toggle',()=>{
+      if(!details.open)return;
+      resFaqList.querySelectorAll('details.resfaq-item[open]').forEach((el)=>{if(el!==details)el.open=false;});
+    });
+    li.appendChild(details);
+    resFaqList.appendChild(li);
+  });
+}
+
+function setContactView(view){
+  if(!contactSection)return;
+  const finalView=(view==='about'||view==='faq')?view:'details';
+  const text=UI_TEXTS[lang]||UI_TEXTS.cs;
+  contactSection.classList.remove('view-details','view-about','view-faq');
+  contactSection.classList.add(`view-${finalView}`);
+  if(aboutToggleBtn){
+    const aboutActive=finalView==='about';
+    aboutToggleBtn.setAttribute('aria-pressed',aboutActive?'true':'false');
+    aboutToggleBtn.textContent=aboutActive?text.contact:text.about;
+    aboutToggleBtn.setAttribute('aria-label',aboutActive?text.showContact:text.showAbout);
+  }
+  if(faqToggleBtn){
+    const faqActive=finalView==='faq';
+    faqToggleBtn.setAttribute('aria-pressed',faqActive?'true':'false');
+    faqToggleBtn.textContent=faqActive?text.contact:text.faq;
+    faqToggleBtn.setAttribute('aria-label',faqActive?text.showContact:text.showFaq);
+  }
+}
+
+if(aboutToggleBtn){
+  aboutToggleBtn.addEventListener('click',()=>{
+    const isAbout=contactSection?.classList.contains('view-about');
+    setContactView(isAbout?'details':'about');
+  });
+}
+if(faqToggleBtn){
+  faqToggleBtn.addEventListener('click',()=>{
+    const isFaq=contactSection?.classList.contains('view-faq');
+    setContactView(isFaq?'details':'faq');
+  });
+}
+
+function getViewportOrientation(){
+  const vw=window.innerWidth;
+  const vh=window.innerHeight;
+  return vh>vw?'vertical':'horizontal';
+}
+function markBgVideoReady(video){
+  video.closest('.bg-video')?.classList.add('loaded');
+}
+function setBgBlocked(video,blocked){
+  video.closest('.bg-video')?.classList.toggle('blocked',Boolean(blocked));
+}
+function setBgNeedsGesture(video,needs){
+  video.closest('.bg-video')?.classList.toggle('needs-gesture',Boolean(needs));
+}
+const bgRetryState=new WeakMap();
+let autoplayUserUnlocked=false;
+
+function clearBgRetry(video){
+  const state=bgRetryState.get(video);
+  if(state?.timer)clearTimeout(state.timer);
+  bgRetryState.set(video,{count:0,timer:null});
+}
+
+function scheduleBgRetry(video,delay=260){
+  const activeVideo=bgFrameBySectionId.get(currentSectionId);
+  if(!video||pauseAllVideos||document.hidden||activeVideo!==video)return;
+  const prev=bgRetryState.get(video)||{count:0,timer:null};
+  if(prev.timer)clearTimeout(prev.timer);
+  const nextCount=Math.min(prev.count+1,8);
+  const nextDelay=Math.min(delay*(1+nextCount*0.38),2200);
+  const timer=setTimeout(()=>{
+    const nowActive=bgFrameBySectionId.get(currentSectionId);
+    if(pauseAllVideos||document.hidden||nowActive!==video)return;
+    playBgVideo(video,{fromRetry:true});
+  },nextDelay);
+  bgRetryState.set(video,{count:nextCount,timer});
+}
+
+function playBgVideo(video){
+  if(!video||pauseAllVideos)return;
+  const markNeedsGestureFromError=(err)=>{
+    const errorName=err?.name||'';
+    const isGestureNeeded=errorName==='NotAllowedError';
+    const isFatal=errorName==='NotSupportedError'||errorName==='NotFoundError'||errorName==='EncodingError';
+    setBgNeedsGesture(video,isGestureNeeded);
+    setBgBlocked(video,isFatal);
+    if(!isFatal)scheduleBgRetry(video,isGestureNeeded?520:240);
+  };
+  const activeVideo=bgFrameBySectionId.get(currentSectionId);
+  if(activeVideo!==video)return;
+  video.preload='auto';
+  video.muted=true;
+  video.defaultMuted=true;
+  video.volume=0;
+  video.controls=false;
+  video.playbackRate=1;
+  if(video.currentTime<.01&&video.readyState>=2){
+    try{video.currentTime=.02;}catch(e){}
+  }
+  if(video.__playPending)return;
+  video.__playPending=true;
+  const p=video.play();
+  if(p&&typeof p.then==='function'){
+    p.then(()=>{
+      video.__playPending=false;
+      autoplayUserUnlocked=true;
+      setBgNeedsGesture(video,false);
+      setBgBlocked(video,false);
+      clearBgRetry(video);
+      if(video.paused)scheduleBgRetry(video,220);
+    }).catch((err)=>{
+      video.__playPending=false;
+      markNeedsGestureFromError(err);
+    });
+  }else{
+    video.__playPending=false;
+    if(video.paused)scheduleBgRetry(video,220);
+  }
+}
+
+function forceResumeActiveVideo(){
+  if(pauseAllVideos||document.hidden)return;
+  const activeVideo=bgFrameBySectionId.get(currentSectionId);
+  if(!activeVideo)return;
+  activeVideo.muted=true;
+  activeVideo.defaultMuted=true;
+  activeVideo.volume=0;
+  activeVideo.autoplay=true;
+  activeVideo.loop=true;
+  activeVideo.playsInline=true;
+  if(activeVideo.paused){
+    if(activeVideo.readyState<2){
+      try{activeVideo.load();}catch(e){}
+    }
+    playBgVideo(activeVideo);
+    if(activeVideo.paused){
+      try{activeVideo.currentTime=Math.max(0.01,(activeVideo.currentTime||0)+0.02);}catch(e){}
+      playBgVideo(activeVideo);
+    }
+  }
+}
+
+function pauseBgVideo(video){
+  if(!video)return;
+  video.preload='metadata';
+  try{video.pause();}catch(e){}
+}
+
+function playPlaceHistoryVideo(){
+  if(!placeHistoryVideo||pauseAllVideos||currentSectionId!=='place')return;
+  placeHistoryVideo.muted=true;
+  placeHistoryVideo.defaultMuted=true;
+  const p=placeHistoryVideo.play();
+  if(p&&typeof p.then==='function'){
+    p.then(()=>placeBgWrap?.classList.remove('history-blocked')).catch(()=>placeBgWrap?.classList.add('history-blocked'));
+  }
+}
+
+function showPlaceHistoryOverlay(pin=false){
+  if(!placeBgWrap)return;
+  if(pin)placeHistoryPinned=true;
+  if(placeHistoryHideTimer){clearTimeout(placeHistoryHideTimer);placeHistoryHideTimer=null;}
+  placeBgWrap.classList.add('history-on');
+  playPlaceHistoryVideo();
+}
+
+function hidePlaceHistoryOverlay(force=false){
+  if(!placeBgWrap)return;
+  if(!force&&placeHistoryPinned)return;
+  placeHistoryPinned=false;
+  placeBgWrap.classList.remove('history-on');
+  if(placeHistoryHideTimer)clearTimeout(placeHistoryHideTimer);
+  placeHistoryHideTimer=setTimeout(()=>{try{placeHistoryVideo?.pause();}catch(e){}},820);
+}
+
+function playResidencyChlebaVideo(){
+  if(!residencyChlebaVideo||pauseAllVideos||currentSectionId!=='residency')return;
+  residencyChlebaVideo.muted=true;
+  residencyChlebaVideo.defaultMuted=true;
+  const p=residencyChlebaVideo.play();
+  if(p&&typeof p.then==='function'){
+    p.then(()=>residencyBgWrap?.classList.remove('chleba-blocked')).catch(()=>residencyBgWrap?.classList.add('chleba-blocked'));
+  }
+}
+
+function showResidencyChlebaOverlay(){
+  if(!residencyBgWrap)return;
+  if(residencyChlebaHideTimer){clearTimeout(residencyChlebaHideTimer);residencyChlebaHideTimer=null;}
+  residencyBgWrap.classList.add('chleba-on');
+  playResidencyChlebaVideo();
+}
+
+function hideResidencyChlebaOverlay(force=false){
+  if(!residencyBgWrap)return;
+  if(!force&&chlebaTriggers.some((el)=>el.matches(':hover')))return;
+  residencyBgWrap.classList.remove('chleba-on');
+  if(residencyChlebaHideTimer)clearTimeout(residencyChlebaHideTimer);
+  residencyChlebaHideTimer=setTimeout(()=>{try{residencyChlebaVideo?.pause();}catch(e){}},520);
+}
+
+function setResidencyPackageBlocked(key,blocked){
+  if(!residencyBgWrap)return;
+  residencyBgWrap.classList.toggle(`pkg-blocked-${key}`,Boolean(blocked));
+}
+
+function playResidencyPackageVideo(key){
+  const video=residencyPkgVideos[key];
+  if(!video||pauseAllVideos||currentSectionId!=='residency')return;
+  video.muted=true;
+  video.defaultMuted=true;
+  const p=video.play();
+  if(p&&typeof p.then==='function'){
+    p.then(()=>setResidencyPackageBlocked(key,false)).catch(()=>setResidencyPackageBlocked(key,true));
+  }
+}
+
+function showResidencyPackageOverlay(key){
+  if(!residencyBgWrap||!residencyPkgVideos[key])return;
+  if(residencyPkgHideTimer){clearTimeout(residencyPkgHideTimer);residencyPkgHideTimer=null;}
+  activeResidencyPkg=key;
+  residencyBgWrap.classList.add('pkg-on');
+  residencyPkgKeys.forEach((k)=>residencyBgWrap.classList.toggle(`pkg-${k}`,k===key));
+  residencyPkgKeys.forEach((k)=>{if(k!==key){try{residencyPkgVideos[k]?.pause();}catch(e){}}});
+  playResidencyPackageVideo(key);
+}
+
+function hideResidencyPackageOverlay(force=false){
+  if(!residencyBgWrap)return;
+  if(!force&&residencyPkgCards.some((card)=>card.matches(':hover')))return;
+  residencyBgWrap.classList.remove('pkg-on');
+  residencyPkgKeys.forEach((k)=>residencyBgWrap.classList.remove(`pkg-${k}`));
+  activeResidencyPkg=null;
+  if(residencyPkgHideTimer)clearTimeout(residencyPkgHideTimer);
+  residencyPkgHideTimer=setTimeout(()=>{
+    residencyPkgKeys.forEach((k)=>{try{residencyPkgVideos[k]?.pause();}catch(e){}});
+  },420);
+}
+
+function buildResidencyInlineEmbed(videoId){
+  const wrap=document.createElement('div');
+  wrap.className='pkg-inline-video';
+  wrap.innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&rel=0&modestbranding=1&playsinline=1"
+    allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`;
+  return wrap;
+}
+
+function closeInlineResidencyVideo(force=false){
+  residencyPkgCards.forEach((card)=>{
+    card.classList.remove('has-inline-video','is-selected');
+    const inline=card.querySelector('.pkg-inline-video');
+    if(inline)inline.remove();
+  });
+  activeInlineResidencyPkg=null;
+  if(force||currentSectionId!=='residency')residencySection?.classList.remove('inline-video-on');
+}
+
+function openInlineResidencyVideo(key){
+  const card=residencyPkgCards.find((item)=>item.dataset.pkg===key);
+  const videoId=residencyPkgInlineVideoIds[key];
+  if(!card||!videoId)return;
+  const isSameOpen=activeInlineResidencyPkg===key&&card.classList.contains('has-inline-video');
+  if(isSameOpen){
+    closeInlineResidencyVideo(true);
+    hideResidencyPackageOverlay(true);
+    return;
+  }
+  closeInlineResidencyVideo(true);
+  const embed=buildResidencyInlineEmbed(videoId);
+  card.appendChild(embed);
+  card.classList.add('has-inline-video','is-selected');
+  activeInlineResidencyPkg=key;
+  residencySection?.classList.add('inline-video-on');
+  showResidencyPackageOverlay(key);
+}
+
+function updateModeButtonLabel(){
+  if(!modeBtn)return;
+  const isNight=visualMode==='night';
+  const text=UI_TEXTS[lang]||UI_TEXTS.cs;
+  const label=isNight?text.switchToDay:text.switchToNight;
+  modeBtn.classList.toggle('on',isNight);
+  modeBtn.setAttribute('aria-pressed',isNight?'true':'false');
+  modeBtn.setAttribute('aria-label',label);
+  modeBtn.setAttribute('title',label);
+}
+
+function resolveSectionVideoId(sectionId){
+  const bySection=BG_VARIANTS[sectionId];
+  if(!bySection)return null;
+  const orientation=getViewportOrientation();
+  const byMode=(visualMode==='night'?bySection.night:bySection.day)||bySection.day||bySection.night;
+  return byMode?.[orientation]||byMode?.horizontal||byMode?.vertical||bySection.day?.[orientation]||bySection.day?.horizontal||bySection.day?.vertical||null;
+}
+
+function updateSectionBackgroundVariant(sectionId,force=false){
+  const media=bgMediaBySectionId.get(sectionId);
+  if(!media||!media.video||!media.source)return;
+  const videoId=resolveSectionVideoId(sectionId);
+  if(!videoId)return;
+  const nextVideoSrc=`/videos/bg/${videoId}.mp4?v=${BG_ASSET_REV}`;
+  const nextFallbackSrc=`/videos/bg/${videoId}.gif?v=${BG_ASSET_REV}`;
+  const currentVideoSrc=media.source.getAttribute('src')||'';
+  if(!force&&currentVideoSrc===nextVideoSrc)return;
+  media.source.setAttribute('src',nextVideoSrc);
+  if(media.fallback)media.fallback.setAttribute('src',nextFallbackSrc);
+  setBgBlocked(media.video,false);
+  if(sectionId===currentSectionId){
+    media.video.preload='auto';
+    try{media.video.load();}catch(e){}
+    if(!pauseAllVideos)playBgVideo(media.video);
+  }else{
+    media.video.preload='metadata';
+  }
+}
+
+function updateAllBackgroundVariants(force=false){
+  bgMediaBySectionId.forEach((_,sectionId)=>updateSectionBackgroundVariant(sectionId,force));
+}
+
+function applyVisualMode(force=false){
+  document.body.classList.toggle('night-mode',visualMode==='night');
+  updateModeButtonLabel();
+  updateAllBackgroundVariants(force);
+}
+
+bgFrameBySectionId.forEach((video,sectionId)=>{
+  video.muted=true;
+  video.defaultMuted=true;
+  video.volume=0;
+  video.loop=true;
+  video.autoplay=true;
+  video.preload='metadata';
+  video.playsInline=true;
+  video.controls=false;
+  video.disablePictureInPicture=true;
+  video.setAttribute('disablepictureinpicture','');
+  video.setAttribute('disableremoteplayback','');
+  video.setAttribute('muted','');
+  video.setAttribute('autoplay','');
+  video.setAttribute('loop','');
+  video.setAttribute('playsinline','');
+  video.setAttribute('webkit-playsinline','');
+  video.setAttribute('x5-playsinline','');
+  video.setAttribute('x5-video-player-type','h5');
+  if(video.readyState>=2)markBgVideoReady(video);
+  video.addEventListener('loadedmetadata',()=>{
+    if(video.duration&&video.duration>1.2&&video.currentTime<0.1){
+      try{video.currentTime=.8;}catch(e){}
+    }
+    markBgVideoReady(video);
+    if(sectionId===currentSectionId&&!pauseAllVideos)playBgVideo(video);
+  });
+  video.addEventListener('canplay',()=>{
+    markBgVideoReady(video);
+    if(sectionId===currentSectionId&&!pauseAllVideos)playBgVideo(video);
+  });
+  video.addEventListener('playing',()=>{
+    markBgVideoReady(video);
+    setBgNeedsGesture(video,false);
+    setBgBlocked(video,false);
+  });
+  video.addEventListener('error',()=>{
+    setBgBlocked(video,true);
+  });
+  video.addEventListener('waiting',()=>{
+    if(sectionId===currentSectionId&&!pauseAllVideos)setTimeout(()=>playBgVideo(video),160);
+  });
+  video.addEventListener('stalled',()=>{
+    if(sectionId===currentSectionId&&!pauseAllVideos){
+      setTimeout(()=>playBgVideo(video),220);
+    }
+  });
+  video.addEventListener('pause',()=>{
+    if(document.hidden||pauseAllVideos||sectionId!==currentSectionId)return;
+    setTimeout(()=>playBgVideo(video),120);
+  });
+});
+
+if(placeHistoryVideo){
+  placeHistoryVideo.muted=true;
+  placeHistoryVideo.defaultMuted=true;
+  placeHistoryVideo.volume=0;
+  placeHistoryVideo.loop=true;
+  placeHistoryVideo.autoplay=true;
+  placeHistoryVideo.preload='metadata';
+  placeHistoryVideo.playsInline=true;
+  placeHistoryVideo.controls=false;
+  placeHistoryVideo.disablePictureInPicture=true;
+  placeHistoryVideo.setAttribute('disablepictureinpicture','');
+  placeHistoryVideo.setAttribute('disableremoteplayback','');
+  placeHistoryVideo.setAttribute('muted','');
+  placeHistoryVideo.setAttribute('autoplay','');
+  placeHistoryVideo.setAttribute('loop','');
+  placeHistoryVideo.setAttribute('playsinline','');
+  placeHistoryVideo.setAttribute('webkit-playsinline','');
+  placeHistoryVideo.setAttribute('x5-playsinline','');
+  placeHistoryVideo.setAttribute('x5-video-player-type','h5');
+  placeHistoryVideo.addEventListener('playing',()=>placeBgWrap?.classList.remove('history-blocked'));
+  placeHistoryVideo.addEventListener('stalled',()=>{
+    if(currentSectionId==='place'&&placeBgWrap?.classList.contains('history-on')&&!pauseAllVideos){
+      try{placeHistoryVideo.load();}catch(e){}
+      setTimeout(()=>playPlaceHistoryVideo(),180);
+    }
+  });
+}
+if(residencyChlebaVideo){
+  residencyChlebaVideo.muted=true;
+  residencyChlebaVideo.defaultMuted=true;
+  residencyChlebaVideo.volume=0;
+  residencyChlebaVideo.loop=true;
+  residencyChlebaVideo.autoplay=true;
+  residencyChlebaVideo.preload='metadata';
+  residencyChlebaVideo.playsInline=true;
+  residencyChlebaVideo.controls=false;
+  residencyChlebaVideo.disablePictureInPicture=true;
+  residencyChlebaVideo.setAttribute('disablepictureinpicture','');
+  residencyChlebaVideo.setAttribute('disableremoteplayback','');
+  residencyChlebaVideo.setAttribute('muted','');
+  residencyChlebaVideo.setAttribute('autoplay','');
+  residencyChlebaVideo.setAttribute('loop','');
+  residencyChlebaVideo.setAttribute('playsinline','');
+  residencyChlebaVideo.setAttribute('webkit-playsinline','');
+  residencyChlebaVideo.setAttribute('x5-playsinline','');
+  residencyChlebaVideo.setAttribute('x5-video-player-type','h5');
+  residencyChlebaVideo.addEventListener('playing',()=>residencyBgWrap?.classList.remove('chleba-blocked'));
+  residencyChlebaVideo.addEventListener('stalled',()=>{
+    if(currentSectionId==='residency'&&residencyBgWrap?.classList.contains('chleba-on')&&!pauseAllVideos){
+      setTimeout(()=>playResidencyChlebaVideo(),180);
+    }
+  });
+}
+residencyPkgKeys.forEach((key)=>{
+  const video=residencyPkgVideos[key];
+  if(!video)return;
+  video.muted=true;
+  video.defaultMuted=true;
+  video.volume=0;
+  video.loop=true;
+  video.autoplay=true;
+  video.preload='metadata';
+  video.playsInline=true;
+  video.controls=false;
+  video.disablePictureInPicture=true;
+  video.setAttribute('disablepictureinpicture','');
+  video.setAttribute('disableremoteplayback','');
+  video.setAttribute('muted','');
+  video.setAttribute('autoplay','');
+  video.setAttribute('loop','');
+  video.setAttribute('playsinline','');
+  video.setAttribute('webkit-playsinline','');
+  video.setAttribute('x5-playsinline','');
+  video.setAttribute('x5-video-player-type','h5');
+  video.addEventListener('playing',()=>setResidencyPackageBlocked(key,false));
+  video.addEventListener('stalled',()=>{
+    if(currentSectionId==='residency'&&activeResidencyPkg===key&&residencyBgWrap?.classList.contains('pkg-on')&&!pauseAllVideos){
+      setTimeout(()=>playResidencyPackageVideo(key),180);
+    }
+  });
+});
+if(residencyPkgCards.length){
+  residencyPkgCards.forEach((card)=>{
+    const key=card.dataset.pkg;
+    if(!key||!residencyPkgVideos[key])return;
+    card.setAttribute('tabindex','0');
+    card.addEventListener('mouseenter',()=>showResidencyPackageOverlay(key));
+    card.addEventListener('mouseleave',()=>hideResidencyPackageOverlay(false));
+    card.addEventListener('focus',()=>showResidencyPackageOverlay(key));
+    card.addEventListener('blur',()=>hideResidencyPackageOverlay(false));
+    card.addEventListener('touchstart',()=>showResidencyPackageOverlay(key),{passive:true});
+    card.addEventListener('touchend',()=>hideResidencyPackageOverlay(false),{passive:true});
+    card.addEventListener('click',(e)=>{
+      if(e.target.closest('a,button'))return;
+      openInlineResidencyVideo(key);
+    });
+    card.addEventListener('keydown',(e)=>{
+      if(e.key!=='Enter'&&e.key!==' ')return;
+      e.preventDefault();
+      openInlineResidencyVideo(key);
+    });
+  });
+}
+if(chlebaTriggers.length){
+  chlebaTriggers.forEach((trigger)=>{
+    trigger.setAttribute('tabindex','0');
+    trigger.addEventListener('mouseenter',showResidencyChlebaOverlay);
+    trigger.addEventListener('mouseleave',()=>hideResidencyChlebaOverlay(false));
+    trigger.addEventListener('focus',showResidencyChlebaOverlay);
+    trigger.addEventListener('blur',()=>hideResidencyChlebaOverlay(false));
+    trigger.addEventListener('touchstart',showResidencyChlebaOverlay,{passive:true});
+    trigger.addEventListener('touchend',()=>hideResidencyChlebaOverlay(false),{passive:true});
+  });
+}
+if(placeTimeline){
+  placeTimeline.addEventListener('mouseenter',()=>showPlaceHistoryOverlay(false));
+  placeTimeline.addEventListener('mouseleave',()=>hidePlaceHistoryOverlay(false));
+  placeTimeline.addEventListener('focusin',()=>showPlaceHistoryOverlay(false));
+  placeTimeline.addEventListener('focusout',()=>{
+    if(placeTimeline.contains(document.activeElement))return;
+    hidePlaceHistoryOverlay(false);
+  });
+  placeTimeline.addEventListener('click',(e)=>{
+    if(e.target.closest('a,button,input,textarea,select,label'))return;
+    if(placeHistoryPinned)hidePlaceHistoryOverlay(true);
+    else showPlaceHistoryOverlay(true);
+  });
+}
+
+function syncBackgroundVideos(){
+  bgFrameBySectionId.forEach((video,sectionId)=>{
+    if(pauseAllVideos||sectionId!==currentSectionId){
+      pauseBgVideo(video);
+      return;
+    }
+    playBgVideo(video);
+  });
+  if(placeHistoryVideo){
+    if(!pauseAllVideos&&currentSectionId==='place'&&placeBgWrap?.classList.contains('history-on')){
+      playPlaceHistoryVideo();
+    }else{
+      try{placeHistoryVideo.pause();}catch(e){}
+    }
+  }
+  if(residencyChlebaVideo){
+    if(!pauseAllVideos&&currentSectionId==='residency'&&residencyBgWrap?.classList.contains('chleba-on')){
+      playResidencyChlebaVideo();
+    }else{
+      try{residencyChlebaVideo.pause();}catch(e){}
+    }
+  }
+  if(activeResidencyPkg&&residencyPkgVideos[activeResidencyPkg]){
+    if(!pauseAllVideos&&currentSectionId==='residency'&&residencyBgWrap?.classList.contains('pkg-on')){
+      playResidencyPackageVideo(activeResidencyPkg);
+    }else{
+      try{residencyPkgVideos[activeResidencyPkg].pause();}catch(e){}
+    }
+  }
+}
+
+function kickBgVideos(){
+  autoplayUserUnlocked=true;
+  syncBackgroundVideos();
+  forceResumeActiveVideo();
+}
+
+function startBgAutoplayWatchdog(){
+  if(bgAutoplayWatchdog)return;
+  bgAutoplayWatchdog=setInterval(()=>{
+    if(document.hidden)return;
+    syncBackgroundVideos();
+    if(pauseAllVideos)return;
+    const activeVideo=bgFrameBySectionId.get(currentSectionId);
+    if(!activeVideo)return;
+    const st=bgVideoProgressState.get(activeVideo)||{t:-1,stalls:0};
+    const nowT=activeVideo.currentTime||0;
+    const isMoving=Math.abs(nowT-st.t)>.015;
+    const isUsable=activeVideo.readyState>=2;
+    if(activeVideo.paused||!isUsable){
+      forceResumeActiveVideo();
+      playBgVideo(activeVideo);
+      st.stalls+=1;
+    }else if(!isMoving){
+      st.stalls+=1;
+      if(st.stalls>=2)playBgVideo(activeVideo);
+      if(st.stalls>=3){
+        scheduleBgRetry(activeVideo,180);
+        st.stalls=0;
+      }
+    }else{
+      setBgBlocked(activeVideo,false);
+      setBgNeedsGesture(activeVideo,false);
+      st.stalls=0;
+    }
+    st.t=nowT;
+    bgVideoProgressState.set(activeVideo,st);
+  },550);
+}
+
+function setPauseState(paused){
+  pauseAllVideos=paused;
+  document.body.classList.toggle('pause-active',pauseAllVideos);
+  if(pauseAllVideos)document.body.classList.remove('pause-preview');
+  if(pbtn){
+    const text=UI_TEXTS[lang]||UI_TEXTS.cs;
+    const label=pauseAllVideos?text.resume:text.pause;
+    pbtn.classList.toggle('on',pauseAllVideos);
+    pbtn.setAttribute('aria-pressed',pauseAllVideos?'true':'false');
+    pbtn.setAttribute('aria-label',label);
+    pbtn.setAttribute('title',label);
+  }
+  if(picon)picon.textContent=pauseAllVideos?'>':'II';
+  bgFrameBySectionId.forEach((video)=>{video.style.animationPlayState=pauseAllVideos?'paused':'running';});
+  syncBackgroundVideos();
+}
+
+if(pbtn){
+  pbtn.addEventListener('mouseenter',()=>{if(!pauseAllVideos)document.body.classList.add('pause-preview');});
+  pbtn.addEventListener('mouseleave',()=>document.body.classList.remove('pause-preview'));
+  pbtn.addEventListener('focus',()=>{if(!pauseAllVideos)document.body.classList.add('pause-preview');});
+  pbtn.addEventListener('blur',()=>document.body.classList.remove('pause-preview'));
+  pbtn.addEventListener('click',()=>setPauseState(!pauseAllVideos));
+}
+if(modeBtn){
+  modeBtn.addEventListener('click',()=>{
+    visualMode=visualMode==='day'?'night':'day';
+    localStorage.setItem('mlyn_mode',visualMode);
+    applyVisualMode(true);
+    kickBgVideos();
+  });
+}
+lang=detectLangFromPathname();
+setContactView('details');
+applyLang();
+
+{
+  const visible=secs.find(s=>s.getBoundingClientRect().top<=innerHeight*.55&&s.getBoundingClientRect().bottom>innerHeight*.2);
+  if(visible)currentSectionId=visible.id;
+}
+applyVisualMode(true);
+syncBackgroundVideos();
+startBgAutoplayWatchdog();
+['pointerdown','touchstart','keydown','wheel'].forEach(ev=>window.addEventListener(ev,kickBgVideos,{passive:true}));
+['mousemove','touchmove','mousedown','click'].forEach(ev=>window.addEventListener(ev,kickBgVideos,{passive:true}));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)kickBgVideos();});
+window.addEventListener('focus',kickBgVideos);
+window.addEventListener('resize',()=>updateAllBackgroundVariants());
+window.addEventListener('orientationchange',()=>setTimeout(()=>updateAllBackgroundVariants(true),120));
+window.addEventListener('load',()=>{
+  updateAllBackgroundVariants(true);
+  kickBgVideos();
+  setTimeout(kickBgVideos,700);
+  setTimeout(kickBgVideos,1800);
+  setTimeout(kickBgVideos,3200);
+  setTimeout(kickBgVideos,5200);
+});
+['pointerdown','touchstart','keydown'].forEach((ev)=>{
+  window.addEventListener(ev,()=>{
+    autoplayUserUnlocked=true;
+    const activeVideo=bgFrameBySectionId.get(currentSectionId);
+    if(activeVideo)playBgVideo(activeVideo);
+  },{passive:true,once:false});
+});
+
+/* REVEAL — animace při scrollu (pokud supported) */
+if('IntersectionObserver' in window){
+  document.querySelectorAll('.rev').forEach(el=>{
+    el.style.opacity='0';el.style.transform='translateY(22px)';
+  });
+  const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.style.opacity='1';x.target.style.transform='none';}}),{threshold:.05,rootMargin:'0px 0px -30px 0px'});
+  document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
+  setTimeout(()=>document.querySelectorAll('.rev').forEach(el=>{el.style.opacity='1';el.style.transform='none';}),1200);
+}
+
+/* TIMELINE */
+const pr=document.querySelector('.place-right');
+if(pr){
+  // Nastav počáteční stav pro animaci
+  pr.querySelectorAll('.tl-item').forEach(it=>{it.style.opacity='0';it.style.transform='translateY(16px)';});
+  const tlO=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.querySelectorAll('.tl-item').forEach((it,i)=>setTimeout(()=>{it.style.opacity='1';it.style.transform='none';},i*150));});
+  },{threshold:.1});
+  tlO.observe(pr);
+  // Fallback — po 1.5s zobraz vše
+  setTimeout(()=>pr.querySelectorAll('.tl-item').forEach(it=>{it.style.opacity='1';it.style.transform='none';}),1500);
+}
+
+/* LANGUAGE */
+function updateLanguageMenuState(){
+  langOptions.forEach((option)=>option.classList.toggle('active',option.dataset.lang===lang));
+  const text=UI_TEXTS[lang]||UI_TEXTS.cs;
+  if(lbtn){
+    lbtn.setAttribute('aria-label',text.langMenu);
+    lbtn.setAttribute('title',text.langMenu);
+  }
+}
+
+function applyLang(){
+  const text=UI_TEXTS[lang]||UI_TEXTS.cs;
+  document.body.classList.remove('en','de');
+  if(lang==='en')document.body.classList.add('en');
+  if(lang==='de')document.body.classList.add('de');
+  document.documentElement.lang=lang;
+  document.title=TITLE_BY_LANG[lang]||TITLE_BY_LANG.cs;
+  if(langMenu)langMenu.setAttribute('aria-label',text.langMenu);
+  updateLanguageMenuState();
+  const hamburgerBtn=document.getElementById('hbtn');
+  if(hamburgerBtn){
+    hamburgerBtn.setAttribute('aria-label',text.menu);
+    const hamburgerLabel=hamburgerBtn.querySelector('.hamburger-label');
+    if(hamburgerLabel)hamburgerLabel.textContent=text.menu.toUpperCase();
+  }
+  if(eqEmbedFrame){
+    eqEmbedFrame.setAttribute('title',text.equipmentTableTitle);
+    eqEmbedFrame.src=`${EQUIPMENT_EMBED_BASE}?lang=${lang}`;
+  }
+  setPauseState(pauseAllVideos);
+  updateModeButtonLabel();
+  renderResFaq();
+  const currentView=contactSection?.classList.contains('view-about')?'about':contactSection?.classList.contains('view-faq')?'faq':'details';
+  setContactView(currentView);
+}
+
+function switchToLanguage(nextLang){
+  if(!SUPPORTED_LANGS.includes(nextLang))return;
+  localStorage.setItem(LANG_STORAGE_KEY,nextLang);
+  const targetPath=getPathForLang(nextLang);
+  const hash=window.location.hash||'';
+  const nextUrl=`${targetPath}${hash}`;
+  if(nextUrl===`${window.location.pathname}${window.location.hash||''}`){
+    lang=nextLang;
+    applyLang();
+    return;
+  }
+  window.location.assign(nextUrl);
+}
+
+if(lbtn&&langSwitch){
+  lbtn.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    const open=!langSwitch.classList.contains('open');
+    langSwitch.classList.toggle('open',open);
+    lbtn.setAttribute('aria-expanded',open?'true':'false');
+  });
+  document.addEventListener('click',(e)=>{
+    if(!langSwitch.contains(e.target)){
+      langSwitch.classList.remove('open');
+      lbtn.setAttribute('aria-expanded','false');
+    }
+  });
+}
+langOptions.forEach((option)=>{
+  option.addEventListener('click',()=>{
+    const nextLang=option.dataset.lang;
+    if(!nextLang)return;
+    langSwitch?.classList.remove('open');
+    if(lbtn)lbtn.setAttribute('aria-expanded','false');
+    switchToLanguage(nextLang);
+  });
+});
+
+/* HERO ENTRANCE */
+window.addEventListener('load',()=>{
+  ['.hero-badge','.hero-title','.hero-note','.scroll-cue'].forEach((s,i)=>{
+    const el=document.querySelector(s);if(!el)return;
+    Object.assign(el.style,{opacity:'0',transform:'translateY(22px)',transition:`opacity .9s ease ${i*.13}s,transform .9s ease ${i*.13}s`});
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.opacity='1';el.style.transform='translateY(0)';}));
+  });
+});
+
+/* HAMBURGER */
+const hbtn=document.getElementById('hbtn');
+const mobileNav=document.getElementById('mobileNav');
+const closeNav=document.getElementById('closeNav');
+const navLinksEl=document.querySelector('.nav-links');
+const navActionsEl=document.querySelector('.nav-actions');
+const navLogoEl=document.querySelector('.nav-logo');
+function closeMobileNav(){mobileNav?.classList.remove('open');}
+function shouldUseCompactNav(){
+  if(window.matchMedia('(orientation: portrait)').matches)return true;
+  if(window.innerWidth<=1100)return true;
+  const required=(navLogoEl?.offsetWidth||0)+(navLinksEl?.scrollWidth||0)+(navActionsEl?.scrollWidth||0)+140;
+  return required>window.innerWidth;
+}
+function updateNavCompactState(){
+  const compact=shouldUseCompactNav();
+  document.body.classList.toggle('nav-compact',compact);
+  if(!compact)closeMobileNav();
+}
+if(hbtn)hbtn.addEventListener('click',()=>mobileNav?.classList.toggle('open'));
+if(closeNav)closeNav.addEventListener('click',closeMobileNav);
+window.addEventListener('resize',updateNavCompactState);
+window.addEventListener('orientationchange',()=>setTimeout(updateNavCompactState,80));
+window.addEventListener('load',updateNavCompactState);
+updateNavCompactState();
+
+</script>
+</body>
+</html>

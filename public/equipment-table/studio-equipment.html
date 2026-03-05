@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Vybavení</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+:root{--bg:transparent;--sur:rgba(7,6,10,.58);--sur2:rgba(26,23,16,.68);--panel:rgba(7,6,10,.58);--panel-soft:rgba(7,6,10,.5);--panel-strong:rgba(7,6,10,.66);--brd:rgba(201,185,154,.18);--acc:#c8a96e;--acc2:#e0c080;--txt:#e8e4dd;--mut:#64615d;--chip:rgba(18,18,22,.58)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{height:100%;background:transparent}
+body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:var(--txt);font-family:-apple-system,'Segoe UI',system-ui,sans-serif;overflow:hidden}
+#hdr{flex-shrink:0;height:42px;display:flex;align-items:center;gap:12px;padding:0 18px;border-bottom:1px solid var(--brd);background:var(--sur)}
+#hdr h1{font-size:15px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:var(--acc);font-family:'Cormorant Garamond',serif}
+#hdr span{font-size:10px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;border-left:1px solid var(--brd);padding-left:14px}
+#tabs{flex-shrink:0;min-height:30px;display:flex;align-items:stretch;border-bottom:1px solid var(--brd);background:var(--sur);overflow-x:auto;flex-wrap:nowrap}
+#tabs::-webkit-scrollbar{height:2px}
+#tabs::-webkit-scrollbar-thumb{background:var(--brd)}
+.tb{font-size:9px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--mut);background:none;border:none;border-bottom:2px solid transparent;padding:0 8px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:5px;transition:color .15s}
+.tb:hover{color:var(--txt)}
+.tb.on{color:var(--acc);border-bottom-color:var(--acc)}
+.tb em{background:rgba(30,30,32,.72);color:var(--mut);font-style:normal;font-size:9px;padding:1px 5px;border-radius:0}
+.tb.on em{background:#29210e;color:var(--acc)}
+#main{flex:1;display:grid;grid-template-columns:270px 1fr;min-height:0}
+#list{border-right:1px solid var(--brd);overflow-y:auto;background:var(--panel)}
+#list::-webkit-scrollbar{width:3px}
+#list::-webkit-scrollbar-thumb{background:var(--brd)}
+.sec{display:none}
+.sec.on{display:block}
+.row{display:flex;align-items:flex-start;gap:9px;padding:4px 16px;border-bottom:1px solid #141416;cursor:pointer;transition:background .12s;font-size:12px;color:#c4c1bb;line-height:1.25}
+.row:hover{background:var(--sur2)}
+.row.sel{background:rgba(30,26,16,.76);border-left:2px solid var(--acc);padding-left:14px;color:var(--acc2)}
+.ico{display:none}
+#det{overflow-y:auto;padding:16px 28px;background:var(--panel)}
+#det::-webkit-scrollbar{width:3px}
+#det::-webkit-scrollbar-thumb{background:var(--brd)}
+#empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;opacity:.15}
+#empty .ei{font-size:52px}
+#empty p{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mut)}
+#dc{display:none}
+#dc.on{display:flex;flex-direction:column;min-height:100%;animation:fi .2s ease}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.clbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--acc);margin-bottom:4px}
+.dtit{font-size:28px;font-weight:300;color:var(--txt);line-height:1.12;margin-bottom:8px;padding-bottom:0;border-bottom:none;font-family:'Cormorant Garamond',serif;letter-spacing:0.3px}
+.dtit-sub{font-size:11px;font-weight:400;color:var(--mut);letter-spacing:0.5px;margin-top:5px;line-height:1.4}
+.blk{margin-bottom:12px}
+.blbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mut);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.blbl::after{content:"";flex:1;height:1px;background:var(--brd)}
+.btxt{font-size:13px;line-height:1.45;color:#a8a5a0;white-space:pre-line}
+.upgrade-txt{color:#b8a878;font-size:12px}
+.forsale-inline{display:inline-block;margin-left:10px;padding:2px 8px;background:#0d1a0d;border:1px solid rgba(100,180,100,0.35);border-radius:4px;color:#7ec87e;text-decoration:none;font-size:11px;font-weight:500;letter-spacing:0.3px;vertical-align:middle;white-space:nowrap}
+.forsale-inline:hover{color:#a8e0a8;border-color:rgba(100,180,100,0.6)}
+.chain-link{color:var(--acc);cursor:pointer;border-bottom:1px solid rgba(200,169,110,0.35);transition:color .15s}
+.chain-link:hover{color:var(--acc2);border-bottom-color:rgba(224,192,128,0.6)}
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{background:var(--chip);border:1px solid var(--brd);border-radius:0;padding:3px 9px;font-size:11px;color:#908d88}
+/* Video cards */
+.vcards{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.vcard{border:none;border-radius:0;overflow:hidden;background:var(--panel);margin-bottom:2px}
+.vcard-top{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--brd)}
+.vcard-title{font-size:12px;font-weight:600;color:#d4a84b}
+.vcard-link{font-size:11px;color:var(--acc);text-decoration:none}
+.vcard-link:hover{text-decoration:underline}
+.vcard-ctp{position:relative;cursor:pointer;overflow:hidden;height:auto;aspect-ratio:16/9;background:var(--panel-strong)}
+.ctp-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.35);transition:background .2s}
+.vcard-ctp:hover .ctp-overlay{background:rgba(0,0,0,0.15)}
+.ctp-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.ctp-play span{width:58px;height:58px;background:rgba(0,0,0,.75);border:2px solid rgba(255,255,255,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;padding-left:5px;transition:transform .2s,background .2s,border-color .2s}
+.vcard-ctp:hover .ctp-play span{transform:scale(1.12);background:rgba(200,169,110,.88);border-color:transparent}
+.vcard-embed{position:relative;padding-bottom:56.25%;height:0;overflow:hidden}
+.vcard-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:0}
+.vcard-below{padding:8px 12px;font-size:10px;line-height:1.5;color:#a8a090;white-space:normal;background:var(--panel)}
+/* Image slide arrow */
+.img-slide{position:relative;display:inline-block;width:100%}
+.slide-arrow{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.7);font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,color .2s,border-color .2s;z-index:10;padding:0}
+.slide-arrow:hover{background:rgba(200,169,110,0.75);border-color:transparent;color:#fff}
+#mesa-slide-img{transition:opacity .18s ease}
+.row-thumb{width:38px;height:38px;flex-shrink:0;border-radius:0;overflow:hidden;background:rgba(26,26,28,.72);border:1px solid var(--brd)}
+.row-thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(0.6)}
+.row.sel .row-thumb img{filter:saturate(1)}
+.drum-img{margin-top:18px;margin-bottom:0;border-radius:0;overflow:hidden}
+.drum-img img{width:100%;display:block}
+.hydropower-logo{margin-top:22px;text-align:center;position:relative;cursor:pointer}
+.hydropower-logo img{max-width:320px;width:100%;border-radius:0;opacity:0.92;display:block;margin:0 auto;border:1px solid rgba(255,255,255,0.18)}
+.zoom-photo{margin-top:20px;border-radius:0;overflow:hidden;cursor:zoom-in}
+.zoom-inner{overflow:hidden}
+.zoom-inner img{width:100%;display:block;transition:transform .6s cubic-bezier(.25,.46,.45,.94);transform-origin:center center}
+.zoom-photo:hover .zoom-inner img{transform:scale(1.09)}
+/* Crop top dark strip on Fender Telecaster Deluxe 1973 photo */
+.tele73-crop .zoom-inner{aspect-ratio:16/9;}
+.tele73-crop .zoom-inner img{width:100%;height:100%;object-fit:cover;object-position:50% 24%;}
+.src{margin-top:auto;padding-top:10px;border-top:1px solid var(--brd);font-size:10px;color:var(--mut)}
+/* Accordion */
+.acc-cat{border-bottom:1px solid #181819}
+.acc-hdr{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.3px;color:#9a9794;transition:background .12s,color .12s;user-select:none;position:relative}
+.acc-hdr:hover{background:var(--sur2);color:var(--txt)}
+.acc-hdr.open{color:var(--acc);background:rgba(14,13,9,.72)}
+.acc-ico{font-size:13px;flex-shrink:0}
+.acc-lbl{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acc-arr{font-size:14px;color:var(--mut);transition:transform .18s;flex-shrink:0;line-height:1}
+.acc-hdr.open .acc-arr{transform:rotate(90deg);color:var(--acc)}
+.acc-body{overflow:hidden}
+.acc-body .row{padding-left:28px;font-size:11px;color:#8a8784;border-bottom:1px solid #101012}
+.acc-body .row:hover{background:rgba(17,17,16,.72);color:#bbb}
+.acc-body .row.sel{background:rgba(18,15,5,.76);border-left:2px solid var(--acc);padding-left:26px;color:var(--acc2)}
+.sub-hdr{padding:6px 16px 4px;font-size:10px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#5a5752;border-top:1px solid #1a1918;margin-top:2px;user-select:none}
+.sub-hdr:first-child{border-top:none;margin-top:0}
+/* Apollo X8P special panel */
+.apollo-main{display:block;padding:10px 14px 12px;background:rgba(15,14,11,.72);border-bottom:1px solid #1a1918;cursor:pointer;border-left:2px solid transparent;transition:background .12s}
+.apollo-main:hover{background:rgba(20,18,16,.76)}
+.apollo-main.sel{background:rgba(24,21,16,.8);border-left-color:var(--acc)}
+.apollo-main-name{font-size:11.5px;font-weight:700;color:#d4c89a;letter-spacing:0.2px;line-height:1.2;margin-bottom:4px}
+.apollo-desc{font-size:10px;color:#5a5752;line-height:1.4;margin-bottom:6px}
+.apollo-hl{font-size:9.5px;color:#4a4744;line-height:1.6}
+.apollo-sub{padding:5px 14px 5px 28px;font-size:11px;color:#706d6a;border-bottom:1px solid #101012;display:flex;align-items:center;gap:6px;cursor:pointer;transition:background .12s,color .12s}
+.apollo-sub:hover{background:var(--sur2);color:#a8a5a0}
+.apollo-sub.sel{background:rgba(26,24,14,.76);color:var(--acc2);border-left:2px solid var(--acc);padding-left:26px}
+/* Apollo detail highlights */
+.hl-card{background:rgba(15,14,11,.72);border:1px solid #252523;border-radius:0;padding:10px 14px;display:flex;align-items:flex-start;gap:12px;margin-bottom:8px}
+.hl-icon{font-size:18px;flex-shrink:0;line-height:1.2}
+.hl-title{font-size:12px;font-weight:600;color:#d4c89a;margin-bottom:2px}
+.hl-sub{font-size:11px;color:#7a7774}
+/* Portrait / mobile responsive */
+@media (orientation: portrait) {
+  body{height:auto;min-height:100vh;overflow-y:auto;overflow-x:hidden}
+  #main{display:flex;flex-direction:column;overflow:visible;min-height:auto}
+  #list{border-right:none;border-bottom:1px solid var(--brd);overflow-y:auto;max-height:30vh;flex-shrink:0}
+  #det{overflow-y:visible;flex:1;min-height:50vh}
+  #hdr{padding:0 12px;height:38px}
+  #hdr h1{font-size:13px;letter-spacing:2.4px}
+  .tb{font-size:9px;padding:0 6px}
+  #tabs{min-height:28px}
+  #det{padding:14px 12px}
+  .dtit{font-size:20px}
+  .row{padding:4px 12px;font-size:11px}
+  .acc-body .row{padding-left:20px;font-size:10px}
+  .acc-body .row.sel{padding-left:18px}
+  .sub-hdr{padding:5px 12px 3px}
+  .row.sel{padding-left:10px}
+  .blbl{font-size:8px}
+  .btxt{font-size:12px}
+  .zoom-photo{margin-top:14px}
+}
+</style>
+</head>
+<body>
+<div id="hdr"><h1>Studio Vybavení</h1></div>
+<div id="tabs"></div>
+<div id="main">
+<div id="list"></div>
+<div id="det">
+<div id="empty"><div class="ei">🎸</div><p>Vyberte položku ze seznamu</p></div>
+<div id="dc"></div>
+</div>
+</div>
+<script>
+const DRUMS_IMG="images/drums_img.png";
+const TELE73_IMG="images/tele73_img.jpg";
+const JEFFBECK_IMG="images/jeffbeck_img.jpg";
+const JEFFBECK_FRONT_IMG="images/jeffbeck_front.jpg";
+const JEFFBECK_BACK_IMG="images/jeffbeck_back.jpg";
+const JEFFBECK_THIRD_IMG="images/jeffbeck_third.jpg";
+const PBASS95_IMG="images/pbass95_img.jpg";
+const TAMA_IMG="images/tama_img.jpg";
+const MARTIN_IMG="images/martin_img.jpg";
+const FENDER64_IMG="images/fender64_img.jpg";
+const MESARECT_IMG="images/mesarect_img.jpg";
+const MESA_FRONT_IMG="images/mesa_front_img.jpg";
+const MESA_BACK_IMG="images/mesa_back_img.jpg";
+const PLASMA_IMG="images/plasma_img.jpg";
+const APOLLO_IMG="images/apollo_img.jpg";
+const TIMELINE_IMG="images/timeline_img.jpg";
+const DIMEBAG_IMG="images/dimebag_img.jpg";
+const MAPEX_IMG="images/mapex_img.jpg";
+const SM7B_IMG="images/sm7b_img.jpg";
+const FLINT_IMG="images/flint_img.jpg";
+const WAHRACK_IMG="images/wahrack_img.jpg";
+const MICROAMP_IMG="images/microamp_img.jpg";
+const MARSHALL_AFD_IMG="images/marshall_afd_img.jpg";
+const HYDROPOWER_MP4="images/hydropower.mp4"
+const LIGHT_PEDAL_IMG="images/light_pedal_img.jpg";
+const ROTOVIBE_IMG="images/rotovibe_img.jpg";
+HYDROPOWER_IMG="images/recording_hydropower.jpg"
+const UAD_IMG="images/uad_plugins_img.jpg";
+const SPHERE_DLX_IMG="images/sphere_dlx_img.jpg";
+const DT770_IMG="images/dt770_img.jpg";
+const MACKIE_THUMP_IMG="images/mackie_thump_img.jpg";
+const FINALCUT_IMG="images/finalcut_img.jpg";
+const LOGICPRO_IMG="images/logicpro_xdr_shared.png";
+const APPLE_PRO_XDR_IMG="images/apple_pro_xdr_monitor_exact.png";
+const UADP_610_IMG="images/uadp_610.png";
+const UADP_1176_IMG="images/uadp_1176.png";
+const UADP_AMPEG_SVT_IMG="images/uadp_ampeg_svt.png";
+const UADP_AVALON_IMG="images/uadp_avalon.png";
+const UADP_BRIGADE_IMG="images/uadp_brigade.png";
+const UADP_CAMBRIDGE_IMG="images/uadp_cambridge.png";
+const UADP_CENTURY_IMG="images/uadp_century.png";
+const UADP_COOPER_IMG="images/uadp_cooper.png";
+const UADP_DBX160_IMG="images/uadp_dbx160.png";
+const UADP_DISTORTION_IMG="images/uadp_distortion.png";
+const UADP_DISTRESSOR_IMG="images/uadp_distressor.png";
+const UADP_DREAM65_IMG="images/uadp_dream65.png";
+const UADP_ELECTRA88_IMG="images/uadp_electra88.png";
+const UADP_EP34_IMG="images/uadp_ep34.png";
+const UADP_FAIRCHILD_IMG="images/uadp_fairchild.png";
+const UADP_GALAXY_IMG="images/uadp_galaxy.png";
+const UADP_HELIOS69_IMG="images/uadp_helios69.png";
+const UADP_LA2A_IMG="images/uadp_la2a.png";
+const UADP_LA3A_IMG="images/uadp_la3a.png";
+const UADP_LEXICON224_IMG="images/uadp_lexicon224.png";
+const UADP_LION68_IMG="images/uadp_lion68.png";
+const UADP_MANLEY_IMG="images/uadp_manley.png";
+const UADP_MARSHALL_PLEXI_IMG="images/uadp_marshall_plexi.png";
+const UADP_MOOG_IMG="images/uadp_moog.png";
+const UADP_NEVE1073_IMG="images/uadp_neve1073.png";
+const UADP_OPAL_IMG="images/uadp_opal.png";
+const UADP_OXIDE_IMG="images/uadp_oxide.png";
+const UADP_POLYMAX_IMG="images/uadp_polymax.png";
+const UADP_PULTEC_IMG="images/uadp_pultec.png";
+const UADP_PURE_PLATE_IMG="images/uadp_pure_plate.png";
+const UADP_RAVEL_IMG="images/uadp_ravel.png";
+const UADP_RUBY63_IMG="images/uadp_ruby63.png";
+const UADP_SOUND_CITY_IMG="images/uadp_sound_city.png";
+const UADP_STUDER_IMG="images/uadp_studer.png";
+const UADP_STUDIO_D_IMG="images/uadp_studio_d.png";
+const UADP_UA175_176_IMG="images/uadp_ua175_176.png";
+const UADP_V76_IMG="images/uadp_v76.png";
+const UADP_VERVE_IMG="images/uadp_verve.png";
+const UADP_WATERFALL_IMG="images/uadp_waterfall.png";
+const UADP_WOODROW55_IMG="images/uadp_woodrow55.png";
+const MAYBACH_TELEMAN_IMG="images/maybach_teleman_img.jpg";
+const AMPEG_REVERBROCKET_IMG="images/ampeg_reverbrocket_img.jpg";
+const APOLLO_REAR_IMG="images/apollo_rear_img.png";
+const PLETHORA_IMG="images/plethora_img.jpg";
+const KHDK_ABYSS_IMG="images/khdk_abyss_img.jpg";
+IMGS={drums:DRUMS_IMG,tele73:TELE73_IMG,jeffbeck:JEFFBECK_FRONT_IMG,pbass95:PBASS95_IMG,tama_snare:TAMA_IMG,martin:MARTIN_IMG,fender64:FENDER64_IMG,mesarect:MESARECT_IMG,mesa_front:MESA_FRONT_IMG,mesa_back:MESA_BACK_IMG,plasma:PLASMA_IMG,apollo:APOLLO_IMG,timeline:TIMELINE_IMG,dimebag:DIMEBAG_IMG,mapex_tabs:MAPEX_IMG,sm7b:SM7B_IMG,flint:FLINT_IMG,wahrack:WAHRACK_IMG,microamp:MICROAMP_IMG,marshall_afd:MARSHALL_AFD_IMG,light_pedal:LIGHT_PEDAL_IMG,rotovibe:ROTOVIBE_IMG,hydropower:HYDROPOWER_IMG,hydropower_mp4:HYDROPOWER_MP4,sphere_dlx:SPHERE_DLX_IMG,dt770:DT770_IMG,mackie_thump:MACKIE_THUMP_IMG,finalcut:FINALCUT_IMG,logicpro:LOGICPRO_IMG,apple_xdr:APPLE_PRO_XDR_IMG,ampeg_reverbrocket:AMPEG_REVERBROCKET_IMG,maybach_teleman:MAYBACH_TELEMAN_IMG,plethora:PLETHORA_IMG,khdk_abyss:KHDK_ABYSS_IMG};
+const D={"Fender Telecaster Deluxe (1973)": {"tech": "Tělo: jasan. Krk: javor (bolt-on). Snímače: 2× Wide Range humbucker (design Seth Lover) CuNiFe. 25.5\" menzura. ", "note": "Zakoupeno od Tomáše Varteckého. Můžete slyšet v Kytarová zbrojnice #26 a na některých deskách od Anna K.", "img": "tele73", "usedBy": ["Thom Yorke (Radiohead)", "The Edge (U2)", "Billie Joe Armstrong (Green Day)", "Graham Coxon (Blur)", "Frank Iero (My Chemical Romance)"], "src": "equipboard.com, fender.com"}, "Fender Custom Shop - Jeff Beck (Surf Green)": {"tech": "Tělo: olše (Thin C krk). Hmatník: rosewood, 9.5\" radius, 22 medium jumbo pražců. Menzura: 25.5\". Snímače: 3× Custom Shop Hot Noiseless single-coil. Tremolo: 2-point synchronized. LSR Roller nut. Finish: Surf Green.", "img": "jeffbeck_slide", "usedBy": ["Jeff Beck (solo)", "Steve Vai (Whitesnake / solo)"], "src": "fender.com, https://equipboard.com/items/fender-jeff-beck-stratocaster"}, "Fender Custom Shop - LTD 67 HSS Strat AB HR": {"tech": "HSS Stratocaster (Custom Shop 1967 Heavy Relic styl). Tělo: olše. 1× humbucker (bridge) + 2× single-coil. Aged hardware.", "note": "Tuto kytaru jsme použili pro song Fuel s kapelou Anteater (nahráno u Damiána Kučery, 2024).", "videos": [{"title": "Fuel (Anteater)", "link": "https://www.youtube.com/watch?v=UkekVsnQuaM", "thumb": "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg", "below": "Pro nahrávku (kytara) jsme použili:\n• Fender Custom Shop LTD 67 HSS Strat AB HR\n• Fender 64 Custom Deluxe Reverb\n• D&M Drive\nSólo:\n• Digitech Whammy IV\n• Strymon Timeline\n• Dunlop MXR MICRO AMP\nKabely: Mogami Platinum"}]}, "Fender Jaguar Kurt Cobain (2011) (with Graph Tech Bridge Saddles)": {"tech": "Tělo: olše. Krk: javor C-profil. Hmatník: bound rosewood, 24\" short scale, 22 pražců. Snímače: DiMarzio DP103 PAF 36th (krk) + DP100 Super Distortion (bridge). Kobylka: Tune-O-Matic. Tuners: Gotoh.", "usedBy": ["Kurt Cobain (Nirvana)", "John Frusciante (Red Hot Chili Peppers)", "Johnny Marr (The Smiths)", "Alex Turner (Arctic Monkeys)"], "upgrade": "Graph Tech String Saver Saddles – náhrada originálních ocelových sedel. String Saver materiál chrání struny před přeřezáváním a zároveň zlepšuje sustain a ladění stabilitu.", "note": "Tuto kytaru můžete slyšet v songu I Can Save You, který jsme s naší kapelou Anteater nahráli v Golden Hive pod vedením Amáka; o mix a produkci se postaral Thom Fröde.", "videos": [{"title": "I Can Save You (Anteater)", "link": "https://www.youtube.com/watch?v=DOtJ7jTPxOQ", "thumb": "https://i.ytimg.com/vi/DOtJ7jTPxOQ/hqdefault.jpg", "below": "Kytara: Fender Jaguar Kurt Cobain → Tone Wheel → Digitech Whammy IV → Strymon Timeline → Marshall AFD 100 → Marshall 1960 BX\nBasa: KHDK Abyss → AMPEG V-4B Bass Head → Ampeg SVT-112AV Cabinet"}], "src": "fender.com, equipboard.com"}, "Fender Duo-Sonic (1964-65)": {"tech": "Tělo: topol/jasan. Krk: javor (bolt-on). Short scale: 24\". Snímače: 2× single-coil. 3-polohy přepínač. Původní studentský model Fender.", "usedBy": ["Kurt Cobain (Nirvana)", "Billie Joe Armstrong (Green Day)", "Kim Gordon (Sonic Youth)"], "src": "https://equipboard.com/items/fender-duo-sonic"}, "Fender Mustang (1967)": {"tech": "Tělo: jasan. Krk: javor (bolt-on). Short scale: 24\". Snímače: 2× single-coil s phase switching. Dynamické vibrato. Rok výroby 1967.", "usedBy": ["Kurt Cobain (Nirvana)", "Matthew Healy (The 1975)", "beabadoobee (solo)", "J Mascis (Dinosaur Jr.)"], "src": "equipboard.com"}, "Fender Mustang (1966)": {"tech": "Tělo: jasan. Krk: javor (bolt-on). Short scale: 24\". Snímače: 2× single-coil s phase switching. Dynamické vibrato. Rok výroby 1966.", "usedBy": ["Kurt Cobain (Nirvana)", "Matthew Healy (The 1975)", "beabadoobee (solo)"], "src": "equipboard.com"}, "Gibson THE SG (1979)": {"tech": "Tělo: ořech (walnut) s clear lakem – spec model 'The SG' z r. 1979 (nikoliv mahagon!). Hmatník: eben. Tuners: Grover. Kobylka: Tune-O-Matic. 24.75\" menzura, 22 pražců. Vyráběno pouze ~1 rok jako ekonomická linie.", "usedBy": ["Angus Young (AC/DC)", "Tony Iommi (Black Sabbath)", "Robby Krieger (The Doors)", "Derek Trucks (Allman Brothers / solo)", "Frank Zappa (solo)"], "src": "equipboard.com, vintageguitarandbass.com"}, "Gibson Sonex (1981)": {"tech": "Tělo: Resonwood (kompozit pryskyřice + dřevo obalující mahagonové jádro). Krk: javor (bolt-on). Hmatník: rosewood, dot inlays, 22 pražců, 24.75\" menzura. Snímače: 2× Dirty Fingers humbucker. Made in Nashville.", "forsale": "https://hudebnibazar.cz/1980-1981-gibson-sonex-180-deluxe/ID623910/", "usedBy": ["Joan Jett (The Blackhearts)", "Lee Ving (Fear)"], "src": "equipboard.com, wikipedia.org"}, "Gibson Firebird Studio Special (2004)": {"tech": "Tělo: mahagon, reverse body. Krk: mahagon (set-neck). Hmatník: rosewood, 22 pražců, 24.75\" menzura. Snímače: 2× mini-humbucker. Kobylka: Tune-O-Matic.", "usedBy": ["Dave Grohl (Foo Fighters)", "Lzzy Hale (Halestorm)", "Jamie Cook (Arctic Monkeys)", "Paul Gilbert (Mr. Big)"], "src": "equipboard.com"}, "Gibson Firebird Studio (2006)": {"tech": "Tělo: mahagon, reverse body. Krk: mahagon (set-neck). Hmatník: rosewood, 22 pražců, 24.75\" menzura. Snímače: 2× mini-humbucker. Tuners: Grover Rotomatic.", "usedBy": ["Dave Grohl (Foo Fighters)", "Lzzy Hale (Halestorm)", "Jamie Cook (Arctic Monkeys)"], "src": "equipboard.com"}, "Gibson Les Paul Traditional (2009) Goldtop": {"tech": "Tělo: mahagon + maple cap (non-chambered). Krk: mahagon slim-taper. Hmatník: bound rosewood, trapézové inlays, 22 pražců, 24.75\" menzura. Snímače: Burstbucker 1 (krk) + Burstbucker 2 (bridge). 4× push-pull poty. Finisch: Goldtop.", "forsale": "https://hudebnibazar.cz/gibson-les-paul-traditional-2009-goldtop/ID655946/", "usedBy": ["Slash (Guns N' Roses / Velvet Revolver)", "Joe Perry (Aerosmith)", "Billy Gibbons (ZZ Top)"], "src": "equipboard.com"}, "Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)": {"tech": "Tělo: mahagon + maple top. Krk: mahagon. Hmatník: rosewood, 22 pražců, 24.75\" menzura. Snímače: 490R (krk) + 498T (bridge). Kobylka: Tune-O-Matic. Rok výroby 1993.", "upgrade": "Graph Tech String Saver Saddles – náhrada originálních ocelových sedel Tune-O-Matic. String Saver materiál chrání struny před přeřezáváním, zlepšuje sustain a přenos tónu.", "usedBy": ["Adam Jones (Tool)", "Alex Turner (Arctic Monkeys)", "Gary Clark Jr. (solo)"], "src": "equipboard.com"}, "Maybach Teleman": {"img": "maybach_teleman", "tech": "Německá boutique kytara ve stylu Telecasteru. Ruční výroba v Německu. Tělo: borovice (pine). Krk: javor, profil 50s. Hmotnost: 3,10 kg. Nádherný relic finish.", "forsale": "https://hudebnibazar.cz/maybach-teleman-t-54/ID742330/", "src": "maybach-guitars.de"}, "Harmony H14 (1984)": {"tech": "Americká vintage semiakustická kytara Harmony. Hollow body, DeArmond snímač, bolt-on krk. Rok výroby 1984.", "src": "Sběratelské archivy"}, "Wandre Cobra (1964)": {"tech": "Italská vintage kytara z dílny Wandre Pioli. Hliníkový krk, tělo z plastu a kovu. Vyráběno cca 1961–1965 v Itálii. Extrémně vzácný sběratelský kousek.", "src": "Sběratelské archivy"}, "Washburn WJ7S": {"tech": "Jumbo elektroakustická kytara. Solid Sitka spruce top, mahogany back & sides, rosewood hmatník, scalloped X bracing, Fishman Isys pickup.", "usedBy": ["Nuno Bettencourt (Extreme)", "Paul Stanley (KISS)", "Scott Ian (Anthrax)"], "src": "washburn.com"}, "Harley Benton Thinline": {"tech": "Thinline semi-hollow tělo ve stylu Telecasteru. Linden nebo basswood tělo, javorový krk, rosewood hmatník.", "src": "thomann.de"}, "Samick Warlock (1994)": {"tech": "BC Rich Warlock-inspired design od Samick. Basswood tělo, maple krk, rosewood hmatník, 2× humbucker. Rok výroby 1994.", "src": "Vintage gear archives"}, "Stratocaster Alto": {"tech": "Stratocaster s kratší menzurou (alto/short scale). Blíže neurčená verze – custom nebo učitelský model.", "src": "Interní popis studia"}, "Telecaster Country": {"tech": "Telecaster pro country zvuk – ash tělo, javorový krk s javorovým hmatníkem, 3-saddle brass bridge. Charakteristický twang.", "usedBy": ["Brad Paisley (solo)", "Keith Urban (solo)", "Danny Gatton (solo)"], "src": "Interní popis studia"}, "Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)": {"tech": "Dreadnought. Top + back + sides: solid satin mahogany (sapele luby). Krk: mahogany Select Hardwood. Hmatník: Richlite. Menzura: 25.4\". Elektronika: Fishman MX-T.", "usedBy": ["Kurt Cobain (Nirvana – MTV Unplugged, Martin D-18E)", "Mark Knopfler (Dire Straits)", "Dierks Bentley (country)"], "upgrade": "Martin Guitar Bridge Pin Liquid Metal DG – prémiové kovové kolíčky kobylky (brass/alloy). Zlepšují přenos vibrací, zvýrazňují sustain a přítomnost ve středních frekvencích oproti plastovým originálům.", "img": "martin", "src": "martinguitar.com"}, "Fender FA-125 Nat": {"tech": "Dreadnought akustická kytara. Laminated spruce top, basswood back & sides, javorový krk, walnut hmatník, 20 pražců, 25.3\" menzura. Entry-level model.", "src": "fender.com"}, "K Yairi 180": {"tech": "Japonská akustická kytara ze závodu K. Yairi v Kani (Gifu, Japonsko). Solid top (cedr nebo spruce), rosewood back & sides. Ruční výroba.", "usedBy": ["Paul McCartney (The Beatles / solo)", "Ry Cooder (solo)", "John Renbourn (Pentangle)"], "forsale": "https://hudebnibazar.cz/k-yairi-yw-180-1969/ID742324/", "src": "kyairi.com"}, "Cremona": {"tech": "Kytara české/slovenské tradice. Laminated spruce top, linden/maple tělo. Studentský nebo učitelský model.", "src": "Interní popis studia"}, "Fender 1995 Precision Bass PB-STD": {"tech": "Vyrobeno v Japonsku (MIJ — Made in Japan). Fender Japan Standard série, model PB-STD. Tělo: olše. Krk: javor (bolt-on). Hmatník: rosewood, 7.25\" radius, 20 pražců, 34\" menzura. Pickup: split single-coil P-Bass. Master volume + tone. Rok výroby 1995.", "note": "Tuto baskytaru jsme použili s kapelou Anteater k songu Fuel.", "img": "pbass95", "videos": [{"title": "Fuel (Anteater)", "link": "https://www.youtube.com/watch?v=UkekVsnQuaM", "thumb": "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg", "below": "Pro nahrávku (baskytara) jsme použili:\n• AMPEG V-4B Bass Head\n• Ampeg SVT-112AV Cabinet\n• Kabely Mogami Platinum"}], "usedBy": ["Steve Harris (Iron Maiden)", "Sting (The Police)", "Duff McKagan (Guns N' Roses)", "Dee Dee Ramone (Ramones)", "Mike Dirnt (Green Day)", "Roger Waters (Pink Floyd)", "John Deacon (Queen)", "Donald 'Duck' Dunn (Stax / Blues Brothers)", "Tom Hamilton (Aerosmith)", "Nate Mendel (Foo Fighters)"], "src": "equipboard.com, fender.com"}, "Squier short scale bass": {"tech": "Jaguar-style short-scale 30\" baskytara Squier (Fender). Poplar tělo, javorový krk, 9.5\" radius hmatník. Snímače: P-Bass split pickup (střed) + J-Bass single-coil (bridge). Strůny: .040–.095 gauge.", "note": "Tuto basu můžete slyšet v songu I Can Save You, který jsme s naší kapelou Anteater nahráli v Golden Hive pod vedením Amáka; o mix a produkci se postaral Thom Fröde.", "videos": [{"title": "I Can Save You (Anteater)", "link": "https://www.youtube.com/watch?v=DOtJ7jTPxOQ", "thumb": "https://i.ytimg.com/vi/DOtJ7jTPxOQ/hqdefault.jpg", "below": "Pro nahrávku (baskytara) jsme použili:\n• AMPEG V-4B Bass Head\n• Ampeg SVT-112AV Cabinet\nNahrávka vznikla v Golden Hive pod vedením Amáka; mix a produkce: Thom Fröde."}], "src": "fender.com/squier, equipboard.com"}, "Ibanez SRX 700": {"tech": "Solid mahogany tělo. Krk: 5-piece maple/walnut (bolt-on). Hmatník: rosewood, 22 pražců, 34\" menzura. Snímače: 2× Ibanez PSND2 humbucker. Elektronika: 2-band EQ. Hardware: Cosmo Black.", "forsale": "https://hudebnibazar.cz/ibanez-srx-700/ID737188/", "src": "ibanez.com"}, "Marshall AFD 100": {"img": "marshall_afd", "tech": "100W all-tube hlava. Power: 4× 6550. Preamp: 5× ECC83. Módy: AFD (Appetite For Destruction) + #34 (Slash's modded JCM800). Electronic Power Attenuation (EPA). Impedance: 4/8/16 Ω. Limitovaná edice 2 300 kusů + 100 signed.", "note": "Použito pro nahrávku songu I Can Save You s kapelou Anteater.", "videos": [{"title": "I Can Save You (Anteater)", "link": "https://www.youtube.com/watch?v=DOtJ7jTPxOQ", "thumb": "https://i.ytimg.com/vi/DOtJ7jTPxOQ/hqdefault.jpg", "below": "Kytara: Fender Jaguar Kurt Cobain → Tone Wheel → Digitech Whammy IV → Strymon Timeline → Marshall AFD 100 → Marshall 1960 BX\nBasa: KHDK Abyss → AMPEG V-4B Bass Head → Ampeg SVT-112AV Cabinet"}], "usedBy": ["Slash (Guns N' Roses / Velvet Revolver / solo)"], "src": "marshall.com, equipboard.com"}, "Fender 64 Custom Deluxe Reverb": {"img": "fender64", "tech": "20W all-tube combo, 1× 12\" Jensen C12K (ne C12Q). Power tubes: 2× 6V6. Preamp: 4× 12AX7, 2× 12AT7. Tube spring reverb + optical tremolo. Kanály: Normal + Vibrato. Hand-wired. Impedance: 4/8 Ω.", "note": "Použito pro nahrávku songů Fuel a Hope s kapelou Anteater.", "videos": [{"title": "Fuel (Anteater)", "link": "https://www.youtube.com/watch?v=UkekVsnQuaM", "thumb": "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg", "below": "Kytara: Fender Custom Shop LTD 67 HSS Strat → D&M Drive → Fender 64 Custom Deluxe Reverb\nSólo: Digitech Whammy IV → Strymon Timeline → Dunlop MXR MICRO AMP"}, {"title": "Hope (Anteater)", "link": "https://www.youtube.com/watch?v=AtiC-fuJAgk&t=9s", "thumb": "https://i.ytimg.com/vi/AtiC-fuJAgk/hqdefault.jpg", "below": "Intro čistá kytara\nKytara: Fender Jaguar Kurt Cobain → Fender 64 Custom Deluxe Reverb"}], "usedBy": ["Eric Clapton (solo)", "John Mayer (solo)", "Neil Young (solo)", "Dave Grohl (Foo Fighters)", "Billie Joe Armstrong (Green Day)", "Noel Gallagher (Oasis)"], "src": "fender.com, equipboard.com"}, "Mesa Boogie Dual Rectifier® Head, 3 Channels / 8 Modes, 100W": {"img": "mesa_tabs", "tech": "100W (přepínatelné 50/100W). 3 kanály, 8 módů celkem. Power: 4× 6L6 nebo EL34 (přepínatelné). Preamp: 5× 12AX7. Tube nebo diode rectifier (přepínatelné). Impedance: 4/8/16 Ω. Multi-Watt technologie.", "usedBy": ["James Hetfield (Metallica)", "Kirk Hammett (Metallica)", "Adam Jones (Tool)", "Daron Malakian (System of a Down)", "Dave Grohl (Foo Fighters)", "Tom DeLonge (blink-182)", "Chris Cornell (Soundgarden)"], "src": "mesaboogie.com, equipboard.com"}, "Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)": {"tech": "Mesa Boogie Rectoverb – 50W, 2 kanály, all-tube. Rectifier charakter + vestavěný reverb. FX loop. Modifikováno Antonínem Salvou pro specifický tónový charakter.", "src": "mesaboogie.com, interní info studia"}, "Tone King Imperial": {"tech": "35W (nebo 1W) all-tube combo, 1× 12\" Celestion Alnico Blue. Single channel s vestavěným attentuátorem. Americký Blackface-inspired design. Ruční výroba v USA.", "usedBy": ["John Mayer (solo)", "Joe Bonamassa (solo)", "Robben Ford (solo)"], "src": "tonekingamps.com, equipboard.com"}, "Roland JC-22": {"tech": "30W stereo solid-state combo, 2× 6.5\" reproduktory. Jazz Chorus série. Čistý transparentní zvuk. Built-in stereo chorus + vibrato. 2 kanály.", "usedBy": ["Robert Smith (The Cure)", "Andy Summers (The Police)", "Kevin Shields (My Bloody Valentine)", "Albert King (blues)", "Jazzy Jeff (DJ Jazzy Jeff & The Fresh Prince)"], "src": "roland.com, equipboard.com"}, "Ampeg Reverbrocket R212": {"img": "ampeg_reverbrocket", "tech": "Vintage all-tube kytarový combo Ampeg, 2× 12\" reproduktory. Reverb + tremolo efekty. Vintage americký zvuk 60. let.", "src": "ampeg.com"}, "Ampeg GVT5": {"tech": "5W all-tube combo, 1× 10\". Preamp: ECC83. Power: EL84. Brit-inspired vintage zvuk.", "src": "ampeg.com"}, "AMPEG V-4B Bass Head": {"tech": "100W all-tube basový head. Power: 4× 6L6GC. 3-bandový EQ, ultra-lo + ultra-hi přepínače. Impedance: 4/8 Ω. Původní model z r. 1971, reissue 2013.", "note": "Použito pro nahrávky obou songů kapely Anteater: Fuel a I Can Save You.", "videos": [{"title": "Fuel (Anteater)", "link": "https://www.youtube.com/watch?v=UkekVsnQuaM", "thumb": "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg", "below": "Bas: Fender 1995 Precision Bass PB-STD → Ampeg V-4B → Ampeg SVT-112AV Cabinet"}, {"title": "I Can Save You (Anteater)", "link": "https://www.youtube.com/watch?v=DOtJ7jTPxOQ", "thumb": "https://i.ytimg.com/vi/DOtJ7jTPxOQ/hqdefault.jpg", "below": "Bas: Squier short scale bass → Ampeg V-4B → Ampeg SVT-112AV Cabinet"}], "usedBy": ["Mike Watt (Minutemen / fIREHOSE)", "Chris Squire (Yes)", "Donald 'Duck' Dunn (Stax / Blues Brothers)", "Berry Oakley (Allman Brothers Band)"], "src": "ampeg.com, equipboard.com"}, "Marshall 1960 BX": {"tech": "4× 12\" kabinet (straight/rovný). 300W RMS. Reproduktory: 4× Celestion G12T-75 (75W každý). Impedance: 16 Ω mono. Standardní verze BX bez stereo mono-switche.", "note": "Použito pro nahrávku songu I Can Save You s kapelou Anteater (Marshall AFD 100 → 1960 BX).", "videos": [{"title": "I Can Save You (Anteater)", "link": "https://www.youtube.com/watch?v=DOtJ7jTPxOQ", "thumb": "https://i.ytimg.com/vi/DOtJ7jTPxOQ/hqdefault.jpg", "below": "Kytara: Fender Jaguar Kurt Cobain → Tone Wheel → Digitech Whammy IV → Strymon Timeline → Marshall AFD 100 → Marshall 1960 BX\nBasa: KHDK Abyss → AMPEG V-4B Bass Head → Ampeg SVT-112AV Cabinet"}], "usedBy": ["Slash (Guns N' Roses)", "Angus Young (AC/DC)", "Dave Grohl (Foo Fighters)", "Zakk Wylde (Black Label Society / Ozzy Osbourne)", "Kerry King (Slayer)", "Johnny Stevens (Highly Suspect)"], "src": "marshall.com"}, "Ampeg SVT-112AV Cabinet": {"tech": "Basový kabinet, 1× 12\" Eminence speaker. 200W RMS / 400W peak. 8 Ω. Kompaktní stohatelný Heritage SVT design. HF driver s attenuátorem.", "note": "Použito pro nahrávky obou songů kapely Anteater: Fuel a I Can Save You.", "videos": [{"title": "Fuel (Anteater)", "link": "https://www.youtube.com/watch?v=UkekVsnQuaM", "thumb": "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg", "below": "Bas: Fender 1995 Precision Bass PB-STD → Ampeg V-4B → Ampeg SVT-112AV Cabinet"}, {"title": "I Can Save You (Anteater)", "link": "https://www.youtube.com/watch?v=DOtJ7jTPxOQ", "thumb": "https://i.ytimg.com/vi/DOtJ7jTPxOQ/hqdefault.jpg", "below": "Bas: Squier short scale bass → Ampeg V-4B → Ampeg SVT-112AV Cabinet"}], "src": "ampeg.com"}, "Coffe custom CLASSIC 212": {"tech": "Handmade kytarový kabinet 2× 12\". Custom build s výběrovými reproduktory.", "src": "Custom build"}, "Dunlop DCR 2SR Rack Crybaby": {"img": "wahrack", "tech": "Rack-mount wah (2U). Stereo výstup, remote control vstup, přepínatelný rozsah. Rozšířený frekvenční rozsah oproti klasickému Cry Baby.", "usedBy": ["Slash (Guns N' Roses)", "Jerry Cantrell (Alice in Chains)", "Steve Vai (solo)", "Mark Tremonti (Alter Bridge / Creed)"], "src": "jimdunlop.com"}, "Dunlop Dimebag Cry Baby Wah": {"img": "dimebag", "tech": "Signature wah Dimebaga Darrella. Nastavitelné Q, zesílení (boost). True bypass. Robustní kovové šasi.", "usedBy": ["Dimebag Darrell (Pantera / Damageplan)"], "src": "jimdunlop.com"}, "Dunlop Zakk Wylde Rotovibe": {"img": "rotovibe", "tech": "Vibrato/chorus pedál simulující rotační reproduktor (Uni-Vibe / Leslie efekt). Expression pedál pro rychlost modulace. Analogový obvod.", "usedBy": ["Zakk Wylde (Black Label Society / Ozzy Osbourne)"], "src": "jimdunlop.com"}, "D&M Drive": {"tech": "Duální overdrive pedál (Dawner Prince / Dan & Mick). Dva nezávislé gain obvody (Drive + Boost). Aktivní EQ. Možnost paralelního/sériového řazení obou kanálů.", "note": "Použito pro nahrávku songu Fuel s kapelou Anteater (před Fender 64 Custom Deluxe Reverb).", "videos": [{"title": "Fuel (Anteater)", "link": "https://www.youtube.com/watch?v=UkekVsnQuaM", "thumb": "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg", "below": "Kytara: Fender Custom Shop LTD 67 HSS Strat → D&M Drive → Fender 64 Custom Deluxe Reverb"}], "usedBy": ["Johnny Stevens (Highly Suspect)", "Rick Beato (hudební pedagog / YouTube)", "Dan Reinhardt (Dawner Prince – spoluvývojář)"], "src": "dawnerprince.com, equipboard.com"}, "Dunlop MXR MICRO AMP": {"img": "microamp", "tech": "Čistý boost pedál. +26 dB maximální zesílení. Jeden knob (gain). Transparentní – nepřibarvuje zvuk. Vhodný pro solo boost.", "note": "Použito v sólovém řetězci pro nahrávku Fuel (Anteater).", "videos": [{"title": "Fuel (Anteater) – sólový řetězec", "link": "https://www.youtube.com/watch?v=UkekVsnQuaM", "thumb": "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg", "below": "Sólo: Digitech Whammy IV → Strymon Timeline → Dunlop MXR MICRO AMP → Fender 64 Custom Deluxe Reverb"}], "usedBy": ["Pete Townshend (The Who)", "Brian May (Queen)", "Eddie Van Halen (Van Halen)", "Tom Petty (Tom Petty and the Heartbreakers)"], "src": "jimdunlop.com, equipboard.com"}, "Tone Wheel (Salvation Audio)": {"tech": "Custom boutique efekt od Antonína Salvy. Unikátní ručně vyrobený efekt. Salva je zároveň autorem upravené Mesa Boogie Rect-o-verb v této sestavě.", "note": "Použito pro nahrávku songu I Can Save You s kapelou Anteater.", "videos": [{"title": "I Can Save You (Anteater)", "link": "https://www.youtube.com/watch?v=DOtJ7jTPxOQ", "thumb": "https://i.ytimg.com/vi/DOtJ7jTPxOQ/hqdefault.jpg", "below": "Kytara: Fender Jaguar Kurt Cobain → Tone Wheel → Digitech Whammy IV → Strymon Timeline → Marshall AFD 100 → Marshall 1960 BX\nBasa: KHDK Abyss → AMPEG V-4B Bass Head → Ampeg SVT-112AV Cabinet"}], "src": "Custom build – Salvation Audio"}, "KHDK Abyss": {"img":"khdk_abyss","tech": "High-gain bass overdrive pedál. Bi-amp technologie – dva nezávislé obvody: jeden zachovává dynamiku a barvu, druhý přidává overdriven zvuk. Dirty + Clean volume, Gain, Treble, lo/hi přepínač. Vyvinuto Kirk Hammettem (KHDK Electronics).", "usedBy": ["Justin Chancellor (Tool)", "Jean-Michel Labadie (Gojira)", "Frank Bello (Anthrax)", "Alessandro Venturella (Slipknot)", "Kello González (solo)"], "src": "khdk.com, equipboard.com/items/khdk-abyss-bass-overdrive"}, "Digitech Whammy IV": {"tech": "Pitch shifter / harmonizer. 10 pitch-shift intervalů (+/– 2 oktávy), 7 harmonizer režimů, detune. Expression pedál pro real-time pitch bend. Červená verze IV.", "note": "Použito pro sólo v songu Fuel a v songu I Can Save You s kapelou Anteater.", "videos": [{"title": "Fuel (Anteater)", "link": "https://www.youtube.com/watch?v=UkekVsnQuaM", "thumb": "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg", "below": "Pro nahrávku (kytara) jsme použili:\n• Fender Custom Shop LTD 67 HSS Strat AB HR\n• Fender 64 Custom Deluxe Reverb\n• D&M Drive\nSólo:\n• Digitech Whammy IV\n• Strymon Timeline\n• Dunlop MXR MICRO AMP\nKabely: Mogami Platinum"}, {"title": "I Can Save You (Anteater)", "link": "https://www.youtube.com/watch?v=DOtJ7jTPxOQ", "thumb": "https://i.ytimg.com/vi/DOtJ7jTPxOQ/hqdefault.jpg", "below": "Kytara: Fender Jaguar Kurt Cobain → Tone Wheel → Digitech Whammy IV → Strymon Timeline → Marshall AFD 100 → Marshall 1960 BX\nBasa: KHDK Abyss → AMPEG V-4B Bass Head → Ampeg SVT-112AV Cabinet"}], "usedBy": ["Jack White (The White Stripes / solo)", "Tom Morello (Rage Against the Machine)", "Dave Grohl (Nirvana / Foo Fighters)", "Jonny Greenwood (Radiohead)"], "src": "digitech.com, equipboard.com"}, "Gamechanger Audio Light Pedal": {"img": "light_pedal", "tech": "Spring reverb sustain pedál s unikátní optickou mechanistikou. Stisknutím pedálu se aktivuje sustain/reverb smyčka. Made in Latvia.", "usedBy": ["Daniel Lanois (producent – U2, Bob Dylan, Peter Gabriel)", "Nels Cline (Wilco)"], "src": "gamechangeraudio.com"}, "Gamechanger Audio Third Man Records PLASMA COIL": {"img": "plasma", "tech": "Fuzz/distortion pedál s high-voltage plasma discharge technologií (Xenon tube). Elektrický oblouk tvoří harmonicky bohaté zkreslení. Kolaborace Third Man Records × Gamechanger Audio.", "usedBy": ["Jack White (Third Man Records) – spolupráce na vývoji", "Johnny Stevens (Highly Suspect)"], "src": "gamechangeraudio.com"}, "Strymon Timeline": {"img": "timeline", "tech": "12 typů delay algoritmů: tape, bucket brigade, digital, reverb, lo-fi, pattern atd. 200 presetů. MIDI. Stereo I/O. Strymon SHARC DSP.", "note": "Použito pro sólo v songu Fuel a v songu I Can Save You s kapelou Anteater.", "videos": [{"title": "Fuel (Anteater)", "link": "https://www.youtube.com/watch?v=UkekVsnQuaM", "thumb": "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg", "below": "Pro nahrávku (kytara) jsme použili:\n• Fender Custom Shop LTD 67 HSS Strat AB HR\n• Fender 64 Custom Deluxe Reverb\n• D&M Drive\nSólo:\n• Digitech Whammy IV\n• Strymon Timeline\n• Dunlop MXR MICRO AMP\nKabely: Mogami Platinum"}, {"title": "I Can Save You (Anteater)", "link": "https://www.youtube.com/watch?v=DOtJ7jTPxOQ", "thumb": "https://i.ytimg.com/vi/DOtJ7jTPxOQ/hqdefault.jpg", "below": "Kytara: Fender Jaguar Kurt Cobain → Tone Wheel → Digitech Whammy IV → Strymon Timeline → Marshall AFD 100 → Marshall 1960 BX\nBasa: KHDK Abyss → AMPEG V-4B Bass Head → Ampeg SVT-112AV Cabinet"}], "usedBy": ["John Mayer (solo)", "The Edge (U2)", "David Gilmour (Pink Floyd)"], "src": "strymon.net, equipboard.com"}, "TC Electronic PolyTune": {"tech": "Chromatická pedálová ladička. Polyphonic tuning – ladí všechny struny najednou jedním úderem. Přesnost ±0.1 cent. True bypass.", "usedBy": ["John Mayer (solo)"], "src": "tcelectronic.com"}, "Electro-Harmonix POG2 (polyfonní oktáver)": {"tech": "Polyphonní oktáver. Výstupy: +1 oktáva, +2 oktávy, –1 oktáva, detuned. 3-band EQ. 8 presetů. Plně polyphonic tracking.", "usedBy": ["Jack White (The White Stripes)", "Tom Morello (Rage Against the Machine)", "John Mayer (solo)", "The Edge (U2)", "Chris Wolstenholme (Muse)", "Tim Commerford (Audioslave / Rage Against the Machine)", "Michael League (Snarky Puppy)"], "src": "ehx.com, https://equipboard.com/items/electro-harmonix-pog2"}, "Strymon Flint V2": {"img": "flint", "tech": "Tremolo + Reverb pedál. Tremola: '61 Harmonic, '63 Power Tube, '65 Photocell. Reverby: Spring, Plate, Hall. MIDI. Stereo I/O.", "usedBy": ["John Mayer (solo)", "Nels Cline (Wilco)", "Kevin Parker (Tame Impala)", "Marcus King (solo)"], "src": "strymon.net, https://equipboard.com/items/strymon-flint"}, "Boss ODB-3": {"tech": "Bass overdrive pedál. Balance knob (dry/wet). 2-band EQ. Gain + level. Rozsah od lehkého crunch po heavy distortion.", "usedBy": ["Les Claypool (Primus)", "Tim Commerford (Rage Against the Machine / Audioslave)", "Flea (Red Hot Chili Peppers)", "Robert Trujillo (Metallica)"], "src": "boss.info"}, "TC Electronic Plethora X5 (Looper/Effect)": {"img":"plethora","tech": "TonePrint multi-efektová deska. 5 simultánních efektových slotů. 6minutový stereo looper. Bluetooth editace.", "usedBy": ["Paul Gilbert (Mr. Big / solo)", "Guthrie Govan (The Aristocrats)", "Vernon Reid (Living Colour)"], "src": "tcelectronic.com"}, "EBow Plus": {"tech": "Elektronický smyčec – elektromagnetická vibrace rozehraje strunu bez fyzického dotyku. Napodobuje smyčcové nebo dechové nástroje. 2 režimy: normal + harmonic.", "videos": [{"title": "EBow – U2 – 'Where The Streets Have No Name' & technique demo", "link": "https://www.youtube.com/watch?v=5cnIQHJ169s", "thumb": "https://i.ytimg.com/vi/5cnIQHJ169s/hqdefault.jpg", "below": "Ukázka EBow techniky na kytaře – sustain, smyčcový efekt, harmonics."}], "usedBy": ["The Edge (U2)", "Peter Buck (R.E.M.)", "Robert Smith (The Cure)", "Jonny Greenwood (Radiohead)"], "src": "ebow.com, equipboard.com"}, "G-LAB TBWP True Bypass Wah Pad (2x)": {"tech": "True bypass switching unit pro wah pedály. Eliminuje koloring tónu při bypassed wah. Relay switching, LED indikátor. (2× ks)", "src": "g-lab.pl"}, "Strymon Zuma (3x)": {"tech": "Pedálový napájecí zdroj. 9 izolovaných výstupů: 9V/12V/18V, 500 mA/port. (3× ks = 27 plně izolovaných výstupů v sestavě.)", "usedBy": ["John Mayer (solo)"], "src": "strymon.net"}, "Lexicon MPX 200": {"tech": "Stereo multi-efektový procesor. 240 presetů + 200 uživatelských. Efekty: reverb, delay, chorus, flanger, pitch shift, rotary. 24-bit A/D-D/A. S/PDIF digitální I/O. XLR + jack vstupy/výstupy.", "usedBy": ["Radiohead (studiové nahrávky)", "Trent Reznor (Nine Inch Nails)"], "forsale": "https://hudebnibazar.cz/lexicon-mpx-200/ID596984/", "src": "lexicon.com"}, "Mapex Saturn V MH Exotic (Bicí souprava)": {"tech": "Souprava Mapex Saturn V MH Exotic. Shellpack: 8\"/10\"/12\"/14\"/16\" tomy + 22\" bass drum. Shell: Maple/Walnut Hybrid (MH) – javorové jádro + ořechová vrstva. Povrch: Exotic dýha. Hardware: Mapex pro série.", "img": "drums", "src": "mapexdrums.com"}, "Tama S.L.P. LST148 Big Black Steel (Snare 14\"×8\")": {"tech": "Steel shell, 14\"×8\", Matte Black. SLP = Sound Lab Project. Hardware: Black Nickel. Hoops: 1.6mm Steel Mighty Hoop. QuickTouch throw-off.", "img": "tama_snare", "src": "tama.com"}, "Zildjian K Sweet Hi-Hat 14\"": {"tech": "14\" hi-hat, K Sweet série. Teplý, dark charakter.", "src": "zildjian.com"}, "Zildjian K Custom Hybrid Crash 18\"": {"tech": "18\" crash, K Custom Hybrid série. Medium weight, fast response.", "src": "zildjian.com"}, "Sabian AAX Heavy Ride 20\"": {"tech": "20\" ride, AAX série. Heavy weight, bright projection.", "src": "sabian.com"}, "Istanbul Mehmet China 16\"": {"tech": "16\" china činel Istanbul Mehmet. Tradiční turecká výroba, ručně tepané. Charakteristický trashy, agresivní zvuk.", "src": "istanbulmehmet.com"}, "Meinl Mb8 Splash 10\"": {"tech": "10\" splash činel, Mb8 série. Bright, fast decay.", "src": "meinlcymbals.com"}, "DW 9000 Series Air Lift (Sedačka)": {"tech": "Profesionální bicí stolička DW 9000 Series s Air Lift hydraulickým systémem. Plynulá výška, stabilní základ.", "src": "dwdrums.com"}, "REMO blány": {"tech": "Sada blán REMO pro bicí soupravu. REMO je světová jednička ve výrobě bicích blán od roku 1957. Typicky: Ambassador (Coated/Clear) pro tomy a bass drum – vyvážený zvuk s dobrým sustain.", "src": "remo.com"}, "Evans blána (Snare)": {"tech": "Blána EVANS pro snare buben. Evans EC Reverse Dot nebo ONYX – tlumené střední centrum pro přesný attack a kontrolovaný sustain. Vhodné pro studiové nahrávání.", "src": "evansdrumheads.com"}, "Universal Audio Sphere DLX": {"img": "sphere_dlx", "tech": "Modelovací kondenzátorový mikrofon s velkým membránem. Emuluje přes 50 vintage mikrofonů (Neumann U47, AKG C12, Telefunken ELA M 251...). Dual-capsule design. Polar pattern: omnidirectionální až bidirectionální, plynule nastavitelný. Přímé USB + XLR výstupy. Vyžaduje UA Apollo nebo Volt interface pro modelování.", "forsale": "https://hudebnibazar.cz/prodam-novy-nerozbaleny-universal-audio-sphere-dlx/ID711107/", "src": "uaudio.com"}, "Shure SM 7 B": {"img": "sm7b", "tech": "Dynamický kardioidní mikrofon. Flat response + přepínatelný bass roll-off a presence peak. Vnitřní elektromagnetické stínění pro eliminaci RF interference.", "usedBy": ["Michael Jackson (Thriller – vokály)", "Dave Grohl (Foo Fighters)", "Billie Eilish (vokály)", "Joe Rogan (podcast)"], "src": "shure.com, https://equipboard.com/items/shure-sm7b"}, "Shure Beta 58": {"tech": "Dynamický superkardioidní vokální mikrofon. Neodymový magnet. Tailored frequency response s presence peakem 5–10 kHz. Pro živé vystoupení.", "usedBy": ["Bono (U2)"], "src": "shure.com"}, "SHURE SM57": {"tech": "Dynamický kardioidní nástrojový mikrofon. Průmyslový standard od r. 1965. Frekvenční rozsah: 40 Hz – 15 kHz. Standardní výbava prakticky každého studia světa.", "src": "shure.com"}, "Sennheiser e 906": {"tech": "Dynamický superkardioidní mikrofon pro kytarové kabinety. Plochý tvar pro zavěšení přes kabinet bez stativu. 3-polohy presence přepínač: soft / neutral / bright. 40 Hz – 18 kHz.", "src": "sennheiser.com"}, "AKG D5": {"tech": "Dynamický superkardioidní vokální mikrofon. Laminátová membrána. Výrazná přítomnost v high-mid pásmu. Efektivní odmítání zpětné vazby. 70 Hz – 20 kHz.", "src": "akg.com"}, "Universal Audio Apollo X8P Gen 2": {"img": "apollo", "tech": "Thunderbolt 3 audio interface. 16 vstupů × 22 výstupů. 24-bit/192 kHz. HEXA Core DSP (UAD plug-iny v reálném čase). 8× Unison™ preamp. Celkový dynamic range: 129 dB.", "src": "uaudio.com, https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3"}, "Logic Pro X": {"img": "logicpro", "tech": "Profesionální DAW od Apple. Neomezené tracky, Smart Tempo, Live Loops, Drummer, Space Designer, Alchemy synth. Nativní Apple Silicon.", "usedBy": ["Frank Ocean (solo)", "Kevin Parker (Tame Impala)", "Finneas (Billie Eilish)", "The Weeknd", "Drake"], "src": "apple.com/logic-pro"}, "Final Cut Pro X": {"img": "finalcut", "tech": "Profesionální video editor od Apple. Magnetic Timeline, ProRes RAW, 360° VR, HDR, multicam, Proxy workflow. Nativní Apple Silicon.", "src": "apple.com/final-cut-pro"}, "Affinity": {"tech": "Sada grafických aplikací od Serif: Affinity Photo (retušování), Affinity Designer (vektory), Affinity Publisher (DTP). Nesubskripční model.", "src": "affinity.serif.com"}, "Pixelmator Pro": {"tech": "Foto/grafický editor pro macOS. ML Super Resolution, ML Denoising, non-destructive editing. Nativní Apple Silicon.", "src": "pixelmator.com"}, "Motion": {"tech": "Apple Motion – motion graphics a VFX. 3D kompoziting, particle systems, behaviours, titulky. Integrace s Final Cut Pro X.", "src": "apple.com/motion"}, "Compressor": {"tech": "Apple Compressor – exportní a transcodingový nástroj. Batch processing, H.264/HEVC/ProRes/Dolby Vision HDR.", "src": "apple.com/compressor"}, "MainStage": {"tech": "Profesionální live performance software od Apple. Logic Pro instrumenty v živém prostředí. Patch a setlist systém, real-time MIDI + audio.", "usedBy": ["Coldplay (live)", "Hans Zimmer (live tour)"], "src": "apple.com/mainstage"}, "Apple Pro XDR 6K monitor pro color-accurate editing": {"img": "apple_xdr", "tech": "32\" Retina 6K (6016×3384). 1 000 nit sustained / 1 600 nit peak. P3 wide color, True Tone. Reference mode pro profesionální color grading.", "src": "apple.com/pro-display-xdr"}, "DJI Gimbal stabilizátor pro smooth camera movements": {"tech": "DJI 3-axis gimbal stabilizátor. Plynulá stabilizace při pohybu kamery. Kompatibilní s DSLR/mirrorless kamerami.", "src": "dji.com"}, "Projektor pro screening a presentations": {"tech": "Projektor pro screening nahrávacích session, video prezentace a interní review.", "src": "Interní vybavení studia"}, "Lighting equipment pro professional video shoots": {"tech": "Profesionální osvětlovací technika pro video natáčení. LED panely, softboxy, difuzéry.", "src": "Interní vybavení studia"}, "Reflektory Varytec LED Studio 150 2900K": {"tech": "LED studio reflektor Varytec LED Studio 150. Barevná teplota: 2900K (teplá). CRI 90+. Plynulé stmívání 0–100%.", "src": "varytec.de"}, "Neve 1073 Collection": {"tech": "UAD emulace Neve 1073 preamp + EQ. Tříbandový EQ: HF shelf, mid sweep, LF shelf + HP filter. Vyvinuto s AMS Neve.", "src": "uaudio.com"}, "Precision Channel Strip": {"tech": "UAD Precision Channel Strip – transparentní digital channel strip. HP/LP filtry, 4-bandový EQ, compressor/limiter.", "src": "uaudio.com"}, "UA 610-A Preamp & EQ": {"tech": "UAD emulace UA 610-A tube preamp + EQ z 50. let. Tube harmonic saturation. Passive EQ sekce.", "usedBy": ["Brian Wilson (The Beach Boys) – 610 preamp", "Van Morrison – 610 preamp"], "src": "uaudio.com"}, "UA 610-B Preamp & EQ": {"tech": "UAD emulace UA 610-B (updated verze 610-A). Vyšší výstupní úroveň, upravená EQ. Rourové sycení.", "src": "uaudio.com"}, "V76 Preamplifier": {"tech": "UAD emulace Telefunken V76 tube preamp – klasika evropských konzolí 60. let. Instalován v Abbey Road Studios.", "usedBy": ["Beatles (Abbey Road Studios) – V76 preamp chain"], "src": "uaudio.com"}, "Avalon VT-737sp": {"tech": "UAD emulace Avalon VT-737sp – tube channel strip. Preamp + opto-kompresor + 4-band semi-parametric EQ + HP/LP filter.", "usedBy": ["Norah Jones (Come Away with Me – vokály)", "Diana Krall (vokály)"], "src": "uaudio.com"}, "Manley Reference": {"tech": "UAD emulace Manley Reference – tube kondenzátorový charakter v plug-in formě.", "src": "uaudio.com"}, "Helios Type 69": {"tech": "UAD emulace Helios Type 69 preamp + EQ. Instalováno původně v Olympic Studios (London). Britský zvuk 70. let.", "usedBy": ["Led Zeppelin (Olympic Studios)", "Rolling Stones (Olympic Studios)"], "src": "uaudio.com"}, "Neve 1073 EQ": {"tech": "UAD Neve 1073 EQ – samotná EQ sekce 1073 bez preamp modelu.", "src": "uaudio.com"}, "Pultec EQP-1A Legacy": {"tech": "UAD emulace Pultec EQP-1A pasivního tube EQ. LF boost + cut, HF cut. Legacy verze.", "src": "uaudio.com"}, "Pultec EQP-1A Passive": {"tech": "UAD emulace Pultec EQP-1A. LF boost/cut (30/40/60/100 Hz), HF cut (3–16 kHz). Pultec trick: boost + cut na stejné frekvenci.", "usedBy": ["Elvis Presley – Sun Records sessions", "Rolling Stones", "Bob Marley – Island Records"], "src": "uaudio.com"}, "Pultec HLF-3C": {"tech": "UAD emulace Pultec HLF-3C pasivního high/low-cut filtru.", "src": "uaudio.com"}, "Pultec MEQ-5": {"tech": "UAD emulace Pultec MEQ-5 pasivního mid-range EQ. 200–1500 Hz boost, 200–7000 Hz peak/dip.", "src": "uaudio.com"}, "Pultec Pro Legacy": {"tech": "UAD Pultec Pro Legacy – kombinace EQP-1A + MEQ-5 v jednom rozhraní.", "src": "uaudio.com"}, "A-Designs Hammer EQ": {"tech": "UAD emulace A-Designs Hammer pasivního EQ. Pultec-inspired obvod s modernějším designem.", "src": "uaudio.com"}, "LA-2 Classic": {"tech": "UAD emulace raného LA-2 tube optického kompresoru. Opto-elektrická komprese, T4 cell. 2 ovládání: Peak reduction + Gain.", "src": "uaudio.com"}, "LA-2A Gray": {"tech": "UAD emulace LA-2A v šedé verzi (cca 1965–1967). Opto tube komprese.", "src": "uaudio.com"}, "LA-2A Silver": {"tech": "UAD emulace LA-2A ve stříbrné verzi (cca 1969+). Standardní, nejrozšířenější LA-2A charakteristika.", "src": "uaudio.com"}, "LA-2A Legacy": {"tech": "UAD LA-2A Legacy – starší verze emulace LA-2A v UAD ekosystému.", "src": "uaudio.com"}, "LA-2A Tube": {"tech": "UAD emulace LA-2A s důrazem na tube charakter a harmonické sycení output stage.", "src": "uaudio.com"}, "LA-3A": {"tech": "UAD emulace UA LA-3A solid-state optického kompresoru. Rychlejší attack než LA-2A. Tranzistorový charakter.", "src": "uaudio.com"}, "1176 Rev A": {"tech": "UAD 1176 FET kompresor, Rev A (cca 1967). Nejrychlejší FET kompresor v historii.", "src": "uaudio.com"}, "1176AE": {"tech": "UAD 1176 Anniversary Edition – limitovaný černý panel kombinující charakteristiky různých revizí.", "src": "uaudio.com"}, "1176LN Rev E": {"tech": "UAD 1176LN Rev E – black face (cca 1973). LN = Low Noise. Nejpopulárnější verze. Poměry: 4:1, 8:1, 12:1, 20:1 + all-buttons-in.", "usedBy": ["Led Zeppelin – Bonhamovy bubny", "Fleetwood Mac", "John Lennon (Imagine)"], "src": "uaudio.com"}, "1176LN Legacy": {"tech": "UAD 1176LN Legacy – starší verze UAD emulace 1176LN.", "src": "uaudio.com"}, "1176SE Legacy": {"tech": "UAD 1176SE Legacy – emulace silverface verze 1176.", "src": "uaudio.com"}, "1176 FET": {"tech": "UAD 1176 FET – generická emulace FET kompresoru na bázi 1176 obvodu.", "src": "uaudio.com"}, "dbx 160": {"tech": "UAD emulace dbx 160 VCA kompresoru. Hard knee, extrémně rychlý attack/release. Precizní komprese pro bubny a basy.", "usedBy": ["Steely Dan – studiový standard", "Michael Jackson (Thriller) – Quincy Jones produkce"], "src": "uaudio.com"}, "Distressor": {"tech": "UAD emulace Empirical Labs Distressor EL8. 8 kompresních poměrů (1:1 až Inf:1 + 2 distortion módy). Nuke mode. Brick wall limiter.", "usedBy": ["Foo Fighters – studiové nahrávky", "Red Hot Chili Peppers – Rick Rubin produkce"], "src": "uaudio.com, empiricallabs.com"}, "UA 175B": {"tech": "UAD emulace UA 175B tube kompresoru z 50. let. Variable-mu design, transparentní tube komprese.", "src": "uaudio.com"}, "UA 176": {"tech": "UAD emulace UA 176 FET kompresoru (předchůdce 1176). Rychlý FET compressor z konce 60. let.", "src": "uaudio.com"}, "Fairchild 660": {"tech": "UAD emulace Fairchild 660 mono tube kompresoru (cca 1959). Variable-mu design, 6 time constant nastavení. Originály dnes v ceně $20 000+.", "usedBy": ["Beatles (Abbey Road Sessions)", "Frank Sinatra"], "src": "uaudio.com"}, "Fairchild 670 Legacy": {"tech": "UAD Fairchild 670 Legacy – starší verze emulace legendárního stereo tube kompresoru.", "src": "uaudio.com"}, "Fairchild 670": {"tech": "UAD emulace Fairchild 670 stereo tube kompresoru. Ručně vyráběn v 50. letech, originál váží ~30 kg, 20 vakuových trubic. Definoval zvuk Abbey Road.", "usedBy": ["Beatles (Abbey Road Studios)", "Miles Davis – Columbia recordings"], "src": "uaudio.com"}, "Precision Limiter": {"tech": "UAD transparentní brickwall limiter pro mastering. Maximalizace hlasitosti bez artefaktů.", "src": "uaudio.com"}, "Precision Multi-Band": {"tech": "UAD multiband kompresor pro mastering. 5 pásem, lineární fázové crossover filtry.", "src": "uaudio.com"}, "Precision Maximizer": {"tech": "UAD single-knob psychoacoustic maximizer. Zvyšuje vnímanou hlasitost bez clipování.", "src": "uaudio.com"}, "Electra 88 Keyboard": {"tech": "UAD Electra 88 – emulace elektrického pianina inspirovaného Rhodes Suitcase 88. Teplý bell-like tón. 88 kláves, velocity sensitive.", "usedBy": ["Herbie Hancock – Rhodes modely", "Stevie Wonder – Rhodes modely"], "src": "uaudio.com"}, "Moog Minimoog": {"tech": "UAD emulace Moog Minimoog Model D. 3× VCO, Moog ladder filter (24 dB/oct), 2× ADSR obálky, LFO. Mono synth.", "usedBy": ["Keith Emerson (Emerson, Lake & Palmer)", "Rick Wakeman (Yes)", "Giorgio Moroder (Donna Summer produkce)", "Stevie Wonder"], "src": "uaudio.com, moog.com"}, "Opal Morphing Synth": {"tech": "UAD Opal – polyphonní softsynth s morphingem mezi waveform algoritmy. 4-OP FM + additivní + subtraktivní syntéza.", "src": "uaudio.com"}, "PolyMAX Synth": {"tech": "UAD PolyMAX – polyphonní VA (virtual analog) synth. Duální oscilátory, multimode filtr, arpegiátor.", "src": "uaudio.com"}, "Ravel Grand Piano": {"tech": "UAD Ravel Grand Piano – sample-based concert grand piano. Detailní velocity layers, sympathetic resonance model.", "src": "uaudio.com"}, "Waterfall B3 Organ": {"tech": "UAD Waterfall B3 – emulace Hammond B3. Tonewheel modeling, Leslie rotary cabinet simulace, drawbary, percussion, overdrive.", "usedBy": ["Jon Lord (Deep Purple)", "Keith Emerson (ELP)", "Steve Winwood (Traffic / solo)", "Ray Manzarek (The Doors)"], "src": "uaudio.com"}, "Oxide Tape": {"tech": "UAD Oxide Tape – emulace analogové páskové saturace. Páskové rychlosti, bias, reel size, wow & flutter.", "src": "uaudio.com"}, "Studer A800": {"tech": "UAD emulace 24-stoppého Studer A800 magnetofonu. Tape saturation, komprese, wow & flutter. Přepínatelné: 15/30 ips. Nastavitelný bias.", "src": "uaudio.com"}, "Verve Analog": {"tech": "UAD Verve Analog Machines – kolekce vintage analog efektů: flanger, phaser, chorus modelované na klasickém hardware.", "src": "uaudio.com"}, "Auto-Tune Access": {"tech": "Antares Auto-Tune Access – základní pitch correction. Real-time Auto mode, Retune Speed, Input Type selection.", "usedBy": ["T-Pain (solo) – průkopník efektového auto-tune", "Kanye West (808s & Heartbreak)"], "src": "antarestech.com"}, "Auto-Tune Advanced": {"tech": "Antares Auto-Tune Advanced – kompletní profesionální verze. Auto + Graph mode, Flex-Tune, Low Latency, MIDI control, Formant correction.", "src": "antarestech.com"}, "Auto-Tune X": {"tech": "Antares Auto-Tune X – plug-in verze pro DAW integraci. Auto + Graph mode, Throat modeling.", "src": "antarestech.com"}, "A-Type Enhancer": {"tech": "UAD Aural Exciter Type A – psychoacoustický enhancer. Harmonické excitation ve vysokofrekvenčním pásmu pro přidání přítomnosti.", "src": "uaudio.com"}, "Precision Enhancer": {"tech": "UAD Precision Enhancer Hz – sub-harmonický generátor pro posílení basové frekvence.", "src": "uaudio.com"}, "Sound City Studios": {"tech": "UAD Sound City Studios reverb – emulace akustiky Sound City Studios (Van Nuys, CA). Slavný sál kde nahrávali Nirvana, Fleetwood Mac, Neil Young.", "usedBy": ["Nirvana (Nevermind)", "Fleetwood Mac (Rumours)", "Neil Young", "Tom Petty (Tom Petty and the Heartbreakers)"], "src": "uaudio.com"}, "Century Tube": {"tech": "UAD Century Tube Channel Strip – tube preamp emulace s EQ a kompresorem. Vintage tube warmth.", "src": "uaudio.com"}, "CS-1 Channel Strip": {"tech": "UAD CS-1 Channel Strip – EQ + komprese + gate/expander. Čistá digitální pro mix bus.", "src": "uaudio.com"}, "Cooper Time Cube": {"tech": "UAD emulace Cooper Time Cube – garden hose delay unit z r. 1971. Fyzická trubice jako delay médium.", "usedBy": ["Eric Clapton (Cream) – studiové použití", "John Paul Jones (Led Zeppelin)"], "src": "uaudio.com"}, "EP-34 Tape Echo": {"tech": "UAD emulace Maestro Echoplex EP-3 páskového echa. Tape saturation, wow & flutter. Přepínatelný head spacing.", "usedBy": ["Jimmy Page (Led Zeppelin)", "Eddie Van Halen (Van Halen)", "Brian May (Queen)"], "src": "uaudio.com"}, "Galaxy Tape Echo": {"tech": "UAD emulace Roland RE-201 Space Echo (páskové echo + spring reverb). Ikonický zvuk dub a reggae produkce.", "usedBy": ["Bob Marley – dub mixes", "Lee 'Scratch' Perry (producent)", "David Bowie – Berlin trilogie"], "src": "uaudio.com"}, "Precision Delay Mod": {"tech": "UAD Precision Delay Modulation – stereo delay s jemnou modulací (chorus/flanger charakter při krátkých delay časech).", "src": "uaudio.com"}, "Brigade Chorus": {"tech": "UAD emulace Boss CE-1 Chorus Ensemble (bucket brigade chip). Jemný, bohatý stereo chorus.", "usedBy": ["Andy Summers (The Police)", "Robert Smith (The Cure)", "The Edge (U2)"], "src": "uaudio.com"}, "Precision Delay Mod L": {"tech": "UAD Precision Delay Modulation Long – stejný algoritmus jako Precision Delay Mod, rozšířené max. delay časy.", "src": "uaudio.com"}, "Studio D Chorus": {"tech": "UAD emulace Roland Dimension D rack chorus. Prostorové stereo rozšíření bez výrazné modulace.", "usedBy": ["ABBA – studiové nahrávky", "Supertramp", "Jean-Michel Jarre"], "src": "uaudio.com"}, "Lexicon 224": {"tech": "UAD emulace Lexicon 224 digital reverbu (1978). 4 algoritmy: Hall, Room, Plate, Inverse. Definoval zvuk produkce 80. let.", "usedBy": ["Peter Gabriel (So album)", "Kate Bush (Hounds of Love)", "Phil Collins (In the Air Tonight)", "Madonna (Like a Virgin)"], "src": "uaudio.com"}, "Precision Reflection": {"tech": "UAD Precision Reflection Engine – early reflection engine pro přidání prostoru bez hlasitého reverb tailu.", "src": "uaudio.com"}, "Pure Plate Reverb": {"tech": "UAD Pure Plate Reverb – emulace vintage ocelové desky (plate reverb). Hustý, rovnoměrný reverb.", "src": "uaudio.com"}, "RealVerb Pro": {"tech": "UAD RealVerb Pro – algoritmický reverb se spatial design systémem. Nastavitelné rozměry prostoru, materiály povrchů a diffusion.", "src": "uaudio.com"}, "Mackie Thump15A (1300W) x2": {"img": "mackie_thump", "tech": "15\" aktivní PA reproduktor. 1 300W bi-amplified (1 000W LF + 300W HF). Built-in 2-kanálový mixer, 3-band EQ, feedback eliminator. (2× ks)", "src": "mackie.com"}, "Cromo 10+ (400W) 1x": {"tech": "10\" aktivní PA/monitor reproduktor, 400W. Kompaktní fill nebo stage monitor.", "src": "Interní popis"}, "Mogami Platinum": {"tech": "Nejvyšší kategorie kabelů Mogami. Platinum Series: ultra-low noise, quad-shielding (Mogami 2534). Neutrik XX-series konektory.", "note": "Kabely Mogami Platinum byly použity pro nahrávku songu Fuel s kapelou Anteater.", "src": "mogamicable.com"}, "Evidence Cables": {"tech": "Boutique handmade audio kabely Evidence Audio. Ultra-nízká kapacitance pro minimální koloraci tónu. High-purity OFC conductors.", "usedBy": ["John Mayer (solo)", "Joe Bonamassa (solo)"], "src": "evidenceaudio.com"}, "Lava Cable Tephra": {"tech": "Solderless cable system pro pedalboard. ELC (Electro-Formed Lava Coax) technologie. Nízká kapacitance. EZ connector – montáž bez pájení.", "src": "lavacable.com"}, "Monster Studio Pro 2000": {"tech": "Profesionální audio kabely Monster Cable Studio Pro 2000. Balanced/unbalanced provedení, high-end stínění.", "note": "Kabely Monster Studio Pro 2000 byly použity pro nahrávku songu I Can Save You s kapelou Anteater.", "src": "monstercable.com"}, "K&M stojany": {"tech": "König & Meyer (K&M) – německý výrobce profesionálních stojanů pro kytary, mikrofony, noty a reproduktory od roku 1949.", "src": "k-m.de"}, "Beyerdynamic DT-770 Pro 250 Ohm": {"img": "dt770", "tech": "Closed-back studiová sluchátka. Impedance: 250 Ω. Frekvenční rozsah: 5 Hz – 35 kHz. Velvetové náušníky. Single-sided kabel.", "src": "beyerdynamic.com"}, "KRK KNS-8402": {"tech": "Closed-back studiová sluchátka KRK. Impedance: 36 Ω. Self-adjusting headband, 3D rotating earcups. 5 Hz – 23 kHz.", "src": "krkmusic.com"}, "Bezdrátové systémy Shure GLXD16+": {"tech": "Digitální bezdrátový systém Shure GLX-D+. Duální pásmo: 2.4 GHz + 5.8 GHz. LINKFREQ automatická správa frekvencí. Výdrž: 12+ hodin (Li-ion). Integrovaný pedálový přijímač GLXD6+.", "src": "shure.com"}, "Dunlop Joe Perry Boneyard Slide - Medium Long": {"tech": "Skleněný slide Dunlop, Joe Perry Signature. Medium wall thickness, long length. Borosilikátové sklo.", "usedBy": ["Joe Perry (Aerosmith)"], "src": "jimdunlop.com, equipboard.com"}, "Nezávislost na energetické síti": {"img": "hydropower"}, "Přepěťové ochrany": {"tech": "Profesionální přepěťové ochrany pro audio a video vybavení. Ochrana před přepětím, EMP záblesky a elektrickým šumem."}, "Security systém": {"tech": "IP kamery, pohybové senzory, monitoring...."},
+"Cambridge EQ": {"tech": "UAD Cambridge EQ – čtyřpásmový semi-parametrický EQ s HP/LP filtry. Transparentní digitální charakter bez zbarvení tónu. Vhodný pro mastering i mix bus.", "src": "uaudio.com"},
+"Ampeg SVT-VR Classic Bass Amplifier": {"tech": "UAD emulace Ampeg SVT-VR – vintage reissue slavného SVT z roku 1969. Tube předzesilovač, 300W output stage. Charakteristický bas-tón rocku a R&B.", "usedBy": ["John Paul Jones (Led Zeppelin)", "Lemmy Kilmister (Motörhead)", "Cliff Burton (Metallica)"], "src": "uaudio.com"},
+"Marshall Plexi Classic Amplifier": {"tech": "UAD emulace Marshall Super Lead Plexi 100W (1968). EL34 výkonové trubice, hand-wired point-to-point. Charakteristický britský crunch 60. a 70. let.", "usedBy": ["Jimi Hendrix (solo)", "Eric Clapton (Cream)", "Pete Townshend (The Who)", "Jimmy Page (Led Zeppelin)"], "src": "uaudio.com"},
+"Raw Distortion": {"tech": "UAD Raw Distortion – vysoce zkreslený distortion plug-in. Dynamické harmonické sycení, rozsah od lehkého overdrive po extrémní hi-gain. Asymetrický clipper.", "src": "uaudio.com"},
+"TS Overdrive": {"tech": "UAD TS Overdrive – emulace Ibanez Tube Screamer TS808. Mid-range zaměřený overdrive s tubovým charakterem. Soft-clip diodový limiter.", "usedBy": ["Stevie Ray Vaughan (solo)", "John Mayer (solo)", "Carlos Santana (solo)"], "src": "uaudio.com"},
+"UAD Dream '65 Reverb Amplifier": {"tech": "UAD Dream '65 Reverb Amplifier – emulace Fender Princeton Reverb z roku 1965. 12W, 10\" reproduktor, tube spring reverb a tremolo. Čistý americý tón.", "src": "uaudio.com"},
+"UAD Ruby '63 Top Boost Amplifier": {"tech": "UAD Ruby '63 Top Boost Amplifier – emulace Vox AC15 / AC30 Top Boost z roku 1963. EL84 výkonové trubice. Charakteristický britský čistý zvuk s jemným overdrive.", "usedBy": ["The Beatles (live i studio)", "The Edge (U2)"], "src": "uaudio.com"},
+"UAD Woodrow '55 Instrument Amplifier": {"tech": "UAD Woodrow '55 Instrument Amplifier – emulace Fender Tweed Champ z roku 1955. 5W, 8\" reproduktor, single-ended 6V6 výkonový stupeň. Vintage teplý americký tone.", "src": "uaudio.com"},
+"UAD Lion '68 Super Lead Amplifier": {"tech": "UAD Lion '68 Super Lead Amplifier – emulace Marshall Super Lead 100W z roku 1968. EL34 trubice, plexi panel. Definoval zvuk hard rocku.", "usedBy": ["Eric Clapton (Cream)", "Jimmy Page (Led Zeppelin)", "Pete Townshend (The Who)"], "src": "uaudio.com"},
+"LUNA Digital Audio Workstation": {"tech": "UA LUNA – nativní DAW pro Mac, vytvořeno speciálně pro Apollo rozhraní. UAD plug-iny s nulovou latencí přes Thunderbolt. LUNA Extensions: Neve Summing, API Vision Console Emulation. Zdarma pro uživatele Apollo.", "src": "uaudio.com"}};
+const UAD_PLUGIN_CATS=[
+  {label:'Channel Strips & Preamps',icon:'🎛',plugins:['Avalon VT-737sp Channel Strip','Century Tube Channel Strip','CS-1 Channel Strip','Helios Type 69 Preamp & EQ','Helios Type 69 Legacy EQ','Manley Reference Microphone Preamp','Neve 1073 Preamp & EQ Collection','Neve 1073SE Classic Console EQ','Precision Channel Strip','UA 610-A Tube Preamp & EQ','UA 610-B Tube Preamp & EQ','V76 Preamplifier']},
+  {label:'Compressors / Limiters',icon:'🎚',plugins:['dbx 160 Compressor / Limiter','Empirical Labs EL8 Distressor','Fairchild 660 Compressor','Fairchild 670 Compressor','Fairchild 670 Legacy','Teletronix LA-2A Leveler','Teletronix LA-2A Gray','Teletronix LA-2A Silver','Teletronix LA-2A Legacy','Teletronix LA-3A Classic Audio Leveler','UA 175B Tube Compressor','UA 176 Tube Compressor','UA 1176 Rev A Classic Limiter','UA 1176AE Classic Limiter','UA 1176LN Rev E Classic Limiter','UA 1176LN Legacy','UA 1176SE Legacy','Precision Limiter','Precision Multiband','Precision Maximizer']},
+  {label:'Equalizers',icon:'🎛',plugins:['Cambridge EQ','Pultec EQP-1A Passive EQ','Pultec MEQ-5 Passive EQ','Pultec HLF-3C Passive EQ','Pultec EQP-1A Legacy','Pultec Pro Legacy']},
+  {label:'Tape / Saturation',icon:'🎞',plugins:['Oxide Tape Recorder','Studer A800 Multichannel Tape Recorder','A-Type Multiband Dynamic Enhancer']},
+  {label:'Delay & Modulation',icon:'⏱',plugins:['Brigade Chorus','Cooper Time Cube Mk II Delay','EP-34 Tape Echo','Galaxy Tape Echo','Precision Delay Mod','Precision Delay Mod L','Studio D Chorus']},
+  {label:'Guitar / Bass',icon:'🎸',plugins:['Ampeg SVT-VR Classic Bass Amplifier','Marshall Plexi Classic Amplifier','Raw Distortion','TS Overdrive',"UAD Dream '65 Reverb Amplifier","UAD Ruby '63 Top Boost Amplifier","UAD Woodrow '55 Instrument Amplifier","UAD Lion '68 Super Lead Amplifier"]},
+  {label:'Reverbs & Rooms',icon:'🌊',plugins:['Lexicon 224 Digital Reverb','Precision Reflection Engine','Pure Plate Reverb','RealVerb Pro Custom Room Modeler']},
+  {label:'Special Processing',icon:'🧪',plugins:['Precision Enhancer Hz','Antares Auto-Tune Realtime Access']},
+  {label:'Instruments / Extensions',icon:'🎹',plugins:['PolyMAX Synth','Verve Analog Machines Essentials','Sound City Studios','LUNA Digital Audio Workstation']}
+];
+const UAD_NAME_MAP={
+  'Avalon VT-737sp Channel Strip':'Avalon VT-737sp',
+  'Century Tube Channel Strip':'Century Tube',
+  'CS-1 Channel Strip':'CS-1 Channel Strip',
+  'Helios Type 69 Preamp & EQ':'Helios Type 69',
+  'Helios Type 69 Legacy EQ':'Helios Type 69',
+  'Manley Reference Microphone Preamp':'Manley Reference',
+  'Neve 1073 Preamp & EQ Collection':'Neve 1073 Collection',
+  'Neve 1073SE Classic Console EQ':'Neve 1073 EQ',
+  'Precision Channel Strip':'Precision Channel Strip',
+  'UA 610-A Tube Preamp & EQ':'UA 610-A Preamp & EQ',
+  'UA 610-B Tube Preamp & EQ':'UA 610-B Preamp & EQ',
+  'V76 Preamplifier':'V76 Preamplifier',
+  'dbx 160 Compressor / Limiter':'dbx 160',
+  'Empirical Labs EL8 Distressor':'Distressor',
+  'Fairchild 660 Compressor':'Fairchild 660',
+  'Fairchild 670 Compressor':'Fairchild 670',
+  'Fairchild 670 Legacy':'Fairchild 670 Legacy',
+  'Teletronix LA-2A Leveler':'LA-2A Tube',
+  'Teletronix LA-2A Gray':'LA-2A Gray',
+  'Teletronix LA-2A Silver':'LA-2A Silver',
+  'Teletronix LA-2A Legacy':'LA-2A Legacy',
+  'Teletronix LA-3A Classic Audio Leveler':'LA-3A',
+  'UA 175B Tube Compressor':'UA 175B',
+  'UA 176 Tube Compressor':'UA 176',
+  'UA 1176 Rev A Classic Limiter':'1176 Rev A',
+  'UA 1176AE Classic Limiter':'1176AE',
+  'UA 1176LN Rev E Classic Limiter':'1176LN Rev E',
+  'UA 1176LN Legacy':'1176LN Legacy',
+  'UA 1176SE Legacy':'1176SE Legacy',
+  'Precision Limiter':'Precision Limiter',
+  'Precision Multiband':'Precision Multi-Band',
+  'Precision Maximizer':'Precision Maximizer',
+  'Cambridge EQ':'Cambridge EQ',
+  'Pultec EQP-1A Passive EQ':'Pultec EQP-1A Passive',
+  'Pultec MEQ-5 Passive EQ':'Pultec MEQ-5',
+  'Pultec HLF-3C Passive EQ':'Pultec HLF-3C',
+  'Pultec EQP-1A Legacy':'Pultec EQP-1A Legacy',
+  'Pultec Pro Legacy':'Pultec Pro Legacy',
+  'Oxide Tape Recorder':'Oxide Tape',
+  'Studer A800 Multichannel Tape Recorder':'Studer A800',
+  'A-Type Multiband Dynamic Enhancer':'A-Type Enhancer',
+  'Brigade Chorus':'Brigade Chorus',
+  'Cooper Time Cube Mk II Delay':'Cooper Time Cube',
+  'EP-34 Tape Echo':'EP-34 Tape Echo',
+  'Galaxy Tape Echo':'Galaxy Tape Echo',
+  'Precision Delay Mod':'Precision Delay Mod',
+  'Precision Delay Mod L':'Precision Delay Mod L',
+  'Studio D Chorus':'Studio D Chorus',
+  'Ampeg SVT-VR Classic Bass Amplifier':'Ampeg SVT-VR Classic Bass Amplifier',
+  'Marshall Plexi Classic Amplifier':'Marshall Plexi Classic Amplifier',
+  'Raw Distortion':'Raw Distortion',
+  'TS Overdrive':'TS Overdrive',
+  "UAD Dream '65 Reverb Amplifier":"UAD Dream '65 Reverb Amplifier",
+  "UAD Ruby '63 Top Boost Amplifier":"UAD Ruby '63 Top Boost Amplifier",
+  "UAD Woodrow '55 Instrument Amplifier":"UAD Woodrow '55 Instrument Amplifier",
+  "UAD Lion '68 Super Lead Amplifier":"UAD Lion '68 Super Lead Amplifier",
+  'Lexicon 224 Digital Reverb':'Lexicon 224',
+  'Precision Reflection Engine':'Precision Reflection',
+  'Pure Plate Reverb':'Pure Plate Reverb',
+  'RealVerb Pro Custom Room Modeler':'RealVerb Pro',
+  'Precision Enhancer Hz':'Precision Enhancer',
+  'Antares Auto-Tune Realtime Access':'Auto-Tune Access',
+  'PolyMAX Synth':'PolyMAX Synth',
+  'Verve Analog Machines Essentials':'Verve Analog',
+  'Sound City Studios':'Sound City Studios',
+  'LUNA Digital Audio Workstation':'LUNA Digital Audio Workstation'
+};
+const CATS=[{id:"ky",label:"Kytary",icon:"🎸",subgroups:[
+  {label:"Elektrické",items:["Fender Telecaster Deluxe (1973)","Fender Custom Shop - LTD 67 HSS Strat AB HR","Fender Custom Shop - Jeff Beck (Surf Green)","Fender Jaguar Kurt Cobain (2011) (with Graph Tech Bridge Saddles)","Fender Duo-Sonic (1964-65)","Fender Mustang (1967)","Fender Mustang (1966)","Gibson THE SG (1979)","Gibson Sonex (1981)","Gibson Firebird Studio Special (2004)","Gibson Firebird Studio (2006)","Gibson Les Paul Traditional (2009) Goldtop","Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)","Maybach Teleman","Harmony H14 (1984)","Wandre Cobra (1964)","Harley Benton Thinline","Samick Warlock (1994)","Stratocaster Alto","Telecaster Country"]},
+  {label:"Akustické",items:["Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)","Fender FA-125 Nat","K Yairi 180","Cremona","Washburn WJ7S"]}
+]},
+{id:"ba",label:"Baskytary",icon:"🎵",items:["Fender 1995 Precision Bass PB-STD", "Squier short scale bass", "Ibanez SRX 700"]},
+{id:"amp",label:"Zesilovače",icon:"🔊",items:["Marshall AFD 100", "Fender 64 Custom Deluxe Reverb", "Mesa Boogie Dual Rectifier® Head, 3 Channels / 8 Modes, 100W", "Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)", "Tone King Imperial", "Roland JC-22", "Ampeg Reverbrocket R212", "Ampeg GVT5", "AMPEG V-4B Bass Head"]},
+{id:"cab",label:"Boxy (Cabs)",icon:"📦",items:["Marshall 1960 BX", "Ampeg SVT-112AV Cabinet", "Coffe custom CLASSIC 212"]},
+{id:"fx",label:"Efekty",icon:"🎛️",items:["Digitech Whammy IV", "Dunlop DCR 2SR Rack Crybaby", "Dunlop Dimebag Cry Baby Wah", "Dunlop Zakk Wylde Rotovibe", "D&M Drive", "Dunlop MXR MICRO AMP", "Tone Wheel (Salvation Audio)", "KHDK Abyss", "Gamechanger Audio Light Pedal", "Gamechanger Audio Third Man Records PLASMA COIL", "Strymon Timeline", "Strymon Flint V2", "TC Electronic PolyTune", "Electro-Harmonix POG2 (polyfonní oktáver)", "Boss ODB-3", "TC Electronic Plethora X5 (Looper/Effect)", "EBow Plus", "G-LAB TBWP True Bypass Wah Pad (2x)", "Strymon Zuma (3x)", "Lexicon MPX 200"]},
+{id:"drums",label:"Bicí",icon:"🥁",items:["Mapex Saturn V MH Exotic (Bicí souprava)", "Tama S.L.P. LST148 Big Black Steel (Snare 14\"×8\")", "Zildjian K Sweet Hi-Hat 14\"", "Zildjian K Custom Hybrid Crash 18\"", "Sabian AAX Heavy Ride 20\"", "Istanbul Mehmet China 16\"", "Meinl Mb8 Splash 10\"", "DW 9000 Series Air Lift (Sedačka)", "REMO blány", "Evans blána (Snare)"]},
+{id:"mic",label:"Mikrofony",icon:"🎙️",items:["Universal Audio Sphere DLX", "Shure SM 7 B", "Shure Beta 58", "SHURE SM57", "Sennheiser e 906", "AKG D5"]},
+{id:"iface",label:"Audio Interface",icon:"🖥️",apolloItem:{name:"Universal Audio Apollo X8P Gen 2 Studio+",subTabs:[{id:"tech",label:"Technické detaily"},{id:"io",label:"Vstupy & výstupy"},{id:"plugins",label:"Pluginy & Unison"}]},items:[]},
+{id:"pl",label:"Pluginy & Procesory",icon:"🎚️",items:[],accordion:true},
+{id:"sw",label:"Studio & Software",icon:"💻",items:["Logic Pro X", "Final Cut Pro X", "Affinity", "Pixelmator Pro", "Motion", "Compressor", "MainStage"]},
+{id:"av",label:"A/V hardware",icon:"📹",items:["Apple Pro XDR 6K monitor pro color-accurate editing", "DJI Gimbal stabilizátor pro smooth camera movements", "Projektor pro screening a presentations", "Lighting equipment pro professional video shoots", "Reflektory Varytec LED Studio 150 2900K"]},
+{id:"mon",label:"Odposlechy & Kabely",icon:"🎧",items:["Mackie Thump15A (1300W) x2", "Cromo 10+ (400W) 1x", "Mogami Platinum", "Evidence Cables", "Lava Cable Tephra", "Monster Studio Pro 2000", "K&M stojany", "Beyerdynamic DT-770 Pro 250 Ohm", "KRK KNS-8402", "Bezdrátové systémy Shure GLXD16+", "Dunlop Joe Perry Boneyard Slide - Medium Long"]},
+{id:"infra",label:"Infrastruktura",icon:"⚡",items:["Nezávislost na energetické síti", "Přepěťové ochrany", "Security systém"]}];
+let activeTab=CATS[0].id;
+
+function toggleAcc(hdr){
+  const isOpen=hdr.classList.contains('open');
+  hdr.classList.toggle('open',!isOpen);
+  const body=hdr.nextElementSibling;
+  if(body) body.style.display=isOpen?'none':'block';
+  if(!isOpen){
+    const firstRow=body.querySelector('.row[data-uad]');
+    if(firstRow){
+      document.querySelectorAll('.row[data-uad]').forEach(r=>r.classList.remove('sel'));
+      firstRow.classList.add('sel');
+      showUAD(firstRow.dataset.uad);
+    }
+  }
+}
+
+function showUAD(pluginName){
+  document.querySelectorAll('.row[data-uad]').forEach(r=>r.classList.toggle('sel',r.dataset.uad===pluginName));
+  const dKey=UAD_NAME_MAP[pluginName];
+  const d=(dKey&&D[dKey])?D[dKey]:{};
+  let h='<div class="dtit">'+esc(pluginName)+'</div>';
+  if(d.tech) h+='<div class="btxt" style="font-size:12px;color:var(--mut);margin:4px 0 16px;line-height:1.5">'+esc(d.tech)+'</div>';
+  const _upi={'Avalon VT-737sp Channel Strip':UADP_AVALON_IMG,'Century Tube Channel Strip':UADP_CENTURY_IMG,'Helios Type 69 Preamp & EQ':UADP_HELIOS69_IMG,'Helios Type 69 Legacy EQ':UADP_HELIOS69_IMG,'Manley Reference Microphone Preamp':UADP_MANLEY_IMG,'Neve 1073 Preamp & EQ Collection':UADP_NEVE1073_IMG,'Neve 1073SE Classic Console EQ':UADP_NEVE1073_IMG,'UA 610-A Tube Preamp & EQ':UADP_610_IMG,'UA 610-B Tube Preamp & EQ':UADP_610_IMG,'V76 Preamplifier':UADP_V76_IMG,'dbx 160 Compressor / Limiter':UADP_DBX160_IMG,'Empirical Labs EL8 Distressor':UADP_DISTRESSOR_IMG,'Fairchild 660 Compressor':UADP_FAIRCHILD_IMG,'Fairchild 670 Compressor':UADP_FAIRCHILD_IMG,'Fairchild 670 Legacy':UADP_FAIRCHILD_IMG,'Teletronix LA-2A Leveler':UADP_LA2A_IMG,'Teletronix LA-2A Gray':UADP_LA2A_IMG,'Teletronix LA-2A Silver':UADP_LA2A_IMG,'Teletronix LA-2A Legacy':UADP_LA2A_IMG,'Teletronix LA-3A Classic Audio Leveler':UADP_LA3A_IMG,'UA 175B Tube Compressor':UADP_UA175_176_IMG,'UA 176 Tube Compressor':UADP_UA175_176_IMG,'UA 1176 Rev A Classic Limiter':UADP_1176_IMG,'UA 1176AE Classic Limiter':UADP_1176_IMG,'UA 1176LN Rev E Classic Limiter':UADP_1176_IMG,'UA 1176LN Legacy':UADP_1176_IMG,'UA 1176SE Legacy':UADP_1176_IMG,'Cambridge EQ':UADP_CAMBRIDGE_IMG,'Pultec EQP-1A Passive EQ':UADP_PULTEC_IMG,'Pultec MEQ-5 Passive EQ':UADP_PULTEC_IMG,'Pultec HLF-3C Passive EQ':UADP_PULTEC_IMG,'Pultec EQP-1A Legacy':UADP_PULTEC_IMG,'Pultec Pro Legacy':UADP_PULTEC_IMG,'Oxide Tape Recorder':UADP_OXIDE_IMG,'Studer A800 Multichannel Tape Recorder':UADP_STUDER_IMG,'Brigade Chorus':UADP_BRIGADE_IMG,'Cooper Time Cube Mk II Delay':UADP_COOPER_IMG,'EP-34 Tape Echo':UADP_EP34_IMG,'Galaxy Tape Echo':UADP_GALAXY_IMG,'Studio D Chorus':UADP_STUDIO_D_IMG,'Ampeg SVT-VR Classic Bass Amplifier':UADP_AMPEG_SVT_IMG,'Marshall Plexi Classic Amplifier':UADP_MARSHALL_PLEXI_IMG,'Raw Distortion':UADP_DISTORTION_IMG,'TS Overdrive':UADP_DISTORTION_IMG,"UAD Dream '65 Reverb Amplifier":UADP_DREAM65_IMG,"UAD Ruby '63 Top Boost Amplifier":UADP_RUBY63_IMG,"UAD Woodrow '55 Instrument Amplifier":UADP_WOODROW55_IMG,"UAD Lion '68 Super Lead Amplifier":UADP_LION68_IMG,'Lexicon 224 Digital Reverb':UADP_LEXICON224_IMG,'Pure Plate Reverb':UADP_PURE_PLATE_IMG,'Sound City Studios':UADP_SOUND_CITY_IMG,'PolyMAX Synth':UADP_POLYMAX_IMG,'Verve Analog Machines Essentials':UADP_VERVE_IMG};
+  const _uimgSrc=_upi[pluginName]||UAD_IMG;
+  h+='<div class="zoom-photo" style="margin-top:14px"><div class="zoom-inner"><img src="'+_uimgSrc+'" alt="'+esc(pluginName)+'" /></div></div>';
+  if(d.src){
+    const srcLinks=d.src.split(',').map(s=>{
+      const t=s.trim();
+      if(t.startsWith('http')) return '<a href="'+t+'" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">'+t.replace('https://','')+'</a>';
+      const domains={'uaudio.com':'https://www.uaudio.com','equipboard.com':'https://equipboard.com','antarestech.com':'https://www.antarestech.com'};
+      const url=domains[t];
+      return url?'<a href="'+url+'" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">'+t+'</a>':esc(t);
+    });
+    h+='<div class="src">Zdroj: '+srcLinks.join(', ')+'</div>';
+  }
+  const dc=document.getElementById('dc');
+  dc.innerHTML=h;
+  pinSourceBottom();
+  document.getElementById('empty').style.display='none';
+  dc.className='on';
+  if(window.matchMedia('(orientation:portrait)').matches) setTimeout(()=>document.getElementById('det').scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+function showApolloView(sub){
+  // Update selection state in left panel
+  document.querySelectorAll('[data-apollo]').forEach(r=>{
+    if(r.classList.contains('apollo-main')) r.classList.toggle('sel',sub==='main');
+    else r.classList.toggle('sel',r.dataset.apollo===sub);
+  });
+  const dc=document.getElementById('dc');
+  if(sub==='plugins'){
+    dc.innerHTML='<div class="dtit">Pluginy & Unison</div><div class="btxt" style="font-size:13px;line-height:1.7;color:#b0ada8;margin-top:12px">Onboard DSP supports UAD plug-ins via VST, AU, and AAX 64 formats in all major DAWs. Zde najde <a href="#" onclick="event.preventDefault();switchTab(\'pl\')" style="color:var(--acc2);text-decoration:none;border-bottom:1px solid rgba(200,169,110,0.4);cursor:pointer">plug-iny</a>, které máme k dispozici.</div>';
+    pinSourceBottom();
+    dc.className='on';
+    document.getElementById('empty').style.display='none';
+    return;
+  }
+  let h='';
+  if(sub==='main'){
+    h+='<div class="dtit">Universal Audio Apollo X8P Gen 2 Studio+</div>';
+    h+='<div class="btxt" style="font-size:13px;line-height:1.6;color:#b0ada8;margin-bottom:22px">Profesionální zvuková karta s 8 Unison předzesilovači, která se umí nastavit sama. Díky funkci Auto Gain stačí jediné kliknutí — karta automaticky zkalibruje úrovně vstupu. Studio jsme záměrně navrhli tak, aby hudebníci mohli tvořit bez rušení a bez nutnosti technické asistence :-) (ale v případě potřeby, jsme plně k dispozici).</div>';
+    h+='<div class="zoom-photo"><div class="zoom-inner"><img src="'+APOLLO_IMG+'" alt="Universal Audio Apollo X8P" /></div></div>';
+    h+='<div class="src">Zdroj: <a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a></div>';
+  } else if(sub==='tech'){
+    h+='<div class="dtit">Technické detaily</div>';
+    h+='<div class="blk"><div class="blbl">Specifikace</div><div class="btxt">Thunderbolt 3 audio interface. 16 vstupů × 22 výstupů. 24-bit/192 kHz. HEXA Core DSP (UAD plug-iny v reálném čase). 8× Unison™ preamp. Celkový dynamic range: 129 dB.</div></div>';
+    h+='<div class="zoom-photo"><div class="zoom-inner"><img src="'+APOLLO_IMG+'" alt="Universal Audio Apollo X8P" /></div></div>';
+    h+='<div class="src">Zdroj: <a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a></div>';
+  } else if(sub==='io'){
+    h+='<div class="dtit">Vstupy & výstupy</div>';
+    h+='<div class="blk"><div class="blbl">Analogové vstupy</div><div class="btxt">8× Combo (XLR/TRS) Unison™ mic/line/Hi-Z preamp (přední panel)\n8× Analog line in (TRS, zadní panel)</div></div>';
+    h+='<div class="blk"><div class="blbl">Analogové výstupy</div><div class="btxt">8× Analog line out (TRS, zadní panel)\n2× Monitor out L/R (TRS)\n2× Headphone out (přední panel, ¼")</div></div>';
+    h+='<div class="blk"><div class="blbl">Digitální I/O</div><div class="btxt">2× Optical ADAT/S/MUX (až 8ch @ 44.1/48 kHz)\n1× AES/EBU (XLR, 2ch)\n1× S/PDIF (RCA)\n1× BNC Word Clock in/out</div></div>';
+    h+='<div class="blk"><div class="blbl">Připojení</div><div class="btxt">Thunderbolt 3 (2× porty pro daisy-chain)\nUSB-C (monitoring pouze)</div></div>';
+    h+='<div class="zoom-photo" style="margin-top:18px;background:rgba(7,6,10,.72)"><div class="zoom-inner"><img src="'+APOLLO_REAR_IMG+'" alt="Apollo X8P zadní panel" style="background:rgba(7,6,10,.72);padding:12px 0" /></div></div>';
+    h+='<div class="src">Zdroj: <a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a></div>';
+  }
+  dc.innerHTML=h;
+  pinSourceBottom();
+  document.getElementById('empty').style.display='none';
+  dc.className='on';
+  if(window.matchMedia('(orientation:portrait)').matches) setTimeout(()=>document.getElementById('det').scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+function mesaTab(btn,panel){
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  ['front','back'].forEach(id=>{
+    const el=document.getElementById('mpanel-'+id);
+    if(el) el.style.display=(id===panel)?'':'none';
+  });
+}
+
+function mTab(btn,panel){
+  document.querySelectorAll('.mtab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  ['mapex','drums'].forEach(id=>{
+    const el=document.getElementById('mpanel-'+id);
+    if(el) el.style.display=(id===panel)?'':'none';
+  });
+}
+
+function loadVid(el){
+  const vid=el.dataset.vid;
+  const wrap=document.createElement('div');
+  wrap.className='vcard-embed';
+  wrap.innerHTML='<iframe src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0&modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  el.parentNode.replaceChild(wrap,el);
+}
+
+function build(){
+  const tabs=document.getElementById('tabs');
+  const list=document.getElementById('list');
+  CATS.forEach(cat=>{
+    const btn=document.createElement('button');
+    btn.className='tb'+(cat.id===activeTab?' on':'');
+    btn.dataset.id=cat.id;
+    btn.innerHTML=cat.label;
+    btn.onclick=()=>switchTab(cat.id);
+    tabs.appendChild(btn);
+
+    const sec=document.createElement('div');
+    sec.className='sec'+(cat.id===activeTab?' on':'');
+    sec.id='sec-'+cat.id;
+
+    if(cat.accordion){
+      // Render UAD accordion
+      UAD_PLUGIN_CATS.forEach((uc,uidx)=>{
+        const isFirst=uidx===0;
+        const catDiv=document.createElement('div');
+        catDiv.className='acc-cat';
+        const hdr=document.createElement('div');
+        hdr.className='acc-hdr'+(isFirst?' open':'');
+        hdr.innerHTML='<span class="acc-lbl">'+esc(uc.label)+'</span><span class="acc-arr">›</span>';
+        hdr.onclick=()=>toggleAcc(hdr);
+        catDiv.appendChild(hdr);
+        const body=document.createElement('div');
+        body.className='acc-body';
+        if(!isFirst) body.style.display='none';
+        uc.plugins.forEach((pname,pidx)=>{
+          const row=document.createElement('div');
+          row.className='row'+(isFirst&&pidx===0?' sel':'');
+          row.dataset.uad=pname;
+          row.textContent=pname;
+          body.appendChild(row);
+        });
+        catDiv.appendChild(body);
+        sec.appendChild(catDiv);
+      });
+    } else if(cat.apolloItem){
+      const ai=cat.apolloItem;
+      const mainRow=document.createElement('div');
+      mainRow.className='row apollo-main';
+      mainRow.dataset.apollo='main';
+      mainRow.innerHTML=
+        '<div class="apollo-main-name">'+esc(ai.name)+'</div>';
+      mainRow.onclick=()=>showApolloView('main');
+      sec.appendChild(mainRow);
+      ai.subTabs.forEach(st=>{
+        const subRow=document.createElement('div');
+        subRow.className='row apollo-sub';
+        subRow.dataset.apollo=st.id;
+        subRow.textContent=st.label;
+        subRow.onclick=()=>showApolloView(st.id);
+        sec.appendChild(subRow);
+      });
+    } else if(cat.subgroups){
+      cat.subgroups.forEach(sg=>{
+        const shdr=document.createElement('div');
+        shdr.className='sub-hdr';
+        shdr.textContent=sg.label;
+        sec.appendChild(shdr);
+        sg.items.forEach(name=>{
+          const row=document.createElement('div');
+          row.className='row';
+          row.dataset.n=name;
+          row.innerHTML=name.replace(/\s*\([^)]*\bwith\b[^)]*\)/gi,'');
+          row.onclick=()=>show(name,cat.label);
+          sec.appendChild(row);
+        });
+      });
+    } else {
+      cat.items.forEach(name=>{
+        const row=document.createElement('div');
+        row.className='row';
+        row.dataset.n=name;
+        row.innerHTML=name.replace(/\s*\([^)]*\bwith\b[^)]*\)/gi,'');
+        row.onclick=()=>show(name,cat.label);
+        sec.appendChild(row);
+      });
+    }
+    list.appendChild(sec);
+  });
+  // Event delegation for UAD plugin rows
+  list.addEventListener('click',function(e){
+    const row=e.target.closest('.row[data-uad]');
+    if(row) showUAD(row.dataset.uad);
+  });
+}
+
+function switchTab(id){
+  activeTab=id;
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',b.dataset.id===id));
+  document.querySelectorAll('.sec').forEach(s=>s.classList.toggle('on',s.id==='sec-'+id));
+  document.querySelectorAll('.row').forEach(r=>r.classList.remove('sel'));
+  const cat=CATS.find(c=>c.id===id);
+  if(cat&&cat.accordion){
+    // Auto-load first UAD plugin
+    const firstPlugin=UAD_PLUGIN_CATS[0].plugins[0];
+    showUAD(firstPlugin);
+    const firstRow=document.querySelector('#sec-pl .row[data-uad]');
+    if(firstRow) firstRow.classList.add('sel');
+  } else if(cat&&cat.apolloItem){
+    showApolloView('main');
+  } else if(cat&&cat.subgroups&&cat.subgroups[0].items.length){
+    show(cat.subgroups[0].items[0],cat.label);
+  } else if(cat&&cat.items&&cat.items.length){
+    show(cat.items[0],cat.label);
+  } else {
+    document.getElementById('empty').style.display='flex';
+    document.getElementById('dc').className='';
+  }
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function linkAnteater(s){
+  return s.replace(/\bAnteater\b/g,'<a href="https://www.anteaterofficial.com/" target="_blank" style="color:#d4a84b;text-decoration:none;border-bottom:1px solid rgba(212,168,75,0.35)">Anteater</a>');
+}
+
+function linkItems(s){
+  // Map of display text in chains → full item key in D
+  // Keys are what appears in escaped HTML (esc() was already called on below text)
+  // Values are exact keys in D{} object
+  const ALIASES=[
+    ['Fender Jaguar Kurt Cobain','Fender Jaguar Kurt Cobain (2011) (with Graph Tech Bridge Saddles)'],
+    ['Fender Custom Shop LTD 67 HSS Strat AB HR','Fender Custom Shop - LTD 67 HSS Strat AB HR'],
+    ['Fender Custom Shop LTD 67 HSS Strat','Fender Custom Shop - LTD 67 HSS Strat AB HR'],
+    ['Fender 1995 Precision Bass PB-STD','Fender 1995 Precision Bass PB-STD'],
+    ['Squier short scale bass','Squier short scale bass'],
+    ['Tone Wheel','Tone Wheel (Salvation Audio)'],
+    ['Digitech Whammy IV','Digitech Whammy IV'],
+    ['Strymon Timeline','Strymon Timeline'],
+    ['Strymon Zuma','Strymon Zuma (3x)'],
+    ['Dunlop MXR MICRO AMP','Dunlop MXR MICRO AMP'],
+    ['D&amp;M Drive','D&amp;M Drive'],
+    ['AMPEG V-4B Bass Head','AMPEG V-4B Bass Head'],
+    ['Ampeg V-4B','AMPEG V-4B Bass Head'],
+    ['KHDK Abyss','KHDK Abyss'],
+    ['Mogami Platinum','Mogami Platinum'],
+    ['Marshall AFD 100','Marshall AFD 100'],
+    ['Marshall 1960 BX','Marshall 1960 BX'],
+    ['Ampeg SVT-112AV Cabinet','Ampeg SVT-112AV Cabinet'],
+    ['Fender 64 Custom Deluxe Reverb','Fender 64 Custom Deluxe Reverb'],
+  ];
+  const escR=t=>t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  let out=s;
+  ALIASES.forEach(([alias,itemKey])=>{
+    // D keys use & not &amp;
+    const realKey=itemKey.replace(/&amp;/g,'&');
+    if(!D[realKey]) return;
+    const re=new RegExp(alias.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g');
+    const safeKey=realKey.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    out=out.replace(re,'<span class="chain-link" data-item="'+safeKey+'" onclick="doLink(this)">'+alias+'</span>');
+  });
+  return out;
+}
+
+function doLink(el){
+  const name=el.dataset.item;
+  let cat=CATS.find(c=>c.items&&c.items.includes(name));
+  if(!cat) cat=CATS.find(c=>c.subgroups&&c.subgroups.some(sg=>sg.items.includes(name)));
+  if(cat){
+    switchTab(cat.id);
+    setTimeout(()=>show(name,cat.label),10);
+  }
+}
+
+function renderBelow(s){
+  return linkItems(linkAnteater(s));
+}
+
+function pinSourceBottom(){
+  const dc=document.getElementById('dc');
+  if(!dc) return;
+  const src=dc.querySelector('.src');
+  if(src) dc.appendChild(src);
+}
+
+function show(name,catLabel){
+  document.querySelectorAll('.row').forEach(r=>r.classList.toggle('sel',r.dataset.n===name));
+  const d=D[name]||{};
+
+  // Split name: "Main Name (Upgrade/note)" → title + subtitle
+  // Skip year-only parens like (1967), (1964-65), (3x), (Snare 14"×8")
+  const parenMatch = name.match(/^(.+?)\s+\(([^)]{8,})\)\s*$/);
+  const isYear = parenMatch && /^\d{4}(-\d{2,4})?$/.test(parenMatch[2]);
+  const isShort = parenMatch && parenMatch[2].length < 8;
+  const mainName = (parenMatch && !isYear && !isShort) ? parenMatch[1] : name;
+  const subName  = (parenMatch && !isYear && !isShort) ? parenMatch[2] : null;
+
+  let h='';
+  h+='<div class="dtit">'+esc(mainName);
+  if(d.forsale) h+=' <a class="forsale-inline" href="'+esc(d.forsale)+'" target="_blank">🏷 Na prodej</a>';
+  if(subName) h+='<div class="dtit-sub">'+esc(subName)+'</div>';
+  h+='</div>';
+  if(d.tech) h+='<div class="blk"><div class="blbl">Technické specifikace</div><div class="btxt">'+esc(d.tech)+'</div></div>';
+  if(d.upgrade) h+='<div class="blk"><div class="blbl">Upgrade</div><div class="btxt upgrade-txt">'+esc(d.upgrade)+'</div></div>';
+  if(d.usedBy&&d.usedBy.length&&activeTab!=='sw'){
+    h+='<div class="blk"><div class="blbl">Používají / používali také</div><div class="chips">';
+    d.usedBy.forEach(a=>{h+='<span class="chip">'+esc(a)+'</span>';});
+    h+='</div></div>';
+  }
+  if(d.note){
+    const hasAnteaterVid=d.videos&&d.videos.some(v=>(v.title||'').includes('Anteater'));
+    h+='<div class="blk"><div class="blbl">Poznámka</div><div class="btxt">'+linkAnteater(esc(d.note));
+    if(hasAnteaterVid) h+='<div style="margin-top:8px;font-size:11px;color:#8a8580;font-style:italic">Kompletní chain, který v klipu slyšíte, je k dispozici ve studiu.</div>';
+    h+='</div></div>';
+  }
+
+
+  if(d.videos&&d.videos.length){
+    h+='<div class="vcards">';
+    d.videos.forEach(v=>{
+      const link=v.link||'';
+      const below=v.below||'';
+      const vidMatch=link.match(/[?&]v=([^&]+)/);
+      const vidId=vidMatch?vidMatch[1]:null;
+      h+='<div class="vcard">';
+      if(vidId){
+        const bgStyle='background-image:url(https://i.ytimg.com/vi/'+vidId+'/maxresdefault.jpg),url(https://i.ytimg.com/vi/'+vidId+'/mqdefault.jpg);background-size:cover;background-position:center top';
+        h+='<div class="vcard-ctp" data-vid="'+esc(vidId)+'" style="'+bgStyle+'">';
+        h+='<div class="ctp-overlay"></div>';
+        h+='<div class="ctp-play"><span>▶</span></div>';
+        h+='</div>';
+      }
+      if(below) h+='<div class="vcard-below">'+renderBelow(esc(below))+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
+  }
+
+  if(!d.tech&&!d.note&&!d.usedBy&&!d.videos&&!d.img) h+='<div class="btxt" style="color:var(--mut);font-style:italic">Podrobné informace nejsou k dispozici.</div>';
+  if(d.src) {
+    const srcLinks = d.src.split(',').map(s=>{
+      const t=s.trim();
+      if(t.startsWith('http')) return '<a href="'+t+'" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">'+t.replace('https://','')+'</a>';
+      // Auto-detect domain and linkify
+      const domains={
+        'equipboard.com':'https://equipboard.com',
+        'fender.com':'https://www.fender.com',
+        'mesaboogie.com':'https://www.mesaboogie.com',
+        'marshall.com':'https://www.marshall.com',
+        'strymon.net':'https://www.strymon.net',
+        'uaudio.com':'https://www.uaudio.com',
+        'shure.com':'https://www.shure.com'
+      };
+      const url=domains[t];
+      return url ? '<a href="'+url+'" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">'+t+'</a>' : esc(t);
+    });
+    h+='<div class="src">Zdroj: '+srcLinks.join(', ')+'</div>';
+  }
+
+  const dc=document.getElementById('dc');
+
+  // Ghost background items (img behind text)
+  const GHOST_IMGS={
+    pbass95:    {src:PBASS95_IMG, pos:'right:-60px;top:-60px;height:130%;width:auto',        grad:'100deg,#0a0a0c 38%,rgba(10,10,12,0.82) 58%,rgba(10,10,12,0.22) 100%', op:'0.13', sat:'0.3'},
+    tama_snare: {src:TAMA_IMG,    pos:'right:-100px;bottom:-80px;height:95%;width:auto',     grad:'100deg,#0a0a0c 28%,rgba(10,10,12,0.72) 50%,rgba(10,10,12,0.08) 100%', op:'0.28', sat:'0.2'},
+  };
+
+  // Zoom photo items (displayed below text)
+  const ZOOM_IMGS={
+    drums:true, tele73:true, martin:true, fender64:true,
+    mesarect:true, plasma:true, apollo:true, timeline:true, dimebag:true,
+    sm7b:true, flint:true, wahrack:true, microamp:true, marshall_afd:true,
+    light_pedal:true, rotovibe:true, sphere_dlx:true, hydropower:'logo',
+    dt770:true, mackie_thump:true, finalcut:true, logicpro:true, apple_xdr:true,
+    ampeg_reverbrocket:true,
+    maybach_teleman:true,
+    plethora:true,
+    khdk_abyss:true
+  };
+
+  if(d.img==='jeffbeck_slide'){
+    h+='<div class="img-slide" id="jb-slide">'+
+       '<div class="zoom-photo"><div class="zoom-inner"><img src="'+JEFFBECK_FRONT_IMG+'" id="jb-slide-img" alt="Fender Custom Shop Jeff Beck" /></div></div>'+
+       '<button class="slide-arrow" id="jb-arrow" onclick="jbSlide()">›</button>'+
+       '</div>';
+    dc.innerHTML=h;
+    window._jbIdx=0;
+    window.jbSlide=function(){
+      const imgs=[JEFFBECK_FRONT_IMG,JEFFBECK_BACK_IMG,JEFFBECK_THIRD_IMG];
+      window._jbIdx=(window._jbIdx+1)%imgs.length;
+      const el=document.getElementById('jb-slide-img');
+      if(el){el.style.opacity='0';setTimeout(()=>{el.src=imgs[window._jbIdx];el.style.opacity='1';},180);}
+    };
+  } else if(d.img==='mapex_tabs'){
+    h+='<div class="mtabs"><button class="mtab on" onclick="mTab(this,\'mapex\')">📷 Fotografie</button><button class="mtab" onclick="mTab(this,\'drums\')">📐 Schéma sestavy</button></div>'+
+       '<div id="mpanel-mapex" class="zoom-photo"><div class="zoom-inner"><img src="'+MAPEX_IMG+'" alt="Mapex Saturn V" style="opacity:0.72;filter:saturate(0.8)" /></div></div>'+
+       '<div id="mpanel-drums" class="drum-img" style="display:none"><img src="'+DRUMS_IMG+'" alt="Schéma sestave" /></div>';
+    dc.innerHTML=h;
+  } else if(d.img==='mesa_tabs'){
+    const mesaPanels=['front','back'];
+    let mesaIdx=0;
+    h+='<div class="img-slide" id="mesa-slide">'+
+       '<div class="zoom-photo"><div class="zoom-inner"><img src="'+MESA_FRONT_IMG+'" id="mesa-slide-img" alt="Mesa Boogie Dual Rectifier" /></div></div>'+
+       '<button class="slide-arrow" id="mesa-arrow" onclick="mesaSlide()">›</button>'+
+       '</div>';
+    dc.innerHTML=h;
+    window._mesaIdx=0;
+    window.mesaSlide=function(){
+      window._mesaIdx=window._mesaIdx===0?1:0;
+      const imgs=[MESA_FRONT_IMG,MESA_BACK_IMG];
+      const el=document.getElementById('mesa-slide-img');
+      const arrow=document.getElementById('mesa-arrow');
+      if(el){el.style.opacity='0';setTimeout(()=>{el.src=imgs[window._mesaIdx];el.style.opacity='1';},180);}
+      if(arrow) arrow.textContent=window._mesaIdx===0?'›':'‹';
+    };
+  } else if(GHOST_IMGS[d.img]){
+    const g=GHOST_IMGS[d.img];
+    dc.innerHTML=
+      '<div style="position:relative;overflow:hidden;margin:-28px -36px;padding:28px 36px;min-height:100%;">'+
+        '<img src="'+g.src+'" style="position:absolute;'+g.pos+';opacity:'+g.op+';pointer-events:none;z-index:0;filter:saturate('+g.sat+') contrast(1.1);" />'+
+        '<div style="position:absolute;inset:0;background:linear-gradient('+g.grad+');z-index:1;pointer-events:none;"></div>'+
+        '<div style="position:relative;z-index:2;">'+h+'</div>'+
+      '</div>';
+  } else {
+    if(ZOOM_IMGS[d.img]){
+      const src=IMGS[d.img];
+      if(d.img==='drums'){
+        h+='<div class="drum-img"><img src="'+src+'" alt="'+esc(name)+'" /></div>';
+      } else if(ZOOM_IMGS[d.img]==='logo'){
+        h+='<div class="hydropower-logo" id="hp-wrap">'+
+          '<video id="hp-video" src="'+IMGS.hydropower_mp4+'" muted playsinline style="width:100%;border-radius:0;margin:0 auto;border:1px solid rgba(255,255,255,0.18)"></video>'+
+          '</div>';
+      } else {
+        const wrapClass=d.img==='tele73'?'zoom-photo tele73-crop':'zoom-photo';
+        const wrapStyle=name==='Apple Pro XDR 6K monitor pro color-accurate editing'?' style="margin-top:8px"':'';
+        h+='<div class="'+wrapClass+'"'+wrapStyle+'><div class="zoom-inner"><img src="'+src+'" alt="'+esc(name)+'" /></div></div>';
+      }
+    }
+    dc.innerHTML=h;
+  }
+  pinSourceBottom();
+  // Hydropower hover video
+  const hpWrap=document.getElementById('hp-wrap');
+  if(hpWrap){
+    const vid=document.getElementById('hp-video');
+    hpWrap.addEventListener('mouseenter',()=>{
+      if(vid && vid.paused) vid.play().catch(()=>{});
+    });
+  }
+  document.getElementById('empty').style.display='none';
+  dc.className='on';
+  if(window.matchMedia('(orientation:portrait)').matches) setTimeout(()=>document.getElementById('det').scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+
+build();
+const _firstCat=CATS[0];
+if(_firstCat&&_firstCat.subgroups&&_firstCat.subgroups[0].items.length) show(_firstCat.subgroups[0].items[0],_firstCat.label);
+else if(_firstCat&&_firstCat.items&&_firstCat.items.length) show(_firstCat.items[0],_firstCat.label);
+
+// Event delegation for video click-to-play
+document.getElementById('det').addEventListener('click', function(e){
+  const ctp=e.target.closest('.vcard-ctp');
+  if(ctp && !ctp.querySelector('iframe')){
+    const vid=ctp.dataset.vid;
+    if(vid){
+      ctp.innerHTML='<div class="vcard-embed" style="position:relative;padding-bottom:56.25%;height:0"><iframe src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%"></iframe></div>';
+    }
+  }
+});
+</script>
+</body>
+</html>

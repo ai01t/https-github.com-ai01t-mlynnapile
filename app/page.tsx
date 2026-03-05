@@ -2,14 +2,17 @@
 
 import React from "react"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { BusinessCardDownload } from "@/components/business-card-download"
 import { Play, Pause, Home, Guitar, Mic, Headphones, Calendar, MapPin, Phone, Moon, Sun, ChevronDown, Globe, Car, UtensilsCrossed, Languages, Ghost, FileText, Shield, Mail, HelpCircle, CigaretteOff, Hotel, Music, Camera, Medal as Pedal, Drum as Drums, Plug, EqualIcon as Equalize, Wand, Waves, Sparkles, Cable, Settings, Server, Keyboard, ChevronRight, ChevronLeft, Zap } from "lucide-react"
 
-const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
+const sectionOrder = ["mlyn", "home", "studio", "lokalita", "equipment", "about", "contact", "spoluprace"]
+const observableSections = ["mlyn", "studio", "lokalita", "equipment", "contact", "about"] as const
+const VIDEO_CROSSFADE_MS = 2000
+const SECTION_VIDEO_IDLE_MS = 10000
 
 const translations = {
   cs: {
@@ -25,7 +28,7 @@ const translations = {
       title: "Mlýn na Pile",
       subtitle: "Retreat Studio",
       tagline: "Kde se rodí inspirace",
-      description: "Unikátní prostor s genius loci, jehož historie sahá až do 17. století.",
+      description: "Unikátní prostor s genius loci, jehož historie sahá do 17. století.",
       vintageInstruments: "Vintage Nástroje",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
       accommodation: "Stylové ubytování",
@@ -78,8 +81,7 @@ const translations = {
         intro: "Jdeme na to:",
         packageLabel: "Balíček",
         parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
-        accommodationNote:
-          "Ubytování není veřejně ani samostatně poskytovaná služba. Přespání je určeno výhradně klientům nahrávacího studia jako zázemí během kreativní práce.",
+        accommodationNote: "Ubytování je součástí pobytu ve studiu během kreativní práce.",
         packages: [
           {
             name: "Into the Wild",
@@ -88,7 +90,7 @@ const translations = {
               "Nejekonomičtější - stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence, usínejte a probouzejte se do světa hudby s přírodou :-)",
             details:
               "Možnost přespání ve vlastním autě/karavanu/stanu. Hlavní studio má vlastní sociální zařízení včetně sprchy.",
-            video: "https://youtu.be/qEc9SnmU4cM",
+            video: "https://youtu.be/7RVXPBnHb-c",
           },
           {
             name: "Underwater",
@@ -97,7 +99,7 @@ const translations = {
               "Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka :-) Skromné ale stylové a útulné přespání, jedná se o spaní přímo v prostorách bývalé mlýnice.",
             details:
               "Zde můžete usínat za zvuků protékající vody - stačí pootevřít okno :-) - součástí je i možnost využít saunu + posezení pod hrází vedle velké pece. 1x dvojlůžko, možnost dalších dvou přistýlek.",
-            video: "https://youtu.be/gI3204B7eNk",
+            video: "https://youtu.be/uQiXLcspREY",
           },
           {
             name: "Otherside",
@@ -356,7 +358,7 @@ const translations = {
         },
         {
           q: "Poskytujete ubytování i samostatně?",
-          a: "Ne. Ubytování není veřejně ani samostatně poskytovaná služba. Přespání je určeno výhradně klientům nahrávacího studia jako zázemí během kreativní práce.",
+          a: "Ubytování je součástí pobytu ve studiu během kreativní práce.",
         },
         {
           q: "Jak se k nám dostanu?",
@@ -461,8 +463,7 @@ const translations = {
         intro: "Let's go:",
         packageLabel: "Package",
         parking: "All packages include parking in the mill area, which is under camera surveillance.",
-        accommodationNote:
-          "Accommodation is not a publicly or separately provided service. Overnight stays are intended exclusively for recording studio clients as a base during creative work.",
+        accommodationNote: "Accommodation is part of the studio stay during creative work.",
         packages: [
           {
             name: "Into the Wild",
@@ -471,7 +472,7 @@ const translations = {
               "Most economical – camping in the park, studio rental only, for adventurers and enthusiasts, fall asleep and wake up to the world of music with nature :-)",
             details:
               "Option to sleep in your own car/caravan/tent. Main studio has its own facilities including shower.",
-            video: "https://youtu.be/qEc9SnmU4cM",
+            video: "https://youtu.be/7RVXPBnHb-c",
           },
           {
             name: "Underwater",
@@ -480,7 +481,7 @@ const translations = {
               "Closest to the music, sleeping literally under the studio floor and also below the pond surface :-) Modest but stylish and cozy stay, sleeping directly in the former mill room.",
             details:
               "Here you can fall asleep to the sound of flowing water — just crack the window :-) — includes access to sauna + seating under the dam next to the large oven. 1x double bed, possibility of two extra beds.",
-            video: "https://youtu.be/gI3204B7eNk",
+            video: "https://youtu.be/uQiXLcspREY",
           },
           {
             name: "Otherside",
@@ -745,7 +746,7 @@ const translations = {
         },
         {
           q: "Do you provide accommodation separately?",
-          a: "No. Accommodation is not a publicly or separately provided service. Overnight stays are intended exclusively for recording studio clients as a base during creative work.",
+          a: "Accommodation is part of the studio stay during creative work.",
         },
         {
           q: "How do I get to you?",
@@ -850,8 +851,7 @@ const translations = {
         intro: "Los geht's:",
         packageLabel: "Paket",
         parking: "Bei allen Paketen können Sie im Mühlenbereich parken, der videoüberwacht ist.",
-        accommodationNote:
-          "Die Unterkunft ist keine öffentlich oder separat angebotene Dienstleistung. Übernachtungen sind ausschließlich für Aufnahmestudio-Kunden als Basis während der kreativen Arbeit vorgesehen.",
+        accommodationNote: "Die Unterkunft ist Teil des Studioaufenthalts während der kreativen Arbeit.",
         packages: [
           {
             name: "Into the Wild",
@@ -860,7 +860,7 @@ const translations = {
               "Am wirtschaftlichsten – Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten, schlafen Sie ein und wachen Sie in der Welt der Musik mit der Natur auf :-)",
             details:
               "Möglichkeit im eigenen Auto/Wohnwagen/Zelt zu schlafen. Das Hauptstudio verfügt über eigene Einrichtungen inklusive Dusche.",
-            video: "https://youtu.be/qEc9SnmU4cM",
+            video: "https://youtu.be/7RVXPBnHb-c",
           },
           {
             name: "Underwater",
@@ -869,7 +869,7 @@ const translations = {
               "Am nächsten zur Musik, schlafen buchstäblich unter dem Studioboden und auch unter der Teichoberfläche :-) Bescheidene, aber stilvolle und gemütliche Unterkunft, Schlafen direkt in den Räumen der ehemaligen Mühle.",
             details:
               "Hier können Sie zu den Klängen des fließenden Wassers einschlafen – öffnen Sie einfach das Fenster :-) – beinhaltet Zugang zur Sauna + Sitzgelegenheit unter dem Damm neben dem großen Ofen. 1x Doppelbett, Möglichkeit von zwei Zustellbetten.",
-            video: "https://youtu.be/gI3204B7eNk",
+            video: "https://youtu.be/uQiXLcspREY",
           },
           {
             name: "Otherside",
@@ -1140,7 +1140,7 @@ const translations = {
         },
         {
           q: "Bieten Sie Unterkunft auch separat an?",
-          a: "Nein. Die Unterkunft ist keine öffentlich oder separat angebotene Dienstleistung. Übernachtungen sind ausschließlich für Aufnahmestudio-Kunden als Basis während der kreativen Arbeit vorgesehen.",
+          a: "Die Unterkunft ist Teil des Studioaufenthalts während der kreativen Arbeit.",
         },
         {
           q: "Wie komme ich zu Ihnen?",
@@ -1194,6 +1194,7 @@ export default function Page() {
 
   const [language, setLanguage] = useState<"cs" | "en" | "de">("cs")
   const [currentSection, setCurrentSection] = useState("mlyn")
+  const activeSectionRef = useRef("mlyn")
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isPlaying, setIsPlaying] = useState(true)
   const [showEndMessage, setShowEndMessage] = useState(false)
@@ -1202,7 +1203,6 @@ export default function Page() {
 
   const [isVideoPlaying, setIsVideoPlaying] = useState(true)
   const [isOverlayPreview, setIsOverlayPreview] = useState(false)
-  const [isAutoPreview, setIsAutoPreview] = useState(false)
   const [showLanguageMenu, setShowLanguageMenu] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [currentVideoUrl, setCurrentVideoUrl] = useState(
@@ -1210,12 +1210,22 @@ export default function Page() {
   )
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [nextVideoUrl, setNextVideoUrl] = useState("")
+  const [isNextVideoReady, setIsNextVideoReady] = useState(false)
+  const videoCrossfadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const videoCrossfadeRafRef = useRef<number | null>(null)
+  const sectionVideoIdleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const currentBackgroundVideoRef = useRef<HTMLIFrameElement>(null)
+  const nextBackgroundVideoRef = useRef<HTMLIFrameElement>(null)
   const playerRef = useRef<any>(null)
 
   const [mlynScrollProgress, setMlynScrollProgress] = useState(0)
   const mlynSectionRef = useRef<HTMLDivElement>(null)
 
   const studioSectionRef = useRef<HTMLDivElement>(null)
+  const lokalitaSectionRef = useRef<HTMLDivElement>(null)
+  const equipmentSectionRef = useRef<HTMLDivElement>(null)
+  const contactSectionRef = useRef<HTMLDivElement>(null)
+  const contentScrollRef = useRef<HTMLDivElement>(null)
 
   const [onasScrollProgress, setOnasScrollProgress] = useState(0)
   const onasSectionRef = useRef<HTMLDivElement>(null)
@@ -1787,23 +1797,74 @@ export default function Page() {
     `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
 
   const getBackgroundVideoId = (section: string, darkMode: boolean, horizontal: boolean) => {
+    const normalizedSection = section === "spoluprace" ? "about" : section
+
     if (darkMode) {
-      if (section === "mlyn") return horizontal ? "a-bBDcZvg5U" : "HQUoxExYlEM"
-      if (section === "contact") return horizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
-      if (section === "lokalita") return horizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
-      if (section === "equipment") return horizontal ? "a-bBDcZvg5U" : "DY09nnytbjc"
-      if (section === "about") return horizontal ? "a-bBDcZvg5U" : "M4QkWhz7CDo"
+      if (normalizedSection === "mlyn") return horizontal ? "a-bBDcZvg5U" : "HQUoxExYlEM"
+      if (normalizedSection === "studio") return horizontal ? "b4tTKrUevzM" : "PNnMOPbABZo"
+      if (normalizedSection === "contact") return horizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+      if (normalizedSection === "lokalita") return horizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+      if (normalizedSection === "equipment") return horizontal ? "a-bBDcZvg5U" : "DY09nnytbjc"
+      if (normalizedSection === "about") return horizontal ? "a-bBDcZvg5U" : "M4QkWhz7CDo"
       return "M4QkWhz7CDo"
     }
 
-    if (section === "mlyn") return horizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
-    if (section === "studio") return horizontal ? "MczOR3DstPg" : "PNnMOPbABZo"
-    if (section === "about") return horizontal ? "M4QapdIvjkM" : "qcbDEWXmPdE"
-    if (section === "contact") return horizontal ? "IJMzgLBpymc" : "Js0nD8lUKH8"
-    if (section === "lokalita") return horizontal ? "tWtT7cB1Tus" : "yYFR6g6jlaA"
-    if (section === "equipment") return horizontal ? "VDj9aKHnpcw" : "yYFR6g6jlaA"
+    if (normalizedSection === "mlyn") return horizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
+    if (normalizedSection === "studio") return horizontal ? "MczOR3DstPg" : "PNnMOPbABZo"
+    if (normalizedSection === "about") return horizontal ? "M4QapdIvjkM" : "qcbDEWXmPdE"
+    if (normalizedSection === "contact") return horizontal ? "IJMzgLBpymc" : "Js0nD8lUKH8"
+    if (normalizedSection === "lokalita") return horizontal ? "tWtT7cB1Tus" : "yYFR6g6jlaA"
+    if (normalizedSection === "equipment") return horizontal ? "VDj9aKHnpcw" : "yYFR6g6jlaA"
     return horizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
   }
+
+  const clearVideoCrossfade = useCallback(() => {
+    if (videoCrossfadeTimeoutRef.current) {
+      clearTimeout(videoCrossfadeTimeoutRef.current)
+      videoCrossfadeTimeoutRef.current = null
+    }
+    if (videoCrossfadeRafRef.current !== null) {
+      window.cancelAnimationFrame(videoCrossfadeRafRef.current)
+      videoCrossfadeRafRef.current = null
+    }
+  }, [])
+
+  const clearSectionVideoIdle = useCallback(() => {
+    if (sectionVideoIdleRef.current) {
+      clearTimeout(sectionVideoIdleRef.current)
+      sectionVideoIdleRef.current = null
+    }
+  }, [])
+
+  const startVideoCrossfade = useCallback(
+    (targetUrl: string) => {
+      if (!targetUrl) {
+        return
+      }
+      if (targetUrl === currentVideoUrl && !nextVideoUrl) {
+        return
+      }
+      if (targetUrl === nextVideoUrl) {
+        return
+      }
+
+      clearVideoCrossfade()
+      setIsNextVideoReady(false)
+      setNextVideoUrl(targetUrl)
+      setIsTransitioning(false)
+    },
+    [clearVideoCrossfade, currentVideoUrl, nextVideoUrl],
+  )
+
+  const handleNextBackgroundVideoLoad = useCallback(() => {
+    const iframe = nextBackgroundVideoRef.current
+    if (!iframe) {
+      return
+    }
+
+    // Ask YouTube player to start buffering/playing the next stream in background.
+    iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', "*")
+  }, [])
 
   const backgroundVideoStyle = isHorizontal
     ? {
@@ -1827,9 +1888,34 @@ export default function Page() {
         transform: "translate(-50%, -50%)",
       }
 
-  const darkModeTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const autoPreviewTimersRef = useRef<NodeJS.Timeout[]>([])
-  const hasAutoPreviewRunRef = useRef(false)
+  const getSectionElement = useCallback((section: string): HTMLDivElement | null => {
+    const normalizedSection = section === "location" ? "lokalita" : section === "home" ? "mlyn" : section
+
+    if (normalizedSection === "mlyn") return mlynSectionRef.current
+    if (normalizedSection === "studio") return studioSectionRef.current
+    if (normalizedSection === "equipment") return equipmentSectionRef.current
+    if (normalizedSection === "lokalita") return lokalitaSectionRef.current
+    if (normalizedSection === "about") return onasSectionRef.current
+    if (normalizedSection === "contact") return contactSectionRef.current
+
+    return null
+  }, [])
+
+  const scrollToContentElement = useCallback((target: Element | null, behavior: ScrollBehavior = "smooth") => {
+    if (!target) return
+
+    const rootElement = contentScrollRef.current
+    if (!rootElement) {
+      target.scrollIntoView({ behavior, block: "start" })
+      return
+    }
+
+    const rootRect = rootElement.getBoundingClientRect()
+    const targetRect = target.getBoundingClientRect()
+    const top = targetRect.top - rootRect.top + rootElement.scrollTop
+
+    rootElement.scrollTo({ top: Math.max(0, top), behavior })
+  }, [])
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth)
@@ -1844,10 +1930,30 @@ export default function Page() {
 
   useEffect(() => {
     const sectionParam = searchParams.get("section")
-    if (sectionParam && sectionOrder.includes(sectionParam)) {
-      setCurrentSection(sectionParam)
-    }
-  }, [searchParams])
+    if (!sectionParam) return
+
+    const normalizedSection =
+      sectionParam === "location" ? "lokalita" : sectionParam === "home" ? "mlyn" : sectionParam
+    if (!sectionOrder.includes(normalizedSection)) return
+
+    setCurrentSection(normalizedSection)
+    activeSectionRef.current = normalizedSection
+
+    requestAnimationFrame(() => {
+      if (normalizedSection === "spoluprace") {
+        const element = document.getElementById("collaboration")
+        scrollToContentElement(element, "auto")
+        return
+      }
+
+      const targetElement = getSectionElement(normalizedSection)
+      scrollToContentElement(targetElement, "auto")
+    })
+  }, [getSectionElement, scrollToContentElement, searchParams])
+
+  useEffect(() => {
+    activeSectionRef.current = currentSection
+  }, [currentSection])
 
   // Sync language with URL changes
   useEffect(() => {
@@ -1876,15 +1982,15 @@ export default function Page() {
   // Scroll detection didn't work because content fits on screen without scrolling
 
   const toggleVideo = () => {
-    const iframe = document.getElementById("background-video") as HTMLIFrameElement
-    if (iframe) {
-      if (isVideoPlaying) {
-        iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', "*")
-      } else {
-        iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', "*")
-      }
-      setIsVideoPlaying(!isVideoPlaying)
-    }
+    const shouldPause = isVideoPlaying
+    const command = shouldPause ? "pauseVideo" : "playVideo"
+    const iframes = document.querySelectorAll<HTMLIFrameElement>('iframe[data-bg-video="true"]')
+
+    iframes.forEach((iframe) => {
+      iframe.contentWindow?.postMessage(`{"event":"command","func":"${command}","args":""}`, "*")
+    })
+
+    setIsVideoPlaying(!shouldPause)
   }
 
   const toggleDarkMode = () => {
@@ -1903,72 +2009,36 @@ export default function Page() {
       isHorizontal,
     )
 
-    setIsTransitioning(true)
     const newUrl = buildVideoUrl(newVideoId)
-    setNextVideoUrl(newUrl)
-
-    setTimeout(() => {
-      setCurrentVideoUrl(newUrl)
-      setIsTransitioning(false)
-      setNextVideoUrl("")
-      setIsVideoPlaying(true)
-    }, 1000)
+    startVideoCrossfade(newUrl)
   }
 
   const handleSectionChange = (section: string) => {
-    console.log("[v0] Switching to section:", section)
-    if (section === currentSection) {
-      return
-    }
+    const normalizedSection = section === "location" ? "lokalita" : section === "home" ? "mlyn" : section
+
+    console.log("[v0] Switching to section:", normalizedSection)
 
     const currentParams = new URLSearchParams(window.location.search)
-    currentParams.set("section", section)
+    currentParams.set("section", normalizedSection)
 
     const newUrl = `${window.location.pathname}?${currentParams.toString()}`
-    window.history.pushState({}, "", newUrl)
+    window.history.replaceState({}, "", newUrl)
 
-    setCurrentSection(section)
+    setCurrentSection(normalizedSection)
+    activeSectionRef.current = normalizedSection
     setShowMobileMenu(false)
     setShowLanguageMenu(false)
 
-    if (darkModeTimerRef.current) {
-      clearTimeout(darkModeTimerRef.current)
-      darkModeTimerRef.current = null
-    }
-
-    if (section === "spoluprace") {
+    if (normalizedSection === "spoluprace") {
       const element = document.getElementById("collaboration")
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
+      scrollToContentElement(element, "smooth")
       return
     }
 
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    const sectionElement = getSectionElement(normalizedSection)
+    scrollToContentElement(sectionElement, "smooth")
 
-    const newVideoId = getBackgroundVideoId(section, isDarkMode, isHorizontal)
-
-    console.log(
-      "[v0] Switching to video:",
-      newVideoId,
-      "Section:",
-      section,
-      "Horizontal:",
-      isHorizontal,
-      "Dark:",
-      isDarkMode,
-    )
-
-    setIsTransitioning(true)
-    const videoUrl = buildVideoUrl(newVideoId)
-    setNextVideoUrl(videoUrl)
-
-    setTimeout(() => {
-      setCurrentVideoUrl(videoUrl)
-      setIsTransitioning(false)
-      setNextVideoUrl("")
-      setIsVideoPlaying(true)
-    }, 1000)
+    console.log("[v0] Section changed; background video switch waits for idle timer.")
   }
 
   React.useEffect(() => {
@@ -1976,7 +2046,25 @@ export default function Page() {
       if (event.origin !== "https://www.youtube.com") return
 
       try {
-        const data = JSON.parse(event.data)
+        const rawData = typeof event.data === "string" ? JSON.parse(event.data) : event.data
+        const data = rawData as { event?: string; info?: number }
+        const currentBackgroundWindow = currentBackgroundVideoRef.current?.contentWindow
+        const nextBackgroundWindow = nextBackgroundVideoRef.current?.contentWindow
+        const isCurrentBackgroundVideo = Boolean(currentBackgroundWindow && event.source === currentBackgroundWindow)
+        const isNextBackgroundVideo = Boolean(nextBackgroundWindow && event.source === nextBackgroundWindow)
+
+        if (isNextBackgroundVideo) {
+          // Run crossfade only when next video is actually playing (buffered enough).
+          if (data.event === "onStateChange" && Number(data.info) === 1) {
+            setIsNextVideoReady(true)
+          }
+          return
+        }
+
+        if (!isCurrentBackgroundVideo) {
+          return
+        }
+
         // YouTube Player API sends events like {"event":"onStateChange","info":0}
         // 0 = ended, 1 = playing, 2 = paused
         if (data.event === "onStateChange" && data.info === 0) {
@@ -2005,110 +2093,152 @@ export default function Page() {
     return () => window.removeEventListener("message", handleMessage)
   }, [currentSection]) // Removed handleSectionChange from dependencies
 
-  useEffect(() => {
-    if (darkModeTimerRef.current) {
-      clearTimeout(darkModeTimerRef.current)
-      darkModeTimerRef.current = null
-    }
-
-    if (!isDarkMode) {
-      if (currentSection === "home") {
-        console.log("[v0] Starting 10s timer for photo dark mode switch")
-        darkModeTimerRef.current = setTimeout(() => {
-          console.log("[v0] Auto-switching to dark mode (photo)")
-          setIsDarkMode(true)
-          const newVideoId = getBackgroundVideoId(currentSection, true, isHorizontal)
-          setIsTransitioning(true)
-          const newUrl = buildVideoUrl(newVideoId)
-          setNextVideoUrl(newUrl)
-          setTimeout(() => {
-            setCurrentVideoUrl(newUrl)
-            setIsTransitioning(false)
-            setNextVideoUrl("")
-            setIsVideoPlaying(true)
-          }, 1000)
-        }, 10000)
-      } else {
-        console.log("[v0] Starting 45s timer for video dark mode switch")
-        darkModeTimerRef.current = setTimeout(() => {
-          console.log("[v0] Auto-switching to dark mode (video)")
-          setIsDarkMode(true)
-
-          const newVideoId = getBackgroundVideoId(currentSection, true, isHorizontal)
-          setIsTransitioning(true)
-          const newUrl = buildVideoUrl(newVideoId)
-          setNextVideoUrl(newUrl)
-          setTimeout(() => {
-            setCurrentVideoUrl(newUrl)
-            setIsTransitioning(false)
-            setNextVideoUrl("")
-            setIsVideoPlaying(true)
-          }, 1000)
-        }, 45000)
-      }
-    }
-
-    return () => {
-      if (darkModeTimerRef.current) {
-        clearTimeout(darkModeTimerRef.current)
-        darkModeTimerRef.current = null
-      }
-    }
-  }, [currentSection, isDarkMode, windowWidth]) // Added windowWidth dependency
-
-  useEffect(() => {
-    autoPreviewTimersRef.current.forEach((timer) => clearTimeout(timer))
-    autoPreviewTimersRef.current = []
-
-    if (hasAutoPreviewRunRef.current) return
-    if (currentSection === "home" || currentSection === "studio" || !isVideoPlaying) return
-
-    const startTimer = setTimeout(() => {
-      setIsAutoPreview(true)
-      const endTimer = setTimeout(() => {
-        setIsAutoPreview(false)
-        hasAutoPreviewRunRef.current = true
-      }, 3000)
-      autoPreviewTimersRef.current.push(endTimer)
-    }, 5000)
-
-    autoPreviewTimersRef.current.push(startTimer)
-
-    return () => {
-      autoPreviewTimersRef.current.forEach((timer) => clearTimeout(timer))
-      autoPreviewTimersRef.current = []
-    }
-  }, [currentSection, isVideoPlaying])
-
-  useEffect(() => {
-    if (currentSection === "home" || currentSection === "studio") return
-    const newVideoId = getBackgroundVideoId(currentSection, isDarkMode, isHorizontal)
+  const switchVideoToActiveSection = useCallback(() => {
+    const activeSection = activeSectionRef.current === "home" ? "mlyn" : activeSectionRef.current
+    const newVideoId = getBackgroundVideoId(activeSection, isDarkMode, isHorizontal)
     const newUrl = buildVideoUrl(newVideoId)
-    if (newUrl !== currentVideoUrl) {
-      setCurrentVideoUrl(newUrl)
+
+    if (newUrl === currentVideoUrl || newUrl === nextVideoUrl) {
+      return
     }
-  }, [currentSection, isDarkMode, isHorizontal, currentVideoUrl])
+
+    startVideoCrossfade(newUrl)
+  }, [currentVideoUrl, isDarkMode, isHorizontal, nextVideoUrl, startVideoCrossfade])
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (currentSection === "mlyn" && mlynSectionRef.current) {
-        const scrollTop = mlynSectionRef.current.scrollTop
-        const scrollHeight = mlynSectionRef.current.scrollHeight
-        const clientHeight = mlynSectionRef.current.clientHeight
-      }
+    const rootElement = contentScrollRef.current
+    if (!rootElement) {
+      return
     }
 
-    const currentRef = mlynSectionRef.current
-    if (currentRef) {
-      currentRef.addEventListener("scroll", handleScroll)
+    const armIdleTimer = () => {
+      clearSectionVideoIdle()
+      sectionVideoIdleRef.current = setTimeout(() => {
+        sectionVideoIdleRef.current = null
+        switchVideoToActiveSection()
+      }, SECTION_VIDEO_IDLE_MS)
     }
+
+    armIdleTimer()
+
+    const handleScroll = () => {
+      armIdleTimer()
+    }
+
+    rootElement.addEventListener("scroll", handleScroll, { passive: true })
 
     return () => {
-      if (currentRef) {
-        currentRef.removeEventListener("scroll", handleScroll)
+      rootElement.removeEventListener("scroll", handleScroll)
+      clearSectionVideoIdle()
+    }
+  }, [clearSectionVideoIdle, switchVideoToActiveSection])
+
+  useEffect(() => {
+    if (!nextVideoUrl || !isNextVideoReady) {
+      return
+    }
+
+    if (videoCrossfadeTimeoutRef.current) {
+      clearTimeout(videoCrossfadeTimeoutRef.current)
+      videoCrossfadeTimeoutRef.current = null
+    }
+    if (videoCrossfadeRafRef.current !== null) {
+      window.cancelAnimationFrame(videoCrossfadeRafRef.current)
+      videoCrossfadeRafRef.current = null
+    }
+
+    videoCrossfadeRafRef.current = window.requestAnimationFrame(() => {
+      setIsTransitioning(true)
+    })
+
+    const targetUrl = nextVideoUrl
+    videoCrossfadeTimeoutRef.current = setTimeout(() => {
+      setCurrentVideoUrl(targetUrl)
+      setNextVideoUrl("")
+      setIsNextVideoReady(false)
+      setIsTransitioning(false)
+      setIsVideoPlaying(true)
+    }, VIDEO_CROSSFADE_MS)
+  }, [isNextVideoReady, nextVideoUrl])
+
+  useEffect(() => {
+    return () => {
+      clearVideoCrossfade()
+      clearSectionVideoIdle()
+    }
+  }, [clearSectionVideoIdle, clearVideoCrossfade])
+
+  useEffect(() => {
+    const rootElement = contentScrollRef.current
+    if (!rootElement) return
+
+    const sectionElements = observableSections
+      .map((section) => ({
+        section,
+        element: getSectionElement(section),
+      }))
+      .filter((entry): entry is { section: (typeof observableSections)[number]; element: HTMLDivElement } =>
+        Boolean(entry.element),
+      )
+
+    if (!sectionElements.length) return
+
+    const visibilityMap: Partial<Record<(typeof observableSections)[number], number>> = {}
+    sectionElements.forEach(({ section }) => {
+      visibilityMap[section] = section === "mlyn" ? 1 : 0
+    })
+
+    const updateActiveSection = () => {
+      const currentObservedSection = observableSections.includes(activeSectionRef.current as (typeof observableSections)[number])
+        ? (activeSectionRef.current as (typeof observableSections)[number])
+        : "mlyn"
+
+      const bestVisibleSection = sectionElements.reduce(
+        (best, current) => {
+          const currentRatio = visibilityMap[current.section] ?? 0
+          if (currentRatio > best.ratio) {
+            return { section: current.section, ratio: currentRatio }
+          }
+          return best
+        },
+        { section: currentObservedSection, ratio: 0 },
+      )
+
+      if (bestVisibleSection.ratio < 0.01) {
+        return
+      }
+
+      if (bestVisibleSection.section !== activeSectionRef.current) {
+        activeSectionRef.current = bestVisibleSection.section
+        setCurrentSection(bestVisibleSection.section)
+
+        const params = new URLSearchParams(window.location.search)
+        params.set("section", bestVisibleSection.section)
+        window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`)
       }
     }
-  }, [currentSection])
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const sectionId = entry.target.getAttribute("data-section-id") as (typeof observableSections)[number] | null
+          if (!sectionId) return
+          visibilityMap[sectionId] = entry.isIntersecting ? entry.intersectionRatio : 0
+        })
+        updateActiveSection()
+      },
+      {
+        root: rootElement,
+        threshold: [0, 0.05, 0.1, 0.15, 0.2],
+      },
+    )
+
+    sectionElements.forEach(({ element }) => observer.observe(element))
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [getSectionElement])
 
   const toggleLanguage = () => {
     setShowLanguageMenu(!showLanguageMenu)
@@ -2168,41 +2298,7 @@ export default function Page() {
       
 
       <div className="fixed inset-0 z-0">
-        {currentSection === "studio" ? (
-          <>
-            {isDarkMode && isHorizontal ? (
-              <>
-                <iframe
-                  className="absolute pointer-events-none"
-                  style={backgroundVideoStyle}
-                  src="https://www.youtube.com/embed/b4tTKrUevzM?autoplay=1&mute=1&loop=1&playlist=b4tTKrUevzM&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1"
-                  title="Studio Background Video"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                />
-                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
-                <div className="absolute inset-0 bg-black/60" />
-              </>
-            ) : (
-              <>
-                <iframe
-                  className="absolute pointer-events-none"
-                  style={backgroundVideoStyle}
-                  src={
-                    isHorizontal
-                      ? "https://www.youtube.com/embed/MczOR3DstPg?autoplay=1&mute=1&loop=1&playlist=MczOR3DstPg&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1"
-                      : "https://www.youtube.com/embed/PNnMOPbABZo?autoplay=1&mute=1&loop=1&playlist=PNnMOPbABZo&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&playsinline=1"
-                  }
-                  title="Studio Background Video (Day)"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                />
-                <div className="absolute inset-0 bg-black/25" />
-                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/60 via-black/35 to-transparent" />
-              </>
-            )}
-          </>
-        ) : currentSection !== "home" ? (
+        {currentSection !== "home" ? (
           <>
             <div
               className="absolute inset-0 opacity-10"
@@ -2214,19 +2310,34 @@ export default function Page() {
               }}
             />
             <iframe
-              id="background-video"
-              className={`absolute pointer-events-none transition-opacity duration-1000 ${isTransitioning ? "opacity-0" : "opacity-100"}`}
+              ref={currentBackgroundVideoRef}
+              data-bg-video="true"
+              className="absolute pointer-events-none opacity-100"
               style={backgroundVideoStyle}
               src={currentVideoUrl}
-              title="Mlýn na Pile Background Video"
+              title="Mlýn na Pile Background Video - current"
               allow="autoplay; encrypted-media"
               allowFullScreen
             />
+            {nextVideoUrl ? (
+              <iframe
+                ref={nextBackgroundVideoRef}
+                data-bg-video="true"
+                id="background-video"
+                className={`absolute pointer-events-none transition-opacity duration-[2000ms] ${isTransitioning ? "opacity-100" : "opacity-0"}`}
+                style={backgroundVideoStyle}
+                src={nextVideoUrl}
+                onLoad={handleNextBackgroundVideoLoad}
+                title="Mlýn na Pile Background Video - next"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            ) : null}
             <div className="absolute inset-0 bg-black/35 pointer-events-none" />
             <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 via-black/40 to-transparent pointer-events-none" />
             <div
               className={`absolute inset-0 bg-black/70 transition-opacity duration-500 pointer-events-none ${
-                isOverlayPreview || isAutoPreview || !isVideoPlaying ? "opacity-100" : "opacity-0"
+                isOverlayPreview || !isVideoPlaying ? "opacity-100" : "opacity-0"
               }`}
             />
           </>
@@ -2337,7 +2448,7 @@ export default function Page() {
                 {isDarkMode ? <Moon className="h-2.5 w-2.5" /> : <Sun className="h-2.5 w-2.5" />}
               </Button>
 
-              {currentSection !== "home" ? (
+              {currentSection !== "home" && currentSection !== "studio" ? (
                 <div className="relative group">
                   <Button
                     variant="outline"
@@ -2348,7 +2459,7 @@ export default function Page() {
                     onFocus={() => setIsOverlayPreview(true)}
                     onBlur={() => setIsOverlayPreview(false)}
                     className={`pulse-soft bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6 transition-all ${
-                      isOverlayPreview || isAutoPreview
+                      isOverlayPreview
                         ? isDarkMode
                           ? "bg-blue-500/30 text-white"
                           : "bg-amber-500/30 text-white"
@@ -2359,11 +2470,7 @@ export default function Page() {
                   >
                     {isVideoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
                   </Button>
-                  <span
-                    className={`absolute -bottom-7 right-0 whitespace-nowrap rounded-md bg-black/80 text-white text-[10px] px-2 py-1 opacity-0 translate-y-1 transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 ${
-                      isAutoPreview ? "opacity-100 translate-y-0" : ""
-                    }`}
-                  >
+                  <span className="absolute -bottom-7 right-0 whitespace-nowrap rounded-md bg-black/80 text-white text-[10px] px-2 py-1 opacity-0 translate-y-1 transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
                     Ztmavnout pozadí pro čtení
                   </span>
                 </div>
@@ -2434,7 +2541,7 @@ export default function Page() {
                 {isDarkMode ? <Moon className="h-2.5 w-2.5" /> : <Sun className="h-2.5 w-2.5" />}
               </Button>
 
-              {currentSection !== "home" ? (
+              {currentSection !== "home" && currentSection !== "studio" ? (
                 <div className="relative group">
                   <Button
                     variant="outline"
@@ -2445,7 +2552,7 @@ export default function Page() {
                     onFocus={() => setIsOverlayPreview(true)}
                     onBlur={() => setIsOverlayPreview(false)}
                     className={`pulse-soft bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6 transition-all ${
-                      isOverlayPreview || isAutoPreview
+                      isOverlayPreview
                         ? isDarkMode
                           ? "bg-blue-500/30 text-white"
                           : "bg-amber-500/30 text-white"
@@ -2456,11 +2563,7 @@ export default function Page() {
                   >
                     {isVideoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
                   </Button>
-                  <span
-                    className={`absolute -bottom-7 right-0 whitespace-nowrap rounded-md bg-black/80 text-white text-[10px] px-2 py-1 opacity-0 translate-y-1 transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0 ${
-                      isAutoPreview ? "opacity-100 translate-y-0" : ""
-                    }`}
-                  >
+                  <span className="absolute -bottom-7 right-0 whitespace-nowrap rounded-md bg-black/80 text-white text-[10px] px-2 py-1 opacity-0 translate-y-1 transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
                     Ztmavnout pozadí pro čtení
                   </span>
                 </div>
@@ -2491,9 +2594,14 @@ export default function Page() {
             </div>
           )}
 
-          <div className="">
-            {currentSection === "mlyn" ? (
-              <div ref={mlynSectionRef} className="flex-1 min-h-screen pt-32 pb-32 overflow-y-auto">
+          <div ref={contentScrollRef} className="flex-1 overflow-y-auto scroll-smooth snap-y snap-proximity">
+            <>
+              <div
+                id="mlyn"
+                data-section-id="mlyn"
+                ref={mlynSectionRef}
+                className="snap-start min-h-screen pt-32 pb-32"
+              >
                 <div className="px-6 py-12">
                   <div className="text-center max-w-5xl mx-auto mb-16">
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
@@ -2605,8 +2713,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ) : currentSection === "studio" ? (
-              <div ref={studioSectionRef} className="flex-1 overflow-y-auto pt-32 pb-32">
+              <div
+                id="studio"
+                data-section-id="studio"
+                ref={studioSectionRef}
+                className="snap-start min-h-screen pt-32 pb-32"
+              >
                 {/* Hero Section */}
                 <div className="flex items-center justify-center px-6 py-16 text-white">
                   <div className="text-center max-w-5xl">
@@ -2659,7 +2771,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group order-2 lg:order-1">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
+                          src="https://www.youtube.com/embed/u2ylGCNnV50?autoplay=1&mute=1&loop=1&playlist=u2ylGCNnV50&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
                           title="Control Room"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -2860,8 +2972,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ) : currentSection === "lokalita" ? (
-              <div className="flex-1 px-6 py-12 overflow-y-auto pt-32 pb-32">
+              <div
+                id="lokalita"
+                data-section-id="lokalita"
+                ref={lokalitaSectionRef}
+                className="snap-start min-h-screen px-6 py-12 pt-32 pb-32"
+              >
                 <div className="max-w-6xl mx-auto">
                   <div className="text-center mb-12">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">{t.location.title}</h1>
@@ -3118,8 +3234,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ) : currentSection === "equipment" ? (
-              <div className="flex-1 px-6 py-12 overflow-y-auto pt-32 pb-32">
+              <div
+                id="equipment"
+                data-section-id="equipment"
+                ref={equipmentSectionRef}
+                className="snap-start min-h-screen px-6 py-12 pt-32 pb-32"
+              >
                 <div className="max-w-7xl mx-auto">
                   <div className="text-center mb-8">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 text-balance">{t.equipment.title}</h1>
@@ -3813,8 +3933,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ) : currentSection === "contact" ? (
-              <div className="pt-32 px-6 py-12">
+              <div
+                id="contact"
+                data-section-id="contact"
+                ref={contactSectionRef}
+                className="snap-start min-h-screen pt-32 px-6 py-12 pb-32"
+              >
                 <div className="max-w-4xl mx-auto">
                   <div className="text-center mb-12">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">{t.contact.title}</h1>
@@ -3880,8 +4004,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ) : (
-              <div ref={onasSectionRef} className="pt-32 px-6 py-12 pb-24">
+              <div
+                id="about"
+                data-section-id="about"
+                ref={onasSectionRef}
+                className="snap-start min-h-screen pt-32 px-6 py-12 pb-32"
+              >
                 <div className="space-y-8">
                   {/* Section 1: Hero + History */}
                   <div className="max-w-6xl mx-auto">
@@ -4186,7 +4314,7 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            )}
+            </>
           </div>
         </div>
       </div>
