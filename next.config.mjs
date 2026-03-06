@@ -6,9 +6,26 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
- 
   eslint: {
     ignoreDuringBuilds: true,
+  },
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/",
+          destination: "/mlynnapile.html",
+        },
+        {
+          source: "/en",
+          destination: "/en/index.html",
+        },
+        {
+          source: "/de",
+          destination: "/de/index.html",
+        },
+      ],
+    }
   },
 }
 
