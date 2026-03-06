@@ -12,6 +12,7 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        // Route the homepage locales to the restored static snapshot.
         {
           source: "/",
           destination: "/mlynnapile.html",
