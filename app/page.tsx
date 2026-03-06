@@ -1,15 +1,17 @@
 "use client"
-
 import React from "react"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { BusinessCardDownload } from "@/components/business-card-download"
-import { Play, Pause, Home, Guitar, Mic, Headphones, Calendar, MapPin, Phone, Moon, Sun, ChevronDown, Globe, Car, UtensilsCrossed, Languages, Ghost, FileText, Shield, Mail, HelpCircle, CigaretteOff, Hotel, Music, Camera, Medal as Pedal, Drum as Drums, Plug, EqualIcon as Equalize, Wand, Waves, Sparkles, Cable, Settings, Server, Keyboard, ChevronRight, ChevronLeft } from "lucide-react"
+import { Play, Pause, Home, Guitar, Mic, Headphones, Calendar, MapPin, Phone, Moon, Sun, ChevronDown, Globe, Car, UtensilsCrossed, Languages, Ghost, FileText, Shield, Mail, HelpCircle, CigaretteOff, Hotel, Music, Camera, Medal as Pedal, Drum as Drums, Plug, EqualIcon as Equalize, Wand, Waves, Sparkles, Cable, Settings, Server, Keyboard, ChevronRight, ChevronLeft, Zap } from "lucide-react"
 
-const sectionOrder = ["mlyn", "home", "lokalita", "equipment", "about", "contact", "spoluprace"]
+const sectionOrder = ["mlyn", "home", "studio", "lokalita", "equipment", "about", "contact", "spoluprace"]
+const observableSections = ["mlyn", "studio", "lokalita", "equipment", "contact", "about"] as const
+const VIDEO_CROSSFADE_MS = 2000
+const SECTION_VIDEO_IDLE_MS = 10000
 
 const translations = {
   cs: {
@@ -25,17 +27,17 @@ const translations = {
       title: "Mlýn na Pile",
       subtitle: "Retreat Studio",
       tagline: "Kde se rodí inspirace",
-      description: "Unikátní prostor s genius loci v krásné přírodě",
+      description: "Unikátní prostor s genius loci, jehož historie sahá do 17. století.",
       vintageInstruments: "Vintage Nástroje",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
       accommodation: "Stylové ubytování",
-      accommodationDesc: "4 pokojů, zimní zahrada 63m², finská sauna",
+      accommodationDesc: "4 pokoje, zimní zahrada 63m², finská sauna",
       locationCard: "Lokalita",
       locationDesc: "Krásná příroda - rekreační oblast, soukromí a vlastní park",
       studios: "Studia",
-      studiosDesc: "Velké studio 64m²\nStudio mlýnice 25m²\nControl Room 27m²",
+      studiosDesc: "Velké studio 64m²\nStudio mlýnice 25m²\nKontrolní místnost 27m²",
       modernTech: "Moderní technologie",
-      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD pluginů, Logic Pro X\nApple Pro Display XDR 6K",
+      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD pluginů, Logic\u00A0Pro\u00A0X\nApple Pro Display XDR 6K",
       benefits: "Další benefity",
       benefitsDesc:
         " Vlastní zdroj elektrické energie, zapůjčení elektromobilu, kol, nabíjecí stanice, zabezpečené prostory",
@@ -43,21 +45,28 @@ const translations = {
       darkMode: "Noční režim zapnutý - klikněte pro denní režim",
       lightMode: "Denní režim zapnutý - klikněte pro noční režim",
     },
-    studio: {
+      studio: {
       title: "Mlýn na Pile",
       subtitle: "Tři unikátní prostory pro vaši kreativitu",
-      description: "Od hlavního studia přes Millstone studio do control room",
+      description: "Od hlavního studia přes studio mlýnice do kontrolní místnosti",
       mainStudio: "Hlavní Studio",
       mainStudioSize: "64 m²",
       mainStudioDesc:
-        "Hlavní studio se nachází v podkrovní galerii s odkrytými původními trámy, které prostoru dodávají autentickou atmosféru starého mlýna. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník. Místo, kde se propojuje vůně dřeva, teplo vintage nástrojů a ticho okolní přírody — ideální prostor pro tvorbu, nahrávání i soustředěnou práci.",
+        "Hlavní studio se nachází v podkrovní galerii, přímo nad mlýnicí, které prostoru dodávají autentickou atmosféru starého mlýna. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník. Místo, kde se propojuje vůně dřeva, teplo vintage nástrojů a ticho okolní přírody — ideální prostor pro tvorbu, nahrávání i soustředěnou práci.",
       equipment: "Vybavení",
-      controlRoom: "Control Room",
+      equipmentHighlights: [
+        "Fender Vintage, Custom Shop kytary",
+        "Gibson Les Paul Studio, Explorer",
+        "Lampové aparáty Marshall, Fender, Mesa Boogie, Ampeg",
+        "Rozsáhlá kolekce boutique efektů",
+        "Mapex Saturn bicí & K-Zildjian činely",
+      ],
+      controlRoom: "Kontrolní místnost",
       controlRoomSize: "27 m²",
       controlRoomDesc:
-        "Pristine acoustics pro critical listening. Vybaveno cutting-edge technologií pro mixing a mastering na nejvyšší úrovni.",
+        "Apple, včetně periferiíí apple pro pohodlnou práci navíc 6K Apple Pro XRD vhodný i pro grafiky a střihání videí. Plynule regulovatelné osvětlení místnosti. Prostor s krásným výhledem a knihovnou.",
       technology: "Technologie",
-      millstoneStudio: "Millstone studio",
+      millstoneStudio: "Studio mlýnice",
       millstoneSize: "25 m² - Bývalá mlýnice",
       millstoneDesc:
         "Vysoké stropy a unikátní akustika historické mlýnice. Ideální pro akustické nahrávky a experimentální projekty.",
@@ -71,30 +80,29 @@ const translations = {
         intro: "Jdeme na to:",
         packageLabel: "Balíček",
         parking: "U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.",
-        accommodationNote:
-          "Ubytování není veřejně ani samostatně poskytovaná služba. Přespání je určeno výhradně klientům nahrávacího studia jako zázemí během kreativní práce.",
+        accommodationNote: "Ubytování je součástí pobytu ve studiu během kreativní práce.",
         packages: [
           {
             name: "Into the Wild",
-            tags: "#Main studio #Snídaně v zimnní zahradě ",
+            tags: "#Hlavní studio #Snídaně v zimní zahradě",
             description:
               "Nejekonomičtější - stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence, usínejte a probouzejte se do světa hudby s přírodou :-)",
             details:
-              "Možnost přespání ve vlastním autě/karavanu/stanu. Main studio má vlastní sociální zařízení včetně sprchy.",
-            video: "https://youtu.be/qEc9SnmU4cM",
+              "Možnost přespání ve vlastním autě/karavanu/stanu. Hlavní studio má vlastní sociální zařízení včetně sprchy.",
+            video: "https://youtu.be/7RVXPBnHb-c",
           },
           {
             name: "Underwater",
-            tags: "#Main Studio #Sauna",
+            tags: "#Hlavní studio #Sauna",
             description:
               "Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka :-) Skromné ale stylové a útulné přespání, jedná se o spaní přímo v prostorách bývalé mlýnice.",
             details:
               "Zde můžete usínat za zvuků protékající vody - stačí pootevřít okno :-) - součástí je i možnost využít saunu + posezení pod hrází vedle velké pece. 1x dvojlůžko, možnost dalších dvou přistýlek.",
-            video: "https://youtu.be/gI3204B7eNk",
+            video: "https://youtu.be/uQiXLcspREY",
           },
           {
             name: "Otherside",
-            tags: "#Control room #Staročeská světnice #Dva pokoje",
+            tags: "#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV",
             description:
               "Z druhé strany studia můžete využít pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple (Magic Trackpad, Magic Mouse, Apple Magic Keyboard) pro pohodlnou práci + ubytování ve staročeské světnici.",
             details:
@@ -107,15 +115,16 @@ const translations = {
             description:
               "Tato varianta se jmenuje podle našeho songu Fuel a i podle songu od Metallicy, protože tohle je fakt asi pro Metallicu, (ale nebojte napsat a určitě se domluvíme).",
             details:
-              "Jedná se VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady kde si můžete dát výbornou kávu a vejdete se sem s celým týmem nebo si zde můžete užít klid mezitím co bude zbytek teamu pracovat ve studiu. Profi catering, roztopení velké pece. Vynikající pizza i chleba - který si můžete zkusit sami upéct a to nám věřte - to je radost a zážitek, který si užijete :-). Dále zapůjčení Tesla model X v ceně (200 km), popř. včetně řidiče s možností navštívit zajímavá místa v okolí (viz. [lokalita]) :-)",
+              "Jedná se VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady kde si můžete dát výbornou kávu a vejdete se sem s celým týmem nebo si zde můžete užít klid mezitím co bude zbytek teamu pracovat ve studiu. Profi catering, roztopení velké pece. Vynikající pizza i chleba - který si můžete zkusit sami upéct a to nám věřte - to je radost a zážitek, který si užijete :-). Dále zapůjčení Tesla model X v ceně, popř. včetně řidiče s možností navštívit zajímavá místa v okolí (viz. [lokalita]) :-)",
             video: "https://youtu.be/5INpfHr0lu4",
           },
         ],
         bonuses: {
           title: "Další bonusy",
           items: [
+            'Součástí pobytu je snídaně/brunch a vždy čerstvý kváskový <a href="/chleba" target="_blank" rel="noopener noreferrer" class="underline text-white/90 hover:text-white">chleba</a> z pece :-)',
             "Můžete si zvednout stavidlo a pustit vodu na mlýn. 😄💧",
-            "V noci je tu nebe jako v Severní Koreji – všude hvězdy. ✨🌟",
+            
             "Pro Dana Bártu (a ostatní milovníky přírody): Jsou tu vážky, krásné a je jich hodně :-) 🦋 Létají až do zimní zahrady a jsou dost rozumné na to, aby po prohlídce zase odletěly, aniž by narážely do skla. Kromě nich tu najdete i invazivní rostliny (křídlatka a škumpa), se kterými statečně bojujeme. 🌿⚔️ Rostou tu ale také sekvoje obrovské, které – přiznáváme – nemáme srdce porazit. 🌲💚",
             "Pod okny studia jsou často Labutě s labuťátky, které se nechají krmit. 🦢",
             "U sousedky Dády si můžete projet na koních. 🐴",
@@ -126,6 +135,7 @@ const translations = {
             "Vše podtrhuje ticho a klid, přitom do Domažlic je to jak z Národní na Palmovku (8 minut). 🤫🌳",
             "V neposlední řadě, fajn sousedi ze všech stran a hospůdka Bidlo se sympatickou obsluhou a krásným výhledem na rybník a mlýn z druhé strany. Tady si můžete dát Plzeň a kdyby jste chtěli si dát víc piv a druhý den fungovat ve studiu, doporučujeme výlet do pivovaru v Domažlicích a držet se pouze Domažlické desítky, po které můžete bez problémů druhý den fungovat (Doporučeno paní sládkovou a několikrát pro vás otestováno, že je to pravda :-) 🍺🏡",
             "Ráno můžete skočit i do rybníka, ale nikdo to nedělá... ale jako můžete :-) 🏊‍♂️",
+            "V noci je tu nebe plné hvězd. ✨🌟",
           ],
         },
       },
@@ -155,6 +165,10 @@ const translations = {
         "Tesla nabíjecí stanice",
         "Nezávislost na energetické síti",
       ],
+      teslaTitle: "Tesla nabíjecí stanice",
+      teslaDesc: "Nabíjení Tesla přímo v areálu",
+      energyTitle: "Energetická nezávislost",
+      energyDesc: "Záložní zdroj pro nerušenou práci",
       events: "Tipy na výlety",
       domazliceTitle: "Domažlice (8 min)",
       domazliceItems: ["Historické náměstí", "Muzeum Chodska", "Kostel sv. Vavřince", "Kulturní akce a festivaly"],
@@ -241,7 +255,6 @@ const translations = {
       ],
       infrastructure: "Infrastruktura",
       uaPlugins: "Universal Audio Pluginy",
-      workflow: "Doporučené Workflow",
       thankYouNote: "Děkujeme",
       noraCollaboration: "Děkujeme kytaristovi Radkovi Fořtovi z kapely",
       noraBand: "NORA",
@@ -255,7 +268,7 @@ const translations = {
       tagline: "Vintage duše, moderní technologie",
       history: "Historie mlýna",
       historyTimeline: [
-        { year: "1653", desc: "Založení rybníků a postavení vysoké pece a hamru Lamingena" },
+        { year: "1653", desc: "Založení rybníků a postavení vysoké pece a hamru" },
         { year: "1810", desc: "Mlýn s pilou poháněnou vodní silou" },
         {
           year: "1990",
@@ -268,7 +281,7 @@ const translations = {
       masterSuite: "Master Suite (63 m²)",
       masterSuiteDesc: "Prostorný apartmán s výhledem na rybník, včetně zimní zahrady a vlastním sociálním zařízením.",
       fourRooms: "Další pokoje",
-      fourRoomsDesc: "4 stylově zařízené pokoje s možností přistýlek.",
+      fourRoomsDesc: "4 stylově zařízené pokoje s možností přistýlek a 4K TV",
       commonSpaces: "Společné prostory",
       commonSpacesItems: [
         "Prostorná zimní zahrada s posezením a krbem (63 m²)",
@@ -277,7 +290,7 @@ const translations = {
         "Krbové posezení v zahradě",
       ],
       finnishSauna: "Finská sauna",
-      finnishSaunaItems: ["Kapacita 6 osob", "Relaxační zóna s výhledem do přírody", "Možnost ochlazení v jezírku"],
+      finnishSaunaItems: ["Kapacita 5 osob", "Relaxační zóna s výhledem do přírody", "Možnost ochlazení v jezírku"],
       parkOutdoor: "Park a Exteriér",
       parkOutdoorItems: [
         "Rozlehlý park s možností stanování a grilování",
@@ -302,16 +315,16 @@ const translations = {
       jindrichQuote:
         "Pracujeme na tom, aby u nás muzikanti našli inspirativní prostor dokonale připravený pro tvorbu. Mlýn má svůj genius loci a duši – a stejnou energii nesou i nástroje a vintage aparáty, které jsou zde k dispozici. V harmonii s nimi zde moderní technologie nenápadně podporují pohodlí a profesionální podmínky pro zachycení každého hudebního nápadu. Naším cílem je vytvořit krásné, klidné a pohodové prostředí, kam se lidé budou rádi vracet. Dveře máme otevřené všem kreativním lidem, nejen hudebníkům. Věříme, že právě tato kombinace – prostor s duší, nástroje s příběhem a moderní technologie v pozadí – se stane motorem a synergií pro vznik úžasných věcí.",
       andreaDesc:
-        "Zpěvačka a baskytaristka kapely Anteater a také archeoložka. Právě v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na svět inspirovat.",
+        "Zpěvačka a baskytaristka kapely Anteater, také archeoložka a aktuálně hlavní pekařka na mlýně :-). Právě zde v prostředí starého mlýna se všechny tyto její vášně přirozeně propojují. Andrea spoluvytváří domáckou a inspirativní atmosféru studia. Pokud budete chtít o půlnoci uvařit kakao (a nebo nazpívat druhé hlasy), neváhejte se obrátit právě na Andreu (v případě technických problémů pak na Jindru :)) Teď ale vážně: vzájemně se doplňujeme a snažíme se mnohdy z našich různých pohledů na svět inspirovat. Andrea aktuálně peče <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline text-white/90 hover:text-white\">kváskový chleba</a> na mlýně, který je součástí každé snídaně nebo brunche.",
       collaboration: "Spolupráce a Rezervace",
       collaborationPara1Strong: "Hledáme partnery,",
       collaborationPara1:
-        " ne pouze dodavatele. Věříme v dlouhodobé vztahy založené na společné vášni pro hudbu a kvalitu.",
-      collaborationPara2Strong: "Ve studiu se snažíme mít co nejlepší vybavení",
+        " kteří sdílejí naši vášeň pro hudbu a kvalitu.",
+      collaborationPara2Strong: "Stavíte kytary, efektové pedály nebo zesilovače?",
       collaborationPara2:
-        " - průběžně upravujeme setup a stále hledáme to nejlepší na trhu. Stavíte kytary, efektové krabičky, zesilovače? Chcete, aby se k vašim produktům dostali zajímaví zákazníci?",
+        "Vedle věhlasných značek jako Fender, Gibson či Martin chceme dát prostor i těm, kteří vyrábějí něco skutečně výjimečného – nástrojům a vybavení, které si zaslouží pozornost. ",
       collaborationPara2End:
-        " Neváhejte nás kontaktovat! Přijeďte se za námi podívat a nezávazně si popovídat - rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si chceme nejdříve důkladně vyzkoušet.",
+        " Chcete, aby se k vašim produktům dostali zajímaví zákazníci a umělci mohli u nás vaše výrobky nejen vyzkoušet, ale případně i přímo zakoupit? Přijeďte se za námi podívat a nezávazně si popovídat – rádi poznáváme zajímavé lidi, kteří něco tvoří. Vše si chceme nejdříve důkladně vyzkoušet. Máte-li zájem umístit zde své produkty nebo uspořádat výstavu, natočit zde propagační video, neváhejte nás kontaktovat.",
       collaborationFormsTitle: "Formy spolupráce:",
       collaborationForms: [
         "Integrace značky – autentické umístění produktu",
@@ -344,11 +357,11 @@ const translations = {
         },
         {
           q: "Poskytujete ubytování i samostatně?",
-          a: "Ne. Ubytování není veřejně ani samostatně poskytovaná služba. Přespání je určeno výhradně klientům nahrávacího studia jako zázemí během kreativní práce.",
+          a: "Ubytování je součástí pobytu ve studiu během kreativní práce.",
         },
         {
           q: "Jak se k nám dostanu?",
-          a: "Autem: přímý přístup, soukromé parkování, Tesla nabíjení. Vlakem: 10 min pěšky ze stanice Trhanov. Letecky: 1h 45min z letiště Praha, 2h z letiště Mnichov, pick-up služba k dispozici.",
+          a: "Autem: přímý přístup, soukromé parkování. Vlakem: 10 min pěšky ze stanice Trhanov. Letecky: 1h 45min z letiště Praha, 2h z letiště Mnichov, pick-up služba k dispozici.",
         },
         {
           q: "Mohu přijet i sám, nebo je akce určena pouze pro kapely a týmy?",
@@ -356,7 +369,7 @@ const translations = {
         },
         {
           q: "Máte catering, nebo si musím řešit jídlo sám?",
-          a: "Flexibilní možnosti stravování: In-house catering s lokálními ingrediencemi, pizza pec pro společné večeře (až 8 pizz), plně vybavená kuchyň pro vlastní vaření, rozvoz z místních restaurací z Domažlic.",
+          a: "Součástí pobytu je vždy snídaně nebo brunch a vždy domácí kváskový <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">chleba</a>, který pečeme ve venkovní peci. Flexibilní možnosti stravování: In-house catering s lokálními ingrediencemi, pizza pec pro společné večeře (až 8 pizz), plně vybavená kuchyň pro vlastní vaření, rozvoz z místních restaurací z Domažlic.",
         },
         {
           q: "Mluvíte anglicky/německy?",
@@ -365,6 +378,10 @@ const translations = {
         {
           q: "Mohu přijet s dětmi i se psem?",
           a: "Ano, všichni jsou vítáni. Jsou zde omalovánky, knížky, hračky na zahradu i na ven. Pejsci jsou také vítáni, ale pozor - pozemek není komplet oplocen.",
+        },
+        {
+          q: "Během pobytu jsme si u vás oblíbili konkrétní kytarový rig. Je možné zapůjčení na dohrávky ve studiu, kde dokončujeme materiál k desce?",
+          a: "Ano, samozřejmě. Po předchozí domluvě je možné vybraný kytarový chain zapůjčit i na následné dohrávky. (Pozn. pouze nástroje,které vlastníme, zbytek je na dohodě.)",
         },
       ],
     },
@@ -393,7 +410,7 @@ const translations = {
       title: "Mill at Pila",
       subtitle: "Retreat Studio",
       tagline: "Where inspiration is born",
-      description: "Unique space with genius loci in beautiful nature",
+      description: "A unique space with genius loci, whose history dates back to the 17th century.",
       vintageInstruments: "Vintage Instruments",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
       accommodation: "Stylish Accommodation",
@@ -403,7 +420,7 @@ const translations = {
       studios: "Studios",
       studiosDesc: "Main studio 64m²\nMillstone studio 25m²\nControl Room 27m²",
       modernTech: "Modern Technology",
-      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD plugins, Logic Pro X\nApple Pro Display XDR 6K",
+      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD plugins, Logic\u00A0Pro\u00A0X\nApple Pro Display XDR 6K",
       benefits: "Additional Benefits",
       benefitsDesc: "Electric car rental, bikes, charging station, own power source, secured premises",
       endMessage: "Enjoy the presentation!",
@@ -419,10 +436,17 @@ const translations = {
       mainStudioDesc:
         "The main studio is located in an attic gallery with exposed original beams that give the space an authentic atmosphere of an old mill. Natural light enters through skylights and a large French window with a balcony overlooking a peaceful pond. A place where the scent of wood, warmth of vintage instruments and silence of surrounding nature merge — ideal space for creation, recording and focused work.",
       equipment: "Equipment",
+      equipmentHighlights: [
+        "Fender vintage and Custom Shop guitars",
+        "Gibson Les Paul Studio, Explorer",
+        "Tube amps: Marshall, Fender, Mesa Boogie, Ampeg",
+        "Extensive collection of boutique effects",
+        "Mapex Saturn drums & K-Zildjian cymbals",
+      ],
       controlRoom: "Control Room",
       controlRoomSize: "27 m²",
       controlRoomDesc:
-        "Pristine acoustics for critical listening. Equipped with cutting-edge technology for mixing and mastering at the highest level.",
+        "Apple setup including peripherals for comfortable work, plus a 6K Apple Pro XRD suitable for graphics and video editing. Smoothly adjustable room lighting. A space with a beautiful view and a library.",
       technology: "Technology",
       millstoneStudio: "Millstone Studio",
       millstoneSize: "25 m² - Former mill room",
@@ -434,63 +458,64 @@ const translations = {
       accommodation: {
         title: "RECORDING + ACCOMMODATION",
         subtitle:
-          "Individual packages are arranged from most economical to VIP - we named them after our songs :-) Studio rental includes musical equipment and instruments. Free wifi and parking on site, with EV charging available.",
+          "Packages are ordered from the most economical to VIP — we named them after our songs :-) Studio rental includes musical gear and instruments. All packages include breakfast/brunch in the winter garden, including homemade bread from the oven :-). Free wifi and parking on site, with EV charging available. The studios are energy self‑sufficient, so your recording is not threatened by possible power outages.",
         intro: "Let's go:",
         packageLabel: "Package",
         parking: "All packages include parking in the mill area, which is under camera surveillance.",
-        accommodationNote:
-          "Accommodation is not a publicly or separately provided service. Overnight stays are intended exclusively for recording studio clients as a base during creative work.",
+        accommodationNote: "Accommodation is part of the studio stay during creative work.",
         packages: [
           {
             name: "Into the Wild",
-            tags: "#Main studio",
+            tags: "#Main studio #Breakfast in the winter garden",
             description:
-              "Most economical - camping in the park, studio rental only, for adventurers and enthusiasts, fall asleep and wake up to the world of music with nature :-)",
+              "Most economical – camping in the park, studio rental only, for adventurers and enthusiasts, fall asleep and wake up to the world of music with nature :-)",
             details:
               "Option to sleep in your own car/caravan/tent. Main studio has its own facilities including shower.",
-            video: "https://youtu.be/qEc9SnmU4cM",
+            video: "https://youtu.be/7RVXPBnHb-c",
           },
           {
             name: "Underwater",
-            tags: "#Main Studio #Sauna",
+            tags: "#Main studio #Sauna",
             description:
-              "Closest to the music, sleeping literally under the studio floor and also below the pond surface :-) Modest but stylish and cozy accommodation, sleeping directly in the former mill house.",
+              "Closest to the music, sleeping literally under the studio floor and also below the pond surface :-) Modest but stylish and cozy stay, sleeping directly in the former mill room.",
             details:
-              "Here you can fall asleep to the sounds of flowing water - just open the window :-) - includes access to sauna + seating under the dam next to the large oven. 1x double bed, possibility of two extra beds.",
-            video: "https://youtu.be/gI3204B7eNk",
+              "Here you can fall asleep to the sound of flowing water — just crack the window :-) — includes access to sauna + seating under the dam next to the large oven. 1x double bed, possibility of two extra beds.",
+            video: "https://youtu.be/uQiXLcspREY",
           },
           {
             name: "Otherside",
             tags: "#Control room #Traditional Czech room #Two rooms",
             description:
-              "From the other side of the studio, you can use the 6K Apple Pro XDR for post-production, complete with Apple peripherals (Magic Trackpad, Magic Mouse, Apple Magic Keyboard) for comfortable work + accommodation in a traditional Czech room.",
+              "From the other side of the studio you can use a 6K Apple Pro XDR for post‑production, including full Apple peripherals (Magic Trackpad, Magic Mouse, Apple Magic Keyboard) for comfortable work + accommodation in a traditional Czech room.",
             details:
-              "Suitable both for processing your studio work and for non-musical activities (e.g., graphics, digital creators), final recording processing.",
+              "Suitable both for processing your studio work and for non‑musical activities (e.g., graphics, digital creators), final processing of recordings.",
             video: "https://youtu.be/X7lvikbWnMQ",
           },
           {
             name: "Fuel",
             tags: "#VIP package",
             description:
-              "This option is named after our song Fuel and also after Metallica's song, because this is really for Metallica, (but don't hesitate to write and we'll definitely work something out).",
+              "This option is named after our song Fuel and also after Metallica's song, because this is really for Metallica (but don't hesitate to write and we'll definitely work something out).",
             details:
-              "This is a VIP rental of the entire property with full service, including a winter garden where you can enjoy excellent coffee and fit your whole team or enjoy peace while the rest of the team works in the studio. Professional catering, firing up the large oven. Excellent pizza and bread - which you can try baking yourself and believe us - that's a joy and an experience you'll enjoy :-). Tesla Model X rental included in the price (200 km), optionally with a driver to visit interesting places in the area (see [location]) :-)",
+              "This is a VIP rental of the entire property with full service, including a winter garden where you can enjoy excellent coffee and fit your whole team or enjoy peace while the rest of the team works in the studio. Professional catering, firing up the large oven. Excellent pizza and bread — which you can try baking yourself and believe us — that's a joy and an experience you'll enjoy :-). Tesla Model X rental included in the price, optionally with a driver to visit interesting places in the area (see [location]) :-)",
             video: "https://youtu.be/5INpfHr0lu4",
           },
         ],
         bonuses: {
           title: "Additional Bonuses",
           items: [
+            'Breakfast/brunch is included with every stay, and there is always fresh sourdough <a href="/chleba" target="_blank" rel="noopener noreferrer" class="underline text-white/90 hover:text-white">bread</a> from the oven :-)',
             "You can raise the weir and let water flow to the mill. 😄💧",
             "At night, the sky is like North Korea – stars everywhere. ✨🌟",
-            "For nature lovers and entomologists: There are dragonflies here, beautiful and plentiful :-) 🦋 They fly into the winter garden and are smart enough to fly back out after their inspection without hitting the glass. Besides them, you'll find invasive plants (Japanese knotweed and sumac) that we bravely fight. 🌿⚔️ But here grow also giant sequoias, which – we admit – we don't have the heart to cut down. 🌲💚",
+            "For Dan Bárta (and other nature lovers): There are dragonflies here, beautiful and plentiful :-) 🦋 They fly into the winter garden and are sensible enough to fly back out after a look without hitting the glass. Besides them, you'll find invasive plants (knotweed and sumac) that we bravely fight. 🌿⚔️ But there are also giant sequoias growing here, which – we admit – we don't have the heart to cut down. 🌲💚",
             "Under the studio windows, there are often swans with cygnets that let you feed them. 🦢",
             "At neighbor Dáda's, you can go horse riding. 🐴",
             "Even during the day, you can encounter hedgehogs, martens, deer right in the garden. When Dáda's horses escape, you can have coffee with them practically in the winter garden :-) 🦔🦌☕",
-            "You might meet a fat squirrel that digs up planks - animals have it great here :-) We also have herons and neighbors have a puppy and a few friendly cats (also from various neighbors), frogs and moles (ours) :-) 🐿️🐕🐈",
-            "We live in symbiosis with animals and cooperate, this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we don't plan for next years and will replace with more modern technologies. Thank you. (No hornets were harmed – we let them live out their lives in peace. 🐝) ⚡",
+            "You can also meet a fat squirrel that tears up fence boards — animals do great here :-) We also have herons and neighbors have a puppy and a couple of friendly cats (also from various neighbors), frogs and moles (ours) :-) 🐿️🐕🐈",
+            "We live in symbiosis with animals and cooperate; this year the studio entrance was additionally secured by a hornet nest right above the entrance, which we do not plan for next years and will replace with more modern technologies. Thank you. (No hornets were harmed — we let them live out their lives in peace. 🐝) ⚡",
             "Fresh organic vegetables, excellent grapes, hops. Overall the grass is greener here and thanks to moles you can see beautiful black soil. :-D 🥬🍇🌿",
-            "Last but not least, nice neighbors from all sides and Bidlo pub with friendly service and beautiful view of the mill from the other side. Here you can have a Pilsen and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and stick only to Domažlice ten-degree beer, after which you can function without problems the next day (Recommended by the brewmaster and tested several times for you that it's true :-) 🍺🏡",
+            "Everything is underscored by silence and calm, yet Domažlice is as close as Národní to Palmovka (8 minutes). 🤫🌳",
+            "Last but not least, nice neighbors from all sides and the Bidlo pub with friendly service and a beautiful view of the pond and the mill from the other side. Here you can have a Pilsen and if you want to have more beers and function in the studio the next day, we recommend a trip to the brewery in Domažlice and sticking only to Domažlice 10° beer, after which you can function without problems the next day (Recommended by the brewmaster and tested for you several times that it's true :-) 🍺🏡",
             "In the morning you can jump into the pond, but nobody does... but you can :-) 🏊‍♂️",
           ],
         },
@@ -501,13 +526,13 @@ const translations = {
       subtitle: "Peaceful place in the heart of Europe, close to everything important",
       nature: "Beautiful Nature - Recreational Area, Privacy, and Private Park",
       naturePara1:
-        "Pila (auf Deutsch 'Sägewerk', lokal auch heute noch 'Šnajberk' genannt) bei Trhanov ist ein idealer Ort für Naturliebhaber, Privatsphäre und aktive Erholung. Das Grundstück erstreckt sich über 6.500 m² und bietet eine ruhige Umgebung mit mehreren Sitzbereichen und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
+        "Pila near Trhanov is an ideal location for lovers of beautiful nature, privacy, and active relaxation. The property covers over 6,500 m² and offers a calm environment with several seating areas and two streams that create a harmonious atmosphere.",
       naturePara2:
-        "Z Pily se pohodlně dostanete pěšky jak do Domažlic, tak na vrchol nejvyšší hory Českého lesa, Čerchov (1042 m), která láká turisty rozhlednou a nádhernými výhledy. Okolí je bohaté na značené cyklotrasy i pěší stezky vedoucí malebnou krajinou, ideální pro vyznavače přírody a historie.",
+        "From Pila you can easily walk to Domažlice or to the summit of the highest mountain of the Czech Forest, Čerchov (1042 m), which attracts visitors with a lookout tower and beautiful views. The area is rich in marked cycling routes and hiking trails through a picturesque landscape—ideal for nature and history lovers.",
       naturePara3:
-        "Celý kraj je známý svou zelení, čerstvým vzduchem a klidem, což vytváří perfektní podmínky pro všechny hledající únik z ruchu města a zároveň kvalitní základnu pro výlety a poznávání kulturních i přírodních zajímavostí regionu.",
+        "The whole region is known for its greenery, fresh air, and calm, creating perfect conditions for anyone seeking an escape from city bustle while still having an excellent base for trips and discovering the region’s cultural and natural highlights.",
       quote:
-        "Našli jsme za mě dokonalou lokalitu a nádherný historický objekt starého mlýna o který se chceme podělit. Chceme toto místo ještě pozvednout dál - o kreativní lidi, kteří zde budou mít otevřené dveře a kde budou vznikat skvělé věci.",
+        "We found the perfect location for us and a beautiful historic mill that we want to share. We want to elevate this place even further—with creative people who will have open doors here and where great things will be created.",
       transport: "Transport Accessibility",
       byCar: "By Car",
       byTrain: "By Train",
@@ -515,17 +540,21 @@ const translations = {
       availabilityItems: [
         "By Car: 10 min to Domažlice center",
         "10 min to German border",
-        "By Train: Train station directly at Pile",
+        "By Train: Train stop directly in Pila",
         "By Plane: 1h 45min from Prague Airport",
         "By Plane: 2h 30min from Munich Airport (MUC), Germany",
         "Tesla charging station",
-        "Energy grid independence",
+        "Independence from the energy grid",
       ],
+      teslaTitle: "Tesla Charging Station",
+      teslaDesc: "On-site Tesla charging",
+      energyTitle: "Energy grid independence",
+      energyDesc: "Backup power for uninterrupted workflow",
       events: "Trip Suggestions",
       domazliceTitle: "Domažlice (8 min)",
-      domazliceItems: ["Historické náměstí", "Muzeum Chodska", "Kostel sv. Vavřince", "Kulturní akce a festivaly"],
+      domazliceItems: ["Historic square", "Chodsko Museum", "St. Lawrence Church", "Cultural events and festivals"],
       horsovskytynTitle: "Horšovský Týn (15 min)",
-      horsovskytynItems: ["Renesanční zámek", "Prohlídky zámku", "Letní kulturní akce"],
+      horsovskytynItems: ["Renaissance castle", "Castle tours", "Summer cultural events"],
       babylonTitle: "Babylon (10 min)",
       babylonItems: ["Babylon Aquapark", "Babylon Centre"],
       chamTitle: "Cham, Germany (20 min)",
@@ -566,9 +595,9 @@ const translations = {
         "Updated UAD Console app featuring Auto-Gain, Plug-In Scenes, subwoofer integration with Bass Management, immersive audio support, and more",
         "Onboard DSP supports over 200 UAD plug-ins via VST, AU, and AAX 64 formats in all major DAWs",
       ],
-      collectionNote: "The collection is constantly updated, but please contact Jindřich for the current list.",
+      collectionNote: "The collection is continuously updated, see",
       collaborationLink: "collaboration",
-      detailsNote: "Everything is fully functional, regularly serviced, and ready for use.",
+      detailsNote: "Instruments are regularly serviced and ready for use.",
       vintageInstruments: "Vintage Instruments (60s-80s)",
       guitars: "Guitars",
       acousticGuitars: "Acoustic Guitars",
@@ -607,7 +636,6 @@ const translations = {
       ],
       infrastructure: "Infrastructure",
       uaPlugins: "Universal Audio Plugins",
-      workflow: "Recommended Workflow",
       thankYouNote: "Thank you",
       noraCollaboration: "We thank guitarist Radek Fořt from the band",
       noraBand: "NORA",
@@ -621,11 +649,11 @@ const translations = {
       tagline: "Vintage soul, modern technology",
       history: "History of the mill",
       historyTimeline: [
-        { year: "1653", desc: "Founding of ponds and construction of the blast furnace and hammer mill of Lamingena" },
+        { year: "1653", desc: "Founding of ponds and construction of the blast furnace and hammer mill" },
         { year: "1810", desc: "Mill with a sawmill powered by water force" },
         {
           year: "1990",
-          desc: "The village of Pila (meaning 'Saw' in English) was established on November 24, 1990, as part of the municipality of Trhanov in the Domažlice district",
+          desc: "Pila was established on November 24, 1990, as part of the municipality of Trhanov in the Domažlice district",
         },
         { year: "2024", desc: "Transformation into a premium creative retreat studio" },
       ],
@@ -634,7 +662,7 @@ const translations = {
       masterSuite: "Master Suite (63 m²)",
       masterSuiteDesc: "Spacious suite with a pond view, including a winter garden and private bathroom.",
       fourRooms: "Other Rooms",
-      fourRoomsDesc: "4 stylishly furnished rooms with the possibility of extra beds.",
+      fourRoomsDesc: "4 stylishly furnished rooms with the possibility of extra beds and 4K TV",
       commonSpaces: "Common Areas",
       commonSpacesItems: [
         "Spacious winter garden with seating and fireplace (63 m²)",
@@ -644,7 +672,7 @@ const translations = {
       ],
       finnishSauna: "Finnish Sauna",
       finnishSaunaItems: [
-        "Capacity for 6 people",
+        "Capacity for 5 people",
         "Relaxation area with nature views",
         "Option to cool off in the pond",
       ],
@@ -660,7 +688,7 @@ const translations = {
         { title: "Breakfast", desc: "Buffet style, with local products." },
         {
           title: "Lunches and dinners",
-          desc: "Catering can be arranged according to your wishes, from simple meals to gourmet experiences. We specialize in Italian cuisine and barbecues.",
+          desc: "Catering can be arranged according to your wishes, from simple meals to professional catering.",
         },
         {
           title: "Beverages",
@@ -675,16 +703,16 @@ const translations = {
       jindrichQuote:
         "We are working to ensure that musicians find an inspiring space here, perfectly prepared for creation. The mill has its genius loci and soul – and the instruments and vintage amplifiers available here carry the same energy. In harmony with them, modern technologies subtly support comfort and professional conditions for capturing every musical idea. Our goal is to create a beautiful, peaceful, and comfortable environment that people will want to return to. Our doors are open to all creative people, not just musicians. We believe that this combination – a space with soul, instruments with a story, and modern technology in the background – will become the engine and synergy for creating amazing things.",
       andreaDesc:
-        "Singer and bassist of the band Anteater, and also an archaeologist. It is precisely in the environment of the old mill that all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)) But seriously now: we complement each other and we draw inspiration from our different perspectives on the world.",
+        "Singer and bassist of the band Anteater, also an archaeologist and currently the head baker at the mill :-). Right here in the old mill environment, all these passions naturally connect. Andrea co-creates the homey and inspiring atmosphere of the studio. If you want to make cocoa at midnight (or sing backing vocals), don't hesitate to turn to Andrea (in case of technical problems, then to Jindřich :)) But seriously now: we complement each other and draw inspiration from our different perspectives on the world. Andrea currently bakes <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline text-white/90 hover:text-white\">sourdough bread</a> at the mill, which is part of every breakfast or brunch.",
       collaboration: "Collaboration and Reservations",
       collaborationPara1Strong: "We are looking for partners,",
       collaborationPara1:
-        " not just suppliers. We believe in long-term relationships based on a shared passion for music and quality.",
-      collaborationPara2Strong: "We strive to have the best equipment in the studio",
+        " who share our passion for music and quality.",
+      collaborationPara2Strong: "Do you build guitars, effect pedals, or amplifiers?",
       collaborationPara2:
-        " - we continuously adjust our setup and are always looking for the best on the market. Do you build guitars, effect pedals, amplifiers? Do you want interesting customers to discover your products?",
+        "Alongside renowned brands like Fender, Gibson, and Martin, we want to give space to those who make something truly exceptional – instruments and equipment that deserve attention. ",
       collaborationPara2End:
-        " Don't hesitate to contact us! Come visit us and have a casual chat - we love meeting interesting people who create. We want to thoroughly test everything first.",
+        "Do you want interesting customers to discover your products, and artists to not only try them here but potentially purchase them as well? Come visit us and have a casual chat – we love meeting interesting people who create. We want to thoroughly test everything first. If you'd like to place your products here, host an exhibition, or shoot a promotional video, don't hesitate to contact us.",
       collaborationFormsTitle: "Forms of Collaboration:",
       collaborationForms: [
         "Brand integration – authentic product placement",
@@ -717,11 +745,11 @@ const translations = {
         },
         {
           q: "Do you provide accommodation separately?",
-          a: "No. Accommodation is not a publicly or separately provided service. Overnight stays are intended exclusively for recording studio clients as a base during creative work.",
+          a: "Accommodation is part of the studio stay during creative work.",
         },
         {
           q: "How do I get to you?",
-          a: "By car: direct access, private parking, Tesla charging. By train: 10 min walk from Trhanov station. By plane: 1h 45min from Prague Airport, 2h from Munich Airport, pick-up service available.",
+          a: "By car: direct access, private parking. By train: 10 min walk from Trhanov station. By plane: 1h 45min from Prague Airport, 2h from Munich Airport, pick-up service available.",
         },
         {
           q: "Can I come alone, or is this only for bands and teams?",
@@ -729,7 +757,7 @@ const translations = {
         },
         {
           q: "Do you have catering, or do I need to arrange food myself?",
-          a: "Flexible dining options: In-house catering with local ingredients, pizza oven for group dinners (up to 8 pizzas), fully equipped kitchen for self-catering, delivery from local Domažlice restaurants.",
+          a: "Breakfast or brunch is always included, along with homemade sourdough <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">bread</a> baked in our outdoor oven. Flexible dining options: In-house catering with local ingredients, pizza oven for group dinners (up to 8 pizzas), fully equipped kitchen for self-catering, delivery from local Domažlice restaurants.",
         },
         {
           q: "Do you speak English/German?",
@@ -739,6 +767,10 @@ const translations = {
           q: "Can I come with children and a dog?",
           a: "Yes, everyone is welcome. There are coloring books, books, toys for the garden and outdoors. Dogs are also welcome, but please note - the property is not fully fenced.",
         },
+        {
+          q: "During our stay we loved a specific guitar chain. Is it possible to borrow it for overdubs at the studio where we’re finishing the album?",
+          a: "Yes, of course. With prior arrangement, a selected guitar chain can also be borrowed for subsequent overdubs. (Note: only instruments we own; the rest is by agreement.)",
+        },
       ],
     },
     contact: {
@@ -747,7 +779,7 @@ const translations = {
       availabilityItems: [
         "By Car: 10 min to Domažlice center",
         "10 min to German border",
-        "By Train: Train station directly at Pile",
+        "By Train: Train stop directly in Pila",
         "By Plane: 1h 45min from Prague Airport",
         "By Plane: 2h 30min from Munich Airport (MUC), Germany",
       ],
@@ -763,10 +795,10 @@ const translations = {
       contact: "Kontakt",
     },
     mlyn: {
-      title: "Mlýn Šnajberk Studios",
+      title: "Mühle in Pila",
       subtitle: "Retreat Studio",
       tagline: "Wo Inspiration entsteht",
-      description: "Einzigartiger Raum mit Genius Loci in schöner Natur",
+      description: "Ein einzigartiger Ort mit Genius Loci, dessen Geschichte bis ins 17. Jahrhundert zurückreicht.",
       vintageInstruments: "Vintage-Instrumente",
       vintageDesc: "60s-80s Fender, Gibson, VOX",
       accommodation: "Stilvolle Unterkunft",
@@ -776,7 +808,7 @@ const translations = {
       studios: "Studios",
       studiosDesc: "Hauptstudio 64m²\nMühlstein-Studio 25m²\nControl Room 27m²",
       modernTech: "Moderne Technologie",
-      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD-Plugins, Logic Pro X\nApple Pro Display XDR 6K",
+      modernTechDesc: "Universal Audio Apollo x8p Studio+\n76 UAD-Plugins, Logic\u00A0Pro\u00A0X\nApple Pro Display XDR 6K",
       benefits: "Weitere Vorteile",
       benefitsDesc: "Elektroauto-Verleih, Fahrräder, Ladestation, eigene Stromquelle, gesicherte Räumlichkeiten",
       endMessage: "Genießen Sie die Präsentation!",
@@ -784,7 +816,7 @@ const translations = {
       lightMode: "Heller Modus aktiviert - klicken Sie, um zum dunklen Modus zu wechseln",
     },
     studio: {
-      title: "Mlýn Šnajberk Studios",
+      title: "Mühle in Pila",
       subtitle: "Drei einzigartige Räume für Ihre Kreativität",
       description: "Vom Hauptstudio über das Mühlstein-Studio bis zum Control Room",
       mainStudio: "Hauptstudio",
@@ -792,10 +824,17 @@ const translations = {
       mainStudioDesc:
         "Das Hauptstudio befindet sich in einer Dachgalerie mit freiliegenden Originalbalken, die dem Raum eine authentische Atmosphäre einer alten Mühle verleihen. Natürliches Licht dringt durch Dachfenster und ein großes französisches Fenster mit Balkon ein, von dem aus man einen Blick auf einen ruhigen Teich hat. Ein Ort, an dem sich der Duft von Holz, die Wärme von Vintage-Instrumenten und die Stille der umgebenden Natur verbinden — idealer Raum für Kreation, Aufnahme und konzentrierte Arbeit.",
       equipment: "Ausstattung",
+      equipmentHighlights: [
+        "Fender Vintage- und Custom-Shop-Gitarren",
+        "Gibson Les Paul Studio, Explorer",
+        "Röhrenamps: Marshall, Fender, Mesa Boogie, Ampeg",
+        "Umfangreiche Sammlung an Boutique-Effekten",
+        "Mapex Saturn Drums & K-Zildjian Becken",
+      ],
       controlRoom: "Kontrollraum",
       controlRoomSize: "27 m²",
       controlRoomDesc:
-        "Makellose Akustik für kritisches Hören. Ausgestattet mit modernster Technologie für Mixing und Mastering auf höchstem Niveau.",
+        "Apple‑Setup inklusive Peripherie für komfortables Arbeiten, plus 6K Apple Pro XRD geeignet für Grafik und Videoschnitt. Stufenlos regelbare Raumbeleuchtung. Ein Raum mit schönem Ausblick und Bibliothek.",
       technology: "Technologie",
       millstoneStudio: "Mühlstein-Studio",
       millstoneSize: "25 m² - Ehemaliger Mühlenraum",
@@ -807,30 +846,29 @@ const translations = {
       accommodation: {
         title: "AUFNAHME + UNTERKUNFT",
         subtitle:
-          "Die einzelnen Pakete sind von den wirtschaftlichsten bis zu VIP sortiert - wir haben sie nach unseren Songs benannt :-) Die Studiovermietung umfasst Musikausrüstung und Instrumente. Kostenloses WLAN und Parken vor Ort, mit EV-Lademöglichkeit.",
+          "Die einzelnen Pakete sind von den wirtschaftlichsten bis zu VIP sortiert – wir haben sie nach unseren Songs benannt :-) Die Studiovermietung umfasst Musikausrüstung und Instrumente. Zu allen Paketen gehört Frühstück/Brunch im Wintergarten, einschließlich hausgemachtem Brot aus dem Ofen :-). Kostenloses WLAN und Parken vor Ort, mit EV‑Lademöglichkeit. Die Studios sind energetisch autark, sodass Ihre Aufnahme nicht durch mögliche Stromausfälle gefährdet ist.",
         intro: "Los geht's:",
         packageLabel: "Paket",
         parking: "Bei allen Paketen können Sie im Mühlenbereich parken, der videoüberwacht ist.",
-        accommodationNote:
-          "Die Unterkunft ist keine öffentlich oder separat angebotene Dienstleistung. Übernachtungen sind ausschließlich für Aufnahmestudio-Kunden als Basis während der kreativen Arbeit vorgesehen.",
+        accommodationNote: "Die Unterkunft ist Teil des Studioaufenthalts während der kreativen Arbeit.",
         packages: [
           {
             name: "Into the Wild",
-            tags: "#Main studio",
+            tags: "#Hauptstudio #Frühstück im Wintergarten",
             description:
-              "Am wirtschaftlichsten - Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten, schlafen Sie ein und wachen Sie in der Welt der Musik mit der Natur auf :-)",
+              "Am wirtschaftlichsten – Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten, schlafen Sie ein und wachen Sie in der Welt der Musik mit der Natur auf :-)",
             details:
               "Möglichkeit im eigenen Auto/Wohnwagen/Zelt zu schlafen. Das Hauptstudio verfügt über eigene Einrichtungen inklusive Dusche.",
-            video: "https://youtu.be/qEc9SnmU4cM",
+            video: "https://youtu.be/7RVXPBnHb-c",
           },
           {
             name: "Underwater",
-            tags: "#Main Studio #Sauna",
+            tags: "#Hauptstudio #Sauna",
             description:
-              "Am nächsten zur Musik, schlafen buchstäblich unter dem Studioboden und auch unter der Teichoberfläche :-) Bescheidene, aber stilvolle und gemütliche Unterkunft, Schlafen direkt in den Räumen des ehemaligen Mühlenhauses.",
+              "Am nächsten zur Musik, schlafen buchstäblich unter dem Studioboden und auch unter der Teichoberfläche :-) Bescheidene, aber stilvolle und gemütliche Unterkunft, Schlafen direkt in den Räumen der ehemaligen Mühle.",
             details:
-              "Hier können Sie zu den Klängen des fließenden Wassers einschlafen - öffnen Sie einfach das Fenster :-) - beinhaltet Zugang zur Sauna + Sitzgelegenheit unter dem Damm neben dem großen Ofen. 1x Doppelbett, Möglichkeit von zwei Zustellbetten.",
-            video: "https://youtu.be/gI3204B7eNk",
+              "Hier können Sie zu den Klängen des fließenden Wassers einschlafen – öffnen Sie einfach das Fenster :-) – beinhaltet Zugang zur Sauna + Sitzgelegenheit unter dem Damm neben dem großen Ofen. 1x Doppelbett, Möglichkeit von zwei Zustellbetten.",
+            video: "https://youtu.be/uQiXLcspREY",
           },
           {
             name: "Otherside",
@@ -838,7 +876,7 @@ const translations = {
             description:
               "Von der anderen Seite des Studios aus können Sie den 6K Apple Pro XDR für die Nachbearbeitung nutzen, komplett mit Apple-Peripheriegeräten (Magic Trackpad, Magic Mouse, Apple Magic Keyboard) für komfortables Arbeiten + Unterkunft in einem traditionellen tschechischen Zimmer.",
             details:
-              "Geeignet sowohl für die Verarbeitung Ihrer Studioarbeit als auch für nicht-musikalische Aktivitäten (z.B. Grafik, digitale Schöpfer), finale Aufnahmeverarbeitung.",
+              "Geeignet sowohl für die Verarbeitung Ihrer Studioarbeit als auch für nicht‑musikalische Aktivitäten (z.B. Grafik, digitale Kreative), finale Aufnahmeverarbeitung.",
             video: "https://youtu.be/X7lvikbWnMQ",
           },
           {
@@ -847,20 +885,21 @@ const translations = {
             description:
               "Diese Variante ist nach unserem Song Fuel und auch nach dem Song von Metallica benannt, denn das ist wirklich für Metallica, (aber zögern Sie nicht zu schreiben und wir werden uns sicher einigen).",
             details:
-              "Dies ist eine VIP-Vermietung des gesamten Anwesens mit vollem Service, einschließlich eines Wintergartens, wo Sie ausgezeichneten Kaffee genießen können und Ihr ganzes Team Platz hat oder Ruhe genießen können, während der Rest des Teams im Studio arbeitet. Professionelles Catering, Anheizen des großen Ofens. Ausgezeichnete Pizza und Brot - die Sie selbst backen können, und glauben Sie uns - das ist eine Freude und ein Erlebnis, das Sie genießen werden :-). Tesla Model X Miete im Preis inbegriffen (200 km), optional mit Fahrer, um interessante Orte in der Umgebung zu besuchen (siehe [Standort]) :-)",
+              "Dies ist eine VIP‑Vermietung des gesamten Anwesens mit vollem Service, einschließlich eines Wintergartens, wo Sie ausgezeichneten Kaffee genießen können und Ihr ganzes Team Platz hat oder Ruhe genießen können, während der Rest des Teams im Studio arbeitet. Profi‑Catering, Anheizen des großen Ofens. Ausgezeichnete Pizza und Brot – die Sie selbst backen können, und glauben Sie uns – das ist eine Freude und ein Erlebnis, das Sie genießen werden :-). Tesla Model X Miete im Preis inbegriffen, optional mit Fahrer, um interessante Orte in der Umgebung zu besuchen (siehe [Standort]) :-)",
             video: "https://youtu.be/5INpfHr0lu4",
           },
         ],
         bonuses: {
           title: "Zusätzliche Boni",
           items: [
+            'Zum Aufenthalt gehört Frühstück/Brunch und immer frisches Sauerteig-<a href="/chleba" target="_blank" rel="noopener noreferrer" class="underline text-white/90 hover:text-white">Brot</a> aus dem Ofen :-)',
             "Sie können das Wehr heben und Wasser zur Mühle lassen. 😄💧",
             "Nachts ist der Himmel wie in Nordkorea – Sterne überall. ✨🌟",
-            "Für Naturliebhaber und Entomologen: Hier gibt es Libellen, schön und viele davon :-) 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen (Knöterich und Sumach), gegen die wir tapfer kämpfen. 🌿⚔️ Aber hier wachsen auch Riesenmammutbäume, die – wir geben zu – wir nicht übers Herz bringen, sie zu fällen. 🌲💚",
+            "Für Dan Bárta (und andere Naturliebhaber): Hier gibt es Libellen, schön und viele davon :-) 🦋 Sie fliegen bis in den Wintergarten und sind klug genug, nach ihrer Inspektion wieder hinauszufliegen, ohne gegen das Glas zu stoßen. Neben ihnen finden Sie invasive Pflanzen (Knöterich und Sumach), gegen die wir tapfer kämpfen. 🌿⚔️ Aber hier wachsen auch Riesenmammutbäume, die – wir geben zu – wir nicht übers Herz bringen, sie zu fällen. 🌲💚",
             "Unter den Studiofenstern sind oft Schwäne mit Jungschwänen, die sich füttern lassen. 🦢",
             "Bei Nachbarin Dáda können Sie reiten. 🐴",
             "Selbst am helllichten Tag können Sie Igel, Marder, Rehe direkt im Garten begegnen. Wenn Dádas Pferde entkommen, können Sie praktisch im Wintergarten mit ihnen Kaffee trinken :-) 🦔🦌☕",
-            "Sie könnten auch ein dickes Eichhörnchen treffen, das Bretter umwirft - Tiere haben es hier großartig :-) Wir haben auch Reiher und Nachbarn haben einen Welpen und ein paar freundliche Katzen (auch von verschiedenen Nachbarn), Frösche und Maulwürfe (unsere) :-) 🐿️🐕🐈",
+            "Sie können auch ein dickes Eichhörnchen treffen, das Bretter umwirft – Tiere haben es hier großartig :-) Wir haben auch Reiher und Nachbarn haben einen Welpen und ein paar freundliche Katzen (auch von verschiedenen Nachbarn), Frösche und Maulwürfe (unsere) :-) 🐿️🐕🐈",
             "Wir leben in Symbiose mit Tieren und arbeiten zusammen. Dieses Jahr wurde der Studioeingang zusätzlich durch ein Hornissennest direkt über dem Eingang gesichert, das wir für die nächsten Jahre nicht planen und durch modernere Technologien ersetzen werden. Danke. (Keine Hornissen wurden verletzt – wir ließen sie in Ruhe ihr Leben zu Ende leben. 🐝) ⚡",
             "Frisches Bio-Gemüse, ausgezeichnete Trauben, Hopfen. Insgesamt ist das Gras hier grüner und dank der Maulwürfe sieht man schönen Schwarzboden. :-D 🥬🍇🌿",
             "Alles wird von Stille und Ruhe unterstrichen, und doch ist es wie von Národní nach Palmovka nach Domažlice (8 Minuten). 🤫🌳",
@@ -875,26 +914,30 @@ const translations = {
       subtitle: "Ruhiger Ort im Herzen Europas, nahe allem Wichtigen",
       nature: "Schöne Natur - Erholungsgebiet, Privatsphäre und eigener Park",
       naturePara1:
-        "Pila (auf Deutsch 'Sägewerk', lokal auch heute noch 'Šnajberk' genannt) bei Trhanov ist ein idealer Ort für Naturliebhaber, Privatsphäre und aktive Erholung. Das Grundstück erstreckt sich über 6.500 m² und bietet eine ruhige Umgebung mit mehreren Sitzbereichen und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
+        "Pila bei Trhanov ist ein idealer Ort für Naturliebhaber, Privatsphäre und aktive Erholung. Das Grundstück erstreckt sich über 6.500 m² und bietet eine ruhige Umgebung mit mehreren Sitzbereichen und zwei Bächen, die eine harmonische Atmosphäre schaffen.",
       naturePara2:
-        "Z Pily se pohodlně dostanete pěšky jak do Domažlic, tak na vrchol nejvyšší hory Českého lesa, Čerchov (1042 m), která láká turisty rozhlednou a nádhernými výhledy. Okolí je bohaté na značené cyklotrasy i pěší stezky vedoucí malebnou krajinou, ideální pro vyznavače přírody a historie.",
+        "Von Pila aus gelangen Sie bequem zu Fuß sowohl nach Domažlice als auch auf den Gipfel des höchsten Berges des Český les, den Čerchov (1042 m), der mit einem Aussichtsturm und herrlichen Ausblicken lockt. Die Umgebung ist reich an markierten Rad- und Wanderwegen durch eine malerische Landschaft – ideal für Natur- und Geschichtsfreunde.",
       naturePara3:
-        "Celý kraj je známý svou zelení, čerstvým vzduchem a klidem, což vytváří perfektní podmínky pro všechny hledající únik z ruchu města a zároveň kvalitní základnu pro výlety a poznávání kulturních i přírodních zajímavostí regionu.",
+        "Die gesamte Region ist bekannt für ihr Grün, frische Luft und Ruhe, was perfekte Bedingungen für alle schafft, die dem Stadttrubel entfliehen wollen und zugleich eine hochwertige Basis für Ausflüge und das Entdecken kultureller und natürlicher Highlights der Region suchen.",
       quote:
-        "Našli jsme za mě dokonalou lokalitu a nádherný historický objekt starého mlýna o který se chceme podělit. Chceme toto místo ještě pozvednout dál - o kreativní lidi, kteří zde budou mít otevřené dveře a kde budou vznikat skvělé věci.",
+        "Wir haben für uns den perfekten Ort und ein wunderschönes historisches Mühlenobjekt gefunden, das wir teilen möchten. Wir wollen diesen Ort noch weiter heben – durch kreative Menschen, die hier offene Türen haben und wo großartige Dinge entstehen.",
       transport: "Verkehrsanbindung",
       byCar: "Mit dem Auto",
       byTrain: "Mit dem Zug",
       byPlane: "Mit dem Flugzeug",
       availabilityItems: [
-        "By Car: 10 min to Domažlice center",
-        "10 min to German border",
-        "By Train: Train station directly at Pile",
-        "By Plane: 1h 45min from Prague Airport",
-        "By Plane: 2h 30min from Munich Airport (MUC), Germany",
-        "Tesla charging station",
-        "Energy grid independence",
+        "Mit dem Auto: 10 Min. ins Zentrum von Domažlice",
+        "10 Min. zur deutschen Grenze",
+        "Mit dem Zug: Bahnhof direkt in Pila",
+        "Mit dem Flugzeug: 1 Std. 45 Min. vom Flughafen Prag",
+        "Mit dem Flugzeug: 2 Std. 30 Min. vom Flughafen München (MUC), Deutschland",
+        "Tesla-Ladestation",
+        "Unabhängigkeit vom Stromnetz",
       ],
+      teslaTitle: "Tesla-Ladestation",
+      teslaDesc: "Tesla-Laden direkt vor Ort",
+      energyTitle: "Unabhängigkeit vom Stromnetz",
+      energyDesc: "Notstrom für unterbrechungsfreies Arbeiten",
       events: "Ausflugstipps",
       domazliceTitle: "Domažlice (8 Min.)",
       domazliceItems: [
@@ -946,9 +989,9 @@ const translations = {
         "Onboard-DSP unterstützt über 200 UAD-Plug-ins über VST, AU und AAX 64-Formate in allen wichtigen DAWs",
       ],
       collectionNote:
-        "Die Sammlung wird ständig aktualisiert, aber kontaktieren Sie bitte Jindřich für die aktuelle Liste.",
+        "Die Sammlung wird laufend aktualisiert, siehe",
       collaborationLink: "Zusammenarbeit",
-      detailsNote: "Alles ist voll funktionsfähig, regelmäßig gewartet und einsatzbereit.",
+      detailsNote: "Instrumente werden regelmäßig gewartet und sind einsatzbereit.",
       vintageInstruments: "Vintage Instrumente (60s-80s)",
       guitars: "Gitarren",
       acousticGuitars: "Akustische Gitarren",
@@ -987,7 +1030,6 @@ const translations = {
       ],
       infrastructure: "Infrastruktur",
       uaPlugins: "Universal Audio Plugins",
-      workflow: "Empfohlener Workflow",
       thankYouNote: "Danke",
       noraCollaboration: "Wir danken dem Gitarristen Radek Fořt von der Band",
       noraBand: "NORA",
@@ -1001,11 +1043,11 @@ const translations = {
       tagline: "Vintage-Seele, moderne Technologie",
       history: "Geschichte der Mühle",
       historyTimeline: [
-        { year: "1653", desc: "Anlage von Teichen und Bau des Hochofens und Hammerwerks Lamingen" },
+        { year: "1653", desc: "Anlage von Teichen und Bau des Hochofens und Hammerwerks" },
         { year: "1810", desc: "Mühle mit Sägewerk, angetrieben durch Wasserkraft" },
         {
           year: "1990",
-          desc: "Das Dorf Pila (auf Deutsch: Sägewerk) wurde am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice gegründet",
+          desc: "Pila entstand am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice",
         },
         { year: "2024", desc: "Transformation in ein Premium-Kreativ-Retreat-Studio" },
       ],
@@ -1014,7 +1056,7 @@ const translations = {
       masterSuite: "Master Suite (63 m²)",
       masterSuiteDesc: "Geräumige Suite mit Blick auf den Teich, inklusive Wintergarten und eigenem Bad.",
       fourRooms: "Weitere Zimmer",
-      fourRoomsDesc: "4 stilvoll eingerichtete Zimmer mit Zustellbettmöglichkeit.",
+      fourRoomsDesc: "4 stilvoll eingerichtete Zimmer mit Zustellbettmöglichkeit und 4K-TV",
       commonSpaces: "Gemeinschaftsräume",
       commonSpacesItems: [
         "Geräumiger Wintergarten mit Sitzgelegenheit und Kamin (63 m²)",
@@ -1040,7 +1082,7 @@ const translations = {
         { title: "Frühstück", desc: "Als Buffet mit lokalen Produkten." },
         {
           title: "Mittag- und Abendessen",
-          desc: "Catering nach Ihren Wünschen, von einfachen Gerichten bis zu kulinarischen Erlebnissen. Wir sind spezialisiert auf italienische Küche und Grillgerichte.",
+          desc: "Catering nach Ihren Wünschen, von einfachen Gerichten bis hin zu professionellem Catering.",
         },
         {
           title: "Getränke",
@@ -1055,16 +1097,16 @@ const translations = {
       jindrichQuote:
         "Wir arbeiten daran, dass Musiker hier einen inspirierenden Raum finden, der perfekt für die Kreation vorbereitet ist. Die Mühle hat ihren Genius Loci und ihre Seele – und die Instrumente und Vintage-Verstärker, die hier zur Verfügung stehen, tragen die gleiche Energie. Im Einklang mit ihnen unterstützen moderne Technologien dezent Komfort und professionelle Bedingungen, um jede musikalische Idee einzufangen. Unser Ziel ist es, eine schöne, friedliche und komfortable Umgebung zu schaffen, in die die Menschen gerne zurückkehren. Unsere Türen stehen allen kreativen Menschen offen, nicht nur Musikern. Wir glauben, dass gerade diese Kombination – ein Raum mit Seele, Instrumente mit einer Geschichte und moderne Technologie im Hintergrund – der Motor und die Synergie für die Entstehung erstaunlicher Dinge wird.",
       andreaDesc:
-        "Sängerin und Bassistin der Band Anteater und auch Archäologin. Gerade in der Umgebung der alten Mühle verbinden sich all diese Leidenschaften auf natürliche Weise. Andrea trägt zur gemütlichen und inspirierenden Atmosphäre des Studios bei. Wenn Sie um Mitternacht Kakao machen wollen (oder zweite Stimmen singen wollen), zögern Sie nicht, sich an Andrea zu wenden (bei technischen Problemen dann an Jindřich :)). Aber jetzt im Ernst: Wir ergänzen uns gegenseitig und lassen uns oft von unseren unterschiedlichen Weltanschauungen inspirieren.",
+        "Sängerin und Bassistin der Band Anteater, außerdem Archäologin und aktuell die Hauptbäckerin in der Mühle :-). Gerade hier in der Umgebung der alten Mühle verbinden sich all diese Leidenschaften auf natürliche Weise. Andrea trägt zur gemütlichen und inspirierenden Atmosphäre des Studios bei. Wenn Sie um Mitternacht Kakao machen wollen (oder zweite Stimmen singen wollen), zögern Sie nicht, sich an Andrea zu wenden (bei technischen Problemen dann an Jindřich :)). Aber jetzt im Ernst: Wir ergänzen uns gegenseitig und lassen uns oft von unseren unterschiedlichen Weltanschauungen inspirieren. Andrea backt aktuell <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline text-white/90 hover:text-white\">Sauerteigbrot</a> in der Mühle, das zu jedem Frühstück oder Brunch dazugehört.",
       collaboration: "Zusammenarbeit und Buchungen",
       collaborationPara1Strong: "Wir suchen Partner,",
       collaborationPara1:
-        " nicht nur Lieferanten. Wir glauben an langfristige Beziehungen, die auf einer gemeinsamen Leidenschaft für Musik und Qualität basieren.",
-      collaborationPara2Strong: "Wir bemühen uns, die beste Ausrüstung im Studio zu haben",
+        " die unsere Leidenschaft für Musik und Qualität teilen.",
+      collaborationPara2Strong: "Bauen Sie Gitarren, Effekt‑Pedale oder Verstärker?",
       collaborationPara2:
-        " - wir passen unser Setup kontinuierlich an und suchen immer nach dem Besten auf dem Markt. Bauen Sie Gitarren, Effektpedale, Verstärker? Möchten Sie, dass interessante Kunden Ihre Produkte entdecken?",
+        "Neben renommierten Marken wie Fender, Gibson oder Martin möchten wir auch denen Raum geben, die etwas wirklich Außergewöhnliches bauen – Instrumenten und Equipment, die Aufmerksamkeit verdienen. ",
       collaborationPara2End:
-        " Zögern Sie nicht, uns zu kontaktieren! Besuchen Sie uns und führen Sie ein ungezwungenes Gespräch - wir treffen gerne interessante Menschen, die etwas schaffen. Wir möchten zuerst alles gründlich testen.",
+        "Möchten Sie, dass interessante Kunden Ihre Produkte entdecken und Künstler sie bei uns nicht nur testen, sondern ggf. auch direkt kaufen können? Besuchen Sie uns und führen Sie ein ungezwungenes Gespräch – wir treffen gerne interessante Menschen, die etwas schaffen. Wir möchten zuerst alles gründlich testen. Wenn Sie Ihre Produkte hier platzieren, eine Ausstellung veranstalten oder ein Promo‑Video drehen möchten, kontaktieren Sie uns gerne.",
       collaborationFormsTitle: "Formen der Zusammenarbeit:",
       collaborationForms: [
         "Markenintegration – authentische Produktplatzierung",
@@ -1077,7 +1119,7 @@ const translations = {
       faqItems: [
         {
           q: "Spukt es in der Mühle?",
-          a: "Ne ;-)",
+          a: "Nein ;-)",
         },
         {
           q: "Sind Sie umsatzsteuerpflichtig?",
@@ -1093,15 +1135,15 @@ const translations = {
         },
         {
           q: "Kann ich meine eigene Ausrüstung mitbringen und ist das Objekt ausreichend gesichert?",
-          a: "Selbstverständlich können Sie das. Die Ausrüstung kann direkt vor dem Studio ausgeladen werden. Das Objekt ist auf mehreren Ebenen gesichert, und es gibt nur eine Zufahrt. Einen solchen Objekt mit Ausrüstung auszurauben, die schwer öffentlich zu verkaufen wäre, ergibt keinen Sinn... Wir würden Dieben angesichts der oben genannten Umstände nicht empfehlen, darüber nachzudenken.... ;-)",
+          a: "Selbstverständlich können Sie das. Die Ausrüstung kann direkt vor dem Studio ausgeladen werden. Das Objekt ist auf mehreren Ebenen gesichert, und es gibt nur eine Zufahrt. Ein solches Objekt mit Ausrüstung auszurauben, die schwer öffentlich zu verkaufen wäre, ergibt keinen Sinn... Wir würden Dieben angesichts der oben genannten Umstände nicht empfehlen, darüber nachzudenken.... ;-)",
         },
         {
           q: "Bieten Sie Unterkunft auch separat an?",
-          a: "Nein. Die Unterkunft ist keine öffentlich oder separat angebotene Dienstleistung. Übernachtungen sind ausschließlich für Aufnahmestudio-Kunden als Basis während der kreativen Arbeit vorgesehen.",
+          a: "Die Unterkunft ist Teil des Studioaufenthalts während der kreativen Arbeit.",
         },
         {
           q: "Wie komme ich zu Ihnen?",
-          a: "Mit dem Auto: direkter Zugang, private Parkplätze, Tesla-Ladestation. Mit dem Zug: 10 Min. zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h 45min vom Flughafen Prag, 2h 30min vom Flughafen München (MUC), Deutschland, Abholservice verfügbar.",
+          a: "Mit dem Auto: direkter Zugang, private Parkplätze. Mit dem Zug: 10 Min. zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h 45min vom Flughafen Prag, 2h vom Flughafen München, Abholservice verfügbar.",
         },
         {
           q: "Kann ich auch alleine kommen, oder ist das nur für Bands und Teams?",
@@ -1109,7 +1151,7 @@ const translations = {
         },
         {
           q: "Haben Sie Catering, oder muss ich das Essen selbst organisieren?",
-          a: "Flexible Verpflegungsmöglichkeiten: Internes Catering mit lokalen Zutaten, Pizzaofen für gemeinsame Abendessen (bis zu 8 Pizzen), voll ausgestattete Küche für Selbstversorgung, Lieferung von lokalen Restaurants aus Domažlice.",
+          a: "Frühstück oder Brunch ist immer inklusive, dazu gibt es hausgemachtes Sauerteig-<a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">Brot</a>, das wir im Außenofen backen. Flexible Verpflegungsmöglichkeiten: Internes Catering mit lokalen Zutaten, Pizzaofen für gemeinsame Abendessen (bis zu 8 Pizzen), voll ausgestattete Küche für Selbstversorgung, Lieferung von lokalen Restaurants aus Domažlice.",
         },
         {
           q: "Sprechen Sie Englisch/Deutsch?",
@@ -1118,6 +1160,10 @@ const translations = {
         {
           q: "Kann ich mit Kindern und Hund kommen?",
           a: "Ja, alle sind willkommen. Es gibt Malbücher, Bücher, Spielzeug für den Garten und draußen. Hunde sind auch willkommen, aber bitte beachten Sie - das Grundstück ist nicht vollständig eingezäunt.",
+        },
+        {
+          q: "Während unseres Aufenthalts haben wir einen bestimmten Gitarren‑Chain sehr gemocht. Ist eine Ausleihe für Overdubs im Studio möglich, wo wir das Album fertigstellen?",
+          a: "Ja, natürlich. Nach vorheriger Absprache kann ein ausgewählter Gitarren‑Chain auch für spätere Overdubs ausgeliehen werden. (Hinweis: nur Instrumente, die wir besitzen; der Rest nach Vereinbarung.)",
         },
       ],
     },
@@ -1147,6 +1193,7 @@ export default function Page() {
 
   const [language, setLanguage] = useState<"cs" | "en" | "de">("cs")
   const [currentSection, setCurrentSection] = useState("mlyn")
+  const activeSectionRef = useRef("mlyn")
   const [isDarkMode, setIsDarkMode] = useState(false)
   const [isPlaying, setIsPlaying] = useState(true)
   const [showEndMessage, setShowEndMessage] = useState(false)
@@ -1154,6 +1201,7 @@ export default function Page() {
   const [videoEnded, setVideoEnded] = React.useState(false)
 
   const [isVideoPlaying, setIsVideoPlaying] = useState(true)
+  const [isOverlayPreview, setIsOverlayPreview] = useState(false)
   const [showLanguageMenu, setShowLanguageMenu] = useState(false)
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null)
   const [currentVideoUrl, setCurrentVideoUrl] = useState(
@@ -1161,12 +1209,22 @@ export default function Page() {
   )
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [nextVideoUrl, setNextVideoUrl] = useState("")
+  const [isNextVideoReady, setIsNextVideoReady] = useState(false)
+  const videoCrossfadeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const videoCrossfadeRafRef = useRef<number | null>(null)
+  const sectionVideoIdleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const currentBackgroundVideoRef = useRef<HTMLIFrameElement>(null)
+  const nextBackgroundVideoRef = useRef<HTMLIFrameElement>(null)
   const playerRef = useRef<any>(null)
 
   const [mlynScrollProgress, setMlynScrollProgress] = useState(0)
   const mlynSectionRef = useRef<HTMLDivElement>(null)
 
   const studioSectionRef = useRef<HTMLDivElement>(null)
+  const lokalitaSectionRef = useRef<HTMLDivElement>(null)
+  const equipmentSectionRef = useRef<HTMLDivElement>(null)
+  const contactSectionRef = useRef<HTMLDivElement>(null)
+  const contentScrollRef = useRef<HTMLDivElement>(null)
 
   const [onasScrollProgress, setOnasScrollProgress] = useState(0)
   const onasSectionRef = useRef<HTMLDivElement>(null)
@@ -1176,11 +1234,687 @@ export default function Page() {
 
   const [showPresentationMessage, setShowPresentationMessage] = useState(false)
   const [presentationOpacity, setPresentationOpacity] = useState(0)
+  const [showFooterNote, setShowFooterNote] = useState(true)
 
   const t = translations[language as keyof typeof translations]
   const currentLang = language // Added to fix lint error
+  const isHorizontal = windowWidth >= 768
+  const equipmentTooltips: Record<
+    "cs" | "en" | "de",
+    Record<
+      string,
+      {
+        tech: string
+        usedBy?: string
+        previewUrl?: string
+        previewLink?: string
+        note?: string
+        source: string
+      }
+    >
+  > = {
+    cs: {
+      "Fender Telecaster Deluxe (1973)": {
+        tech: "Spec: jasanové tělo, javorový krk, původní snímače i povrch; přepražcováno, vyměněné potenciometry a ladicí mechaniky (původní přiloženy).",
+        note: "Zakoupeno od Tomáše Varteckého, použito na albech Anny K, představeno v Kytarová zbrojnice #26.",
+        usedBy:
+          "Kurt Cobain (Nirvana), John Mayer (Dead & Company), Billie Joe Armstrong (Green Day), Thom Yorke (Radiohead), Stevie Ray Vaughan (The Vaughan Brothers), The Edge (U2), Jonny Buckland (Coldplay), Frank Iero (My Chemical Romance), Graham Coxon (Blur), Chris Martin (Coldplay), Lee Ranaldo (Sonic Youth), Mike Einziger (Incubus).",
+        source: "Zdroj: equipboard.com",
+      },
+      "Fender Custom Shop - Jeff Beck (Surf Green)": {
+        tech: "Spec (Jeff Beck Signature Stratocaster, Custom Shop): olšové tělo, javorový krk s rosewood hmatníkem, 25.5\" menzura, 22 medium jumbo pražců, 3× Hot Noiseless single‑coil, 2‑point tremolo, LSR roller nut.",
+        usedBy:
+          "Steve Vai (Whitesnake), David Davidson (Revocation), Jan Borysewicz (Lady Pank), Edelmiro Molinari (Almendra).",
+        source: "Zdroj: fender.com, equipboard.com",
+      },
+      "Fender Custom Shop - LTD 67 HSS Strat AB HR": {
+        tech: "Spec: HSS Stratocaster (Custom Shop 1967 styl). Tuto kytaru jsme využili pro náš song Fuel. Song jsme nahráli u Damiána Kučery v roce 2024. Kytara má krásný plný a silný zvuk.",
+        previewUrl: "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg",
+        previewLink: "https://www.youtube.com/watch?v=UkekVsnQuaM&list=RDUkekVsnQuaM&start_radio=1",
+        source: "Zdroj: interní poznámka studia",
+      },
+      "Fender Duo-Sonic (1964-65)": {
+        tech: "Spec: short‑scale 24\", dvě single‑coil snímače, studentský model.",
+        source: "Zdroj: equipboard.com",
+      },
+      "Fender Mustang (1967)": {
+        tech: "Spec: short‑scale 24\", dva single‑coil snímače, dynamické vibrato.",
+        usedBy: "Kurt Cobain (Nirvana), Matthew Healy (The 1975), beabadoobee (solo).",
+        source: "Zdroj: equipboard.com",
+      },
+      "Fender Mustang (1966)": {
+        tech: "Spec: short‑scale 24\", dva single‑coil snímače, dynamické vibrato.",
+        usedBy: "Kurt Cobain (Nirvana), Matthew Healy (The 1975), beabadoobee (solo).",
+        source: "Zdroj: equipboard.com",
+      },
+      "Maybach Teleman": {
+        tech: "Spec (Teleman T61): solid‑body T‑style, bolt‑on javorový krk, rosewood hmatník, 21 pražců, 25.5\" menzura, 2× Van Zandt single‑coil, 3‑way přepínač, nitrocellulózový aged finiš.",
+        source: "Zdroj: stageguitarservice.com, musicstore.com",
+      },
+      "Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)": {
+        tech: "Spec (D‑15M série): all‑solid mahagon, dreadnought (D‑14 fret), saténový finiš, 25.4\" menzura.",
+        usedBy:
+          "Chris Martin (Coldplay), Brendon Urie (Panic! at the Disco), Andrew Davie (Bear’s Den).",
+        source: "Zdroj: martinguitar.com, equipboard.com",
+      },
+      "Fender FA-125 Nat": {
+        tech: "Spec: dreadnought, all‑laminate konstrukce; laminovaný smrk top + laminovaný basswood zadní deska a luby; nato krk; walnut hmatník; 25.3\" menzura.",
+        source: "Zdroj: fender.com, equipboard.com",
+      },
+      "Marshall 1960 BX": {
+        tech: "Spec: 4×12\" kytarový kabinet, vintage‑voiced repros.",
+        usedBy:
+          "Angus Young (AC/DC), Dave Murray (Iron Maiden), Malcolm Young (AC/DC), Euronymous (Mayhem), Brad Whitford (Aerosmith), Susan Tedeschi (Tedeschi Trucks Band), Scott Gorham (Thin Lizzy), Joel O'Keeffe (Airbourne), Chris Cheney (The Living End), Sergio Vallín (Maná).",
+        source: "Zdroj: equipboard.com",
+      },
+      "Ampeg SVT-112AV Cabinet": {
+        tech: "Spec: 1×12\" bass kabinet, 300W/8Ω, kompresní driver s 3‑polohovým atenuátorem.",
+        source: "Zdroj: ampeg.com, equipboard.com",
+      },
+      "Shure SM 7 B": {
+        tech: "Spec: dynamický broadcast/vocal mikrofon s vysokým SPL a nízkým šumem.",
+        usedBy: "Michael Jackson (solo) – vokály na Thriller (SM7).",
+        source: "Zdroj: wikipedia.org",
+      },
+      "Shure Beta 58": {
+        tech: "Spec: dynamický vokální mikrofon, superkardioida.",
+        usedBy: "John Mayer (Dead & Company), James Hetfield (Metallica), Paul McCartney (The Beatles).",
+        source: "Zdroj: equipboard.com",
+      },
+      "SHURE SM57": {
+        tech: "Spec: dynamický nástrojový/vokální mikrofon, kardioida.",
+        usedBy: "Dave Grohl (Queens of the Stone Age), Slash (Guns N' Roses), Alex Turner (Arctic Monkeys).",
+        source: "Zdroj: equipboard.com",
+      },
+      "Sennheiser e 906": {
+        tech: "Spec: dynamický mikrofon se superkardioidou, 3‑polohový filtr.",
+        usedBy: "Alex Turner (Arctic Monkeys), Dan Auerbach (The Black Keys), Frank Iero (My Chemical Romance).",
+        source: "Zdroj: equipboard.com",
+      },
+      "AKG D5": {
+        tech: "Spec: dynamický vokální mikrofon, superkardioida, vysoký max. SPL.",
+        source: "Zdroj: equipboard.com",
+      },
+      "Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)": {
+        tech: "Spec: DiMarzio DP103 PAF + DP100 Super Distortion, Jaguar dual‑circuit, 3‑polohový přepínač.",
+        usedBy:
+          "Kurt Cobain (Nirvana), Frank Iero (My Chemical Romance), Rivers Cuomo (Weezer), Gerard Way (My Chemical Romance), Sergio Pizzorno (Kasabian), Ryan Jarman (The Cribs), Dan Campbell (The Wonder Years), Sade Sanchez (L.A. Witch), Jesse Welles (solo), Nomakills official (solo), Leisha Hailey (The Murmurs), Camila Grey (Mellowdrone).",
+        source: "Zdroj: fender.com",
+      },
+      "Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)": {
+        tech: "Spec: mahagonové tělo s javorovým topem, set‑neck, humbuckery.",
+        usedBy: "Noel Gallagher (Oasis), Jerry Cantrell (Alice in Chains).",
+        source: "Zdroj: gibson.com, equipboard.com",
+      },
+      "Gibson Les Paul Traditional (2009)": {
+        tech: "Spec: mahagonové tělo s javorovým topem, 24.75\" menzura, set‑neck.",
+        source: "Zdroj: equipboard.com",
+      },
+      "Gibson Explorer": {
+        tech: "Spec: mahagonové tělo, 24.75\" menzura, 22 pražců, snímače 490R/498T.",
+        usedBy: "Tom Morello (Rage Against the Machine), Trent Reznor (Nine Inch Nails).",
+        source: "Zdroj: gibson.com, equipboard.com",
+      },
+      "Gibson THE SG (1979)": {
+        tech: "Spec: mahagonové tělo, 24.75\" menzura, 2 humbuckery.",
+        usedBy: "MJ Lenderman (Wednesday), Evan Patterson (Young Widows), Matt Smith (Senses Fail).",
+        source: "Zdroj: equipboard.com",
+      },
+      "Gibson Sonex (1981)": {
+        tech: "Spec: Resonwood tělo, javorový krk, 24.75\" menzura, humbuckery.",
+        usedBy: "Joan Jett (Mark Knopfler’s Guitar Heroes), Ferdinando Marchisio (Forgotten Tomb).",
+        source: "Zdroj: equipboard.com",
+      },
+      "Gibson Firebird Studio Special (2004)": {
+        tech: "Spec: mahagonové tělo, set‑neck, mini‑humbuckery.",
+        source: "Zdroj: equipboard.com",
+      },
+      "Gibson Firebird Studio (2006)": {
+        tech: "Spec: mahagonové tělo, set‑neck, mini‑humbuckery.",
+        source: "Zdroj: equipboard.com",
+      },
+      "Fender Precision (1993)": {
+        tech: "Spec: split‑coil Precision snímač, 34\" menzura.",
+        usedBy: "John Frusciante (Red Hot Chili Peppers), Dave Grohl (Foo Fighters).",
+        source: "Zdroj: fender.com, equipboard.com",
+      },
+      "Fender 64 Custom Deluxe Reverb": {
+        tech: "Spec: 20W lampové kombo, 1×12\" reproduktor, reverb + tremolo.",
+        source: "Zdroj: fender.com",
+      },
+      "Marshall AFD 100": {
+        tech: "Spec: Slash signature head – navržený pro „Appetite for Destruction“ tón.",
+        usedBy: "Slash (Guns N' Roses).",
+        source: "Zdroj: equipboard.com",
+      },
+      "Mesa Boogie Dual Rectifier® Head, 3 Channels / 8 Modes, 100W": {
+        tech: "Spec: 3 kanály / 8 módů, 50/100W (Multi‑Watt).",
+        usedBy: "Wes Borland (Limp Bizkit).",
+        source: "Zdroj: chicagomusicexchange.com, equipboard.com",
+      },
+      "Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)": {
+        tech: "Spec: 50W, 2 kanály / 5 módů, 2×6L6, 5×12AX7, pružinový reverb, FX loop.",
+        usedBy:
+          "Mod: Antonín Salva (Salvation Audio, KHDK). Spolupráce: Warhead Amps s Rita Haney, Grady Champion, David Karon; projekty i pro The Smashing Pumpkins, Scott Ian, The Misfits.",
+        source: "Zdroj: mesaboogie.com, warheadamps.com",
+      },
+      "Tone King Imperial": {
+        tech: "Spec: lampové kombo se dvěma kanály a vestavěným attenuatorem.",
+        source: "Zdroj: toneking.com",
+      },
+      "Roland JC-22": {
+        tech: "Spec: 30W stereo kombo, 2×6.5\" repro, chorus/vibrato.",
+        source: "Zdroj: roland.com",
+      },
+      "Ampeg Reverbrocket R212": {
+        tech: "Spec: 2×12\" lampové kombo, 100W.",
+        source: "Zdroj: equipboard.com",
+      },
+      "Ampeg GVT5": {
+        tech: "Spec: 5W lampové kombo, 1×10\" reproduktor.",
+        source: "Zdroj: ampeg.com",
+      },
+      "AMPEG V-4B Bass Head": {
+        tech: "Spec: 100W all‑tube basový head.",
+        source: "Zdroj: chicagomusicexchange.com",
+      },
+    },
+    en: {
+      "Fender Telecaster Deluxe (1973)": {
+        tech: "Spec: ash body, maple neck, original pickups and finish; refretted, replaced pots and tuners (original parts included).",
+        note: "Purchased from Tomáš Vartecký, used on Anna K albums, featured in Kytarová zbrojnice #26.",
+        usedBy:
+          "Kurt Cobain (Nirvana), John Mayer (Dead & Company), Billie Joe Armstrong (Green Day), Thom Yorke (Radiohead), Stevie Ray Vaughan (The Vaughan Brothers), The Edge (U2), Jonny Buckland (Coldplay), Frank Iero (My Chemical Romance), Graham Coxon (Blur), Chris Martin (Coldplay), Lee Ranaldo (Sonic Youth), Mike Einziger (Incubus).",
+        source: "Source: equipboard.com",
+      },
+      "Fender Custom Shop - Jeff Beck (Surf Green)": {
+        tech: "Spec (Jeff Beck Signature Stratocaster, Custom Shop): alder body, maple neck with rosewood fingerboard, 25.5\" scale, 22 medium‑jumbo frets, 3× Hot Noiseless single‑coil, 2‑point tremolo, LSR roller nut.",
+        usedBy:
+          "Steve Vai (Whitesnake), David Davidson (Revocation), Jan Borysewicz (Lady Pank), Edelmiro Molinari (Almendra).",
+        source: "Source: fender.com, equipboard.com",
+      },
+      "Fender Custom Shop - LTD 67 HSS Strat AB HR": {
+        tech: "Spec: HSS Stratocaster (Custom Shop 1967 style). We used this guitar on our song Fuel, recorded with Damián Kučera in 2024. Full and powerful tone.",
+        previewUrl: "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg",
+        previewLink: "https://www.youtube.com/watch?v=UkekVsnQuaM&list=RDUkekVsnQuaM&start_radio=1",
+        source: "Source: studio note",
+      },
+      "Fender Duo-Sonic (1964-65)": {
+        tech: "Spec: 24\" short‑scale, two single‑coil pickups, student model.",
+        source: "Source: equipboard.com",
+      },
+      "Fender Mustang (1967)": {
+        tech: "Spec: 24\" short‑scale, two single‑coil pickups, dynamic vibrato.",
+        usedBy: "Kurt Cobain (Nirvana), Matthew Healy (The 1975), beabadoobee (solo).",
+        source: "Source: equipboard.com",
+      },
+      "Fender Mustang (1966)": {
+        tech: "Spec: 24\" short‑scale, two single‑coil pickups, dynamic vibrato.",
+        usedBy: "Kurt Cobain (Nirvana), Matthew Healy (The 1975), beabadoobee (solo).",
+        source: "Source: equipboard.com",
+      },
+      "Maybach Teleman": {
+        tech: "Spec (Teleman T61): solid‑body T‑style, bolt‑on maple neck, rosewood fingerboard, 21 frets, 25.5\" scale, 2× Van Zandt single‑coil, 3‑way switch, nitrocellulose aged finish.",
+        source: "Source: stageguitarservice.com, musicstore.com",
+      },
+      "Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)": {
+        tech: "Spec (D‑15M series): all‑solid mahogany, dreadnought (D‑14 fret), satin finish, 25.4\" scale.",
+        usedBy:
+          "Chris Martin (Coldplay), Brendon Urie (Panic! at the Disco), Andrew Davie (Bear’s Den).",
+        source: "Source: martinguitar.com, equipboard.com",
+      },
+      "Fender FA-125 Nat": {
+        tech: "Spec: dreadnought, all‑laminate construction; laminated spruce top with laminated basswood back/sides; nato neck; walnut fingerboard; 25.3\" scale.",
+        source: "Source: fender.com, equipboard.com",
+      },
+      "Marshall 1960 BX": {
+        tech: "Spec: 4×12\" guitar cabinet, vintage‑voiced speakers.",
+        usedBy:
+          "Angus Young (AC/DC), Dave Murray (Iron Maiden), Malcolm Young (AC/DC), Euronymous (Mayhem), Brad Whitford (Aerosmith), Susan Tedeschi (Tedeschi Trucks Band), Scott Gorham (Thin Lizzy), Joel O'Keeffe (Airbourne), Chris Cheney (The Living End), Sergio Vallín (Maná).",
+        source: "Source: equipboard.com",
+      },
+      "Ampeg SVT-112AV Cabinet": {
+        tech: "Spec: 1×12\" bass cabinet, 300W/8Ω, compression driver with 3‑position attenuator.",
+        source: "Source: ampeg.com, equipboard.com",
+      },
+      "Shure SM 7 B": {
+        tech: "Spec: dynamic broadcast/vocal microphone with high SPL handling.",
+        usedBy: "Michael Jackson (solo) – vocals on Thriller (SM7).",
+        source: "Source: wikipedia.org",
+      },
+      "Shure Beta 58": {
+        tech: "Spec: dynamic vocal microphone, supercardioid.",
+        usedBy: "John Mayer (Dead & Company), James Hetfield (Metallica), Paul McCartney (The Beatles).",
+        source: "Source: equipboard.com",
+      },
+      "SHURE SM57": {
+        tech: "Spec: dynamic instrument/vocal microphone, cardioid.",
+        usedBy: "Dave Grohl (Queens of the Stone Age), Slash (Guns N' Roses), Alex Turner (Arctic Monkeys).",
+        source: "Source: equipboard.com",
+      },
+      "Sennheiser e 906": {
+        tech: "Spec: dynamic mic with supercardioid pattern, 3‑position presence filter.",
+        usedBy: "Alex Turner (Arctic Monkeys), Dan Auerbach (The Black Keys), Frank Iero (My Chemical Romance).",
+        source: "Source: equipboard.com",
+      },
+      "AKG D5": {
+        tech: "Spec: dynamic vocal mic, supercardioid, high max SPL.",
+        source: "Source: equipboard.com",
+      },
+      "Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)": {
+        tech: "Spec: DiMarzio DP103 PAF + DP100 Super Distortion, Jaguar dual‑circuit, 3‑way toggle.",
+        usedBy:
+          "Kurt Cobain (Nirvana), Frank Iero (My Chemical Romance), Rivers Cuomo (Weezer), Gerard Way (My Chemical Romance), Sergio Pizzorno (Kasabian), Ryan Jarman (The Cribs), Dan Campbell (The Wonder Years), Sade Sanchez (L.A. Witch), Jesse Welles (solo), Nomakills official (solo), Leisha Hailey (The Murmurs), Camila Grey (Mellowdrone).",
+        source: "Source: fender.com",
+      },
+      "Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)": {
+        tech: "Spec: mahogany body with maple cap, set neck, humbuckers.",
+        usedBy: "Noel Gallagher (Oasis), Jerry Cantrell (Alice in Chains).",
+        source: "Source: gibson.com, equipboard.com",
+      },
+      "Gibson Les Paul Traditional (2009)": {
+        tech: "Spec: mahogany body with maple cap, 24.75\" scale, set neck.",
+        source: "Source: equipboard.com",
+      },
+      "Gibson Explorer": {
+        tech: "Spec: mahogany body, 24.75\" scale, 22 frets, 490R/498T pickups.",
+        usedBy: "Tom Morello (Rage Against the Machine), Trent Reznor (Nine Inch Nails).",
+        source: "Source: gibson.com, equipboard.com",
+      },
+      "Gibson THE SG (1979)": {
+        tech: "Spec: mahogany body, 24.75\" scale, 2 humbuckers.",
+        usedBy: "MJ Lenderman (Wednesday), Evan Patterson (Young Widows), Matt Smith (Senses Fail).",
+        source: "Source: equipboard.com",
+      },
+      "Gibson Sonex (1981)": {
+        tech: "Spec: Resonwood body, maple neck, 24.75\" scale, humbuckers.",
+        usedBy: "Joan Jett (Mark Knopfler’s Guitar Heroes), Ferdinando Marchisio (Forgotten Tomb).",
+        source: "Source: equipboard.com",
+      },
+      "Gibson Firebird Studio Special (2004)": {
+        tech: "Spec: mahogany body, set neck, mini‑humbuckers.",
+        source: "Source: equipboard.com",
+      },
+      "Gibson Firebird Studio (2006)": {
+        tech: "Spec: mahogany body, set neck, mini‑humbuckers.",
+        source: "Source: equipboard.com",
+      },
+      "Fender Precision (1993)": {
+        tech: "Spec: split‑coil Precision pickup, 34\" scale.",
+        usedBy: "John Frusciante (Red Hot Chili Peppers), Dave Grohl (Foo Fighters).",
+        source: "Source: fender.com, equipboard.com",
+      },
+      "Fender 64 Custom Deluxe Reverb": {
+        tech: "Spec: 20W tube combo, 1×12\" speaker, reverb + tremolo.",
+        source: "Source: fender.com",
+      },
+      "Marshall AFD 100": {
+        tech: "Spec: Slash signature head designed for “Appetite for Destruction” tone.",
+        usedBy: "Slash (Guns N' Roses).",
+        source: "Source: equipboard.com",
+      },
+      "Mesa Boogie Dual Rectifier® Head, 3 Channels / 8 Modes, 100W": {
+        tech: "Spec: 3 channels / 8 modes, 50/100W (Multi‑Watt).",
+        usedBy: "Wes Borland (Limp Bizkit).",
+        source: "Source: chicagomusicexchange.com, equipboard.com",
+      },
+      "Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)": {
+        tech: "Spec: 50W, 2 channels / 5 modes, 2×6L6, 5×12AX7, spring reverb, FX loop.",
+        usedBy:
+          "Mod: Antonín Salva (Salvation Audio, KHDK). Collaborations: Warhead Amps with Rita Haney, Grady Champion, David Karon; projects incl. The Smashing Pumpkins, Scott Ian, The Misfits.",
+        source: "Source: mesaboogie.com, warheadamps.com",
+      },
+      "Tone King Imperial": {
+        tech: "Spec: tube combo with two channels and built‑in attenuator.",
+        source: "Source: toneking.com",
+      },
+      "Roland JC-22": {
+        tech: "Spec: 30W stereo combo, 2×6.5\" speakers, chorus/vibrato.",
+        source: "Source: roland.com",
+      },
+      "Ampeg Reverbrocket R212": {
+        tech: "Spec: 2×12\" tube combo, 100W.",
+        source: "Source: equipboard.com",
+      },
+      "Ampeg GVT5": {
+        tech: "Spec: 5W tube combo, 1×10\" speaker.",
+        source: "Source: ampeg.com",
+      },
+      "AMPEG V-4B Bass Head": {
+        tech: "Spec: 100W all‑tube bass head.",
+        source: "Source: chicagomusicexchange.com",
+      },
+    },
+    de: {
+      "Fender Telecaster Deluxe (1973)": {
+        tech: "Spec: Esche‑Korpus, Ahornhals, originale Pickups und Lackierung; neu bundiert, Potis und Mechaniken ersetzt (Originalteile dabei).",
+        note: "Gekauft von Tomáš Vartecký, auf Alben von Anna K genutzt, vorgestellt in Kytarová zbrojnice #26.",
+        usedBy:
+          "Kurt Cobain (Nirvana), John Mayer (Dead & Company), Billie Joe Armstrong (Green Day), Thom Yorke (Radiohead), Stevie Ray Vaughan (The Vaughan Brothers), The Edge (U2), Jonny Buckland (Coldplay), Frank Iero (My Chemical Romance), Graham Coxon (Blur), Chris Martin (Coldplay), Lee Ranaldo (Sonic Youth), Mike Einziger (Incubus).",
+        source: "Quelle: equipboard.com",
+      },
+      "Fender Custom Shop - Jeff Beck (Surf Green)": {
+        tech: "Spec (Jeff Beck Signature Stratocaster, Custom Shop): Erle‑Korpus, Ahornhals mit Palisander‑Griffbrett, 25,5\" Mensur, 22 Medium‑Jumbo‑Bünde, 3× Hot‑Noiseless‑Single‑Coils, 2‑Point Tremolo, LSR Roller Nut.",
+        usedBy:
+          "Steve Vai (Whitesnake), David Davidson (Revocation), Jan Borysewicz (Lady Pank), Edelmiro Molinari (Almendra).",
+        source: "Quelle: fender.com, equipboard.com",
+      },
+      "Fender Custom Shop - LTD 67 HSS Strat AB HR": {
+        tech: "Spec: HSS Stratocaster (Custom Shop 1967 Stil). Diese Gitarre haben wir für unseren Song Fuel genutzt, aufgenommen mit Damián Kučera im Jahr 2024. Voller, kräftiger Klang.",
+        previewUrl: "https://i.ytimg.com/vi/UkekVsnQuaM/hqdefault.jpg",
+        previewLink: "https://www.youtube.com/watch?v=UkekVsnQuaM&list=RDUkekVsnQuaM&start_radio=1",
+        source: "Quelle: Studio‑Notiz",
+      },
+      "Fender Duo-Sonic (1964-65)": {
+        tech: "Spec: 24\" Short‑Scale, zwei Single‑Coils, Studentenmodell.",
+        source: "Quelle: equipboard.com",
+      },
+      "Fender Mustang (1967)": {
+        tech: "Spec: 24\" Short‑Scale, zwei Single‑Coils, dynamisches Vibrato.",
+        usedBy: "Kurt Cobain (Nirvana), Matthew Healy (The 1975), beabadoobee (solo).",
+        source: "Quelle: equipboard.com",
+      },
+      "Fender Mustang (1966)": {
+        tech: "Spec: 24\" Short‑Scale, zwei Single‑Coils, dynamisches Vibrato.",
+        usedBy: "Kurt Cobain (Nirvana), Matthew Healy (The 1975), beabadoobee (solo).",
+        source: "Quelle: equipboard.com",
+      },
+      "Maybach Teleman": {
+        tech: "Spec (Teleman T61): Solid‑Body T‑Style, bolt‑on Ahornhals, Palisander‑Griffbrett, 21 Bünde, 25,5\" Mensur, 2× Van Zandt Single‑Coils, 3‑Way‑Switch, Nitro‑Aged‑Finish.",
+        source: "Quelle: stageguitarservice.com, musicstore.com",
+      },
+      "Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)": {
+        tech: "Spec (D‑15M‑Serie): durchgehend Mahagoni, Dreadnought (D‑14‑Fret), Satin‑Finish, 25,4\" Mensur.",
+        usedBy:
+          "Chris Martin (Coldplay), Brendon Urie (Panic! at the Disco), Andrew Davie (Bear’s Den).",
+        source: "Quelle: martinguitar.com, equipboard.com",
+      },
+      "Fender FA-125 Nat": {
+        tech: "Spec: Dreadnought, All‑Laminate‑Konstruktion; laminiertes Fichten‑Top mit laminiertem Basswood Boden/Zargen; Nato‑Hals; Walnut‑Griffbrett; 25,3\" Mensur.",
+        source: "Quelle: fender.com, equipboard.com",
+      },
+      "Marshall 1960 BX": {
+        tech: "Spec: 4×12\" Gitarren‑Cabinet, vintage‑voiced Speaker.",
+        usedBy:
+          "Angus Young (AC/DC), Dave Murray (Iron Maiden), Malcolm Young (AC/DC), Euronymous (Mayhem), Brad Whitford (Aerosmith), Susan Tedeschi (Tedeschi Trucks Band), Scott Gorham (Thin Lizzy), Joel O'Keeffe (Airbourne), Chris Cheney (The Living End), Sergio Vallín (Maná).",
+        source: "Quelle: equipboard.com",
+      },
+      "Ampeg SVT-112AV Cabinet": {
+        tech: "Spec: 1×12\" Bass‑Cabinet, 300W/8Ω, Kompressionstreiber mit 3‑Stufen‑Attenuator.",
+        source: "Quelle: ampeg.com, equipboard.com",
+      },
+      "Shure SM 7 B": {
+        tech: "Spec: dynamisches Broadcast/Vocal‑Mikrofon mit hohem max. SPL.",
+        usedBy: "Michael Jackson (solo) – Vocals auf Thriller (SM7).",
+        source: "Quelle: wikipedia.org",
+      },
+      "Shure Beta 58": {
+        tech: "Spec: dynamisches Vocal‑Mikrofon, Superniere.",
+        usedBy: "John Mayer (Dead & Company), James Hetfield (Metallica), Paul McCartney (The Beatles).",
+        source: "Quelle: equipboard.com",
+      },
+      "SHURE SM57": {
+        tech: "Spec: dynamisches Instrument/Vocal‑Mikrofon, Niere.",
+        usedBy: "Dave Grohl (Queens of the Stone Age), Slash (Guns N' Roses), Alex Turner (Arctic Monkeys).",
+        source: "Quelle: equipboard.com",
+      },
+      "Sennheiser e 906": {
+        tech: "Spec: dynamisches Mikrofon, Superniere, 3‑Stufen‑Filter.",
+        usedBy: "Alex Turner (Arctic Monkeys), Dan Auerbach (The Black Keys), Frank Iero (My Chemical Romance).",
+        source: "Quelle: equipboard.com",
+      },
+      "AKG D5": {
+        tech: "Spec: dynamisches Vocal‑Mikrofon, Superniere, hoher max. SPL.",
+        source: "Quelle: equipboard.com",
+      },
+      "Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)": {
+        tech: "Spec: DiMarzio DP103 PAF + DP100 Super Distortion, Jaguar Dual‑Circuit, 3‑Way‑Schalter.",
+        usedBy:
+          "Kurt Cobain (Nirvana), Frank Iero (My Chemical Romance), Rivers Cuomo (Weezer), Gerard Way (My Chemical Romance), Sergio Pizzorno (Kasabian), Ryan Jarman (The Cribs), Dan Campbell (The Wonder Years), Sade Sanchez (L.A. Witch), Jesse Welles (solo), Nomakills official (solo), Leisha Hailey (The Murmurs), Camila Grey (Mellowdrone).",
+        source: "Quelle: fender.com",
+      },
+      "Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)": {
+        tech: "Spec: Mahagoni‑Korpus mit Ahorndecke, Set‑Neck, Humbucker.",
+        usedBy: "Noel Gallagher (Oasis), Jerry Cantrell (Alice in Chains).",
+        source: "Quelle: gibson.com, equipboard.com",
+      },
+      "Gibson Les Paul Traditional (2009)": {
+        tech: "Spec: Mahagoni‑Korpus mit Ahorndecke, 24,75\" Mensur, Set‑Neck.",
+        source: "Quelle: equipboard.com",
+      },
+      "Gibson Explorer": {
+        tech: "Spec: Mahagoni‑Korpus, 24,75\" Mensur, 22 Bünde, 490R/498T Pickups.",
+        usedBy: "Tom Morello (Rage Against the Machine), Trent Reznor (Nine Inch Nails).",
+        source: "Quelle: gibson.com, equipboard.com",
+      },
+      "Gibson THE SG (1979)": {
+        tech: "Spec: Mahagoni‑Korpus, 24,75\" Mensur, 2 Humbucker.",
+        usedBy: "MJ Lenderman (Wednesday), Evan Patterson (Young Widows), Matt Smith (Senses Fail).",
+        source: "Quelle: equipboard.com",
+      },
+      "Gibson Sonex (1981)": {
+        tech: "Spec: Resonwood‑Korpus, Ahornhals, 24,75\" Mensur, Humbucker.",
+        usedBy: "Joan Jett (Mark Knopfler’s Guitar Heroes), Ferdinando Marchisio (Forgotten Tomb).",
+        source: "Quelle: equipboard.com",
+      },
+      "Gibson Firebird Studio Special (2004)": {
+        tech: "Spec: Mahagoni‑Korpus, Set‑Neck, Mini‑Humbucker.",
+        source: "Quelle: equipboard.com",
+      },
+      "Gibson Firebird Studio (2006)": {
+        tech: "Spec: Mahagoni‑Korpus, Set‑Neck, Mini‑Humbucker.",
+        source: "Quelle: equipboard.com",
+      },
+      "Fender Precision (1993)": {
+        tech: "Spec: Precision Split‑Coil‑Pickup, 34\" Mensur.",
+        usedBy: "John Frusciante (Red Hot Chili Peppers), Dave Grohl (Foo Fighters).",
+        source: "Quelle: fender.com, equipboard.com",
+      },
+      "Fender 64 Custom Deluxe Reverb": {
+        tech: "Spec: 20W Röhren‑Combo, 1×12\" Speaker, Reverb + Tremolo.",
+        source: "Quelle: fender.com",
+      },
+      "Marshall AFD 100": {
+        tech: "Spec: Slash Signature Head für den „Appetite for Destruction“-Sound.",
+        usedBy: "Slash (Guns N' Roses).",
+        source: "Quelle: equipboard.com",
+      },
+      "Mesa Boogie Dual Rectifier® Head, 3 Channels / 8 Modes, 100W": {
+        tech: "Spec: 3 Kanäle / 8 Modi, 50/100W (Multi‑Watt).",
+        usedBy: "Wes Borland (Limp Bizkit).",
+        source: "Quelle: chicagomusicexchange.com, equipboard.com",
+      },
+      "Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)": {
+        tech: "Spec: 50W, 2 Kanäle / 5 Modi, 2×6L6, 5×12AX7, Federhall, FX‑Loop.",
+        usedBy:
+          "Mod: Antonín Salva (Salvation Audio, KHDK). Kooperation: Warhead Amps mit Rita Haney, Grady Champion, David Karon; Projekte u. a. The Smashing Pumpkins, Scott Ian, The Misfits.",
+        source: "Quelle: mesaboogie.com, warheadamps.com",
+      },
+      "Tone King Imperial": {
+        tech: "Spec: Röhren‑Combo mit zwei Kanälen und eingebautem Attenuator.",
+        source: "Quelle: toneking.com",
+      },
+      "Roland JC-22": {
+        tech: "Spec: 30W Stereo‑Combo, 2×6.5\" Speaker, Chorus/Vibrato.",
+        source: "Quelle: roland.com",
+      },
+      "Ampeg Reverbrocket R212": {
+        tech: "Spec: 2×12\" Röhren‑Combo, 100W.",
+        source: "Quelle: equipboard.com",
+      },
+      "Ampeg GVT5": {
+        tech: "Spec: 5W Röhren‑Combo, 1×10\" Speaker.",
+        source: "Quelle: ampeg.com",
+      },
+      "AMPEG V-4B Bass Head": {
+        tech: "Spec: 100W All‑Tube Bass‑Head.",
+        source: "Quelle: chicagomusicexchange.com",
+      },
+    },
+  }
+  const getEquipmentTooltip = (label: string) => equipmentTooltips[currentLang]?.[label]
+  const usedByLabel =
+    currentLang === "cs"
+      ? "Tento model používali:"
+      : currentLang === "de"
+        ? "Dieses Modell nutzten:"
+        : "This model was used by:"
+  const TooltipItem = ({ label }: { label: string }) => {
+    const tooltip = getEquipmentTooltip(label)
+    return (
+      <span className="relative group cursor-help">
+        • {label}
+        {tooltip ? (
+          <span className="absolute left-0 top-5 z-20 w-72 max-w-[80vw] rounded-md bg-black/90 text-white text-[10px] leading-relaxed px-3 py-2 opacity-0 translate-y-1 transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0">
+            <span className="block text-white/95">{tooltip.tech}</span>
+            {tooltip.usedBy ? (
+              <>
+                <span className="block mt-2 text-white/80">{usedByLabel}</span>
+                <span className="block mt-0.5 text-white/90">{tooltip.usedBy}</span>
+              </>
+            ) : null}
+            {tooltip.previewUrl ? (
+              <a
+                href={tooltip.previewLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block mt-2"
+              >
+                <img src={tooltip.previewUrl} alt="" className="w-full h-auto rounded border border-white/10" />
+              </a>
+            ) : null}
+            {tooltip.note ? (
+              <span className="block mt-2 text-white/90">{tooltip.note}</span>
+            ) : null}
+            <span className="block mt-2 text-white/50 text-[9px]">{tooltip.source}</span>
+          </span>
+        ) : null}
+      </span>
+    )
+  }
+  const buildVideoUrl = (videoId: string) =>
+    `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
 
-  const darkModeTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const getBackgroundVideoId = (section: string, darkMode: boolean, horizontal: boolean) => {
+    const normalizedSection = section === "spoluprace" ? "about" : section
+
+    if (darkMode) {
+      if (normalizedSection === "mlyn") return horizontal ? "a-bBDcZvg5U" : "HQUoxExYlEM"
+      if (normalizedSection === "studio") return horizontal ? "b4tTKrUevzM" : "PNnMOPbABZo"
+      if (normalizedSection === "contact") return horizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+      if (normalizedSection === "lokalita") return horizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
+      if (normalizedSection === "equipment") return horizontal ? "a-bBDcZvg5U" : "DY09nnytbjc"
+      if (normalizedSection === "about") return horizontal ? "a-bBDcZvg5U" : "M4QkWhz7CDo"
+      return "M4QkWhz7CDo"
+    }
+
+    if (normalizedSection === "mlyn") return horizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
+    if (normalizedSection === "studio") return horizontal ? "MczOR3DstPg" : "PNnMOPbABZo"
+    if (normalizedSection === "about") return horizontal ? "M4QapdIvjkM" : "qcbDEWXmPdE"
+    if (normalizedSection === "contact") return horizontal ? "IJMzgLBpymc" : "Js0nD8lUKH8"
+    if (normalizedSection === "lokalita") return horizontal ? "tWtT7cB1Tus" : "yYFR6g6jlaA"
+    if (normalizedSection === "equipment") return horizontal ? "VDj9aKHnpcw" : "yYFR6g6jlaA"
+    return horizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
+  }
+
+  const clearVideoCrossfade = useCallback(() => {
+    if (videoCrossfadeTimeoutRef.current) {
+      clearTimeout(videoCrossfadeTimeoutRef.current)
+      videoCrossfadeTimeoutRef.current = null
+    }
+    if (videoCrossfadeRafRef.current !== null) {
+      window.cancelAnimationFrame(videoCrossfadeRafRef.current)
+      videoCrossfadeRafRef.current = null
+    }
+  }, [])
+
+  const clearSectionVideoIdle = useCallback(() => {
+    if (sectionVideoIdleRef.current) {
+      clearTimeout(sectionVideoIdleRef.current)
+      sectionVideoIdleRef.current = null
+    }
+  }, [])
+
+  const startVideoCrossfade = useCallback(
+    (targetUrl: string) => {
+      if (!targetUrl) {
+        return
+      }
+      if (targetUrl === currentVideoUrl && !nextVideoUrl) {
+        return
+      }
+      if (targetUrl === nextVideoUrl) {
+        return
+      }
+
+      clearVideoCrossfade()
+      setIsNextVideoReady(false)
+      setNextVideoUrl(targetUrl)
+      setIsTransitioning(false)
+    },
+    [clearVideoCrossfade, currentVideoUrl, nextVideoUrl],
+  )
+
+  const handleNextBackgroundVideoLoad = useCallback(() => {
+    const iframe = nextBackgroundVideoRef.current
+    if (!iframe) {
+      return
+    }
+
+    // Ask YouTube player to start buffering/playing the next stream in background.
+    iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', "*")
+  }, [])
+
+  const backgroundVideoStyle = isHorizontal
+    ? {
+        width: "177.77vh", // 16:9
+        height: "100vh",
+        minWidth: "100vw",
+        minHeight: "56.25vw",
+        position: "absolute" as const,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }
+    : {
+        width: "100vw",
+        height: "177.77vw", // 9:16
+        minWidth: "56.25vh",
+        minHeight: "100vh",
+        position: "absolute" as const,
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }
+
+  const getSectionElement = useCallback((section: string): HTMLDivElement | null => {
+    const normalizedSection = section === "location" ? "lokalita" : section === "home" ? "mlyn" : section
+
+    if (normalizedSection === "mlyn") return mlynSectionRef.current
+    if (normalizedSection === "studio") return studioSectionRef.current
+    if (normalizedSection === "equipment") return equipmentSectionRef.current
+    if (normalizedSection === "lokalita") return lokalitaSectionRef.current
+    if (normalizedSection === "about") return onasSectionRef.current
+    if (normalizedSection === "contact") return contactSectionRef.current
+
+    return null
+  }, [])
+
+  const scrollToContentElement = useCallback((target: Element | null, behavior: ScrollBehavior = "smooth") => {
+    if (!target) return
+
+    const rootElement = contentScrollRef.current
+    if (!rootElement) {
+      target.scrollIntoView({ behavior, block: "start" })
+      return
+    }
+
+    const rootRect = rootElement.getBoundingClientRect()
+    const targetRect = target.getBoundingClientRect()
+    const top = targetRect.top - rootRect.top + rootElement.scrollTop
+
+    rootElement.scrollTo({ top: Math.max(0, top), behavior })
+  }, [])
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth)
@@ -1189,11 +1923,36 @@ export default function Page() {
   }, [])
 
   useEffect(() => {
+    const timer = setTimeout(() => setShowFooterNote(false), 5000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
     const sectionParam = searchParams.get("section")
-    if (sectionParam && sectionOrder.includes(sectionParam)) {
-      setCurrentSection(sectionParam)
-    }
-  }, [searchParams])
+    if (!sectionParam) return
+
+    const normalizedSection =
+      sectionParam === "location" ? "lokalita" : sectionParam === "home" ? "mlyn" : sectionParam
+    if (!sectionOrder.includes(normalizedSection)) return
+
+    setCurrentSection(normalizedSection)
+    activeSectionRef.current = normalizedSection
+
+    requestAnimationFrame(() => {
+      if (normalizedSection === "spoluprace") {
+        const element = document.getElementById("collaboration")
+        scrollToContentElement(element, "auto")
+        return
+      }
+
+      const targetElement = getSectionElement(normalizedSection)
+      scrollToContentElement(targetElement, "auto")
+    })
+  }, [getSectionElement, scrollToContentElement, searchParams])
+
+  useEffect(() => {
+    activeSectionRef.current = currentSection
+  }, [currentSection])
 
   // Sync language with URL changes
   useEffect(() => {
@@ -1222,57 +1981,21 @@ export default function Page() {
   // Scroll detection didn't work because content fits on screen without scrolling
 
   const toggleVideo = () => {
-    const iframe = document.getElementById("background-video") as HTMLIFrameElement
-    if (iframe) {
-      if (isVideoPlaying) {
-        iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', "*")
-      } else {
-        iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', "*")
-      }
-      setIsVideoPlaying(!isVideoPlaying)
-    }
+    const shouldPause = isVideoPlaying
+    const command = shouldPause ? "pauseVideo" : "playVideo"
+    const iframes = document.querySelectorAll<HTMLIFrameElement>('iframe[data-bg-video="true"]')
+
+    iframes.forEach((iframe) => {
+      iframe.contentWindow?.postMessage(`{"event":"command","func":"${command}","args":""}`, "*")
+    })
+
+    setIsVideoPlaying(!shouldPause)
   }
 
   const toggleDarkMode = () => {
     const newDarkMode = !isDarkMode
     setIsDarkMode(newDarkMode)
-    const isHorizontal = window.innerWidth >= 768
-    let newVideoId = currentVideoUrl // Use currentVideoUrl for the current video
-
-    if (newDarkMode) {
-      // Dark mode videos
-      if (currentSection === "mlyn") {
-        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "HQUoxExYlEM"
-      } else if (currentSection === "contact") {
-        newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
-      } else if (currentSection === "lokalita") {
-        newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
-      } else if (currentSection === "equipment") {
-        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "DY09nnytbjc"
-      } else if (currentSection === "about") {
-        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "M4QkWhz7CDo"
-      } else {
-        newVideoId = "M4QkWhz7CDo"
-      }
-    } else {
-      // Light/Day mode videos
-      if (currentSection === "mlyn") {
-        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM" // UPDATED mlyn light video
-      } else if (currentSection === "about") {
-        newVideoId = isHorizontal ? "M4QapdIvjkM" : "qcbDEWXmPdE"
-      } else if (currentSection === "contact") {
-        // This part was incomplete in the original updates, but we'll assume it's intended
-        // to remain the same for now based on context.
-        newVideoId = isHorizontal ? "IJMzgLBpymc" : "Js0nD8lUKH8"
-      } else if (currentSection === "lokalita") {
-        newVideoId = isHorizontal ? "tWtT7cB1Tus" : "yYFR6g6jlaA"
-      } else if (currentSection === "equipment") {
-        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "yYFR6g6jlaA" // UPDATED equipment light video
-      } else {
-        // Default for home and other sections not explicitly listed
-        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
-      }
-    }
+    const newVideoId = getBackgroundVideoId(currentSection, newDarkMode, isHorizontal)
 
     console.log(
       "[v0] Switching to dark mode:",
@@ -1285,109 +2008,36 @@ export default function Page() {
       isHorizontal,
     )
 
-    setIsTransitioning(true)
-    const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
-    setNextVideoUrl(newUrl)
-
-    setTimeout(() => {
-      setCurrentVideoUrl(newUrl)
-      setIsTransitioning(false)
-      setNextVideoUrl("")
-      setIsVideoPlaying(true)
-    }, 1000)
+    const newUrl = buildVideoUrl(newVideoId)
+    startVideoCrossfade(newUrl)
   }
 
   const handleSectionChange = (section: string) => {
-    console.log("[v0] Switching to section:", section)
-    if (section === currentSection) {
-      return
-    }
+    const normalizedSection = section === "location" ? "lokalita" : section === "home" ? "mlyn" : section
+
+    console.log("[v0] Switching to section:", normalizedSection)
 
     const currentParams = new URLSearchParams(window.location.search)
-    currentParams.set("section", section)
+    currentParams.set("section", normalizedSection)
 
     const newUrl = `${window.location.pathname}?${currentParams.toString()}`
-    window.history.pushState({}, "", newUrl)
+    window.history.replaceState({}, "", newUrl)
 
-    setCurrentSection(section)
+    setCurrentSection(normalizedSection)
+    activeSectionRef.current = normalizedSection
     setShowMobileMenu(false)
     setShowLanguageMenu(false)
 
-    if (darkModeTimerRef.current) {
-      clearTimeout(darkModeTimerRef.current)
-      darkModeTimerRef.current = null
-    }
-
-    if (section === "spoluprace") {
+    if (normalizedSection === "spoluprace") {
       const element = document.getElementById("collaboration")
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
+      scrollToContentElement(element, "smooth")
       return
     }
 
-    window.scrollTo({ top: 0, behavior: "smooth" })
+    const sectionElement = getSectionElement(normalizedSection)
+    scrollToContentElement(sectionElement, "smooth")
 
-    const isHorizontal = window.innerWidth >= 768
-    let newVideoId = ""
-
-    if (isDarkMode) {
-      // Dark mode videos
-      if (currentSection === "mlyn") {
-        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "HQUoxExYlEM"
-      } else if (currentSection === "contact") {
-        newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
-      } else if (currentSection === "lokalita") {
-        // ADDED lokalita dark mode video
-        newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
-      } else if (currentSection === "equipment") {
-        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "DY09nnytbjc" // Ensure consistency with toggleDarkMode
-      } else if (currentSection === "about") {
-        newVideoId = isHorizontal ? "a-bBDcZvg5U" : "M4QkWhz7CDo"
-      } else {
-        newVideoId = "M4QkWhz7CDo"
-      }
-    } else {
-      // Light/Day mode videos
-      if (currentSection === "mlyn") {
-        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
-      } else if (currentSection === "about") {
-        newVideoId = isHorizontal ? "M4QapdIvjkM" : "qcbDEWXmPdE"
-      } else if (currentSection === "contact") {
-        // This part was incomplete in the original updates, but we'll assume it's intended
-        // to remain the same for now based on context.
-        newVideoId = isHorizontal ? "IJMzgLBpymc" : "Js0nD8lUKH8"
-      } else if (currentSection === "lokalita") {
-        newVideoId = isHorizontal ? "tWtT7cB1Tus" : "yYFR6g6jlaA"
-      } else if (currentSection === "equipment") {
-        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "yYFR6g6jlaA" // UPDATED equipment light video
-      } else {
-        // Default for home and other sections not explicitly listed
-        newVideoId = isHorizontal ? "VDj9aKHnpcw" : "HQUoxExYlEM"
-      }
-    }
-
-    console.log(
-      "[v0] Switching to video:",
-      newVideoId,
-      "Section:",
-      section,
-      "Horizontal:",
-      isHorizontal,
-      "Dark:",
-      isDarkMode,
-    )
-
-    setIsTransitioning(true)
-    const videoUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
-    setNextVideoUrl(videoUrl)
-
-    setTimeout(() => {
-      setCurrentVideoUrl(videoUrl)
-      setIsTransitioning(false)
-      setNextVideoUrl("")
-      setIsVideoPlaying(true)
-    }, 1000)
+    console.log("[v0] Section changed; background video switch waits for idle timer.")
   }
 
   React.useEffect(() => {
@@ -1395,7 +2045,25 @@ export default function Page() {
       if (event.origin !== "https://www.youtube.com") return
 
       try {
-        const data = JSON.parse(event.data)
+        const rawData = typeof event.data === "string" ? JSON.parse(event.data) : event.data
+        const data = rawData as { event?: string; info?: number }
+        const currentBackgroundWindow = currentBackgroundVideoRef.current?.contentWindow
+        const nextBackgroundWindow = nextBackgroundVideoRef.current?.contentWindow
+        const isCurrentBackgroundVideo = Boolean(currentBackgroundWindow && event.source === currentBackgroundWindow)
+        const isNextBackgroundVideo = Boolean(nextBackgroundWindow && event.source === nextBackgroundWindow)
+
+        if (isNextBackgroundVideo) {
+          // Run crossfade only when next video is actually playing (buffered enough).
+          if (data.event === "onStateChange" && Number(data.info) === 1) {
+            setIsNextVideoReady(true)
+          }
+          return
+        }
+
+        if (!isCurrentBackgroundVideo) {
+          return
+        }
+
         // YouTube Player API sends events like {"event":"onStateChange","info":0}
         // 0 = ended, 1 = playing, 2 = paused
         if (data.event === "onStateChange" && data.info === 0) {
@@ -1424,90 +2092,152 @@ export default function Page() {
     return () => window.removeEventListener("message", handleMessage)
   }, [currentSection]) // Removed handleSectionChange from dependencies
 
-  useEffect(() => {
-    if (darkModeTimerRef.current) {
-      clearTimeout(darkModeTimerRef.current)
-      darkModeTimerRef.current = null
+  const switchVideoToActiveSection = useCallback(() => {
+    const activeSection = activeSectionRef.current === "home" ? "mlyn" : activeSectionRef.current
+    const newVideoId = getBackgroundVideoId(activeSection, isDarkMode, isHorizontal)
+    const newUrl = buildVideoUrl(newVideoId)
+
+    if (newUrl === currentVideoUrl || newUrl === nextVideoUrl) {
+      return
     }
 
-    if (!isDarkMode) {
-      if (currentSection === "home") {
-        console.log("[v0] Starting 10s timer for photo dark mode switch")
-        darkModeTimerRef.current = setTimeout(() => {
-          console.log("[v0] Auto-switching to dark mode (photo)")
-          setIsDarkMode(true)
-          const newVideoId = "M4QkWhz7CDo"
-          setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
-          setNextVideoUrl(newUrl)
-          setTimeout(() => {
-            setCurrentVideoUrl(newUrl)
-            setIsTransitioning(false)
-            setNextVideoUrl("")
-            setIsVideoPlaying(true)
-          }, 1000)
-        }, 10000)
-      } else {
-        console.log("[v0] Starting 45s timer for video dark mode switch")
-        darkModeTimerRef.current = setTimeout(() => {
-          console.log("[v0] Auto-switching to dark mode (video)")
-          setIsDarkMode(true)
-
-          const isHorizontal = windowWidth >= 768
-          let newVideoId = ""
-
-          if (currentSection === "contact") {
-            newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
-          } else if (currentSection === "lokalita") {
-            // ADDED lokalita dark mode video
-            newVideoId = isHorizontal ? "CJzYKr3JWC8" : "DY09nnytbjc"
-          } else if (currentSection === "equipment") {
-            newVideoId = isHorizontal ? "a-bBDcZvg5U" : "DY09nnytbjc" // Ensure consistency with toggleDarkMode
-          } else {
-            newVideoId = "M4QkWhz7CDo"
-          }
-
-          setIsTransitioning(true)
-          const newUrl = `https://www.youtube.com/embed/${newVideoId}?autoplay=1&mute=1&loop=1&playlist=${newVideoId}&controls=0&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1`
-          setNextVideoUrl(newUrl)
-          setTimeout(() => {
-            setCurrentVideoUrl(newUrl)
-            setIsTransitioning(false)
-            setNextVideoUrl("")
-            setIsVideoPlaying(true)
-          }, 1000)
-        }, 45000)
-      }
-    }
-
-    return () => {
-      if (darkModeTimerRef.current) {
-        clearTimeout(darkModeTimerRef.current)
-        darkModeTimerRef.current = null
-      }
-    }
-  }, [currentSection, isDarkMode, windowWidth]) // Added windowWidth dependency
+    startVideoCrossfade(newUrl)
+  }, [currentVideoUrl, isDarkMode, isHorizontal, nextVideoUrl, startVideoCrossfade])
 
   useEffect(() => {
+    const rootElement = contentScrollRef.current
+    if (!rootElement) {
+      return
+    }
+
+    const armIdleTimer = () => {
+      clearSectionVideoIdle()
+      sectionVideoIdleRef.current = setTimeout(() => {
+        sectionVideoIdleRef.current = null
+        switchVideoToActiveSection()
+      }, SECTION_VIDEO_IDLE_MS)
+    }
+
+    armIdleTimer()
+
     const handleScroll = () => {
-      if (currentSection === "mlyn" && mlynSectionRef.current) {
-        const scrollTop = mlynSectionRef.current.scrollTop
-        const scrollHeight = mlynSectionRef.current.scrollHeight
-        const clientHeight = mlynSectionRef.current.clientHeight
-      }
+      armIdleTimer()
     }
 
-    const currentRef = mlynSectionRef.current
-    if (currentRef) {
-      currentRef.addEventListener("scroll", handleScroll)
-    }
+    rootElement.addEventListener("scroll", handleScroll, { passive: true })
 
     return () => {
-      if (currentRef) {
-        currentRef.removeEventListener("scroll", handleScroll)
+      rootElement.removeEventListener("scroll", handleScroll)
+      clearSectionVideoIdle()
+    }
+  }, [clearSectionVideoIdle, switchVideoToActiveSection])
+
+  useEffect(() => {
+    if (!nextVideoUrl || !isNextVideoReady) {
+      return
+    }
+
+    if (videoCrossfadeTimeoutRef.current) {
+      clearTimeout(videoCrossfadeTimeoutRef.current)
+      videoCrossfadeTimeoutRef.current = null
+    }
+    if (videoCrossfadeRafRef.current !== null) {
+      window.cancelAnimationFrame(videoCrossfadeRafRef.current)
+      videoCrossfadeRafRef.current = null
+    }
+
+    videoCrossfadeRafRef.current = window.requestAnimationFrame(() => {
+      setIsTransitioning(true)
+    })
+
+    const targetUrl = nextVideoUrl
+    videoCrossfadeTimeoutRef.current = setTimeout(() => {
+      setCurrentVideoUrl(targetUrl)
+      setNextVideoUrl("")
+      setIsNextVideoReady(false)
+      setIsTransitioning(false)
+      setIsVideoPlaying(true)
+    }, VIDEO_CROSSFADE_MS)
+  }, [isNextVideoReady, nextVideoUrl])
+
+  useEffect(() => {
+    return () => {
+      clearVideoCrossfade()
+      clearSectionVideoIdle()
+    }
+  }, [clearSectionVideoIdle, clearVideoCrossfade])
+
+  useEffect(() => {
+    const rootElement = contentScrollRef.current
+    if (!rootElement) return
+
+    const sectionElements = observableSections
+      .map((section) => ({
+        section,
+        element: getSectionElement(section),
+      }))
+      .filter((entry): entry is { section: (typeof observableSections)[number]; element: HTMLDivElement } =>
+        Boolean(entry.element),
+      )
+
+    if (!sectionElements.length) return
+
+    const visibilityMap: Partial<Record<(typeof observableSections)[number], number>> = {}
+    sectionElements.forEach(({ section }) => {
+      visibilityMap[section] = section === "mlyn" ? 1 : 0
+    })
+
+    const updateActiveSection = () => {
+      const currentObservedSection = observableSections.includes(activeSectionRef.current as (typeof observableSections)[number])
+        ? (activeSectionRef.current as (typeof observableSections)[number])
+        : "mlyn"
+
+      const bestVisibleSection = sectionElements.reduce(
+        (best, current) => {
+          const currentRatio = visibilityMap[current.section] ?? 0
+          if (currentRatio > best.ratio) {
+            return { section: current.section, ratio: currentRatio }
+          }
+          return best
+        },
+        { section: currentObservedSection, ratio: 0 },
+      )
+
+      if (bestVisibleSection.ratio < 0.01) {
+        return
+      }
+
+      if (bestVisibleSection.section !== activeSectionRef.current) {
+        activeSectionRef.current = bestVisibleSection.section
+        setCurrentSection(bestVisibleSection.section)
+
+        const params = new URLSearchParams(window.location.search)
+        params.set("section", bestVisibleSection.section)
+        window.history.replaceState({}, "", `${window.location.pathname}?${params.toString()}`)
       }
     }
-  }, [currentSection])
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const sectionId = entry.target.getAttribute("data-section-id") as (typeof observableSections)[number] | null
+          if (!sectionId) return
+          visibilityMap[sectionId] = entry.isIntersecting ? entry.intersectionRatio : 0
+        })
+        updateActiveSection()
+      },
+      {
+        root: rootElement,
+        threshold: [0, 0.05, 0.1, 0.15, 0.2],
+      },
+    )
+
+    sectionElements.forEach(({ element }) => observer.observe(element))
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [getSectionElement])
 
   const toggleLanguage = () => {
     setShowLanguageMenu(!showLanguageMenu)
@@ -1564,15 +2294,10 @@ export default function Page() {
         </button>
       )}
 
+      
+
       <div className="fixed inset-0 z-0">
-        {currentSection === "studio" ? (
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
-              backgroundImage: 'url("/images/pila-59-7.webp")',
-            }}
-          />
-        ) : currentSection !== "home" ? (
+        {currentSection !== "home" ? (
           <>
             <div
               className="absolute inset-0 opacity-10"
@@ -1584,26 +2309,34 @@ export default function Page() {
               }}
             />
             <iframe
-              id="background-video"
-              className={`absolute pointer-events-none transition-opacity duration-1000 ${isTransitioning ? "opacity-0" : "opacity-100"}`}
-              style={{
-                width: "177.77vh", // 16:9 aspect ratio: 100vh * 16/9
-                height: "100vh",
-                minWidth: "100vw",
-                minHeight: "56.25vw", // 16:9 aspect ratio: 100vw * 9/16
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-              }}
+              ref={currentBackgroundVideoRef}
+              data-bg-video="true"
+              className="absolute pointer-events-none opacity-100"
+              style={backgroundVideoStyle}
               src={currentVideoUrl}
-              title="Mlýn na Pile Background Video"
+              title="Mlýn na Pile Background Video - current"
               allow="autoplay; encrypted-media"
               allowFullScreen
             />
+            {nextVideoUrl ? (
+              <iframe
+                ref={nextBackgroundVideoRef}
+                data-bg-video="true"
+                id="background-video"
+                className={`absolute pointer-events-none transition-opacity duration-[2000ms] ${isTransitioning ? "opacity-100" : "opacity-0"}`}
+                style={backgroundVideoStyle}
+                src={nextVideoUrl}
+                onLoad={handleNextBackgroundVideoLoad}
+                title="Mlýn na Pile Background Video - next"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            ) : null}
+            <div className="absolute inset-0 bg-black/35 pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/70 via-black/40 to-transparent pointer-events-none" />
             <div
-              className={`absolute inset-0 bg-black/60 transition-opacity duration-500 pointer-events-none ${
-                !isVideoPlaying ? "opacity-100" : "opacity-0"
+              className={`absolute inset-0 bg-black/70 transition-opacity duration-500 pointer-events-none ${
+                isOverlayPreview || !isVideoPlaying ? "opacity-100" : "opacity-0"
               }`}
             />
           </>
@@ -1622,7 +2355,7 @@ export default function Page() {
         )}
       </div>
 
-      <div className="relative z-10 min-h-screen flex flex-col">
+      <div className="relative z-10 min-h-screen flex flex-col pb-24">
         {/* Navigation */}
         <nav className="fixed top-0 left-0 right-0 z-50 p-6 transition-all duration-300 bg-transparent">
           <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-3 relative">
@@ -1714,14 +2447,33 @@ export default function Page() {
                 {isDarkMode ? <Moon className="h-2.5 w-2.5" /> : <Sun className="h-2.5 w-2.5" />}
               </Button>
 
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={toggleVideo}
-                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
-              >
-                {isVideoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
-              </Button>
+              {currentSection !== "home" && currentSection !== "studio" ? (
+                <div className="relative group">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={toggleVideo}
+                    onMouseEnter={() => setIsOverlayPreview(true)}
+                    onMouseLeave={() => setIsOverlayPreview(false)}
+                    onFocus={() => setIsOverlayPreview(true)}
+                    onBlur={() => setIsOverlayPreview(false)}
+                    className={`pulse-soft bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6 transition-all ${
+                      isOverlayPreview
+                        ? isDarkMode
+                          ? "bg-blue-500/30 text-white"
+                          : "bg-amber-500/30 text-white"
+                        : ""
+                    }`}
+                    title="Ztmavnout pozadí pro čtení"
+                    aria-label={isVideoPlaying ? "Pozastavit video pozadí" : "Spustit video pozadí"}
+                  >
+                    {isVideoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
+                  </Button>
+                  <span className="absolute -bottom-7 right-0 whitespace-nowrap rounded-md bg-black/80 text-white text-[10px] px-2 py-1 opacity-0 translate-y-1 transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
+                    Ztmavnout pozadí pro čtení
+                  </span>
+                </div>
+              ) : null}
             </div>
 
             <div className="hidden md:flex gap-2 md:absolute md:right-0">
@@ -1788,14 +2540,33 @@ export default function Page() {
                 {isDarkMode ? <Moon className="h-2.5 w-2.5" /> : <Sun className="h-2.5 w-2.5" />}
               </Button>
 
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={toggleVideo}
-                className="bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6"
-              >
-                {isVideoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
-              </Button>
+              {currentSection !== "home" && currentSection !== "studio" ? (
+                <div className="relative group">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={toggleVideo}
+                    onMouseEnter={() => setIsOverlayPreview(true)}
+                    onMouseLeave={() => setIsOverlayPreview(false)}
+                    onFocus={() => setIsOverlayPreview(true)}
+                    onBlur={() => setIsOverlayPreview(false)}
+                    className={`pulse-soft bg-white/5 backdrop-blur-sm border-white/20 text-white/70 hover:bg-white/10 hover:text-white h-6 w-6 transition-all ${
+                      isOverlayPreview
+                        ? isDarkMode
+                          ? "bg-blue-500/30 text-white"
+                          : "bg-amber-500/30 text-white"
+                        : ""
+                    }`}
+                    title="Ztmavnout pozadí pro čtení"
+                    aria-label={isVideoPlaying ? "Pozastavit video pozadí" : "Spustit video pozadí"}
+                  >
+                    {isVideoPlaying ? <Pause className="h-2.5 w-2.5" /> : <Play className="h-2.5 w-2.5" />}
+                  </Button>
+                  <span className="absolute -bottom-7 right-0 whitespace-nowrap rounded-md bg-black/80 text-white text-[10px] px-2 py-1 opacity-0 translate-y-1 transition-all duration-200 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:translate-y-0">
+                    Ztmavnout pozadí pro čtení
+                  </span>
+                </div>
+              ) : null}
             </div>
           </div>
         </nav>
@@ -1822,9 +2593,14 @@ export default function Page() {
             </div>
           )}
 
-          <div className="">
-            {currentSection === "mlyn" ? (
-              <div ref={mlynSectionRef} className="flex-1 min-h-screen pt-32 pb-32 overflow-y-auto">
+          <div ref={contentScrollRef} className="flex-1 overflow-y-auto scroll-smooth snap-y snap-proximity">
+            <>
+              <div
+                id="mlyn"
+                data-section-id="mlyn"
+                ref={mlynSectionRef}
+                className="snap-start min-h-screen pt-32 pb-32"
+              >
                 <div className="px-6 py-12">
                   <div className="text-center max-w-5xl mx-auto mb-16">
                     <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 text-balance">{t.mlyn.title}</h1>
@@ -1936,8 +2712,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ) : currentSection === "studio" ? (
-              <div ref={studioSectionRef} className="flex-1 overflow-y-auto pt-32">
+              <div
+                id="studio"
+                data-section-id="studio"
+                ref={studioSectionRef}
+                className="snap-start min-h-screen pt-32 pb-32"
+              >
                 {/* Hero Section */}
                 <div className="flex items-center justify-center px-6 py-16 text-white">
                   <div className="text-center max-w-5xl">
@@ -1965,19 +2745,16 @@ export default function Page() {
                         <div className="space-y-2 text-xs text-white/90">
                           <h3 className="text-lg font-semibold text-white drop-shadow-lg">{t.studio.equipment}</h3>
                           <ul className="space-y-1">
-                            <li>• Vintage Fender Custom Shop kytary</li>
-                            <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
-                            <li>• Gibson Explorer</li>
-                            <li>• Marshall AFD 100, Mesa Boogie</li>
-                            <li>• Rozsáhlá kolekce efektů</li>
-                            <li>• Mapex Saturn bicí & K-Zildjian činely</li>
+                            {t.studio.equipmentHighlights.map((item, index) => (
+                              <li key={index}>• {item}</li>
+                            ))}
                           </ul>
                         </div>
                       </div>
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/YWnYQDGHeLw?autoplay=1&mute=1&loop=1&playlist=YWnYQDGHeLw&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
+                          src="https://www.youtube.com/embed/O431B93W9UY?autoplay=1&mute=1&loop=1&playlist=O431B93W9UY&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
                           title="Hlavní Studio"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -1993,7 +2770,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group order-2 lg:order-1">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/gTqXu9xU_7k?autoplay=1&mute=1&loop=1&playlist=gTqXu9xU_7k&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
+                          src="https://www.youtube.com/embed/u2ylGCNnV50?autoplay=1&mute=1&loop=1&playlist=u2ylGCNnV50&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
                           title="Control Room"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -2037,7 +2814,7 @@ export default function Page() {
                       <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl group">
                         <iframe
                           className="w-full h-full"
-                          src="https://www.youtube.com/embed/sc0bCt6G9dM?autoplay=1&mute=1&loop=1&playlist=sc0bCt6G9dM&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
+                          src="https://www.youtube.com/embed/mndh51Ug7zg?autoplay=1&mute=1&loop=1&playlist=mndh51Ug7zg&controls=0&showinfo=0&rel=0&modestbranding=1&vq=highres&quality=highres&playsinline=1&enablejsapi=1"
                           title="Millstone Studio"
                           allow="autoplay; encrypted-media"
                           allowFullScreen
@@ -2164,9 +2941,11 @@ export default function Page() {
                         <CardContent className="p-8">
                           <div className="space-y-3">
                             {t.studio.accommodation.bonuses.items.map((bonus, index) => (
-                              <p key={index} className="text-white/90 text-xs leading-relaxed">
-                                {bonus}
-                              </p>
+                              <p
+                                key={index}
+                                className="text-white/90 text-xs leading-relaxed"
+                                dangerouslySetInnerHTML={{ __html: bonus }}
+                              />
                             ))}
                           </div>
                         </CardContent>
@@ -2175,24 +2954,29 @@ export default function Page() {
                   </div>
                 </div>
                 {/* CTA Section */}
-                <div className="flex items-center justify-center px-6 py-12 bg-black/70 text-white">
-                  <div className="text-center max-w-3xl">
-                    <h2 className="text-[10px] md:text-xs font-bold mb-4 text-white drop-shadow-lg">
-                      {t.studio.ctaTitle}
-                    </h2>
-                    <p className="text-base mb-3 text-white/90 drop-shadow-md">{t.studio.ctaDesc}</p>
-                    <Button
-                      size="default"
+                <div className="flex items-center justify-center px-6 py-16 bg-black/70 text-white">
+                  <div className="text-center max-w-3xl bg-black/50 backdrop-blur-sm rounded-xl px-6 py-6">
+                    <button
                       onClick={() => handleSectionChange("contact")}
-                      className="px-6 py-2 text-sm bg-white text-black hover:bg-gray-200"
+                      className={`text-[10px] md:text-xs font-bold text-white drop-shadow-lg underline-offset-4 hover:underline ${
+                        isDarkMode ? "hover:text-blue-300" : "hover:text-secondary"
+                      }`}
+                      aria-label={t.studio.ctaButton}
                     >
-                      {t.studio.ctaButton}
-                    </Button>
+                      {t.studio.ctaTitle}
+                    </button>
+                    {t.studio.ctaDesc ? (
+                      <p className="text-base mt-3 text-white/90 drop-shadow-md">{t.studio.ctaDesc}</p>
+                    ) : null}
                   </div>
                 </div>
               </div>
-            ) : currentSection === "lokalita" ? (
-              <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
+              <div
+                id="lokalita"
+                data-section-id="lokalita"
+                ref={lokalitaSectionRef}
+                className="snap-start min-h-screen px-6 py-12 pt-32 pb-32"
+              >
                 <div className="max-w-6xl mx-auto">
                   <div className="text-center mb-12">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">{t.location.title}</h1>
@@ -2265,20 +3049,20 @@ export default function Page() {
                               className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <div>
-                              <h4 className="font-semibold text-white mb-2">Tesla Charging Station</h4>
+                              <h4 className="font-semibold text-white mb-2">{t.location.teslaTitle}</h4>
                               <ul className="space-y-1 text-xs text-white">
-                                <li>• On-site Tesla charging</li>
+                                <li>• {t.location.teslaDesc}</li>
                               </ul>
                             </div>
                           </div>
                           <div className="flex items-start space-x-4">
-                            <Server
+                            <Zap
                               className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"} mt-1 flex-shrink-0`}
                             />
                             <div>
-                              <h4 className="font-semibold text-white mb-2">Energy grid independence</h4>
+                              <h4 className="font-semibold text-white mb-2">{t.location.energyTitle}</h4>
                               <ul className="space-y-1 text-xs text-white">
-                                <li>• Backup power for uninterrupted workflow</li>
+                                <li>• {t.location.energyDesc}</li>
                               </ul>
                             </div>
                           </div>
@@ -2449,8 +3233,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ) : currentSection === "equipment" ? (
-              <div className="flex-1 px-6 py-12 overflow-y-auto pt-32">
+              <div
+                id="equipment"
+                data-section-id="equipment"
+                ref={equipmentSectionRef}
+                className="snap-start min-h-screen px-6 py-12 pt-32 pb-32"
+              >
                 <div className="max-w-7xl mx-auto">
                   <div className="text-center mb-8">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 text-balance">{t.equipment.title}</h1>
@@ -2493,40 +3281,61 @@ export default function Page() {
                                 <p className="text-white font-medium text-sm mb-1">Fender:</p>
                                 <ul className="text-white/80 text-xs space-y-1.5">
                                   <li className="cursor-pointer hover:text-secondary transition-colors">
-                                    <a
-                                      href="https://equipboard.com/items/fender-telecaster-deluxe-73"
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className={`hover:text-secondary transition-colors ${isDarkMode ? "text-blue-400" : "text-secondary"}`}
-                                    >
-                                      • Fender Telecaster Deluxe (1973)
-                                    </a>
+                                    <TooltipItem label="Fender Telecaster Deluxe (1973)" />
                                   </li>
-                                  <li>• Fender Custom Shop - Jeff Beck (Surf Green)</li>
-                                  <li>• Fender Custom Shop - LTD 67 HSS Strat AB HR</li>
-                                  <li>• Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)</li>
-                                  <li>• Fender Duo-Sonic (1964-65)</li>
-                                  <li>• Fender Mustang (1967)</li>
-                                  <li>• Fender Mustang (1966)</li>
+                                  <li>
+                                    <TooltipItem label="Fender Custom Shop - Jeff Beck (Surf Green)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Fender Custom Shop - LTD 67 HSS Strat AB HR" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Fender Jaguar Kurt Cobain (with Graph Tech Bridge Saddles)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Fender Duo-Sonic (1964-65)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Fender Mustang (1967)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Fender Mustang (1966)" />
+                                  </li>
                                 </ul>
                               </div>
                               <div>
                                 <p className="text-white font-medium text-sm mb-1">Gibson:</p>
                                 <ul className="text-white/80 text-xs space-y-1.5">
-                                  <li>• Gibson THE SG (1979)</li>
-                                  <li>• Gibson Sonex (1981)</li>
-                                  <li>• Gibson Firebird Studio Special (2004)</li>
-                                  <li>• Gibson Firebird Studio (2006)</li>
-                                  <li>• Gibson Les Paul Traditional (2009)</li>
-                                  <li>• Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)</li>
-                                  <li>• Gibson Explorer</li>
+                                  <li>
+                                    <TooltipItem label="Gibson THE SG (1979)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Gibson Sonex (1981)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Gibson Firebird Studio Special (2004)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Gibson Firebird Studio (2006)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Gibson Les Paul Traditional (2009)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)" />
+                                  </li>
+                                  <li>
+                                    <TooltipItem label="Gibson Explorer" />
+                                  </li>
                                 </ul>
                               </div>
                               <div>
                                 <p className="text-white font-medium text-sm mb-1">Ostatní elektrické:</p>
                                 <ul className="text-white/80 text-xs space-y-1.5">
                                   <li>• Harmony H14 (1984)</li>
-                                  <li>• Maybach Teleman</li>
+                                  <li>
+                                    <TooltipItem label="Maybach Teleman" />
+                                  </li>
                                   <li>• Wandre Cobra (1964)</li>
                                   <li>• Washburn WJ7S</li>
                                   <li>• Harley Benton Thinline</li>
@@ -2542,8 +3351,12 @@ export default function Page() {
                             <div>
                               <h4 className="text-base font-semibold text-white mb-3">{t.equipment.acousticGuitars}</h4>
                               <ul className="text-white/80 text-xs space-y-1.5">
-                                <li>• Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)</li>
-                                <li>• Fender FA-125 Nat</li>
+                                <li>
+                                  <TooltipItem label="Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)" />
+                                </li>
+                                <li>
+                                  <TooltipItem label="Fender FA-125 Nat" />
+                                </li>
                                 <li>• K Yairi 180</li>
                                 <li>• Cremona</li>
                               </ul>
@@ -2552,7 +3365,9 @@ export default function Page() {
                             <div>
                               <h4 className="text-base font-semibold text-white mb-3">{t.equipment.basses}</h4>
                               <ul className="text-white/80 text-xs space-y-1.5">
-                                <li>• Fender Precision (1993)</li>
+                                <li>
+                                  <TooltipItem label="Fender Precision (1993)" />
+                                </li>
                                 <li>• Squier short scale bass</li>
                               </ul>
                             </div>
@@ -2574,23 +3389,45 @@ export default function Page() {
                           <div>
                             <h4 className="text-base font-semibold text-white mb-3">{t.equipment.amps}</h4>
                             <ul className="text-white/80 text-xs space-y-1.5">
-                              <li>• Fender 64 Custom Deluxe Reverb</li>
-                              <li>• Marshall AFD 100</li>
-                              <li>• Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)</li>
-                              <li>• Mesa Boogie Dual Rectifier® Head, 3 Channels / 8 Modes, 100W</li>
-                              <li>• Tone King Imperial</li>
-                              <li>• Roland JC-22</li>
-                              <li>• Ampeg Reverbrocket R212</li>
-                              <li>• Ampeg GVT5</li>
-                              <li>• AMPEG V-4B Bass Head</li>
+                              <li>
+                                <TooltipItem label="Fender 64 Custom Deluxe Reverb" />
+                              </li>
+                              <li>
+                                <TooltipItem label="Marshall AFD 100" />
+                              </li>
+                              <li>
+                                <TooltipItem label="Mesa Boogie Rect-o-verb (upravená verze od Antonín Salva)" />
+                              </li>
+                              <li>
+                                <TooltipItem label="Mesa Boogie Dual Rectifier® Head, 3 Channels / 8 Modes, 100W" />
+                              </li>
+                              <li>
+                                <TooltipItem label="Tone King Imperial" />
+                              </li>
+                              <li>
+                                <TooltipItem label="Roland JC-22" />
+                              </li>
+                              <li>
+                                <TooltipItem label="Ampeg Reverbrocket R212" />
+                              </li>
+                              <li>
+                                <TooltipItem label="Ampeg GVT5" />
+                              </li>
+                              <li>
+                                <TooltipItem label="AMPEG V-4B Bass Head" />
+                              </li>
                             </ul>
                           </div>
                           <div>
                             <h4 className="text-base font-semibold text-white mb-3">{t.equipment.cabs}</h4>
                             <ul className="text-white/80 text-xs space-y-1.5">
-                              <li>• Marshall 1960 BX</li>
+                              <li>
+                                <TooltipItem label="Marshall 1960 BX" />
+                              </li>
                               <li>• Coffe custom CLASSIC 212</li>
-                              <li>• Ampeg SVT-112AV Cabinet</li>
+                              <li>
+                                <TooltipItem label="Ampeg SVT-112AV Cabinet" />
+                              </li>
                             </ul>
                           </div>
                         </div>
@@ -2616,7 +3453,7 @@ export default function Page() {
                               <p className="text-white/90">Dunlop Dimebag Cry Baby Wah</p>
                             </div>
                             <div className="bg-white/5 p-2 rounded">
-                              <p className="text-white/90">Dunlop Zakk Wylde Rotovibe (2x)</p>
+                              <p className="text-white/90">Dunlop Zakk Wylde Rotovibe</p>
                             </div>
                             <div className="bg-white/5 p-2 rounded">
                               <p className="text-white/90">G-LAB TBWP True Bypass Wah Pad (2x)</p>
@@ -2653,7 +3490,7 @@ export default function Page() {
                           </div>
                           <div className="space-y-1.5">
                             <div className="bg-white/5 p-2 rounded">
-                              <p className="text-white/90">Electro-Harmonix POG2 (červený, polyfonní oktáver)</p>
+                              <p className="text-white/90">Electro-Harmonix POG2 (polyfonní oktáver)</p>
                             </div>
                             <div className="bg-white/5 p-2 rounded">
                               <p className="text-white/90">Strymon Zuma (3x)</p>
@@ -2736,11 +3573,21 @@ export default function Page() {
                           {t.equipment.mics}
                         </h3>
                         <ul className="text-white/80 text-xs space-y-1.5">
-                          <li>• Shure SM 7 B</li>
-                          <li>• Shure Beta 58</li>
-                          <li>• SHURE SM57 </li>
-                          <li>• Sennheiser e 906</li>
-                          <li>• AKG D5 </li>
+                          <li>
+                            <TooltipItem label="Shure SM 7 B" />
+                          </li>
+                          <li>
+                            <TooltipItem label="Shure Beta 58" />
+                          </li>
+                          <li>
+                            <TooltipItem label="SHURE SM57" />
+                          </li>
+                          <li>
+                            <TooltipItem label="Sennheiser e 906" />
+                          </li>
+                          <li>
+                            <TooltipItem label="AKG D5" />
+                          </li>
                         </ul>
                       </CardContent>
                     </Card>
@@ -2766,13 +3613,13 @@ export default function Page() {
                     </Card>
                   </div>
 
-                  {/* VIDEO PRODUCTION */}
+                  {/* AUDIO/VIDEO PRODUCTION */}
                   <div className="mb-8">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                           <Camera className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
-                          VIDEO PRODUCTION
+                          AUDIO/VIDEO PRODUCTION
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
@@ -2789,8 +3636,13 @@ export default function Page() {
                           <div>
                             <h4 className="text-base font-semibold text-white mb-3">Software</h4>
                             <ul className="text-white/80 text-xs space-y-1.5">
+                              <li>• Logic Pro X</li>
                               <li>• Final Cut Pro X</li>
                               <li>• Affinity</li>
+                              <li>• Pixelmator Pro</li>
+                              <li>• Motion</li>
+                              <li>• Compressor</li>
+                              <li>• MainStage</li>
                             </ul>
                           </div>
                         </div>
@@ -3050,46 +3902,8 @@ export default function Page() {
                           <div className="bg-white/5 p-3 rounded">
                             <p className="text-white/90">Bezdrátové systémy Shure GLXD16+</p>
                           </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Workflow Recommendations */}
-                  <div className="mb-8">
-                    <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-                      <CardContent className="p-6">
-                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                          <Settings className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
-                          {t.equipment.workflow}
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div>
-                            <h4 className="text-base font-semibold text-white mb-2">Tracking Chain</h4>
-                            <ul className="text-white/80 text-xs space-y-1">
-                              <li>1. Neve 1073 / UA 610</li>
-                              <li>2. LA-2A / 1176</li>
-                              <li>3. Pultec EQP-1A</li>
-                              <li>4. Oxide / Studer</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <h4 className="text-base font-semibold text-white mb-2">Mixing Chain</h4>
-                            <ul className="text-white/80 text-xs space-y-1">
-                              <li>1. Cambridge / Helios EQ</li>
-                              <li>2. Distressor / dbx 160</li>
-                              <li>3. Verve Analog</li>
-                              <li>4. Lexicon 224 / Pure Plate</li>
-                            </ul>
-                          </div>
-                          <div>
-                            <h4 className="text-base font-semibold text-white mb-2">Mastering Chain</h4>
-                            <ul className="text-white/80 text-xs space-y-1">
-                              <li>1. Pultec Pro Legacy</li>
-                              <li>2. Precision Multi-Band</li>
-                              <li>3. Precision Maximizer</li>
-                              <li>4. A-Type Enhancer</li>
-                            </ul>
+                          <div className="bg-white/5 p-3 rounded">
+                            <p className="text-white/90">Dunlop Joe Perry Boneyard Slide - Medium Long</p>
                           </div>
                         </div>
                       </CardContent>
@@ -3101,15 +3915,15 @@ export default function Page() {
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-6">
                         <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                          <Server className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
+                          <Zap className={`h-6 w-6 ${isDarkMode ? "text-blue-400" : "text-secondary"}`} />
                           {t.equipment.infrastructure}
                         </h3>
                         <div>
                           <h4 className="text-sm font-semibold text-white mb-3">Infrastruktura</h4>
                           <ul className="text-white/80 text-xs space-y-2">
+                            <li>• Nezávislost na energetické síti</li>
                             <li>• Přepěťové ochrany</li>
                             <li>• Tesla nabíjecí stanice</li>
-                            <li>• {t.location.availabilityItems[6]}</li>
                             <li>• Security systém</li>
                           </ul>
                         </div>
@@ -3118,8 +3932,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ) : currentSection === "contact" ? (
-              <div className="pt-32 px-6 py-12">
+              <div
+                id="contact"
+                data-section-id="contact"
+                ref={contactSectionRef}
+                className="snap-start min-h-screen pt-32 px-6 py-12 pb-32"
+              >
                 <div className="max-w-4xl mx-auto">
                   <div className="text-center mb-12">
                     <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 text-balance">{t.contact.title}</h1>
@@ -3185,8 +4003,12 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            ) : (
-              <div ref={onasSectionRef} className="pt-32 px-6 py-12">
+              <div
+                id="about"
+                data-section-id="about"
+                ref={onasSectionRef}
+                className="snap-start min-h-screen pt-32 px-6 py-12 pb-32"
+              >
                 <div className="space-y-8">
                   {/* Section 1: Hero + History */}
                   <div className="max-w-6xl mx-auto">
@@ -3491,13 +4313,25 @@ export default function Page() {
                   </div>
                 </div>
               </div>
-            )}
+            </>
           </div>
         </div>
       </div>
 
+      <div
+        className={`fixed bottom-0 left-0 right-0 h-28 pointer-events-none z-40 transition-opacity duration-300 ${
+          currentSection === "home" || currentSection === "mlyn" || currentSection === "contact"
+            ? "opacity-0"
+            : "opacity-100"
+        }`}
+        style={{
+          background: "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 50%, transparent 100%)",
+        }}
+      />
+
       <footer className="fixed bottom-0 left-0 right-0 py-4 z-50">
-        <div className="flex justify-center items-center gap-8">
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex justify-center items-center gap-8">
           <a
             href="https://www.instagram.com/mlynnapile"
             target="_blank"
@@ -3531,6 +4365,14 @@ export default function Page() {
               <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
             </svg>
           </a>
+          </div>
+          <div
+            className={`text-[10px] text-white/50 transition-opacity duration-700 ${
+              currentSection === "contact" || showFooterNote ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            © 2026 | Design & Development: Ing. Jindřich Traxmandl
+          </div>
         </div>
       </footer>
     </div>
