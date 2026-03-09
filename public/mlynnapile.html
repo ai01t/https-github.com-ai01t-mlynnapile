@@ -501,10 +501,10 @@ footer{
 .rev{opacity:1;transform:none;}
 
 /* LANGUAGE */
-.en,.de{display:none;}
-body.en .cs,body.en .de{display:none;}
+body :is(.en,.de){display:none;}
+body.en :is(.cs,.de){display:none;}
 body.en .en{display:revert;}
-body.de .cs,body.de .en{display:none;}
+body.de :is(.cs,.en){display:none;}
 body.de .de{display:revert;}
 
 /* RESPONSIVE — layout */
