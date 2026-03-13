@@ -1086,11 +1086,57 @@ function clearFooterAutoHide(){
     clearTimeout(footerAutoHideTimer);
     footerAutoHideTimer=null;
   }
+  clearFooterAutoHideAnimation();
+}
+
+function clearFooterAutoHideAnimation(){
+  if(footerAutoHideAnimationFrame){
+    cancelAnimationFrame(footerAutoHideAnimationFrame);
+    footerAutoHideAnimationFrame=null;
+  }
+  if(footerAutoHideBehaviorRestore){
+    footerAutoHideBehaviorRestore.root.style.scrollBehavior=footerAutoHideBehaviorRestore.rootValue;
+    footerAutoHideBehaviorRestore.body.style.scrollBehavior=footerAutoHideBehaviorRestore.bodyValue;
+    footerAutoHideBehaviorRestore=null;
+  }
 }
 
 function getFooterHideTarget(){
   if(!footerEl)return 0;
   return Math.max(0,footerEl.offsetTop-window.innerHeight+2);
+}
+
+function animateFooterHideScroll(targetTop,duration=1850){
+  clearFooterAutoHideAnimation();
+  const startTop=window.scrollY;
+  const delta=targetTop-startTop;
+  if(Math.abs(delta)<2){
+    window.scrollTo(0,targetTop);
+    return;
+  }
+  const root=document.documentElement;
+  const body=document.body;
+  footerAutoHideBehaviorRestore={
+    root,
+    body,
+    rootValue:root.style.scrollBehavior,
+    bodyValue:body.style.scrollBehavior
+  };
+  root.style.scrollBehavior='auto';
+  body.style.scrollBehavior='auto';
+  const startTime=performance.now();
+  const ease=t=>1-Math.pow(1-t,3);
+  const step=now=>{
+    const progress=Math.min((now-startTime)/duration,1);
+    const eased=ease(progress);
+    window.scrollTo(0,Math.round(startTop+delta*eased));
+    if(progress<1){
+      footerAutoHideAnimationFrame=requestAnimationFrame(step);
+      return;
+    }
+    clearFooterAutoHideAnimation();
+  };
+  footerAutoHideAnimationFrame=requestAnimationFrame(step);
 }
 
 function handleFooterAutoHide(){
@@ -1107,9 +1153,9 @@ function handleFooterAutoHide(){
     const stillAtBottom=window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4;
     if(!stillAtBottom)return;
     footerAutoHideLocked=true;
-    window.scrollTo({top:getFooterHideTarget(),behavior:'smooth'});
-    window.setTimeout(()=>{footerAutoHideLocked=false;},1100);
-  },1350);
+    animateFooterHideScroll(getFooterHideTarget(),1850);
+    window.setTimeout(()=>{footerAutoHideLocked=false;},2100);
+  },3000);
 }
 
 /* BG VIDEOS */
@@ -1208,6 +1254,8 @@ let activePlaceHistoryYoutubeIframe=null;
 let activeResidencyChlebaYoutubeIframe=null;
 let footerAutoHideTimer=null;
 let footerAutoHideLocked=false;
+let footerAutoHideAnimationFrame=null;
+let footerAutoHideBehaviorRestore=null;
 const bgVideoProgressState=new WeakMap();
 const lbtn=document.getElementById('lbtn');
 const langSwitch=document.getElementById('langSwitch');

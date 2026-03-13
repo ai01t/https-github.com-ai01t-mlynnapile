@@ -292,7 +292,7 @@ const copyByLocale: Record<Locale, Copy> = {
         title: "The wartime period",
         paragraphs: [
           "After the Munich Agreement in October 1938, the Trhanov estate was not originally part of the annexed Sudetenland. However, Countess Schönbornová, owner of the estate, together with the administrator Bohman, decided to petition in Berlin for annexation to the Reich.",
-          "As early as 24 November 1938, the inhabitants of Trhanov, Pila and the neighbouring villages became citizens of the Greater German Reich. This period brought major changes to the life of the village and the mill.",
+          "As early as 24 November 1938, the inhabitants of Trhanov, Pila and the neighbouring villages became citizens of the Greater German Reich. This painful period affected the entire region.",
         ],
       },
       {
@@ -314,11 +314,10 @@ const copyByLocale: Record<Locale, Copy> = {
       },
       {
         year: "1992",
-        era: "Present day",
-        title: "The mill today",
+        era: "Turn of the millennium",
+        title: "Extensive reconstruction",
         paragraphs: [
-          "After its working life ended, the mill went through gradual adaptations for residential use. In 1992 it was thoroughly renovated and has stood in its present form ever since.",
-          "Although the water wheel no longer turns the millstones, the story of Mlýn na Pile remains alive as a reminder of centuries when the force of water powered life across the whole Chodsko region.",
+          "From 1990, the mill was taken over by new owners, the Svoboda couple, who invested enormous effort into it: an honest reconstruction, the purchase and reclamation of surrounding land, the construction of a masonry bread oven and further facilities.",
         ],
       },
       {
@@ -326,8 +325,9 @@ const copyByLocale: Record<Locale, Copy> = {
         era: "Present day",
         title: "A retreat studio at the mill",
         paragraphs: [
-          "In 2026, Mlýn na Pile is being fully developed as a retreat studio that connects recording, accommodation and focused creative work within the setting of the historic mill.",
-          "The site continues its long story through a new layer: where industry and milling once defined the place, it now offers time, calm, technology and support for music, film and other creative work.",
+          "The story of Mlýn na Pile does not end here. In 2026, a studio is created here, a new creative space that gives the historic walls new life and meaning.",
+          "After centuries in which the mill served metallurgy, milling and living, its newest chapter opens. The strength of the place and the calm of the local landscape create a unique environment for creative work.",
+          "Although the water wheel no longer grinds, the story of Mlýn na Pile remains alive.",
         ],
       },
     ],
@@ -425,7 +425,7 @@ const copyByLocale: Record<Locale, Copy> = {
         title: "Die Kriegsjahre",
         paragraphs: [
           "Nach dem Münchner Diktat im Oktober 1938 gehörte das Trhanover Gut zunächst nicht zu den annektierten Sudetengebieten. Die Gräfin Schönbornová, Eigentümerin des Gutes, beschloss jedoch zusammen mit dem Verwalter Bohman, in Berlin um den Anschluss an das Reich zu bitten.",
-          "Bereits am 24. November 1938 wurden die Bewohner von Trhanov, Pila und den umliegenden Dörfern zu Einwohnern des Großdeutschen Reiches. Diese Zeit brachte tiefgreifende Veränderungen für das Leben im Dorf und in der Mühle.",
+          "Bereits am 24. November 1938 wurden die Bewohner von Trhanov, Pila und den umliegenden Dörfern zu Einwohnern des Großdeutschen Reiches. Diese schmerzhafte Zeit traf die ganze Region.",
         ],
       },
       {
@@ -447,11 +447,10 @@ const copyByLocale: Record<Locale, Copy> = {
       },
       {
         year: "1992",
-        era: "Gegenwart",
-        title: "Die Mühle heute",
+        era: "Jahrtausendwende",
+        title: "Umfangreiche Rekonstruktion",
         paragraphs: [
-          "Nach dem Ende ihres Betriebs wurde die Mühle schrittweise zu Wohnzwecken umgebaut. Im Jahr 1992 wurde sie gründlich renoviert und steht seitdem in ihrer heutigen Gestalt.",
-          "Auch wenn das Wasserrad längst nicht mehr mahlt, lebt die Geschichte von Mlýn na Pile weiter – als Erinnerung an Jahrhunderte, in denen die Kraft des Wassers das Leben im ganzen Chodsko antrieb.",
+          "Ab 1990 wurde die Mühle von neuen Eigentümern übernommen, dem Ehepaar Svoboda, das enorme Anstrengungen in sie investierte: eine ehrliche Rekonstruktion, den Zukauf und die Rekultivierung der umliegenden Grundstücke, den Bau eines gemauerten Brotbackofens und weitere Einrichtungen.",
         ],
       },
       {
@@ -459,8 +458,9 @@ const copyByLocale: Record<Locale, Copy> = {
         era: "Gegenwart",
         title: "Retreat-Studio in der Mühle",
         paragraphs: [
-          "Im Jahr 2026 entwickelt sich Mlýn na Pile vollständig zu einem Retreat-Studio, das Recording, Aufenthalt und konzentrierte kreative Arbeit im Umfeld der historischen Mühle verbindet.",
-          "Der Ort schreibt damit seine lange Geschichte in einer neuen Form weiter: Wo früher Industrie und Mahlen das Leben bestimmten, bietet er heute Zeit, Ruhe, Technologie und Raum für Musik, Film und andere kreative Arbeit.",
+          "Die Geschichte von Mlýn na Pile endet nicht. Im Jahr 2026 entsteht hier ein Studio, ein neuer kreativer Raum, der den historischen Mauern neues Leben und neuen Sinn gibt.",
+          "Nach Jahrhunderten, in denen die Mühle der Hüttenarbeit, dem Mahlen und dem Wohnen diente, öffnet sich ihr neuestes Kapitel. Die Kraft des Ortes und die Ruhe der hiesigen Landschaft schaffen ein einzigartiges Umfeld für kreative Arbeit.",
+          "Obwohl das Wasserrad längst nicht mehr mahlt, bleibt die Geschichte von Mlýn na Pile lebendig.",
         ],
       },
     ],
