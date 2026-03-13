@@ -574,6 +574,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
 
   const activeItem = copy.entries[activeIndex]
   const timelinePositions = getTimelinePositions(copy.entries)
+  const isLastTimelineStep = activeIndex === copy.entries.length - 1
 
   const scrollToTimeline = (behavior: ScrollBehavior = "smooth") => {
     const timelineSection = timelineSectionRef.current
@@ -906,6 +907,9 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
           x-webkit-airplay="deny"
           disablePictureInPicture
           disableRemotePlayback
+          controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
+          tabIndex={-1}
+          aria-hidden="true"
         />
         <div className={styles.bgOverlay} />
       </div>
@@ -1135,7 +1139,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
             </div>
 
             {!embedded ? (
-              <div className={styles.timelineFooter}>
+              <div className={cx(styles.timelineFooter, isLastTimelineStep && styles.timelineFooterVisible)}>
                 <Link href={getLocaleHomePath(locale)} className={styles.footerLink}>
                   {copy.backToMill}
                 </Link>

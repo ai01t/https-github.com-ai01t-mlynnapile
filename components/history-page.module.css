@@ -8,7 +8,7 @@
   --border: rgba(213, 199, 175, 0.16);
   position: relative;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   background: var(--bg);
   color: var(--cream);
 }
@@ -64,6 +64,8 @@
   z-index: 1;
   opacity: 0;
   transition: opacity 0.7s ease;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .videoReady .bgLocalVideo {
@@ -72,6 +74,18 @@
 
 .localPlaying .bgLocalVideo {
   opacity: 0.72;
+}
+
+.bgLocalVideo::-webkit-media-controls,
+.bgLocalVideo::-webkit-media-controls-enclosure,
+.bgLocalVideo::-webkit-media-controls-panel,
+.bgLocalVideo::-webkit-media-controls-play-button,
+.bgLocalVideo::-webkit-media-controls-start-playback-button,
+.bgLocalVideo::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .bgOverlay {
@@ -427,6 +441,16 @@
   flex-wrap: wrap;
   gap: 14px;
   justify-content: center;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.timelineFooterVisible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .footerLink {
