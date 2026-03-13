@@ -24,14 +24,14 @@ body.video-booting::after{opacity:.018;}
 #prog{position:fixed;top:0;left:0;height:1px;background:var(--gold);z-index:200;width:0;transition:width .2s;}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:28px 52px;transition:padding .4s,background .4s,border-color .4s;border-bottom:1px solid rgba(201,185,154,.16);background:linear-gradient(to bottom,rgba(7,6,10,.72) 0%,rgba(7,6,10,.44) 70%,rgba(7,6,10,.18) 100%);backdrop-filter:blur(10px);}
-nav.scrolled{background:rgba(7,6,10,.9);backdrop-filter:blur(16px);padding:18px 52px;border-color:rgba(201,185,154,.22);}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:22px 52px;transition:padding .4s,background .4s,border-color .4s;border-bottom:1px solid rgba(201,185,154,.16);background:linear-gradient(to bottom,rgba(7,6,10,.72) 0%,rgba(7,6,10,.44) 70%,rgba(7,6,10,.18) 100%);backdrop-filter:blur(10px);}
+nav.scrolled{background:rgba(7,6,10,.9);backdrop-filter:blur(16px);padding:14px 52px;border-color:rgba(201,185,154,.22);}
 .nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;letter-spacing:.1em;color:var(--cream);text-decoration:none;}
 .nav-logo em{font-style:normal;color:var(--gold);}
-.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links{display:flex;gap:32px;list-style:none;}
 .nav-links a{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,235,226,.76);font-weight:400;text-shadow:0 1px 8px rgba(0,0,0,.35);text-decoration:none;transition:color .2s;}
 .nav-links a:hover,.nav-links a.active{color:var(--cream);}
-.nav-actions{display:flex;align-items:center;gap:16px;}
+.nav-actions{display:flex;align-items:center;gap:12px;}
 .btn-lang,.btn-pause,.btn-mode{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;background:none;border:0;color:var(--muted);padding:7px 16px;cursor:pointer;font-family:'Manrope',sans-serif;transition:color .2s,opacity .2s;}
 .btn-lang:hover,.btn-pause:hover,.btn-pause.on,.btn-mode:hover,.btn-mode.on{color:var(--gold);}
 .btn-pause{padding:7px 12px;}
@@ -136,6 +136,8 @@ section{position:relative;min-height:100svh;scroll-snap-align:start;overflow:hid
 .bg-video.pkg-on .bg-yt-layer{opacity:0;}
 .bg-video .history-yt-layer{z-index:3;opacity:0;transition:opacity .52s ease;will-change:opacity;filter:none;}
 .bg-video.history-on.history-yt-ready .history-yt-layer{opacity:1;}
+.bg-video .chleba-yt-layer{z-index:4;opacity:0;transition:opacity .52s ease;will-change:opacity;filter:none;}
+.bg-video.chleba-on.chleba-yt-ready .chleba-yt-layer{opacity:1;}
 .bg-video .history-overlay,.bg-video .history-overlay-fallback,
 .bg-video .chleba-overlay,.bg-video .chleba-overlay-fallback,
 .bg-video .pkg-overlay,.bg-video .pkg-overlay-fallback{z-index:3;}
@@ -176,7 +178,7 @@ body.pause-preview nav,
 body.pause-active nav,
 body.pause-preview section .content,
 body.pause-active section .content{filter:brightness(1.14);}
-.chleba-trigger{color:var(--gold-light);text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:rgba(212,170,114,.55);text-underline-offset:2px;}
+.chleba-trigger{color:var(--gold-light);text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:rgba(212,170,114,.55);text-underline-offset:2px;cursor:pointer;}
 .pkg-card[data-pkg]{cursor:pointer;}
 
 /* Keep gradient layer static (no ambient motion under video). */
@@ -230,8 +232,12 @@ body.pause-active section .content{filter:brightness(1.14);}
 .place-quote{margin-top:44px;border-left:2px solid var(--gold);padding-left:26px;font-family:'Cormorant Garamond',serif;font-size:1.22rem;font-style:italic;line-height:1.75;color:var(--stone);font-weight:300;}
 .place-right{padding-top:22px;position:relative;align-self:center;max-width:540px;margin-inline:auto;}
 .tl-label{font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:32px;display:block;}
-.tl-item{display:grid;grid-template-columns:72px 1fr;gap:20px;align-items:start;padding:18px 0;border-bottom:1px solid var(--border);transition:opacity .65s,transform .65s;}
+.tl-link-label{text-decoration:none;display:inline-block;}
+.tl-item{display:grid;grid-template-columns:72px 1fr;gap:20px;align-items:start;padding:18px 0;border-bottom:1px solid var(--border);transition:opacity .65s,transform .65s,color .2s,border-color .2s;text-decoration:none;color:inherit;}
 .tl-item.vis{opacity:1;transform:translateY(0);}
+.tl-item:hover{border-color:rgba(240,235,226,.28);}
+.tl-item:hover .tl-year{color:var(--gold-light);}
+.tl-item:hover .tl-text{color:rgba(240,235,226,.82);}
 .tl-year{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:300;color:var(--gold);}
 .tl-text{font-size:.8rem;line-height:1.72;color:rgba(240,235,226,.58);padding-top:3px;}
 .values-block{margin-top:44px;}
@@ -534,8 +540,8 @@ body.de .de{display:revert;}
 }
 /* RESPONSIVE — nav (hamburger when menu stops fitting) */
 @media(max-width:1100px){
-  nav{padding:20px 28px;}
-  nav.scrolled{padding:14px 28px;}
+  nav{padding:16px 28px;}
+  nav.scrolled{padding:12px 28px;}
   .nav-links{display:none;}
   .nav-actions{gap:8px;}
   .btn-lang,.btn-pause,.btn-mode{padding:7px 10px;}
@@ -581,6 +587,7 @@ body.de .de{display:revert;}
     <li><a href="#equipment" data-s="equipment"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></a></li>
     <li><a href="#residency" data-s="residency"><span class="cs">Ubytování</span><span class="en">Accommodation</span><span class="de">Unterkunft</span></a></li>
     <li><a href="#location" data-s="location"><span class="cs">Lokalita</span><span class="en">Location</span><span class="de">Lage</span></a></li>
+    <li><a href="/en/history" data-s="history"><span class="cs">Historie</span><span class="en">History</span><span class="de">Geschichte</span></a></li>
     <li><a href="#contact" data-s="contact"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></a></li>
   </ul>
   <div class="nav-actions">
@@ -632,6 +639,7 @@ body.de .de{display:revert;}
   <a href="#equipment" onclick="closeMobileNav()"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></a>
   <a href="#residency" onclick="closeMobileNav()"><span class="cs">Ubytování</span><span class="en">Accommodation</span><span class="de">Unterkunft</span></a>
   <a href="#location" onclick="closeMobileNav()"><span class="cs">Lokalita</span><span class="en">Location</span><span class="de">Lage</span></a>
+  <a href="/en/history" onclick="closeMobileNav()"><span class="cs">Historie</span><span class="en">History</span><span class="de">Geschichte</span></a>
   <a href="#contact" onclick="closeMobileNav()"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></a>
 </div>
 
@@ -701,17 +709,17 @@ body.de .de{display:revert;}
           <li><span class="cs">Stylové ubytování — 4 pokoje, zimní zahrada 63 m², finská sauna.</span><span class="en">Stylish accommodation — 4 rooms, winter garden 63 m², Finnish sauna.</span><span class="de">Stilvolle Unterkunft — 4 Zimmer, Wintergarten 63 m², finnische Sauna.</span></li>
           <li><span class="cs">Moderní technologie — Universal Audio Apollo x8p Studio+, 76 UAD pluginů, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="en">Modern technology — Universal Audio Apollo x8p Studio+, 76 UAD plugins, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="de">Moderne Technologie — Universal Audio Apollo x8p Studio+, 76 UAD-Plugins, Logic Pro X, Apple Pro Display XDR 6K.</span></li>
           <li><span class="cs">Vlastní zdroj elektrické energie pro zajištění provozu studia.</span><span class="en">Own power source ensuring uninterrupted studio operation.</span><span class="de">Eigene Stromquelle für einen unterbrechungsfreien Studiobetrieb.</span></li>
-          <li><span class="cs">Zázemí, zabezpečené prostory, výborné snídaně s domácím chlebem z pece</span><span class="en">Facilities, secured spaces, and excellent breakfasts with homemade oven-baked bread.</span><span class="de">Komfort, gesicherte Räume und ausgezeichnetes Frühstück mit hausgebackenem Ofenbrot.</span></li>
+          <li><span class="cs">Zázemí, zabezpečené prostory, výborné snídaně s <a class="chleba-trigger" href="/en/chleba">domácím chlebem</a> z pece</span><span class="en">Facilities, secured spaces, and excellent breakfasts with <a class="chleba-trigger" href="/en/chleba">homemade oven-baked bread</a>.</span><span class="de">Komfort, gesicherte Räume und ausgezeichnetes Frühstück mit <a class="chleba-trigger" href="/en/chleba">hausgebackenem Ofenbrot</a>.</span></li>
         </ul>
       </div>
     </div>
     <div class="place-right">
-      <span class="tl-label cs">Historická osa</span><span class="tl-label en">Historical Timeline</span><span class="tl-label de">Historische Zeitleiste</span>
+      <a class="tl-link-label" href="/en/history#timeline"><span class="tl-label cs">Historická osa</span><span class="tl-label en">Historical Timeline</span><span class="tl-label de">Historische Zeitleiste</span></a>
       <div>
-        <div class="tl-item"><span class="tl-year">1653</span><span class="tl-text cs">Založení rybníků, vysoké pece a hamru.</span><span class="tl-text en">Founding of ponds, blast furnace and hammer.</span><span class="tl-text de">Gründung der Teiche, des Hochofens und des Hammerwerks.</span></div>
-        <div class="tl-item"><span class="tl-year">1810</span><span class="tl-text cs">Mlýn s pilou poháněnou vodní silou.</span><span class="tl-text en">Mill with water-powered sawmill.</span><span class="tl-text de">Mühle mit wasserbetriebener Säge.</span></div>
-        <div class="tl-item"><span class="tl-year">1990</span><span class="tl-text cs">Pila vzniká jako část obce Trhanov v okrese Domažlice.</span><span class="tl-text en">Sawmill established as part of Trhanov village, Domažlice district.</span><span class="tl-text de">Pila entsteht als Teil der Gemeinde Trhanov im Bezirk Domažlice.</span></div>
-        <div class="tl-item"><span class="tl-year">2026</span><span class="tl-text cs">Transformace na hudební a kreativní retreat studio.</span><span class="tl-text en">Transformation into a music and creative retreat studio.</span><span class="tl-text de">Umwandlung in ein Musik- und Kreativ-Retreat-Studio.</span></div>
+        <a class="tl-item" href="/en/history?year=1653#timeline"><span class="tl-year">1653</span><span class="tl-text cs">Založení rybníků, vysoké pece a hamru.</span><span class="tl-text en">Founding of ponds, blast furnace and hammer.</span><span class="tl-text de">Gründung der Teiche, des Hochofens und des Hammerwerks.</span></a>
+        <a class="tl-item" href="/en/history?year=1810#timeline"><span class="tl-year">1810</span><span class="tl-text cs">Mlýn s pilou poháněnou vodní silou.</span><span class="tl-text en">Mill with water-powered sawmill.</span><span class="tl-text de">Mühle mit wasserbetriebener Säge.</span></a>
+        <a class="tl-item" href="/en/history?year=1990#timeline"><span class="tl-year">1990</span><span class="tl-text cs">Pila vzniká jako část obce Trhanov v okrese Domažlice.</span><span class="tl-text en">Sawmill established as part of Trhanov village, Domažlice district.</span><span class="tl-text de">Pila entsteht als Teil der Gemeinde Trhanov im Bezirk Domažlice.</span></a>
+        <a class="tl-item" href="/en/history?year=2026#timeline"><span class="tl-year">2026</span><span class="tl-text cs">Transformace na hudební a kreativní retreat studio.</span><span class="tl-text en">Transformation into a music and creative retreat studio.</span><span class="tl-text de">Umwandlung in ein Musik- und Kreativ-Retreat-Studio.</span></a>
       </div>
     </div>
   </div>
@@ -909,14 +917,14 @@ body.de .de{display:revert;}
     <div class="big-n">6500<span style="font-size:.35em;opacity:.5">m²</span></div>
     <span class="sec-label cs">Nahrávání + Ubytování</span><span class="sec-label en">Recording + Accommodation</span><span class="sec-label de">Recording + Unterkunft</span>
     <h2 class="sec-title rev"><span class="cs">Čtyři<br><em>balíčky</em></span><span class="en">Four<br><em>packages</em></span><span class="de">Vier<br><em>Pakete</em></span></h2>
-    <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <span class="chleba-trigger">chléb</span> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-    <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <span class="chleba-trigger">bread</span>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-    <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <span class="chleba-trigger">Brot</span> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
+    <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <a class="chleba-trigger" href="/en/chleba">chléb</a> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+    <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <a class="chleba-trigger" href="/en/chleba">bread</a>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+    <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <a class="chleba-trigger" href="/en/chleba">Brot</a> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
     <div class="pkg-grid rev rev-d2">
       <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Into the Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
       <div class="pkg-card" data-pkg="underwater"><div class="pkg-num">02</div><div class="pkg-name">Underwater</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Sauna</span><span class="en">#Main studio #Sauna</span><span class="de">#Hauptstudio #Sauna</span></span><p class="pkg-text cs">Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka. Skromné ale stylové a útulné přespání přímo v prostorách bývalé mlýnice.</p><p class="pkg-text en">Closest to the music, sleeping literally beneath the studio floor and below the pond level. Modest but stylish accommodation in the former mill.</p><p class="pkg-text de">Ganz nah an der Musik: Schlafen direkt unter dem Studioboden und unter der Teichoberfläche. Schlicht, aber stilvoll und gemütlich in der ehemaligen Mühle.</p></div>
       <div class="pkg-card" data-pkg="otherside"><div class="pkg-num">03</div><div class="pkg-name">Otherside</div><span class="pkg-tags"><span class="cs">#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV</span><span class="en">#Control room #Traditional Czech room #Two rooms #TV</span><span class="de">#Regieraum #Traditionelle Stube #Zwei Zimmer #TV</span></span><p class="pkg-text cs">Pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple + ubytování ve staročeské světnici. Vhodné i pro nehudební kreativní aktivity.</p><p class="pkg-text en">For post-production: 6K Apple Pro XDR with full Apple peripherals + accommodation in a traditional Czech room. Suitable for non-musical creative activities too.</p><p class="pkg-text de">Für Postproduktion: 6K Apple Pro XDR inkl. kompletter Apple-Peripherie + Unterkunft in einer traditionellen tschechischen Stube. Auch für nicht-musikalische Kreativarbeit geeignet.</p></div>
-      <div class="pkg-card" data-pkg="fuel"><div class="pkg-num">04</div><div class="pkg-name">Fuel</div><span class="pkg-tags"><span class="cs">#VIP balíček</span><span class="en">#VIP package</span><span class="de">#VIP-Paket</span></span><p class="pkg-text cs">VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady a zapůjčení Tesla Model X. Profi catering, roztopení velké pece, pizza i <span class="chleba-trigger">chleba</span> z pece.</p><p class="pkg-text en">VIP rental of the entire property with full service, including the winter garden and Tesla Model X. Professional catering, pizza and <span class="chleba-trigger">bread</span> from the stone oven.</p><p class="pkg-text de">VIP-Miete der gesamten Anlage mit Full-Service inklusive Wintergarten und Tesla Model X. Professionelles Catering, Pizza und <span class="chleba-trigger">Brot</span> aus dem Steinofen.</p></div>
+      <div class="pkg-card" data-pkg="fuel"><div class="pkg-num">04</div><div class="pkg-name">Fuel</div><span class="pkg-tags"><span class="cs">#VIP balíček</span><span class="en">#VIP package</span><span class="de">#VIP-Paket</span></span><p class="pkg-text cs">VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady a zapůjčení Tesla Model X. Profi catering, roztopení velké pece, pizza i <a class="chleba-trigger" href="/en/chleba">chleba</a> z pece.</p><p class="pkg-text en">VIP rental of the entire property with full service, including the winter garden and Tesla Model X. Professional catering, pizza and <a class="chleba-trigger" href="/en/chleba">bread</a> from the stone oven.</p><p class="pkg-text de">VIP-Miete der gesamten Anlage mit Full-Service inklusive Wintergarten und Tesla Model X. Professionelles Catering, Pizza und <a class="chleba-trigger" href="/en/chleba">Brot</a> aus dem Steinofen.</p></div>
     </div>
     <div class="rules-box rules-list-tight rev rev-d3">
       <span class="rules-label"><span class="cs">DŮLEŽITÉ</span><span class="en">IMPORTANT</span><span class="de">WICHTIG</span></span>
@@ -978,7 +986,7 @@ body.de .de{display:revert;}
               </div>
               <div class="founder-block">
                 <h3 class="founder-name">Andrea Kohoutová</h3>
-                <p class="founder-text"><span class="cs">Andrea je zpěvačka, baskytaristka kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, archeoložka a aktuálně hlavní pekařka mlýna :-). Stará se o provoz a zázemí mlýna, kde peče skvělý domácí chléb - důležitý bonus pro naše hosty.</span><span class="en">Andrea is a singer and bassist in <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, an archaeologist, and currently the head baker at the mill :-). She takes care of mill operations and facilities, where she bakes great homemade bread — an important bonus for our guests.</span><span class="de">Andrea ist Sängerin und Bassistin der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, Archäologin und aktuell Hauptbäckerin der Mühle :-). Sie kümmert sich um den Betrieb und das Umfeld der Mühle, wo sie hervorragendes hausgemachtes Brot backt — ein wichtiger Bonus für unsere Gäste.</span></p>
+                <p class="founder-text"><span class="cs">Andrea je zpěvačka, baskytaristka kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, archeoložka a aktuálně hlavní pekařka mlýna :-). Stará se o provoz a zázemí mlýna, kde peče skvělý <a class="chleba-trigger" href="/en/chleba">domácí chléb</a> - důležitý bonus pro naše hosty.</span><span class="en">Andrea is a singer and bassist in <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, an archaeologist, and currently the head baker at the mill :-). She takes care of mill operations and facilities, where she bakes great <a class="chleba-trigger" href="/en/chleba">homemade bread</a> — an important bonus for our guests.</span><span class="de">Andrea ist Sängerin und Bassistin der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, Archäologin und aktuell Hauptbäckerin der Mühle :-). Sie kümmert sich um den Betrieb und das Umfeld der Mühle, wo sie hervorragendes <a class="chleba-trigger" href="/en/chleba">hausgemachtes Brot</a> backt — ein wichtiger Bonus für unsere Gäste.</span></p>
               </div>
             </div>
           </div>
@@ -1033,8 +1041,40 @@ window.addEventListener('scroll',()=>{
   }
   dots.forEach(d=>d.classList.toggle('active',d.dataset.t===cur));
   links.forEach(a=>a.classList.toggle('active',a.dataset.s===cur));
+  handleFooterAutoHide();
 });
 dots.forEach(d=>d.addEventListener('click',()=>document.getElementById(d.dataset.t).scrollIntoView({behavior:'smooth'})));
+
+function clearFooterAutoHide(){
+  if(footerAutoHideTimer){
+    clearTimeout(footerAutoHideTimer);
+    footerAutoHideTimer=null;
+  }
+}
+
+function getFooterHideTarget(){
+  if(!footerEl)return 0;
+  return Math.max(0,footerEl.offsetTop-window.innerHeight+2);
+}
+
+function handleFooterAutoHide(){
+  if(!footerEl)return;
+  const atBottom=window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4;
+  if(!atBottom){
+    clearFooterAutoHide();
+    footerAutoHideLocked=false;
+    return;
+  }
+  if(footerAutoHideTimer||footerAutoHideLocked)return;
+  footerAutoHideTimer=window.setTimeout(()=>{
+    footerAutoHideTimer=null;
+    const stillAtBottom=window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-4;
+    if(!stillAtBottom)return;
+    footerAutoHideLocked=true;
+    window.scrollTo({top:getFooterHideTarget(),behavior:'smooth'});
+    window.setTimeout(()=>{footerAutoHideLocked=false;},1100);
+  },1350);
+}
 
 /* BG VIDEOS */
 const bgVideoFrames=[...document.querySelectorAll('.bg-video video')];
@@ -1085,6 +1125,7 @@ const BG_BOOT_SEEK_BY_SECTION={hero:.12};
 const BG_YT_SOURCE_IDS={VDj9aKHnpcw_hq:'VDj9aKHnpcw'};
 const BG_YT_DESKTOP_MIN_WIDTH=960;
 const PLACE_HISTORY_YT_ID='M4QapdIvjkM';
+const RESIDENCY_CHLEBA_YT_ID='NYqybmh85G4';
 const BG_VARIANTS={
   hero:{
     day:{horizontal:'VDj9aKHnpcw_hq',vertical:'M4QkWhz7CDo'},
@@ -1128,11 +1169,15 @@ let activeBgYoutubeSectionId='';
 let activeBgYoutubeVideoId='';
 let activeBgYoutubeIframe=null;
 let activePlaceHistoryYoutubeIframe=null;
+let activeResidencyChlebaYoutubeIframe=null;
+let footerAutoHideTimer=null;
+let footerAutoHideLocked=false;
 const bgVideoProgressState=new WeakMap();
 const lbtn=document.getElementById('lbtn');
 const langSwitch=document.getElementById('langSwitch');
 const langMenu=document.getElementById('langMenu');
 const langOptions=[...document.querySelectorAll('.lang-option')];
+const footerEl=document.querySelector('footer');
 const LANG_STORAGE_KEY='mlyn_lang';
 const SUPPORTED_LANGS=['cs','en','de'];
 const EQUIPMENT_EMBED_BASE='/equipment-table/studio-equipment.html';
@@ -1199,7 +1244,7 @@ const RES_FAQ_ITEMS_BY_LANG={
     {q:'Poskytujete ubytování i samostatně?',a:'Ubytování je součástí pobytu ve studiu během kreativní práce.'},
     {q:'Jak se k nám dostanu?',a:'Autem: přímý přístup, soukromé parkování. Vlakem: 10 min pěšky ze stanice Trhanov. Letecky: 1h 45min z letiště Praha, 2h z letiště Mnichov, pick-up služba k dispozici.'},
     {q:'Mohu přijet i sám, nebo je akce určena pouze pro kapely a týmy?',a:'Jasně - pro sólo umělce je k dispozici i looper Plethora X5 od TC Electronic. ;-)'},
-    {q:'Máte catering, nebo si musím řešit jídlo sám?',aHtml:'Součástí pobytu je vždy snídaně nebo brunch a vždy domácí kváskový <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">chleba</a>, který pečeme ve venkovní peci. Flexibilní možnosti stravování: In-house catering s lokálními ingrediencemi, pizza pec pro společné večeře (až 8 pizz), plně vybavená kuchyň pro vlastní vaření, rozvoz z místních restaurací z Domažlic.'},
+    {q:'Máte catering, nebo si musím řešit jídlo sám?',aHtml:'Součástí pobytu je vždy snídaně nebo brunch a vždy domácí kváskový <a href=\"/en/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">chleba</a>, který pečeme ve venkovní peci. Flexibilní možnosti stravování: In-house catering s lokálními ingrediencemi, pizza pec pro společné večeře (až 8 pizz), plně vybavená kuchyň pro vlastní vaření, rozvoz z místních restaurací z Domažlic.'},
     {q:'Mluvíte anglicky/německy?',a:'Vícejazyčný tým: Čeština - rodilí mluvčí, Angličtina - plynule (Jindřich, Andrea, tech tým), Němčina - konverzační úroveň (regionální výhoda), překladatelské služby pro smlouvy.'},
     {q:'Mohu přijet s dětmi i se psem?',a:'Ano, všichni jsou vítáni. Jsou zde omalovánky, knížky, hračky na zahradu i na ven. Pejsci jsou také vítáni, ale pozor - pozemek není komplet oplocen.'},
     {q:'Během pobytu jsme si u vás oblíbili konkrétní kytarový rig. Je možné zapůjčení na dohrávky ve studiu, kde dokončujeme materiál k desce?',a:'Ano, samozřejmě. Po předchozí domluvě je možné vybraný kytarový chain zapůjčit i na následné dohrávky. (Pozn. pouze nástroje,které vlastníme, zbytek je na dohodě.)'}
@@ -1213,7 +1258,7 @@ const RES_FAQ_ITEMS_BY_LANG={
     {q:'Do you provide accommodation separately?',a:'Accommodation is part of the studio stay during creative work.'},
     {q:'How do I get there?',a:'By car: direct access, private parking. By train: 10 minutes on foot from Trhanov station. By plane: 1h 45m from Prague Airport, 2h from Munich Airport, pick-up service available.'},
     {q:'Can I come alone, or is this only for bands and teams?',a:'Sure. For solo artists we also have the TC Electronic Plethora X5 looper available. ;-)'},
-    {q:'Do you provide catering, or do I need to arrange my own food?',aHtml:'Every stay includes breakfast or brunch and always homemade sourdough <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">bread</a> baked in our outdoor oven. Flexible dining options include in-house catering with local ingredients, pizza oven dinners, a fully equipped kitchen, and delivery from Domažlice restaurants.'},
+    {q:'Do you provide catering, or do I need to arrange my own food?',aHtml:'Every stay includes breakfast or brunch and always homemade sourdough <a href=\"/en/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">bread</a> baked in our outdoor oven. Flexible dining options include in-house catering with local ingredients, pizza oven dinners, a fully equipped kitchen, and delivery from Domažlice restaurants.'},
     {q:'Do you speak English/German?',a:'Multilingual team: Czech native speakers, fluent English (Jindřich, Andrea, tech team), conversational German (regional advantage), and translation support for contracts.'},
     {q:'Can I come with children and a dog?',a:'Yes, everyone is welcome. We have coloring books, toys, and outdoor games. Dogs are welcome too, but note that the land is not fully fenced.'},
     {q:'During our stay we loved a specific guitar rig. Can we borrow it for overdubs elsewhere?',a:'Yes. By prior arrangement, selected guitar chains can be borrowed for follow-up overdubs. (Only instruments we own; the rest by agreement.)'}
@@ -1227,7 +1272,7 @@ const RES_FAQ_ITEMS_BY_LANG={
     {q:'Bieten Sie Unterkunft auch separat an?',a:'Die Unterkunft ist Teil des Studioaufenthalts während der kreativen Arbeit.'},
     {q:'Wie komme ich zu Ihnen?',a:'Mit dem Auto: direkte Zufahrt, privater Parkplatz. Mit dem Zug: 10 Minuten zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h45 von Prag, 2h von München, Abholservice verfügbar.'},
     {q:'Kann ich auch alleine kommen oder ist das nur für Bands und Teams?',a:'Natürlich. Für Solo-Künstler steht auch der Plethora X5 Looper von TC Electronic bereit. ;-)'},
-    {q:'Gibt es Catering oder muss ich mich selbst um Essen kümmern?',aHtml:'Zum Aufenthalt gehört immer Frühstück oder Brunch sowie hausgebackenes Sauerteig-<a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">Brot</a> aus dem Ofen. Flexible Verpflegung: Inhouse-Catering mit lokalen Zutaten, Pizzaofen, voll ausgestattete Küche und Lieferdienste aus Domažlice.'},
+    {q:'Gibt es Catering oder muss ich mich selbst um Essen kümmern?',aHtml:'Zum Aufenthalt gehört immer Frühstück oder Brunch sowie hausgebackenes Sauerteig-<a href=\"/en/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">Brot</a> aus dem Ofen. Flexible Verpflegung: Inhouse-Catering mit lokalen Zutaten, Pizzaofen, voll ausgestattete Küche und Lieferdienste aus Domažlice.'},
     {q:'Sprechen Sie Englisch/Deutsch?',a:'Mehrsprachiges Team: Tschechisch (Muttersprache), fließend Englisch (Jindřich, Andrea, Tech-Team), Deutsch auf Konversationsniveau und Übersetzungshilfe für Verträge.'},
     {q:'Kann ich mit Kindern und Hund kommen?',a:'Ja, alle sind willkommen. Es gibt Malbücher, Bücher und Spielzeug. Hunde sind ebenfalls willkommen, das Gelände ist jedoch nicht vollständig eingezäunt.'},
     {q:'Wir mochten bei unserem Aufenthalt ein bestimmtes Gitarren-Rig. Ist Ausleihe für Overdubs möglich?',a:'Ja, nach vorheriger Absprache können ausgewählte Gitarren-Chains auch für spätere Overdubs ausgeliehen werden. (Nur Instrumente in unserem Besitz, der Rest nach Vereinbarung.)'}
@@ -1548,6 +1593,7 @@ function showResidencyChlebaOverlay(){
   if(residencyChlebaHideTimer){clearTimeout(residencyChlebaHideTimer);residencyChlebaHideTimer=null;}
   residencyBgWrap.classList.add('chleba-on');
   playResidencyChlebaVideo();
+  ensureResidencyChlebaYoutube();
   syncBgYoutubeVisibility();
 }
 
@@ -1556,8 +1602,10 @@ function hideResidencyChlebaOverlay(force=false){
   if(!force&&chlebaTriggers.some((el)=>el.matches(':hover')))return;
   residencyBgWrap.classList.remove('chleba-on');
   residencyBgWrap.classList.remove('chleba-blocked');
+  residencyBgWrap.classList.remove('chleba-yt-ready');
   if(residencyChlebaHideTimer)clearTimeout(residencyChlebaHideTimer);
   residencyChlebaHideTimer=setTimeout(()=>{try{residencyChlebaVideo?.pause();}catch(e){}},520);
+  clearResidencyChlebaYoutube();
   if(currentSectionId==='residency'&&!pauseAllVideos){
     const activeVideo=bgFrameBySectionId.get('residency');
     if(activeVideo)playBgVideo(activeVideo);
@@ -1589,6 +1637,7 @@ function showResidencyPackageOverlay(key){
   residencyPkgKeys.forEach((k)=>residencyBgWrap.classList.toggle(`pkg-${k}`,k===key));
   residencyPkgKeys.forEach((k)=>{if(k!==key){try{residencyPkgVideos[k]?.pause();}catch(e){}}});
   playResidencyPackageVideo(key);
+  ensureResidencyChlebaYoutube();
   syncBgYoutubeVisibility();
 }
 
@@ -1603,6 +1652,7 @@ function hideResidencyPackageOverlay(force=false){
   residencyPkgHideTimer=setTimeout(()=>{
     residencyPkgKeys.forEach((k)=>{try{residencyPkgVideos[k]?.pause();}catch(e){}});
   },420);
+  ensureResidencyChlebaYoutube();
   if(currentSectionId==='residency'&&!pauseAllVideos){
     const activeVideo=bgFrameBySectionId.get('residency');
     if(activeVideo)playBgVideo(activeVideo);
@@ -1707,7 +1757,7 @@ function resolveSectionYouTubeId(sectionId){
   return/^[A-Za-z0-9_-]{11}$/.test(youtubeId)?youtubeId:null;
 }
 
-function buildBgYoutubeUrl(videoId){
+function buildBgYoutubeUrl(videoId,quality='hd1080'){
   const params=new URLSearchParams({
     autoplay:'1',
     mute:'1',
@@ -1720,7 +1770,7 @@ function buildBgYoutubeUrl(videoId){
     iv_load_policy:'3',
     disablekb:'1',
     fs:'0',
-    vq:'hd1080'
+    vq:quality
   });
   return`https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
 }
@@ -1755,6 +1805,45 @@ function ensurePlaceHistoryYoutube(){
   });
   placeBgWrap?.appendChild(iframe);
   activePlaceHistoryYoutubeIframe=iframe;
+}
+
+function clearResidencyChlebaYoutube(){
+  if(activeResidencyChlebaYoutubeIframe){
+    activeResidencyChlebaYoutubeIframe.remove();
+  }
+  activeResidencyChlebaYoutubeIframe=null;
+  residencyBgWrap?.classList.remove('chleba-yt-ready');
+}
+
+function ensureResidencyChlebaYoutube(){
+  if(
+    !supportsBgYoutubeEnhancement()||
+    pauseAllVideos||
+    document.hidden||
+    currentSectionId!=='residency'||
+    !residencyBgWrap?.classList.contains('chleba-on')||
+    residencyBgWrap?.classList.contains('pkg-on')
+  ){
+    clearResidencyChlebaYoutube();
+    return;
+  }
+  if(activeResidencyChlebaYoutubeIframe?.isConnected)return;
+  const iframe=document.createElement('iframe');
+  iframe.className='chleba-yt-layer';
+  iframe.src=buildBgYoutubeUrl(RESIDENCY_CHLEBA_YT_ID,'highres');
+  iframe.allow='autoplay; encrypted-media; picture-in-picture';
+  iframe.loading='eager';
+  iframe.referrerPolicy='strict-origin-when-cross-origin';
+  iframe.title='';
+  iframe.tabIndex=-1;
+  iframe.setAttribute('aria-hidden','true');
+  iframe.setAttribute('allowfullscreen','');
+  iframe.addEventListener('load',()=>{
+    if(activeResidencyChlebaYoutubeIframe!==iframe)return;
+    residencyBgWrap?.classList.add('chleba-yt-ready');
+  });
+  residencyBgWrap?.appendChild(iframe);
+  activeResidencyChlebaYoutubeIframe=iframe;
 }
 
 function clearActiveBgYoutube(){
@@ -2065,6 +2154,7 @@ function syncBackgroundVideos(){
     }
   }
   ensurePlaceHistoryYoutube();
+  ensureResidencyChlebaYoutube();
   ensureActiveBgYoutube();
   syncBgYoutubeVisibility();
 }
@@ -2074,6 +2164,7 @@ function kickBgVideos(){
   syncBackgroundVideos();
   forceResumeActiveVideo();
   ensurePlaceHistoryYoutube();
+  ensureResidencyChlebaYoutube();
   ensureActiveBgYoutube();
   syncBgYoutubeVisibility();
 }
@@ -2157,16 +2248,21 @@ window.addEventListener('pageshow',kickBgVideos);
 window.addEventListener('resize',()=>{
   updateAllBackgroundVariants();
   ensurePlaceHistoryYoutube();
+  ensureResidencyChlebaYoutube();
   ensureActiveBgYoutube();
+  handleFooterAutoHide();
 });
 window.addEventListener('orientationchange',()=>setTimeout(()=>{
   updateAllBackgroundVariants(true);
   ensurePlaceHistoryYoutube();
+  ensureResidencyChlebaYoutube();
   ensureActiveBgYoutube();
+  handleFooterAutoHide();
 },120));
 window.addEventListener('load',()=>{
   updateAllBackgroundVariants(true);
   kickBgVideos();
+  handleFooterAutoHide();
   setTimeout(kickBgVideos,900);
   setTimeout(kickBgVideos,2200);
 });

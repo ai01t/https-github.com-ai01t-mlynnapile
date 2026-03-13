@@ -2,6 +2,7 @@
 import React from "react"
 
 import { useState, useEffect, useRef, useCallback } from "react"
+import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -266,15 +267,16 @@ const translations = {
       title: "O nás",
       subtitle: "Kde se rodí inspirace v srdci Evropy",
       tagline: "Vintage duše, moderní technologie",
-      history: "Historie mlýna",
+      history: "Historická osa",
+      historyPageCta: "Celá historie mlýna",
       historyTimeline: [
-        { year: "1653", desc: "Založení rybníků a postavení vysoké pece a hamru" },
-        { year: "1810", desc: "Mlýn s pilou poháněnou vodní silou" },
+        { year: "1653", desc: "Založení rybníků, vysoké pece a hamru." },
+        { year: "1810", desc: "Mlýn s pilou poháněnou vodní silou." },
         {
           year: "1990",
-          desc: "Pila vznikla k 24. listopadu 1990 jako část obce Trhanov v okrese Domažlice",
+          desc: "Pila vzniká jako část obce Trhanov v okrese Domažlice.",
         },
-        { year: "2024", desc: "Transformace na prémiové kreativní retreat studio" },
+        { year: "2026", desc: "Transformace na hudební a kreativní retreat studio." },
       ],
       accommodation: "Ubytování",
       accommodationRooms: "Prostory pro ubytování",
@@ -647,15 +649,16 @@ const translations = {
       title: "About Us",
       subtitle: "Where inspiration is born in the heart of Europe",
       tagline: "Vintage soul, modern technology",
-      history: "History of the mill",
+      history: "Historical timeline",
+      historyPageCta: "Full history of the mill",
       historyTimeline: [
-        { year: "1653", desc: "Founding of ponds and construction of the blast furnace and hammer mill" },
-        { year: "1810", desc: "Mill with a sawmill powered by water force" },
+        { year: "1653", desc: "Founding of ponds, the blast furnace and the hammer mill." },
+        { year: "1810", desc: "Mill with a sawmill powered by water force." },
         {
           year: "1990",
-          desc: "Pila was established on November 24, 1990, as part of the municipality of Trhanov in the Domažlice district",
+          desc: "Pila becomes part of the municipality of Trhanov in the Domažlice district.",
         },
-        { year: "2024", desc: "Transformation into a premium creative retreat studio" },
+        { year: "2026", desc: "Transformation into a music and creative retreat studio." },
       ],
       accommodation: "Accommodation",
       accommodationRooms: "Accommodation Spaces",
@@ -1041,15 +1044,16 @@ const translations = {
       title: "Über uns",
       subtitle: "Wo Inspiration im Herzen Europas geboren wird",
       tagline: "Vintage-Seele, moderne Technologie",
-      history: "Geschichte der Mühle",
+      history: "Historische Zeitleiste",
+      historyPageCta: "Die ganze Geschichte der Mühle",
       historyTimeline: [
-        { year: "1653", desc: "Anlage von Teichen und Bau des Hochofens und Hammerwerks" },
-        { year: "1810", desc: "Mühle mit Sägewerk, angetrieben durch Wasserkraft" },
+        { year: "1653", desc: "Anlage der Teiche, des Hochofens und des Hammerwerks." },
+        { year: "1810", desc: "Mühle mit Sägewerk, angetrieben durch Wasserkraft." },
         {
           year: "1990",
-          desc: "Pila entstand am 24. November 1990 als Teil der Gemeinde Trhanov im Bezirk Domažlice",
+          desc: "Pila wird Teil der Gemeinde Trhanov im Bezirk Domažlice.",
         },
-        { year: "2024", desc: "Transformation in ein Premium-Kreativ-Retreat-Studio" },
+        { year: "2026", desc: "Transformation in ein Musik- und Kreativ-Retreat-Studio." },
       ],
       accommodation: "Unterkunft",
       accommodationRooms: "Unterkunftsmöglichkeiten",
@@ -1239,6 +1243,8 @@ export default function Page() {
   const t = translations[language as keyof typeof translations]
   const currentLang = language // Added to fix lint error
   const isHorizontal = windowWidth >= 768
+  const historyPageHref = language === "cs" ? "/historie" : language === "en" ? "/en/history" : "/de/geschichte"
+  const getHistoryYearHref = (year: string) => `${historyPageHref}?year=${year}#timeline`
   const equipmentTooltips: Record<
     "cs" | "en" | "de",
     Record<
@@ -2357,11 +2363,11 @@ export default function Page() {
 
       <div className="relative z-10 min-h-screen flex flex-col pb-24">
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 p-6 transition-all duration-300 bg-transparent">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-3 relative">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-transparent px-[22px] md:px-10 py-[9px]">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-2 md:gap-0 relative min-h-[34px]">
             {/* Main menu - centered */}
             <div className="flex justify-center">
-              <div className="flex flex-wrap justify-center space-x-3 md:space-x-6 text-white/90 px-3 md:px-6 py-3 rounded-lg text-[10px] md:text-xs">
+              <div className="flex flex-wrap items-center justify-center space-x-3 md:space-x-6 text-white/90 px-3 md:px-0 py-0 rounded-lg text-[10px] md:text-[10px] tracking-[0.2em] uppercase">
                 <button onClick={() => handleSectionChange("mlyn")} className="hover:text-white transition-colors">
                   {t.nav.mlyn}
                 </button>
@@ -4023,14 +4029,28 @@ export default function Page() {
                         <h3 className="text-xl font-bold text-white mb-8 text-center">{t.about.history}</h3>
                         <div className="space-y-4 text-white/80">
                           {t.about.historyTimeline.map((item, index) => (
-                            <div
+                            <Link
                               key={index}
-                              className={`border-l-2 pl-4 ${isDarkMode ? "border-blue-400" : "border-secondary"}`}
+                              href={getHistoryYearHref(item.year)}
+                              className={`block border-l-2 pl-4 transition-colors hover:text-white ${isDarkMode ? "border-blue-400 hover:border-blue-300" : "border-secondary hover:border-white/70"}`}
                             >
                               <p className="font-semibold text-white">{item.year}</p>
                               <p className="text-xs">{item.desc}</p>
-                            </div>
+                            </Link>
                           ))}
+                        </div>
+                        <div className="mt-8 flex justify-center">
+                          <Link
+                            href={historyPageHref}
+                            className={`inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-[11px] uppercase tracking-[0.22em] transition-colors ${
+                              isDarkMode
+                                ? "border-blue-300/40 text-blue-100 hover:border-blue-200 hover:text-white"
+                                : "border-white/25 text-white/80 hover:border-white/45 hover:text-white"
+                            }`}
+                          >
+                            {t.about.historyPageCta}
+                            <ChevronRight className="h-3.5 w-3.5" />
+                          </Link>
                         </div>
                       </CardContent>
                     </Card>
