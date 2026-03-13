@@ -81,7 +81,7 @@ body.night-mode .mode-icon-moon{display:inline-block;}
 .dot.active{background:var(--gold);height:20px;border-radius:2px;}
 
 /* SECTIONS */
-section{position:relative;min-height:100svh;scroll-snap-align:start;overflow:hidden;display:flex;align-items:center;}
+section{position:relative;min-height:100svh;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;display:flex;align-items:center;}
 .content{position:relative;z-index:10;width:100%;max-width:1360px;margin:0 auto;padding:120px 60px 80px;}
 
 /* ═══════════════════════
@@ -384,6 +384,9 @@ body.pause-active section .content{filter:brightness(1.14);}
 
 /* CONTACT */
 #contact .content{display:block;padding-top:130px;position:static;}
+#history{padding:0;}
+#history .history-embed-shell{position:absolute;inset:0;background:#07060a;overflow:hidden;}
+#history .history-embed-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#07060a;pointer-events:none;}
 #contact .contact-text-fx{
   position:absolute;
   left:0;
@@ -555,11 +558,11 @@ body.de .de{display:revert;}
 /* HAMBURGER */
 .hamburger{display:none;align-items:center;justify-content:center;min-width:64px;height:34px;background:rgba(7,6,10,.34);border:1px solid rgba(201,185,154,.26);cursor:pointer;padding:0 12px;}
 .hamburger-label{display:block;font-size:.54rem;letter-spacing:.2em;color:rgba(240,235,226,.78);font-family:'Manrope',sans-serif;line-height:1;}
-.mobile-nav{display:none;position:fixed;inset:0;z-index:99;background:rgba(7,6,10,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:36px;}
+.mobile-nav{display:none;position:fixed;inset:0;z-index:99;background:rgba(7,6,10,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:24px;}
 .mobile-nav.open{display:flex;}
 .nav-compact .nav-links{display:none;}
 .nav-compact .hamburger{display:flex;}
-.mobile-nav a{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--cream);text-decoration:none;letter-spacing:.04em;transition:color .2s;}
+.mobile-nav a{font-family:'Manrope',sans-serif;font-size:.82rem;font-weight:400;color:var(--cream);text-decoration:none;letter-spacing:.22em;text-transform:uppercase;transition:color .2s,opacity .2s;}
 .mobile-nav a:hover{color:var(--gold);}
 .mobile-nav .close-nav{position:absolute;top:28px;right:28px;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--border);padding:8px 18px;cursor:pointer;font-family:'Manrope',sans-serif;}
 @media(max-width:600px){
@@ -587,7 +590,7 @@ body.de .de{display:revert;}
     <li><a href="#equipment" data-s="equipment"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></a></li>
     <li><a href="#residency" data-s="residency"><span class="cs">Ubytování</span><span class="en">Accommodation</span><span class="de">Unterkunft</span></a></li>
     <li><a href="#location" data-s="location"><span class="cs">Lokalita</span><span class="en">Location</span><span class="de">Lage</span></a></li>
-    <li><a href="/en/history" data-s="history"><span class="cs">Historie</span><span class="en">History</span><span class="de">Geschichte</span></a></li>
+    <li><a href="#history" data-s="history"><span class="cs">Historie</span><span class="en">History</span><span class="de">Geschichte</span></a></li>
     <li><a href="#contact" data-s="contact"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></a></li>
   </ul>
   <div class="nav-actions">
@@ -639,7 +642,7 @@ body.de .de{display:revert;}
   <a href="#equipment" onclick="closeMobileNav()"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></a>
   <a href="#residency" onclick="closeMobileNav()"><span class="cs">Ubytování</span><span class="en">Accommodation</span><span class="de">Unterkunft</span></a>
   <a href="#location" onclick="closeMobileNav()"><span class="cs">Lokalita</span><span class="en">Location</span><span class="de">Lage</span></a>
-  <a href="/en/history" onclick="closeMobileNav()"><span class="cs">Historie</span><span class="en">History</span><span class="de">Geschichte</span></a>
+  <a href="#history" onclick="closeMobileNav()"><span class="cs">Historie</span><span class="en">History</span><span class="de">Geschichte</span></a>
   <a href="#contact" onclick="closeMobileNav()"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></a>
 </div>
 
@@ -650,6 +653,7 @@ body.de .de{display:revert;}
   <div class="dot" data-t="equipment"></div>
   <div class="dot" data-t="residency"></div>
   <div class="dot" data-t="location"></div>
+  <div class="dot" data-t="history"></div>
   <div class="dot" data-t="contact"></div>
 </div>
 
@@ -884,6 +888,13 @@ body.de .de{display:revert;}
   </div>
 </section>
 
+<!-- ══ HISTORY ══ -->
+<section id="history">
+  <div class="history-embed-shell">
+    <iframe class="history-embed-frame" src="/en/history?embed=1" title="History of Mlýn na Pile" loading="lazy" tabindex="-1"></iframe>
+  </div>
+</section>
+
 <!-- ══ RESIDENCY ══ -->
 <section id="residency">
   <div class="bg-css"></div>
@@ -1015,10 +1026,10 @@ body.de .de{display:revert;}
 <script>
 /* SCROLL / PROGRESS / NAV */
 const nav=document.getElementById('nav'),prog=document.getElementById('prog');
+const residencySectionDom=document.getElementById('residency');
 const locationSectionDom=document.getElementById('location');
-const contactSectionDom=document.getElementById('contact');
-if(locationSectionDom&&contactSectionDom&&locationSectionDom.nextElementSibling!==contactSectionDom){
-  locationSectionDom.parentNode.insertBefore(locationSectionDom,contactSectionDom);
+if(locationSectionDom&&residencySectionDom&&residencySectionDom.nextElementSibling!==locationSectionDom){
+  locationSectionDom.parentNode.insertBefore(residencySectionDom,locationSectionDom);
 }
 const secs=[...document.querySelectorAll('section')];
 const dots=[...document.querySelectorAll('.dot')];
@@ -1044,6 +1055,31 @@ window.addEventListener('scroll',()=>{
   handleFooterAutoHide();
 });
 dots.forEach(d=>d.addEventListener('click',()=>document.getElementById(d.dataset.t).scrollIntoView({behavior:'smooth'})));
+
+function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
+  const section=document.getElementById(sectionId);
+  if(!section)return false;
+  const performScroll=()=>{
+    currentSectionId=sectionId;
+    if(sectionId!=='place')hidePlaceHistoryOverlay(true);
+    if(sectionId!=='residency'){
+      hideResidencyChlebaOverlay(true);
+      hideResidencyPackageOverlay(true);
+      closeInlineResidencyVideo(true);
+    }
+    syncBackgroundVideos();
+    const nextUrl=sectionId==='hero'?window.location.pathname:`${window.location.pathname}#${sectionId}`;
+    window.history.replaceState({},'',nextUrl);
+    window.scrollTo({top:section.offsetTop,behavior});
+  };
+  if(closeMenu){
+    closeMobileNav();
+    requestAnimationFrame(()=>requestAnimationFrame(performScroll));
+  }else{
+    performScroll();
+  }
+  return true;
+}
 
 function clearFooterAutoHide(){
   if(footerAutoHideTimer){
@@ -2406,6 +2442,16 @@ function updateNavCompactState(){
 }
 if(hbtn)hbtn.addEventListener('click',()=>mobileNav?.classList.toggle('open'));
 if(closeNav)closeNav.addEventListener('click',closeMobileNav);
+document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .nav-logo[href^="#"]').forEach((anchor)=>{
+  anchor.addEventListener('click',(event)=>{
+    const href=anchor.getAttribute('href')||'';
+    const sectionId=href.slice(1);
+    if(!sectionId)return;
+    const isMobileLink=anchor.closest('.mobile-nav');
+    const handled=scrollToSection(sectionId,{behavior:'smooth',closeMenu:Boolean(isMobileLink)});
+    if(handled)event.preventDefault();
+  });
+});
 window.addEventListener('resize',updateNavCompactState);
 window.addEventListener('orientationchange',()=>setTimeout(updateNavCompactState,80));
 window.addEventListener('load',updateNavCompactState);

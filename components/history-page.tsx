@@ -151,7 +151,6 @@ const copyByLocale: Record<Locale, Copy> = {
         paragraphs: [
           "Od roku 1899 převzal mlýn Jan Ludvík (*1864, Pec pod Čerchovem), člen cechu mlynářů ze starobylého rodu usídleného v Domažlicích. Kromě mletí se rodina věnovala i polnímu hospodářství.",
           "Mlelo se „bez chasy“ – bez najatých pomocníků. Mlýn obsluhovali mlynáři sami s rodinnými příslušníky. V záznamech z roku 1930 je uveden František Ludvík s jedním kolem na svrchní vodu na Trhanovském potoce.",
-          "Mlýn fungoval až do roku 1952, kdy byl definitivně odstaven. Skončila tak éra mlynářství, která zde trvala téměř století a půl.",
         ],
       },
       {
@@ -161,6 +160,14 @@ const copyByLocale: Record<Locale, Copy> = {
         paragraphs: [
           "Když po mnichovském diktátu v říjnu 1938 byly zabrány Sudety, trhanovské panství původně nebylo jejich součástí. Hraběnka Schönbornová, majitelka panství, se však se správcem Bohmanem rozhodla žádat v Berlíně o připojení k Říši.",
           "Již 24. listopadu 1938 se obyvatelé Trhanova, Pily i okolních obcí stali obyvateli Velkoněmecké říše. Toto bolestné období zasáhlo celý kraj.",
+        ],
+      },
+      {
+        year: "1952",
+        era: "Polovina 20. století",
+        title: "Konec mletí",
+        paragraphs: [
+          "Mlýn na Pile je definitivně odstaven. Vodní kolo se zastavilo a skončila tak éra mlynářství, která zde trvala téměř století a půl – od stavby mlýna kolem roku 1810 přes generace Pavlíků a Ludvíků.",
         ],
       },
       {
@@ -174,11 +181,10 @@ const copyByLocale: Record<Locale, Copy> = {
       },
       {
         year: "1992",
-        era: "Současnost",
-        title: "Mlýn dnes",
+        era: "Přelom tisíciletí",
+        title: "Rozsáhlá rekonstrukce",
         paragraphs: [
-          "Po ukončení provozu prošel mlýn postupnými přestavbami pro účely bydlení. V roce 1992 byl důkladně zrekonstruován a od té doby stojí ve své současné podobě.",
-          "Přestože vodní kolo už dávno nemele, příběh Mlýna na Pile zůstává živý.",
+          "Od roku 1990 se mlýna ujali noví majitelé - manželé Svobodovi, kteří do něj vložili obrovské úsilí – poctivá rekonstrukce, příkup a rekultivace okolních pozemků, stavba zděné pece na chleba i dalšího zázemí.",
         ],
       },
       {
@@ -188,6 +194,7 @@ const copyByLocale: Record<Locale, Copy> = {
         paragraphs: [
           "Příběh Mlýna na Pile nekončí. V roce 2026 zde vzniká studio – nový tvůrčí prostor, který dává historickým zdem nový život a smysl.",
           "Po staletích, kdy mlýn sloužil hutnictví, mlynářství a bydlení, se otevírá jeho dosud nejnovější kapitola. Síla místa a klid zdejší krajiny vytvářejí jedinečné prostředí pro tvůrčí práci.",
+          "Přestože vodní kolo už dávno nemele, příběh Mlýna na Pile zůstává živý.",
         ],
       },
     ],
@@ -277,7 +284,6 @@ const copyByLocale: Record<Locale, Copy> = {
         paragraphs: [
           "From 1899 the mill was taken over by Jan Ludvík (*1864, Pec pod Čerchovem), a member of the millers' guild from an old family settled in Domažlice. Besides milling, the family also worked the surrounding fields.",
           "Grinding was done 'without hired hands' – without outside workers. The mill was operated by the millers themselves together with family members. Records from 1930 mention František Ludvík and one overshot water wheel on the Trhanov stream.",
-          "The mill operated until 1952, when it was finally shut down. That ended an era of milling that had lasted here for nearly a century and a half.",
         ],
       },
       {
@@ -287,6 +293,14 @@ const copyByLocale: Record<Locale, Copy> = {
         paragraphs: [
           "After the Munich Agreement in October 1938, the Trhanov estate was not originally part of the annexed Sudetenland. However, Countess Schönbornová, owner of the estate, together with the administrator Bohman, decided to petition in Berlin for annexation to the Reich.",
           "As early as 24 November 1938, the inhabitants of Trhanov, Pila and the neighbouring villages became citizens of the Greater German Reich. This period brought major changes to the life of the village and the mill.",
+        ],
+      },
+      {
+        year: "1952",
+        era: "Mid-20th century",
+        title: "End of milling",
+        paragraphs: [
+          "Mlýn na Pile was definitively shut down. The water wheel stopped, and with it ended the milling era that had lasted here for nearly a century and a half, from the construction of the mill around 1810 through the generations of the Pavlík and Ludvík families.",
         ],
       },
       {
@@ -403,7 +417,6 @@ const copyByLocale: Record<Locale, Copy> = {
         paragraphs: [
           "Ab 1899 übernahm Jan Ludvík (*1864, Pec pod Čerchovem) die Mühle, Mitglied der Müllerzunft aus einem alten, in Domažlice ansässigen Geschlecht. Neben dem Mahlen betrieb die Familie auch Landwirtschaft.",
           "Gemahlen wurde „ohne Gesinde“, also ohne angestellte Hilfskräfte. Die Mühle bedienten die Müller selbst mit ihren Familienangehörigen. In Aufzeichnungen von 1930 wird František Ludvík mit einem oberschlächtigen Wasserrad am Trhanover Bach erwähnt.",
-          "Die Mühle arbeitete bis 1952, als sie endgültig stillgelegt wurde. Damit endete eine Müllertradition, die hier fast eineinhalb Jahrhunderte bestanden hatte.",
         ],
       },
       {
@@ -413,6 +426,14 @@ const copyByLocale: Record<Locale, Copy> = {
         paragraphs: [
           "Nach dem Münchner Diktat im Oktober 1938 gehörte das Trhanover Gut zunächst nicht zu den annektierten Sudetengebieten. Die Gräfin Schönbornová, Eigentümerin des Gutes, beschloss jedoch zusammen mit dem Verwalter Bohman, in Berlin um den Anschluss an das Reich zu bitten.",
           "Bereits am 24. November 1938 wurden die Bewohner von Trhanov, Pila und den umliegenden Dörfern zu Einwohnern des Großdeutschen Reiches. Diese Zeit brachte tiefgreifende Veränderungen für das Leben im Dorf und in der Mühle.",
+        ],
+      },
+      {
+        year: "1952",
+        era: "Mitte des 20. Jahrhunderts",
+        title: "Ende des Mahlens",
+        paragraphs: [
+          "Die Mühle na Pile wurde endgültig stillgelegt. Das Wasserrad kam zum Stillstand, und damit endete eine Müllertradition, die hier fast eineinhalb Jahrhunderte lang bestanden hatte – vom Bau der Mühle um 1810 bis zu den Generationen der Familien Pavlík und Ludvík.",
         ],
       },
       {
@@ -495,10 +516,50 @@ function cx(...values: Array<string | false | null | undefined>) {
   return values.filter(Boolean).join(" ")
 }
 
+const TIMELINE_INSET_PX = 24
+const MIN_TIMELINE_GAP_RATIO = 0.045
+const TIMELINE_POSITION_BLEND = 0.62
+
+function getTimelinePositions(entries: HistoryEntry[]) {
+  if (entries.length <= 1) {
+    return [0]
+  }
+
+  const years = entries.map((entry) => Number.parseInt(entry.year, 10))
+  if (years.some((year) => Number.isNaN(year))) {
+    return entries.map((_, index) => index / (entries.length - 1))
+  }
+
+  const minYear = years[0]
+  const maxYear = years[years.length - 1]
+  const totalSpan = maxYear - minYear
+
+  if (totalSpan <= 0) {
+    return entries.map((_, index) => index / (entries.length - 1))
+  }
+
+  const positions = years.map((year, index) => {
+    const rawPosition = (year - minYear) / totalSpan
+    const evenPosition = index / (entries.length - 1)
+    return rawPosition * TIMELINE_POSITION_BLEND + evenPosition * (1 - TIMELINE_POSITION_BLEND)
+  })
+  for (let index = 1; index < positions.length; index += 1) {
+    positions[index] = Math.max(positions[index], positions[index - 1] + MIN_TIMELINE_GAP_RATIO)
+  }
+
+  const lastPosition = positions[positions.length - 1]
+  if (lastPosition > 1) {
+    return positions.map((position) => position / lastPosition)
+  }
+
+  return positions
+}
+
 export default function HistoryPage({ locale }: { locale: Locale }) {
   const copy = copyByLocale[locale]
   const router = useRouter()
   const searchParams = useSearchParams()
+  const embedded = searchParams.get("embed") === "1"
   const localVideoRef = useRef<HTMLVideoElement | null>(null)
   const langSwitchRef = useRef<HTMLDivElement | null>(null)
   const timelineSectionRef = useRef<HTMLElement | null>(null)
@@ -512,6 +573,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const [localPlaying, setLocalPlaying] = useState(false)
 
   const activeItem = copy.entries[activeIndex]
+  const timelinePositions = getTimelinePositions(copy.entries)
 
   const scrollToTimeline = (behavior: ScrollBehavior = "smooth") => {
     const timelineSection = timelineSectionRef.current
@@ -519,8 +581,8 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       return
     }
 
-    const nav = document.querySelector(`.${styles.nav}`) as HTMLElement | null
-    const navOffset = nav ? nav.getBoundingClientRect().height + 12 : 84
+    const nav = embedded ? null : (document.querySelector(`.${styles.nav}`) as HTMLElement | null)
+    const navOffset = nav ? nav.getBoundingClientRect().height + 12 : embedded ? 24 : 84
     const targetTop = timelineSection.getBoundingClientRect().top + window.scrollY - navOffset
 
     window.scrollTo({
@@ -809,7 +871,8 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     { href: getSectionHref(locale, "contact"), label: copy.contact },
   ]
 
-  const progressWidth = copy.entries.length > 1 ? `calc((100% - 36px) * ${activeIndex / (copy.entries.length - 1)})` : "0px"
+  const activeProgress = timelinePositions[activeIndex] ?? 0
+  const progressWidth = `calc((100% - ${TIMELINE_INSET_PX * 2}px) * ${activeProgress})`
 
   const handleTimelineJump = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault()
@@ -821,6 +884,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     <main
       className={cx(
         styles.historyPage,
+        embedded && styles.embedded,
         manrope.className,
         nightMode && styles.nightMode,
         videoReady && styles.videoReady,
@@ -846,124 +910,128 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         <div className={styles.bgOverlay} />
       </div>
 
-      <nav className={cx(styles.nav, navScrolled && styles.navScrolled)}>
-        <Link href={getLocaleHomePath(locale)} className={cx(styles.navLogo, cormorant.className)}>
-          Mlýn <em>na Pile</em>
-        </Link>
+      {!embedded ? (
+        <>
+          <nav className={cx(styles.nav, navScrolled && styles.navScrolled)}>
+            <Link href={getLocaleHomePath(locale)} className={cx(styles.navLogo, cormorant.className)}>
+              Mlýn <em>na Pile</em>
+            </Link>
 
-        <ul className={styles.navLinks}>
-          {navItems.map((item) => (
-            <li key={item.href}>
-              <a href={item.href}>{item.label}</a>
-            </li>
-          ))}
-        </ul>
-
-        <div className={styles.navActions}>
-          <button
-            className={cx(styles.btnPause, paused && styles.btnPauseOn)}
-            type="button"
-            aria-pressed={paused}
-            aria-label={paused ? copy.resume : copy.pause}
-            title={paused ? copy.resume : copy.pause}
-            onClick={() => setPaused((current) => !current)}
-          >
-            <span className={styles.pauseIcon} aria-hidden="true">
-              {paused ? "▶" : "II"}
-            </span>
-          </button>
-
-          <button
-            className={cx(styles.btnMode, nightMode && styles.btnModeOn)}
-            type="button"
-            aria-pressed={nightMode}
-            aria-label={nightMode ? copy.switchToDay : copy.switchToNight}
-            title={nightMode ? copy.switchToDay : copy.switchToNight}
-            onClick={() => setNightMode((current) => !current)}
-          >
-            {!nightMode ? (
-              <span className={styles.modeIcon} aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                  <circle cx="12" cy="12" r="4.2" />
-                  <path d="M12 2.5v3" />
-                  <path d="M12 18.5v3" />
-                  <path d="M2.5 12h3" />
-                  <path d="M18.5 12h3" />
-                  <path d="M5.2 5.2l2.1 2.1" />
-                  <path d="M16.7 16.7l2.1 2.1" />
-                  <path d="M18.8 5.2l-2.1 2.1" />
-                  <path d="M7.3 16.7l-2.1 2.1" />
-                </svg>
-              </span>
-            ) : (
-              <span className={styles.modeIcon} aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a7 7 0 1 0 9.7 9.7Z" />
-                  <path fill="currentColor" d="M18.3 4.2l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z" />
-                </svg>
-              </span>
-            )}
-          </button>
-
-          <div ref={langSwitchRef} className={cx(styles.langSwitch, langOpen && styles.langSwitchOpen)}>
-            <button
-              className={styles.btnLang}
-              type="button"
-              aria-label={copy.selectLanguage}
-              aria-haspopup="true"
-              aria-expanded={langOpen}
-              onClick={() => setLangOpen((current) => !current)}
-            >
-              <span className={styles.langIcon} aria-hidden="true">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M3 12h18" />
-                  <path d="M12 3a14 14 0 0 1 0 18" />
-                  <path d="M12 3a14 14 0 0 0 0 18" />
-                </svg>
-              </span>
-              <span className={styles.langCaret} aria-hidden="true">
-                ▾
-              </span>
-            </button>
-            <div className={styles.langMenu} role="menu" aria-label={copy.selectLanguage}>
-              {(["cs", "en", "de"] as const).map((itemLocale) => (
-                <button
-                  key={itemLocale}
-                  type="button"
-                  className={cx(styles.langOption, locale === itemLocale && styles.langOptionActive)}
-                  role="menuitem"
-                  onClick={() => navigateToLocale(itemLocale)}
-                >
-                  {localeNames[itemLocale]}
-                </button>
+            <ul className={styles.navLinks}>
+              {navItems.map((item) => (
+                <li key={item.href}>
+                  <a href={item.href}>{item.label}</a>
+                </li>
               ))}
+            </ul>
+
+            <div className={styles.navActions}>
+              <button
+                className={cx(styles.btnPause, paused && styles.btnPauseOn)}
+                type="button"
+                aria-pressed={paused}
+                aria-label={paused ? copy.resume : copy.pause}
+                title={paused ? copy.resume : copy.pause}
+                onClick={() => setPaused((current) => !current)}
+              >
+                <span className={styles.pauseIcon} aria-hidden="true">
+                  {paused ? "▶" : "II"}
+                </span>
+              </button>
+
+              <button
+                className={cx(styles.btnMode, nightMode && styles.btnModeOn)}
+                type="button"
+                aria-pressed={nightMode}
+                aria-label={nightMode ? copy.switchToDay : copy.switchToNight}
+                title={nightMode ? copy.switchToDay : copy.switchToNight}
+                onClick={() => setNightMode((current) => !current)}
+              >
+                {!nightMode ? (
+                  <span className={styles.modeIcon} aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                      <circle cx="12" cy="12" r="4.2" />
+                      <path d="M12 2.5v3" />
+                      <path d="M12 18.5v3" />
+                      <path d="M2.5 12h3" />
+                      <path d="M18.5 12h3" />
+                      <path d="M5.2 5.2l2.1 2.1" />
+                      <path d="M16.7 16.7l2.1 2.1" />
+                      <path d="M18.8 5.2l-2.1 2.1" />
+                      <path d="M7.3 16.7l-2.1 2.1" />
+                    </svg>
+                  </span>
+                ) : (
+                  <span className={styles.modeIcon} aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path fill="currentColor" d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a7 7 0 1 0 9.7 9.7Z" />
+                      <path fill="currentColor" d="M18.3 4.2l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+
+              <div ref={langSwitchRef} className={cx(styles.langSwitch, langOpen && styles.langSwitchOpen)}>
+                <button
+                  className={styles.btnLang}
+                  type="button"
+                  aria-label={copy.selectLanguage}
+                  aria-haspopup="true"
+                  aria-expanded={langOpen}
+                  onClick={() => setLangOpen((current) => !current)}
+                >
+                  <span className={styles.langIcon} aria-hidden="true">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.8"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="12" r="9" />
+                      <path d="M3 12h18" />
+                      <path d="M12 3a14 14 0 0 1 0 18" />
+                      <path d="M12 3a14 14 0 0 0 0 18" />
+                    </svg>
+                  </span>
+                  <span className={styles.langCaret} aria-hidden="true">
+                    ▾
+                  </span>
+                </button>
+                <div className={styles.langMenu} role="menu" aria-label={copy.selectLanguage}>
+                  {(["cs", "en", "de"] as const).map((itemLocale) => (
+                    <button
+                      key={itemLocale}
+                      type="button"
+                      className={cx(styles.langOption, locale === itemLocale && styles.langOptionActive)}
+                      role="menuitem"
+                      onClick={() => navigateToLocale(itemLocale)}
+                    >
+                      {localeNames[itemLocale]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <button className={styles.hamburger} type="button" aria-label={copy.menu} onClick={() => setMobileNavOpen(true)}>
+                <span className={styles.hamburgerLabel}>{copy.menu.toUpperCase()}</span>
+              </button>
             </div>
+          </nav>
+
+          <div className={cx(styles.mobileNav, mobileNavOpen && styles.mobileNavOpen)}>
+            <button className={styles.closeNav} type="button" onClick={() => setMobileNavOpen(false)}>
+              {copy.close}
+            </button>
+            {navItems.map((item) => (
+              <a key={item.href} href={item.href} className={cormorant.className} onClick={() => setMobileNavOpen(false)}>
+                {item.label}
+              </a>
+            ))}
           </div>
-
-          <button className={styles.hamburger} type="button" aria-label={copy.menu} onClick={() => setMobileNavOpen(true)}>
-            <span className={styles.hamburgerLabel}>{copy.menu.toUpperCase()}</span>
-          </button>
-        </div>
-      </nav>
-
-      <div className={cx(styles.mobileNav, mobileNavOpen && styles.mobileNavOpen)}>
-        <button className={styles.closeNav} type="button" onClick={() => setMobileNavOpen(false)}>
-          {copy.close}
-        </button>
-        {navItems.map((item) => (
-          <a key={item.href} href={item.href} className={cormorant.className} onClick={() => setMobileNavOpen(false)}>
-            {item.label}
-          </a>
-        ))}
-      </div>
+        </>
+      ) : null}
 
       <section className={styles.hero}>
         <div className={styles.heroInner}>
@@ -1009,6 +1077,9 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
                   aria-pressed={index === activeIndex}
                   aria-label={`${entry.year} ${entry.title}`}
                   onClick={() => setActiveIndex(index)}
+                  style={{
+                    left: `calc(${TIMELINE_INSET_PX}px + (100% - ${TIMELINE_INSET_PX * 2}px) * ${timelinePositions[index] ?? 0})`,
+                  }}
                 >
                   <span className={styles.pointYear}>{entry.year}</span>
                   <span className={styles.pointDot} />
@@ -1063,11 +1134,13 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
               </button>
             </div>
 
-            <div className={styles.timelineFooter}>
-              <Link href={getLocaleHomePath(locale)} className={styles.footerLink}>
-                {copy.backToMill}
-              </Link>
-            </div>
+            {!embedded ? (
+              <div className={styles.timelineFooter}>
+                <Link href={getLocaleHomePath(locale)} className={styles.footerLink}>
+                  {copy.backToMill}
+                </Link>
+              </div>
+            ) : null}
           </article>
         </div>
       </section>

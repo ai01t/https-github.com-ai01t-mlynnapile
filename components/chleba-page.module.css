@@ -293,11 +293,13 @@
 }
 
 .mobileNav a {
-  font-size: 2.2rem;
-  font-weight: 300;
+  font-family: "Manrope", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 400;
   color: var(--cream);
   text-decoration: none;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   transition: color 0.2s;
 }
 
