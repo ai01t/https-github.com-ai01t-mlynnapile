@@ -7,13 +7,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="/videos/bg/VDj9aKHnpcw_hq.jpg?v=20260309c" fetchpriority="high">
-<link rel="preload" as="video" href="/videos/bg/VDj9aKHnpcw_hq.mp4?v=20260309c" type="video/mp4">
+<link id="heroPosterPreload" rel="preload" as="image" href="/videos/bg/VDj9aKHnpcw_hq.jpg?v=20260309c" fetchpriority="high">
+<link id="heroVideoPreload" rel="preload" as="video" href="/videos/bg/VDj9aKHnpcw_hq.mp4?v=20260309c" type="video/mp4">
+<script>
+(() => {
+  const assetRev = '20260309c';
+  let visualMode = 'day';
+  try {
+    visualMode = localStorage.getItem('mlyn_mode') === 'night' ? 'night' : 'day';
+  } catch (error) {}
+  const isPortrait = typeof window.matchMedia === 'function' && window.matchMedia('(orientation: portrait)').matches;
+  const heroId = visualMode === 'night'
+    ? (isPortrait ? 'DY09nnytbjc' : 'bPBM5J8v_aQ')
+    : (isPortrait ? 'M4QkWhz7CDo' : 'VDj9aKHnpcw_hq');
+  const posterSrc = `/videos/bg/${heroId}.jpg?v=${assetRev}`;
+  const videoSrc = `/videos/bg/${heroId}.mp4?v=${assetRev}`;
+  window.__MLYN_INITIAL_HERO_ID = heroId;
+  const posterPreload = document.getElementById('heroPosterPreload');
+  const videoPreload = document.getElementById('heroVideoPreload');
+  if (posterPreload) posterPreload.href = posterSrc;
+  if (videoPreload) videoPreload.href = videoSrc;
+})();
+</script>
 <style>
 :root{--bg:#07060a;--stone:#c9b99a;--gold:#b08d57;--gold-light:#d4aa72;--cream:#f0ebe2;--muted:#6a6060;--border:rgba(201,185,154,0.12);--res-card-h:332px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;scroll-snap-type:y mandatory;overflow-y:scroll;}
-body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;}
+body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow-x:hidden;}
+body.mobile-nav-open{overflow:hidden;touch-action:none;}
 
 /* GRAIN */
 body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.07;transition:opacity .6s ease;
@@ -543,16 +564,24 @@ body.de .de{display:revert;}
 }
 /* RESPONSIVE — nav (hamburger when menu stops fitting) */
 @media(max-width:1100px){
+  html{scroll-snap-type:y proximity;}
+  section{scroll-snap-stop:normal;}
   nav{padding:16px 28px;}
   nav.scrolled{padding:12px 28px;}
   .nav-links{display:none;}
   .nav-actions{gap:8px;}
   .btn-lang,.btn-pause,.btn-mode{padding:7px 10px;}
   .hamburger{display:flex !important;}
+  .side-nav{display:none;}
+  #history .history-embed-frame{pointer-events:none;}
 }
 @media(orientation:portrait){
+  html{scroll-snap-type:y proximity;}
+  section{scroll-snap-stop:normal;}
   .nav-links{display:none;}
   .hamburger{display:flex !important;}
+  .side-nav{display:none;}
+  #history .history-embed-frame{pointer-events:none;}
   .bg-video iframe,
   .bg-video video,
   .bg-video .bg-fallback{
@@ -674,6 +703,25 @@ body.de .de{display:revert;}
     </video>
     <img class="bg-fallback" src="/videos/bg/VDj9aKHnpcw_hq.jpg?v=20260309c" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
   </div>
+  <script>
+  (() => {
+    const heroId = window.__MLYN_INITIAL_HERO_ID;
+    if (!heroId) return;
+    const assetRev = '20260309c';
+    const section = document.getElementById('hero');
+    const video = section?.querySelector('.bg-video video');
+    const source = video?.querySelector('source');
+    const fallback = section?.querySelector('.bg-fallback');
+    if (!video || !source) return;
+    const posterSrc = `/videos/bg/${heroId}.jpg?v=${assetRev}`;
+    const videoSrc = `/videos/bg/${heroId}.mp4?v=${assetRev}`;
+    source.setAttribute('src', videoSrc);
+    video.setAttribute('poster', posterSrc);
+    video.poster = posterSrc;
+    if (fallback) fallback.setAttribute('src', posterSrc);
+    try { video.load(); } catch (error) {}
+  })();
+  </script>
   <div class="content">
     <div class="hero-badge cs">Retreat Studio</div>
     <div class="hero-badge en">Retreat Studio</div>
@@ -1062,7 +1110,15 @@ window.addEventListener('scroll',()=>{
   links.forEach(a=>a.classList.toggle('active',a.dataset.s===cur));
   handleFooterAutoHide();
 });
-dots.forEach(d=>d.addEventListener('click',()=>document.getElementById(d.dataset.t).scrollIntoView({behavior:'smooth'})));
+dots.forEach((d)=>d.addEventListener('click',()=>scrollToSection(d.dataset.t,{behavior:'smooth'})));
+
+function getSectionScrollTop(section){
+  if(!section)return 0;
+  if(section.id==='hero')return 0;
+  const navHeight=nav?.getBoundingClientRect().height||0;
+  const sectionTop=window.scrollY+section.getBoundingClientRect().top;
+  return Math.max(0,Math.round(sectionTop-navHeight-6));
+}
 
 function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
   const section=document.getElementById(sectionId);
@@ -1078,7 +1134,7 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
     syncBackgroundVideos();
     const nextUrl=sectionId==='hero'?window.location.pathname:`${window.location.pathname}#${sectionId}`;
     window.history.replaceState({},'',nextUrl);
-    window.scrollTo({top:section.offsetTop,behavior});
+    window.scrollTo({top:getSectionScrollTop(section),behavior});
   };
   if(closeMenu){
     closeMobileNav();
@@ -2484,7 +2540,23 @@ const closeNav=document.getElementById('closeNav');
 const navLinksEl=document.querySelector('.nav-links');
 const navActionsEl=document.querySelector('.nav-actions');
 const navLogoEl=document.querySelector('.nav-logo');
-function closeMobileNav(){mobileNav?.classList.remove('open');}
+function openMobileNav(){
+  if(!mobileNav)return;
+  mobileNav.classList.add('open');
+  document.body.classList.add('mobile-nav-open');
+}
+function closeMobileNav(){
+  mobileNav?.classList.remove('open');
+  document.body.classList.remove('mobile-nav-open');
+}
+function toggleMobileNav(){
+  if(!mobileNav)return;
+  if(mobileNav.classList.contains('open')){
+    closeMobileNav();
+    return;
+  }
+  openMobileNav();
+}
 function shouldUseCompactNav(){
   if(window.matchMedia('(orientation: portrait)').matches)return true;
   if(window.innerWidth<=1100)return true;
@@ -2493,10 +2565,12 @@ function shouldUseCompactNav(){
 }
 function updateNavCompactState(){
   const compact=shouldUseCompactNav();
+  document.documentElement.classList.toggle('mobile-scroll-optimized',compact);
+  document.body.classList.toggle('mobile-scroll-optimized',compact);
   document.body.classList.toggle('nav-compact',compact);
   if(!compact)closeMobileNav();
 }
-if(hbtn)hbtn.addEventListener('click',()=>mobileNav?.classList.toggle('open'));
+if(hbtn)hbtn.addEventListener('click',toggleMobileNav);
 if(closeNav)closeNav.addEventListener('click',closeMobileNav);
 document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .nav-logo[href^="#"]').forEach((anchor)=>{
   anchor.addEventListener('click',(event)=>{
@@ -2511,6 +2585,13 @@ document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .n
 window.addEventListener('resize',updateNavCompactState);
 window.addEventListener('orientationchange',()=>setTimeout(updateNavCompactState,80));
 window.addEventListener('load',updateNavCompactState);
+window.addEventListener('load',()=>{
+  const hash=(window.location.hash||'').slice(1);
+  if(!hash)return;
+  const section=document.getElementById(hash);
+  if(!section)return;
+  requestAnimationFrame(()=>window.scrollTo({top:getSectionScrollTop(section),behavior:'auto'}));
+});
 updateNavCompactState();
 
 </script>

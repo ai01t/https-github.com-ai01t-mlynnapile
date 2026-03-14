@@ -7,13 +7,34 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="/videos/bg/VDj9aKHnpcw_hq.jpg?v=20260309c" fetchpriority="high">
-<link rel="preload" as="video" href="/videos/bg/VDj9aKHnpcw_hq.mp4?v=20260309c" type="video/mp4">
+<link id="heroPosterPreload" rel="preload" as="image" href="/videos/bg/VDj9aKHnpcw_hq.jpg?v=20260309c" fetchpriority="high">
+<link id="heroVideoPreload" rel="preload" as="video" href="/videos/bg/VDj9aKHnpcw_hq.mp4?v=20260309c" type="video/mp4">
+<script>
+(() => {
+  const assetRev = '20260309c';
+  let visualMode = 'day';
+  try {
+    visualMode = localStorage.getItem('mlyn_mode') === 'night' ? 'night' : 'day';
+  } catch (error) {}
+  const isPortrait = typeof window.matchMedia === 'function' && window.matchMedia('(orientation: portrait)').matches;
+  const heroId = visualMode === 'night'
+    ? (isPortrait ? 'DY09nnytbjc' : 'bPBM5J8v_aQ')
+    : (isPortrait ? 'M4QkWhz7CDo' : 'VDj9aKHnpcw_hq');
+  const posterSrc = `/videos/bg/${heroId}.jpg?v=${assetRev}`;
+  const videoSrc = `/videos/bg/${heroId}.mp4?v=${assetRev}`;
+  window.__MLYN_INITIAL_HERO_ID = heroId;
+  const posterPreload = document.getElementById('heroPosterPreload');
+  const videoPreload = document.getElementById('heroVideoPreload');
+  if (posterPreload) posterPreload.href = posterSrc;
+  if (videoPreload) videoPreload.href = videoSrc;
+})();
+</script>
 <style>
 :root{--bg:#07060a;--stone:#c9b99a;--gold:#b08d57;--gold-light:#d4aa72;--cream:#f0ebe2;--muted:#6a6060;--border:rgba(201,185,154,0.12);--res-card-h:332px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;scroll-snap-type:y mandatory;overflow-y:scroll;}
-body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;}
+body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow-x:hidden;}
+body.mobile-nav-open{overflow:hidden;touch-action:none;}
 
 /* GRAIN */
 body::after{content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.07;transition:opacity .6s ease;
@@ -543,16 +564,24 @@ body.de .de{display:revert;}
 }
 /* RESPONSIVE — nav (hamburger when menu stops fitting) */
 @media(max-width:1100px){
+  html{scroll-snap-type:y proximity;}
+  section{scroll-snap-stop:normal;}
   nav{padding:16px 28px;}
   nav.scrolled{padding:12px 28px;}
   .nav-links{display:none;}
   .nav-actions{gap:8px;}
   .btn-lang,.btn-pause,.btn-mode{padding:7px 10px;}
   .hamburger{display:flex !important;}
+  .side-nav{display:none;}
+  #history .history-embed-frame{pointer-events:none;}
 }
 @media(orientation:portrait){
+  html{scroll-snap-type:y proximity;}
+  section{scroll-snap-stop:normal;}
   .nav-links{display:none;}
   .hamburger{display:flex !important;}
+  .side-nav{display:none;}
+  #history .history-embed-frame{pointer-events:none;}
   .bg-video iframe,
   .bg-video video,
   .bg-video .bg-fallback{
@@ -586,7 +615,7 @@ body.de .de{display:revert;}
 }
 </style>
 </head>
-<body class="video-booting de">
+<body class="video-booting">
 
 <div id="prog"></div>
 
@@ -674,6 +703,25 @@ body.de .de{display:revert;}
     </video>
     <img class="bg-fallback" src="/videos/bg/VDj9aKHnpcw_hq.jpg?v=20260309c" alt="" aria-hidden="true" decoding="async" fetchpriority="high">
   </div>
+  <script>
+  (() => {
+    const heroId = window.__MLYN_INITIAL_HERO_ID;
+    if (!heroId) return;
+    const assetRev = '20260309c';
+    const section = document.getElementById('hero');
+    const video = section?.querySelector('.bg-video video');
+    const source = video?.querySelector('source');
+    const fallback = section?.querySelector('.bg-fallback');
+    if (!video || !source) return;
+    const posterSrc = `/videos/bg/${heroId}.jpg?v=${assetRev}`;
+    const videoSrc = `/videos/bg/${heroId}.mp4?v=${assetRev}`;
+    source.setAttribute('src', videoSrc);
+    video.setAttribute('poster', posterSrc);
+    video.poster = posterSrc;
+    if (fallback) fallback.setAttribute('src', posterSrc);
+    try { video.load(); } catch (error) {}
+  })();
+  </script>
   <div class="content">
     <div class="hero-badge cs">Retreat Studio</div>
     <div class="hero-badge en">Retreat Studio</div>
@@ -721,17 +769,17 @@ body.de .de{display:revert;}
           <li><span class="cs">Stylové ubytování — 4 pokoje, zimní zahrada 63 m², finská sauna.</span><span class="en">Stylish accommodation — 4 rooms, winter garden 63 m², Finnish sauna.</span><span class="de">Stilvolle Unterkunft — 4 Zimmer, Wintergarten 63 m², finnische Sauna.</span></li>
           <li><span class="cs">Moderní technologie — Universal Audio Apollo x8p Studio+, 76 UAD pluginů, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="en">Modern technology — Universal Audio Apollo x8p Studio+, 76 UAD plugins, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="de">Moderne Technologie — Universal Audio Apollo x8p Studio+, 76 UAD-Plugins, Logic Pro X, Apple Pro Display XDR 6K.</span></li>
           <li><span class="cs">Vlastní zdroj elektrické energie pro zajištění provozu studia.</span><span class="en">Own power source ensuring uninterrupted studio operation.</span><span class="de">Eigene Stromquelle für einen unterbrechungsfreien Studiobetrieb.</span></li>
-          <li><span class="cs">Zázemí, zabezpečené prostory, výborné snídaně s <a class="chleba-trigger" href="/de/chleba">domácím chlebem</a> z pece</span><span class="en">Facilities, secured spaces, and excellent breakfasts with <a class="chleba-trigger" href="/de/chleba">homemade oven-baked bread</a>.</span><span class="de">Komfort, gesicherte Räume und ausgezeichnetes Frühstück mit <a class="chleba-trigger" href="/de/chleba">hausgebackenem Ofenbrot</a>.</span></li>
+          <li><span class="cs">Zázemí, zabezpečené prostory, výborné snídaně s <a class="chleba-trigger" href="/chleba">domácím chlebem</a> z pece</span><span class="en">Facilities, secured spaces, and excellent breakfasts with <a class="chleba-trigger" href="/chleba">homemade oven-baked bread</a>.</span><span class="de">Komfort, gesicherte Räume und ausgezeichnetes Frühstück mit <a class="chleba-trigger" href="/chleba">hausgebackenem Ofenbrot</a>.</span></li>
         </ul>
       </div>
     </div>
     <div class="place-right">
-      <a class="tl-link-label" href="/de/geschichte#timeline"><span class="tl-label cs">Historická osa</span><span class="tl-label en">Historical Timeline</span><span class="tl-label de">Historische Zeitleiste</span></a>
+      <a class="tl-link-label" href="/historie#timeline"><span class="tl-label cs">Historická osa</span><span class="tl-label en">Historical Timeline</span><span class="tl-label de">Historische Zeitleiste</span></a>
       <div>
-        <a class="tl-item" href="/de/geschichte?year=1653#timeline"><span class="tl-year">1653</span><span class="tl-text cs">Založení rybníků, vysoké pece a hamru.</span><span class="tl-text en">Founding of ponds, blast furnace and hammer.</span><span class="tl-text de">Gründung der Teiche, des Hochofens und des Hammerwerks.</span></a>
-        <a class="tl-item" href="/de/geschichte?year=1810#timeline"><span class="tl-year">1810</span><span class="tl-text cs">Mlýn s pilou poháněnou vodní silou.</span><span class="tl-text en">Mill with water-powered sawmill.</span><span class="tl-text de">Mühle mit wasserbetriebener Säge.</span></a>
-        <a class="tl-item" href="/de/geschichte?year=1990#timeline"><span class="tl-year">1990</span><span class="tl-text cs">Pila vzniká jako část obce Trhanov v okrese Domažlice.</span><span class="tl-text en">Sawmill established as part of Trhanov village, Domažlice district.</span><span class="tl-text de">Pila entsteht als Teil der Gemeinde Trhanov im Bezirk Domažlice.</span></a>
-        <a class="tl-item" href="/de/geschichte?year=2026#timeline"><span class="tl-year">2026</span><span class="tl-text cs">Transformace na hudební a kreativní retreat studio.</span><span class="tl-text en">Transformation into a music and creative retreat studio.</span><span class="tl-text de">Umwandlung in ein Musik- und Kreativ-Retreat-Studio.</span></a>
+        <a class="tl-item" href="/historie?year=1653#timeline"><span class="tl-year">1653</span><span class="tl-text cs">Založení rybníků, vysoké pece a hamru.</span><span class="tl-text en">Founding of ponds, blast furnace and hammer.</span><span class="tl-text de">Gründung der Teiche, des Hochofens und des Hammerwerks.</span></a>
+        <a class="tl-item" href="/historie?year=1810#timeline"><span class="tl-year">1810</span><span class="tl-text cs">Mlýn s pilou poháněnou vodní silou.</span><span class="tl-text en">Mill with water-powered sawmill.</span><span class="tl-text de">Mühle mit wasserbetriebener Säge.</span></a>
+        <a class="tl-item" href="/historie?year=1990#timeline"><span class="tl-year">1990</span><span class="tl-text cs">Pila vzniká jako část obce Trhanov v okrese Domažlice.</span><span class="tl-text en">Sawmill established as part of Trhanov village, Domažlice district.</span><span class="tl-text de">Pila entsteht als Teil der Gemeinde Trhanov im Bezirk Domažlice.</span></a>
+        <a class="tl-item" href="/historie?year=2026#timeline"><span class="tl-year">2026</span><span class="tl-text cs">Transformace na hudební a kreativní retreat studio.</span><span class="tl-text en">Transformation into a music and creative retreat studio.</span><span class="tl-text de">Umwandlung in ein Musik- und Kreativ-Retreat-Studio.</span></a>
       </div>
     </div>
   </div>
@@ -899,7 +947,7 @@ body.de .de{display:revert;}
 <!-- ══ HISTORY ══ -->
 <section id="history">
   <div class="history-embed-shell">
-    <iframe class="history-embed-frame" src="/de/geschichte?embed=1" title="Geschichte der Mühle na Pile" loading="lazy" tabindex="-1"></iframe>
+    <iframe class="history-embed-frame" src="/historie?embed=1" title="Historie Mlýna na Pile" loading="lazy" tabindex="-1"></iframe>
   </div>
 </section>
 
@@ -936,14 +984,14 @@ body.de .de{display:revert;}
     <div class="big-n">6500<span style="font-size:.35em;opacity:.5">m²</span></div>
     <span class="sec-label cs">Nahrávání + Ubytování</span><span class="sec-label en">Recording + Accommodation</span><span class="sec-label de">Recording + Unterkunft</span>
     <h2 class="sec-title rev"><span class="cs">Čtyři<br><em>balíčky</em></span><span class="en">Four<br><em>packages</em></span><span class="de">Vier<br><em>Pakete</em></span></h2>
-    <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <a class="chleba-trigger" href="/de/chleba">chléb</a> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-    <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <a class="chleba-trigger" href="/de/chleba">bread</a>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-    <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <a class="chleba-trigger" href="/de/chleba">Brot</a> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
+    <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <a class="chleba-trigger" href="/chleba">chléb</a> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+    <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <a class="chleba-trigger" href="/chleba">bread</a>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+    <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
     <div class="pkg-grid rev rev-d2">
       <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Into the Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
       <div class="pkg-card" data-pkg="underwater"><div class="pkg-num">02</div><div class="pkg-name">Underwater</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Sauna</span><span class="en">#Main studio #Sauna</span><span class="de">#Hauptstudio #Sauna</span></span><p class="pkg-text cs">Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka. Skromné ale stylové a útulné přespání přímo v prostorách bývalé mlýnice.</p><p class="pkg-text en">Closest to the music, sleeping literally beneath the studio floor and below the pond level. Modest but stylish accommodation in the former mill.</p><p class="pkg-text de">Ganz nah an der Musik: Schlafen direkt unter dem Studioboden und unter der Teichoberfläche. Schlicht, aber stilvoll und gemütlich in der ehemaligen Mühle.</p></div>
       <div class="pkg-card" data-pkg="otherside"><div class="pkg-num">03</div><div class="pkg-name">Otherside</div><span class="pkg-tags"><span class="cs">#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV</span><span class="en">#Control room #Traditional Czech room #Two rooms #TV</span><span class="de">#Regieraum #Traditionelle Stube #Zwei Zimmer #TV</span></span><p class="pkg-text cs">Pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple + ubytování ve staročeské světnici. Vhodné i pro nehudební kreativní aktivity.</p><p class="pkg-text en">For post-production: 6K Apple Pro XDR with full Apple peripherals + accommodation in a traditional Czech room. Suitable for non-musical creative activities too.</p><p class="pkg-text de">Für Postproduktion: 6K Apple Pro XDR inkl. kompletter Apple-Peripherie + Unterkunft in einer traditionellen tschechischen Stube. Auch für nicht-musikalische Kreativarbeit geeignet.</p></div>
-      <div class="pkg-card" data-pkg="fuel"><div class="pkg-num">04</div><div class="pkg-name">Fuel</div><span class="pkg-tags"><span class="cs">#VIP balíček</span><span class="en">#VIP package</span><span class="de">#VIP-Paket</span></span><p class="pkg-text cs">VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady a zapůjčení Tesla Model X. Profi catering, roztopení velké pece, pizza i <a class="chleba-trigger" href="/de/chleba">chleba</a> z pece.</p><p class="pkg-text en">VIP rental of the entire property with full service, including the winter garden and Tesla Model X. Professional catering, pizza and <a class="chleba-trigger" href="/de/chleba">bread</a> from the stone oven.</p><p class="pkg-text de">VIP-Miete der gesamten Anlage mit Full-Service inklusive Wintergarten und Tesla Model X. Professionelles Catering, Pizza und <a class="chleba-trigger" href="/de/chleba">Brot</a> aus dem Steinofen.</p></div>
+      <div class="pkg-card" data-pkg="fuel"><div class="pkg-num">04</div><div class="pkg-name">Fuel</div><span class="pkg-tags"><span class="cs">#VIP balíček</span><span class="en">#VIP package</span><span class="de">#VIP-Paket</span></span><p class="pkg-text cs">VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady a zapůjčení Tesla Model X. Profi catering, roztopení velké pece, pizza i <a class="chleba-trigger" href="/chleba">chleba</a> z pece.</p><p class="pkg-text en">VIP rental of the entire property with full service, including the winter garden and Tesla Model X. Professional catering, pizza and <a class="chleba-trigger" href="/chleba">bread</a> from the stone oven.</p><p class="pkg-text de">VIP-Miete der gesamten Anlage mit Full-Service inklusive Wintergarten und Tesla Model X. Professionelles Catering, Pizza und <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Steinofen.</p></div>
     </div>
     <div class="rules-box rules-list-tight rev rev-d3">
       <span class="rules-label"><span class="cs">DŮLEŽITÉ</span><span class="en">IMPORTANT</span><span class="de">WICHTIG</span></span>
@@ -1005,7 +1053,7 @@ body.de .de{display:revert;}
               </div>
               <div class="founder-block">
                 <h3 class="founder-name">Andrea Kohoutová</h3>
-                <p class="founder-text"><span class="cs">Andrea je zpěvačka, baskytaristka kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, archeoložka a aktuálně hlavní pekařka mlýna :-). Stará se o provoz a zázemí mlýna, kde peče skvělý <a class="chleba-trigger" href="/de/chleba">domácí chléb</a> - důležitý bonus pro naše hosty.</span><span class="en">Andrea is a singer and bassist in <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, an archaeologist, and currently the head baker at the mill :-). She takes care of mill operations and facilities, where she bakes great <a class="chleba-trigger" href="/de/chleba">homemade bread</a> — an important bonus for our guests.</span><span class="de">Andrea ist Sängerin und Bassistin der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, Archäologin und aktuell Hauptbäckerin der Mühle :-). Sie kümmert sich um den Betrieb und das Umfeld der Mühle, wo sie hervorragendes <a class="chleba-trigger" href="/de/chleba">hausgemachtes Brot</a> backt — ein wichtiger Bonus für unsere Gäste.</span></p>
+                <p class="founder-text"><span class="cs">Andrea je zpěvačka, baskytaristka kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, archeoložka a aktuálně hlavní pekařka mlýna :-). Stará se o provoz a zázemí mlýna, kde peče skvělý <a class="chleba-trigger" href="/chleba">domácí chléb</a> - důležitý bonus pro naše hosty.</span><span class="en">Andrea is a singer and bassist in <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, an archaeologist, and currently the head baker at the mill :-). She takes care of mill operations and facilities, where she bakes great <a class="chleba-trigger" href="/chleba">homemade bread</a> — an important bonus for our guests.</span><span class="de">Andrea ist Sängerin und Bassistin der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, Archäologin und aktuell Hauptbäckerin der Mühle :-). Sie kümmert sich um den Betrieb und das Umfeld der Mühle, wo sie hervorragendes <a class="chleba-trigger" href="/chleba">hausgemachtes Brot</a> backt — ein wichtiger Bonus für unsere Gäste.</span></p>
               </div>
             </div>
           </div>
@@ -1062,7 +1110,15 @@ window.addEventListener('scroll',()=>{
   links.forEach(a=>a.classList.toggle('active',a.dataset.s===cur));
   handleFooterAutoHide();
 });
-dots.forEach(d=>d.addEventListener('click',()=>document.getElementById(d.dataset.t).scrollIntoView({behavior:'smooth'})));
+dots.forEach((d)=>d.addEventListener('click',()=>scrollToSection(d.dataset.t,{behavior:'smooth'})));
+
+function getSectionScrollTop(section){
+  if(!section)return 0;
+  if(section.id==='hero')return 0;
+  const navHeight=nav?.getBoundingClientRect().height||0;
+  const sectionTop=window.scrollY+section.getBoundingClientRect().top;
+  return Math.max(0,Math.round(sectionTop-navHeight-6));
+}
 
 function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
   const section=document.getElementById(sectionId);
@@ -1078,7 +1134,7 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
     syncBackgroundVideos();
     const nextUrl=sectionId==='hero'?window.location.pathname:`${window.location.pathname}#${sectionId}`;
     window.history.replaceState({},'',nextUrl);
-    window.scrollTo({top:section.offsetTop,behavior});
+    window.scrollTo({top:getSectionScrollTop(section),behavior});
   };
   if(closeMenu){
     closeMobileNav();
@@ -1336,7 +1392,7 @@ const RES_FAQ_ITEMS_BY_LANG={
     {q:'Poskytujete ubytování i samostatně?',a:'Ubytování je součástí pobytu ve studiu během kreativní práce.'},
     {q:'Jak se k nám dostanu?',a:'Autem: přímý přístup, soukromé parkování. Vlakem: 10 min pěšky ze stanice Trhanov. Letecky: 1h 45min z letiště Praha, 2h z letiště Mnichov, pick-up služba k dispozici.'},
     {q:'Mohu přijet i sám, nebo je akce určena pouze pro kapely a týmy?',a:'Jasně - pro sólo umělce je k dispozici i looper Plethora X5 od TC Electronic. ;-)'},
-    {q:'Máte catering, nebo si musím řešit jídlo sám?',aHtml:'Součástí pobytu je vždy snídaně nebo brunch a vždy domácí kváskový <a href=\"/de/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">chleba</a>, který pečeme ve venkovní peci. Flexibilní možnosti stravování: In-house catering s lokálními ingrediencemi, pizza pec pro společné večeře (až 8 pizz), plně vybavená kuchyň pro vlastní vaření, rozvoz z místních restaurací z Domažlic.'},
+    {q:'Máte catering, nebo si musím řešit jídlo sám?',aHtml:'Součástí pobytu je vždy snídaně nebo brunch a vždy domácí kváskový <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">chleba</a>, který pečeme ve venkovní peci. Flexibilní možnosti stravování: In-house catering s lokálními ingrediencemi, pizza pec pro společné večeře (až 8 pizz), plně vybavená kuchyň pro vlastní vaření, rozvoz z místních restaurací z Domažlic.'},
     {q:'Mluvíte anglicky/německy?',a:'Vícejazyčný tým: Čeština - rodilí mluvčí, Angličtina - plynule (Jindřich, Andrea, tech tým), Němčina - konverzační úroveň (regionální výhoda), překladatelské služby pro smlouvy.'},
     {q:'Mohu přijet s dětmi i se psem?',a:'Ano, všichni jsou vítáni. Jsou zde omalovánky, knížky, hračky na zahradu i na ven. Pejsci jsou také vítáni, ale pozor - pozemek není komplet oplocen.'},
     {q:'Během pobytu jsme si u vás oblíbili konkrétní kytarový rig. Je možné zapůjčení na dohrávky ve studiu, kde dokončujeme materiál k desce?',a:'Ano, samozřejmě. Po předchozí domluvě je možné vybraný kytarový chain zapůjčit i na následné dohrávky. (Pozn. pouze nástroje,které vlastníme, zbytek je na dohodě.)'}
@@ -1350,7 +1406,7 @@ const RES_FAQ_ITEMS_BY_LANG={
     {q:'Do you provide accommodation separately?',a:'Accommodation is part of the studio stay during creative work.'},
     {q:'How do I get there?',a:'By car: direct access, private parking. By train: 10 minutes on foot from Trhanov station. By plane: 1h 45m from Prague Airport, 2h from Munich Airport, pick-up service available.'},
     {q:'Can I come alone, or is this only for bands and teams?',a:'Sure. For solo artists we also have the TC Electronic Plethora X5 looper available. ;-)'},
-    {q:'Do you provide catering, or do I need to arrange my own food?',aHtml:'Every stay includes breakfast or brunch and always homemade sourdough <a href=\"/de/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">bread</a> baked in our outdoor oven. Flexible dining options include in-house catering with local ingredients, pizza oven dinners, a fully equipped kitchen, and delivery from Domažlice restaurants.'},
+    {q:'Do you provide catering, or do I need to arrange my own food?',aHtml:'Every stay includes breakfast or brunch and always homemade sourdough <a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">bread</a> baked in our outdoor oven. Flexible dining options include in-house catering with local ingredients, pizza oven dinners, a fully equipped kitchen, and delivery from Domažlice restaurants.'},
     {q:'Do you speak English/German?',a:'Multilingual team: Czech native speakers, fluent English (Jindřich, Andrea, tech team), conversational German (regional advantage), and translation support for contracts.'},
     {q:'Can I come with children and a dog?',a:'Yes, everyone is welcome. We have coloring books, toys, and outdoor games. Dogs are welcome too, but note that the land is not fully fenced.'},
     {q:'During our stay we loved a specific guitar rig. Can we borrow it for overdubs elsewhere?',a:'Yes. By prior arrangement, selected guitar chains can be borrowed for follow-up overdubs. (Only instruments we own; the rest by agreement.)'}
@@ -1364,7 +1420,7 @@ const RES_FAQ_ITEMS_BY_LANG={
     {q:'Bieten Sie Unterkunft auch separat an?',a:'Die Unterkunft ist Teil des Studioaufenthalts während der kreativen Arbeit.'},
     {q:'Wie komme ich zu Ihnen?',a:'Mit dem Auto: direkte Zufahrt, privater Parkplatz. Mit dem Zug: 10 Minuten zu Fuß vom Bahnhof Trhanov. Mit dem Flugzeug: 1h45 von Prag, 2h von München, Abholservice verfügbar.'},
     {q:'Kann ich auch alleine kommen oder ist das nur für Bands und Teams?',a:'Natürlich. Für Solo-Künstler steht auch der Plethora X5 Looper von TC Electronic bereit. ;-)'},
-    {q:'Gibt es Catering oder muss ich mich selbst um Essen kümmern?',aHtml:'Zum Aufenthalt gehört immer Frühstück oder Brunch sowie hausgebackenes Sauerteig-<a href=\"/de/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">Brot</a> aus dem Ofen. Flexible Verpflegung: Inhouse-Catering mit lokalen Zutaten, Pizzaofen, voll ausgestattete Küche und Lieferdienste aus Domažlice.'},
+    {q:'Gibt es Catering oder muss ich mich selbst um Essen kümmern?',aHtml:'Zum Aufenthalt gehört immer Frühstück oder Brunch sowie hausgebackenes Sauerteig-<a href=\"/chleba\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">Brot</a> aus dem Ofen. Flexible Verpflegung: Inhouse-Catering mit lokalen Zutaten, Pizzaofen, voll ausgestattete Küche und Lieferdienste aus Domažlice.'},
     {q:'Sprechen Sie Englisch/Deutsch?',a:'Mehrsprachiges Team: Tschechisch (Muttersprache), fließend Englisch (Jindřich, Andrea, Tech-Team), Deutsch auf Konversationsniveau und Übersetzungshilfe für Verträge.'},
     {q:'Kann ich mit Kindern und Hund kommen?',a:'Ja, alle sind willkommen. Es gibt Malbücher, Bücher und Spielzeug. Hunde sind ebenfalls willkommen, das Gelände ist jedoch nicht vollständig eingezäunt.'},
     {q:'Wir mochten bei unserem Aufenthalt ein bestimmtes Gitarren-Rig. Ist Ausleihe für Overdubs möglich?',a:'Ja, nach vorheriger Absprache können ausgewählte Gitarren-Chains auch für spätere Overdubs ausgeliehen werden. (Nur Instrumente in unserem Besitz, der Rest nach Vereinbarung.)'}
@@ -2484,7 +2540,23 @@ const closeNav=document.getElementById('closeNav');
 const navLinksEl=document.querySelector('.nav-links');
 const navActionsEl=document.querySelector('.nav-actions');
 const navLogoEl=document.querySelector('.nav-logo');
-function closeMobileNav(){mobileNav?.classList.remove('open');}
+function openMobileNav(){
+  if(!mobileNav)return;
+  mobileNav.classList.add('open');
+  document.body.classList.add('mobile-nav-open');
+}
+function closeMobileNav(){
+  mobileNav?.classList.remove('open');
+  document.body.classList.remove('mobile-nav-open');
+}
+function toggleMobileNav(){
+  if(!mobileNav)return;
+  if(mobileNav.classList.contains('open')){
+    closeMobileNav();
+    return;
+  }
+  openMobileNav();
+}
 function shouldUseCompactNav(){
   if(window.matchMedia('(orientation: portrait)').matches)return true;
   if(window.innerWidth<=1100)return true;
@@ -2493,10 +2565,12 @@ function shouldUseCompactNav(){
 }
 function updateNavCompactState(){
   const compact=shouldUseCompactNav();
+  document.documentElement.classList.toggle('mobile-scroll-optimized',compact);
+  document.body.classList.toggle('mobile-scroll-optimized',compact);
   document.body.classList.toggle('nav-compact',compact);
   if(!compact)closeMobileNav();
 }
-if(hbtn)hbtn.addEventListener('click',()=>mobileNav?.classList.toggle('open'));
+if(hbtn)hbtn.addEventListener('click',toggleMobileNav);
 if(closeNav)closeNav.addEventListener('click',closeMobileNav);
 document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .nav-logo[href^="#"]').forEach((anchor)=>{
   anchor.addEventListener('click',(event)=>{
@@ -2511,6 +2585,13 @@ document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .n
 window.addEventListener('resize',updateNavCompactState);
 window.addEventListener('orientationchange',()=>setTimeout(updateNavCompactState,80));
 window.addEventListener('load',updateNavCompactState);
+window.addEventListener('load',()=>{
+  const hash=(window.location.hash||'').slice(1);
+  if(!hash)return;
+  const section=document.getElementById(hash);
+  if(!section)return;
+  requestAnimationFrame(()=>window.scrollTo({top:getSectionScrollTop(section),behavior:'auto'}));
+});
 updateNavCompactState();
 
 </script>
