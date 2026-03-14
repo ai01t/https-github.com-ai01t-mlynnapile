@@ -92,7 +92,7 @@ const copyByLocale: Record<Locale, Copy> = {
     timelineIntro:
       "Od průmyslových počátků přes mlynářské rody až po dnešní podobu mlýna. Kliknutím na rok přepínáš jednotlivé kapitoly příběhu.",
     jumpToTimeline: "Časová osa",
-    backToMill: "Zpět na Mlýn",
+    backToMill: "Pokračovat dál",
     previous: "Předchozí",
     next: "Další",
     entries: [
@@ -225,7 +225,7 @@ const copyByLocale: Record<Locale, Copy> = {
     timelineIntro:
       "From industrial beginnings through the miller families to the present form of the building. Click a year to switch chapters.",
     jumpToTimeline: "Timeline",
-    backToMill: "Back to the mill",
+    backToMill: "Continue",
     previous: "Previous",
     next: "Next",
     entries: [
@@ -358,7 +358,7 @@ const copyByLocale: Record<Locale, Copy> = {
     timelineIntro:
       "Von den industriellen Anfängen über die Müllerfamilien bis zur heutigen Gestalt des Gebäudes. Ein Klick auf das Jahr öffnet die jeweilige Kapitelansicht.",
     jumpToTimeline: "Zeitleiste",
-    backToMill: "Zurück zur Mühle",
+    backToMill: "Weiter",
     previous: "Zurück",
     next: "Weiter",
     entries: [
@@ -563,6 +563,10 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const localVideoRef = useRef<HTMLVideoElement | null>(null)
   const langSwitchRef = useRef<HTMLDivElement | null>(null)
   const timelineSectionRef = useRef<HTMLElement | null>(null)
+  const autoTimelineSnapTimerRef = useRef<number | null>(null)
+  const autoTimelineSnapLockedRef = useRef(false)
+  const lastScrollYRef = useRef(0)
+  const lastScrollDirectionRef = useRef<"up" | "down">("down")
   const [activeIndex, setActiveIndex] = useState(0)
   const [navScrolled, setNavScrolled] = useState(false)
   const [paused, setPaused] = useState(false)
@@ -576,18 +580,22 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const timelinePositions = getTimelinePositions(copy.entries)
   const isLastTimelineStep = activeIndex === copy.entries.length - 1
 
-  const scrollToTimeline = (behavior: ScrollBehavior = "smooth") => {
+  const getTimelineTargetTop = () => {
     const timelineSection = timelineSectionRef.current
     if (!timelineSection) {
-      return
+      return 0
     }
 
     const nav = embedded ? null : (document.querySelector(`.${styles.nav}`) as HTMLElement | null)
     const navOffset = nav ? nav.getBoundingClientRect().height + 12 : embedded ? 24 : 84
-    const targetTop = timelineSection.getBoundingClientRect().top + window.scrollY - navOffset
+    return Math.max(timelineSection.getBoundingClientRect().top + window.scrollY - navOffset, 0)
+  }
+
+  const scrollToTimeline = (behavior: ScrollBehavior = "smooth") => {
+    const targetTop = getTimelineTargetTop()
 
     window.scrollTo({
-      top: Math.max(targetTop, 0),
+      top: targetTop,
       behavior,
     })
   }
@@ -697,6 +705,62 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     window.addEventListener("hashchange", onHashChange)
     return () => window.removeEventListener("hashchange", onHashChange)
   }, [])
+
+  useEffect(() => {
+    if (embedded) {
+      return
+    }
+
+    const clearSnapTimer = () => {
+      if (autoTimelineSnapTimerRef.current) {
+        window.clearTimeout(autoTimelineSnapTimerRef.current)
+        autoTimelineSnapTimerRef.current = null
+      }
+    }
+
+    const maybeSnapToTimeline = () => {
+      if (autoTimelineSnapLockedRef.current || lastScrollDirectionRef.current !== "down") {
+        return
+      }
+
+      const currentY = window.scrollY
+      const targetTop = getTimelineTargetTop()
+      const viewportHeight = window.innerHeight
+      const minimumSnapStart = Math.min(viewportHeight * 0.34, 320)
+      const snapWindowEnd = targetTop - Math.max(18, viewportHeight * 0.08)
+
+      if (currentY < minimumSnapStart || currentY >= snapWindowEnd) {
+        return
+      }
+
+      autoTimelineSnapLockedRef.current = true
+      scrollToTimeline("smooth")
+      window.setTimeout(() => {
+        autoTimelineSnapLockedRef.current = false
+      }, 1100)
+    }
+
+    const onScroll = () => {
+      const currentY = window.scrollY
+      const previousY = lastScrollYRef.current
+
+      if (Math.abs(currentY - previousY) > 2) {
+        lastScrollDirectionRef.current = currentY > previousY ? "down" : "up"
+      }
+      lastScrollYRef.current = currentY
+
+      clearSnapTimer()
+      autoTimelineSnapTimerRef.current = window.setTimeout(maybeSnapToTimeline, 120)
+    }
+
+    lastScrollYRef.current = window.scrollY
+    window.addEventListener("scroll", onScroll, { passive: true })
+
+    return () => {
+      clearSnapTimer()
+      window.removeEventListener("scroll", onScroll)
+    }
+  }, [embedded])
 
   useEffect(() => {
     const localVideo = localVideoRef.current
@@ -1140,7 +1204,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
 
             {!embedded ? (
               <div className={cx(styles.timelineFooter, isLastTimelineStep && styles.timelineFooterVisible)}>
-                <Link href={getLocaleHomePath(locale)} className={styles.footerLink}>
+                <Link href={getSectionHref(locale, "contact")} className={styles.footerLink}>
                   {copy.backToMill}
                 </Link>
               </div>
