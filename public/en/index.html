@@ -11,6 +11,11 @@
 <link id="heroVideoPreload" rel="preload" as="video" href="/videos/bg/VDj9aKHnpcw_hq.mp4?v=20260309c" type="video/mp4">
 <script>
 (() => {
+  try {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  } catch (error) {}
   const assetRev = '20260309c';
   let visualMode = 'day';
   try {
@@ -1074,8 +1079,7 @@ body.de .de{display:revert;}
   </div>
 </section>
 
-<footer>
-  <span class="ft-copy"><span class="cs">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="en">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="de">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span></span>
+<footer hidden>
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
@@ -1118,6 +1122,25 @@ function getSectionScrollTop(section){
   const navHeight=nav?.getBoundingClientRect().height||0;
   const sectionTop=window.scrollY+section.getBoundingClientRect().top;
   return Math.max(0,Math.round(sectionTop-navHeight-6));
+}
+
+function shouldForceHomeToTop(){
+  return !window.location.hash;
+}
+
+function resetHomeViewportToHero(){
+  if(!shouldForceHomeToTop())return;
+  currentSectionId='hero';
+  hidePlaceHistoryOverlay(true);
+  hideResidencyChlebaOverlay(true);
+  hideResidencyPackageOverlay(true);
+  closeInlineResidencyVideo(true);
+  syncBackgroundVideos();
+  const finish=()=>{
+    window.scrollTo({top:0,behavior:'auto'});
+    kickBgVideos();
+  };
+  requestAnimationFrame(()=>requestAnimationFrame(finish));
 }
 
 function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
@@ -1325,7 +1348,7 @@ const lbtn=document.getElementById('lbtn');
 const langSwitch=document.getElementById('langSwitch');
 const langMenu=document.getElementById('langMenu');
 const langOptions=[...document.querySelectorAll('.lang-option')];
-const footerEl=document.querySelector('footer');
+const footerEl=document.querySelector('footer:not([hidden])');
 const LANG_STORAGE_KEY='mlyn_lang';
 const SUPPORTED_LANGS=['cs','en','de'];
 const EQUIPMENT_EMBED_BASE='/equipment-table/studio-equipment.html';
@@ -2383,8 +2406,13 @@ setContactView('details');
 applyLang();
 
 {
-  const visible=secs.find(s=>s.getBoundingClientRect().top<=innerHeight*.55&&s.getBoundingClientRect().bottom>innerHeight*.2);
-  if(visible)currentSectionId=visible.id;
+  if(shouldForceHomeToTop()){
+    currentSectionId='hero';
+    try{window.scrollTo({top:0,behavior:'auto'});}catch(e){}
+  }else{
+    const visible=secs.find(s=>s.getBoundingClientRect().top<=innerHeight*.55&&s.getBoundingClientRect().bottom>innerHeight*.2);
+    if(visible)currentSectionId=visible.id;
+  }
 }
 applyVisualMode(true);
 syncBackgroundVideos();
@@ -2585,6 +2613,10 @@ document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .n
 window.addEventListener('resize',updateNavCompactState);
 window.addEventListener('orientationchange',()=>setTimeout(updateNavCompactState,80));
 window.addEventListener('load',updateNavCompactState);
+window.addEventListener('load',resetHomeViewportToHero);
+window.addEventListener('pageshow',()=>{
+  resetHomeViewportToHero();
+});
 window.addEventListener('load',()=>{
   const hash=(window.location.hash||'').slice(1);
   if(!hash)return;

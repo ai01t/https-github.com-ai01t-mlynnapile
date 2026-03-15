@@ -4386,13 +4386,6 @@ export default function Page() {
             </svg>
           </a>
           </div>
-          <div
-            className={`text-[10px] text-white/50 transition-opacity duration-700 ${
-              currentSection === "contact" || showFooterNote ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            © 2026 | Design & Development: Ing. Jindřich Traxmandl
-          </div>
         </div>
       </footer>
     </div>
