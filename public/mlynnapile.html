@@ -149,6 +149,9 @@ section{position:relative;min-height:100svh;scroll-snap-align:start;scroll-snap-
 .bg-video{position:absolute;inset:0;z-index:1;overflow:hidden;opacity:1;transition:none;background:#050506;}
 .bg-video.loaded{opacity:1;}
 .bg-video iframe,.bg-video video,.bg-video .bg-fallback{position:absolute;top:50%;left:50%;width:177.78vh;height:56.25vw;min-width:100%;min-height:100%;transform:translate3d(-50%,-50%,0);pointer-events:none;border:none;object-fit:cover;object-position:center center;z-index:1;}
+.bg-video.uses-portrait-asset iframe,
+.bg-video.uses-portrait-asset video,
+.bg-video.uses-portrait-asset .bg-fallback{width:100vw;height:177.78vw;min-width:56.25svh;min-height:100svh;}
 .bg-video video,.bg-video .bg-fallback{backface-visibility:hidden;-webkit-backface-visibility:hidden;transform-style:preserve-3d;}
 .bg-video video{opacity:0;transition:opacity .52s ease;filter:none;will-change:opacity;}
 .bg-video.is-revealed > video:not(.history-overlay):not(.chleba-overlay):not(.pkg-overlay){opacity:1;}
@@ -591,7 +594,7 @@ body.de .de{display:revert;}
   .bg-video video,
   .bg-video .bg-fallback{
     width:100vw;
-    height:100svh;
+    height:177.78vw;
     min-width:100vw;
     min-height:100svh;
     object-fit:cover;
@@ -716,10 +719,12 @@ body.de .de{display:revert;}
     if (!heroId) return;
     const assetRev = '20260309c';
     const section = document.getElementById('hero');
+    const wrap = section?.querySelector('.bg-video');
     const video = section?.querySelector('.bg-video video');
     const source = video?.querySelector('source');
     const fallback = section?.querySelector('.bg-fallback');
     if (!video || !source) return;
+    wrap?.classList.toggle('uses-portrait-asset',heroId==='yYFR6g6jlaA'||heroId==='M4QkWhz7CDo');
     const posterSrc = `/videos/bg/${heroId}.jpg?v=${assetRev}`;
     const videoSrc = `/videos/bg/${heroId}.mp4?v=${assetRev}`;
     source.setAttribute('src', videoSrc);
@@ -1081,7 +1086,8 @@ body.de .de{display:revert;}
   </div>
 </section>
 
-<footer hidden>
+<footer>
+  <span class="ft-copy"><span class="cs">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="en">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="de">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span></span>
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
@@ -1115,6 +1121,7 @@ window.addEventListener('scroll',()=>{
   dots.forEach(d=>d.classList.toggle('active',d.dataset.t===cur));
   links.forEach(a=>a.classList.toggle('active',a.dataset.s===cur));
   handleFooterAutoHide();
+  scheduleSectionSettleSnap();
 });
 dots.forEach((d)=>d.addEventListener('click',()=>scrollToSection(d.dataset.t,{behavior:'smooth'})));
 
@@ -1130,8 +1137,60 @@ function shouldForceHomeToTop(){
   return !window.location.hash;
 }
 
+function clearSectionSnapTimers(){
+  if(sectionSnapTimer){
+    clearTimeout(sectionSnapTimer);
+    sectionSnapTimer=null;
+  }
+  if(sectionSnapReleaseTimer){
+    clearTimeout(sectionSnapReleaseTimer);
+    sectionSnapReleaseTimer=null;
+  }
+}
+
+function getNearestSectionForViewport(){
+  const scrollTop=window.scrollY;
+  let nearestSection=null;
+  let nearestDistance=Number.POSITIVE_INFINITY;
+  secs.forEach((section)=>{
+    const targetTop=getSectionScrollTop(section);
+    const distance=Math.abs(targetTop-scrollTop);
+    if(distance<nearestDistance){
+      nearestSection=section;
+      nearestDistance=distance;
+    }
+  });
+  return {section:nearestSection,distance:nearestDistance};
+}
+
+function scheduleSectionSettleSnap(){
+  if(sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
+  if(sectionSnapTimer)clearTimeout(sectionSnapTimer);
+  sectionSnapTimer=setTimeout(()=>{
+    sectionSnapTimer=null;
+    if(sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
+    const {section,distance}=getNearestSectionForViewport();
+    if(!section)return;
+    const targetTop=getSectionScrollTop(section);
+    const viewportThreshold=Math.max(28,window.innerHeight*.12);
+    const rawTop=section.getBoundingClientRect().top;
+    const rawBottom=section.getBoundingClientRect().bottom;
+    const nearTopEdge=Math.abs(rawTop)<=viewportThreshold;
+    const nearBottomEdge=Math.abs(rawBottom-window.innerHeight)<=viewportThreshold;
+    const maxSnapDistance=Math.max(56,window.innerHeight*.18);
+    if((!nearTopEdge&&!nearBottomEdge)||distance<12||distance>maxSnapDistance)return;
+    sectionSnapLocked=true;
+    window.scrollTo({top:targetTop,behavior:'smooth'});
+    sectionSnapReleaseTimer=setTimeout(()=>{
+      sectionSnapLocked=false;
+      sectionSnapReleaseTimer=null;
+    },980);
+  },240);
+}
+
 function resetHomeViewportToHero(){
   if(!shouldForceHomeToTop())return;
+  clearSectionSnapTimers();
   currentSectionId='hero';
   hidePlaceHistoryOverlay(true);
   hideResidencyChlebaOverlay(true);
@@ -1149,6 +1208,8 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
   const section=document.getElementById(sectionId);
   if(!section)return false;
   const performScroll=()=>{
+    clearSectionSnapTimers();
+    sectionSnapLocked=true;
     currentSectionId=sectionId;
     if(sectionId!=='place')hidePlaceHistoryOverlay(true);
     if(sectionId!=='residency'){
@@ -1160,6 +1221,10 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
     const nextUrl=sectionId==='hero'?window.location.pathname:`${window.location.pathname}#${sectionId}`;
     window.history.replaceState({},'',nextUrl);
     window.scrollTo({top:getSectionScrollTop(section),behavior});
+    sectionSnapReleaseTimer=setTimeout(()=>{
+      sectionSnapLocked=false;
+      sectionSnapReleaseTimer=null;
+    },behavior==='smooth'?760:120);
   };
   if(closeMenu){
     closeMobileNav();
@@ -1254,10 +1319,11 @@ const bgFrameBySectionId=new Map(
 );
 const bgMediaBySectionId=new Map(
   [...document.querySelectorAll('section')].map(section=>{
+    const wrap=section.querySelector('.bg-video')||null;
     const video=section.querySelector('.bg-video video');
     const source=video?.querySelector('source')||null;
     const fallback=section.querySelector('.bg-video .bg-fallback')||null;
-    return [section.id,{video,source,fallback}];
+    return [section.id,{wrap,video,source,fallback}];
   }).filter(([,media])=>Boolean(media.video&&media.source))
 );
 const pbtn=document.getElementById('pbtn');
@@ -1327,6 +1393,12 @@ const BG_VARIANTS={
     night:{horizontal:'gTqXu9xU_7k',vertical:'gTqXu9xU_7k'}
   }
 };
+const PORTRAIT_BG_ASSET_IDS=new Set(
+  Object.values(BG_VARIANTS).flatMap((section)=>[
+    section.day?.vertical,
+    section.night?.vertical
+  ]).filter(Boolean)
+);
 let visualMode=localStorage.getItem('mlyn_mode')==='night'?'night':'day';
 let pauseAllVideos=false;
 let currentSectionId='hero';
@@ -1341,6 +1413,9 @@ let activeBgYoutubeVideoId='';
 let activeBgYoutubeIframe=null;
 let activePlaceHistoryYoutubeIframe=null;
 let activeResidencyChlebaYoutubeIframe=null;
+let sectionSnapTimer=null;
+let sectionSnapLocked=false;
+let sectionSnapReleaseTimer=null;
 let footerAutoHideTimer=null;
 let footerAutoHideLocked=false;
 let footerAutoHideAnimationFrame=null;
@@ -1350,7 +1425,7 @@ const lbtn=document.getElementById('lbtn');
 const langSwitch=document.getElementById('langSwitch');
 const langMenu=document.getElementById('langMenu');
 const langOptions=[...document.querySelectorAll('.lang-option')];
-const footerEl=document.querySelector('footer:not([hidden])');
+const footerEl=document.querySelector('footer');
 const LANG_STORAGE_KEY='mlyn_lang';
 const SUPPORTED_LANGS=['cs','en','de'];
 const EQUIPMENT_EMBED_BASE='/equipment-table/studio-equipment.html';
@@ -1899,6 +1974,7 @@ function updateSectionBackgroundVariant(sectionId,force=false){
   const nextVideoSrc=`/videos/bg/${videoId}.mp4?v=${BG_ASSET_REV}`;
   const nextPosterSrc=`/videos/bg/${videoId}.jpg?v=${BG_ASSET_REV}`;
   const currentVideoSrc=media.source.getAttribute('src')||'';
+  media.wrap?.classList.toggle('uses-portrait-asset',PORTRAIT_BG_ASSET_IDS.has(videoId));
   if(!force&&currentVideoSrc===nextVideoSrc)return;
   media.source.setAttribute('src',nextVideoSrc);
   media.video.setAttribute('poster',nextPosterSrc);

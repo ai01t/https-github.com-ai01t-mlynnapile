@@ -573,6 +573,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const embedded = searchParams.get("embed") === "1"
   const localVideoRef = useRef<HTMLVideoElement | null>(null)
   const langSwitchRef = useRef<HTMLDivElement | null>(null)
+  const heroSectionRef = useRef<HTMLElement | null>(null)
   const timelineSectionRef = useRef<HTMLElement | null>(null)
   const autoTimelineSnapTimerRef = useRef<number | null>(null)
   const autoTimelineSnapLockedRef = useRef(false)
@@ -753,6 +754,13 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       const currentY = window.scrollY
       const targetTop = getTimelineTargetTop()
       const viewportHeight = window.innerHeight
+      const heroSection = heroSectionRef.current
+      const heroRect = heroSection?.getBoundingClientRect()
+      const heroFullyLeading = !heroRect || heroRect.top <= 0
+      const heroNearlyPassed = !heroRect || heroRect.bottom <= viewportHeight * 0.24
+      if (!heroFullyLeading || !heroNearlyPassed) {
+        return
+      }
       const minimumSnapStart = Math.min(viewportHeight * 0.34, 320)
       const snapWindowEnd = targetTop - Math.max(18, viewportHeight * 0.08)
 
@@ -1139,7 +1147,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         </>
       ) : null}
 
-      <section className={styles.hero}>
+        <section ref={heroSectionRef} className={styles.hero}>
         <div className={styles.heroInner}>
           <h1 className={cx(styles.heroTitle, cormorant.className)}>
             {copy.titleTop}
