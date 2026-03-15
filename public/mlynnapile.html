@@ -23,7 +23,7 @@
   } catch (error) {}
   const isPortrait = typeof window.matchMedia === 'function' && window.matchMedia('(orientation: portrait)').matches;
   const heroId = visualMode === 'night'
-    ? (isPortrait ? 'DY09nnytbjc' : 'bPBM5J8v_aQ')
+    ? (isPortrait ? 'M4QkWhz7CDo' : 'bPBM5J8v_aQ')
     : (isPortrait ? 'M4QkWhz7CDo' : 'VDj9aKHnpcw_hq');
   const posterSrc = `/videos/bg/${heroId}.jpg?v=${assetRev}`;
   const videoSrc = `/videos/bg/${heroId}.mp4?v=${assetRev}`;
@@ -590,10 +590,12 @@ body.de .de{display:revert;}
   .bg-video iframe,
   .bg-video video,
   .bg-video .bg-fallback{
-    width:56.25svh;
+    width:100vw;
     height:100svh;
     min-width:100vw;
     min-height:100svh;
+    object-fit:cover;
+    object-position:center center;
   }
 }
 
@@ -1298,7 +1300,7 @@ const RESIDENCY_CHLEBA_YT_ID='NYqybmh85G4';
 const BG_VARIANTS={
   hero:{
     day:{horizontal:'VDj9aKHnpcw_hq',vertical:'M4QkWhz7CDo'},
-    night:{horizontal:'bPBM5J8v_aQ',vertical:'DY09nnytbjc'}
+    night:{horizontal:'bPBM5J8v_aQ',vertical:'M4QkWhz7CDo'}
   },
   studio:{
     day:{horizontal:'O431B93W9UY',vertical:'PNnMOPbABZo'},

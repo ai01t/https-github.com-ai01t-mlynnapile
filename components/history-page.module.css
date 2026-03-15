@@ -44,8 +44,10 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100svh;
+  min-width: 100vw;
+  min-height: 100svh;
   object-fit: cover;
   object-position: center center;
   pointer-events: none;
@@ -831,6 +833,16 @@
 }
 
 @media (orientation: portrait) {
+  .bgPoster,
+  .bgLocalVideo {
+    width: 100vw;
+    height: 100svh;
+    min-width: 100vw;
+    min-height: 100svh;
+    object-fit: cover;
+    object-position: center center;
+  }
+
   .navLinks {
     display: none;
   }

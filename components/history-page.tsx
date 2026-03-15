@@ -17,8 +17,16 @@ const manrope = Manrope({
   weight: ["300", "400", "500", "600"],
 })
 
-const HISTORY_VIDEO_SRC = "/videos/bg/M4QapdIvjkM.mp4"
-const HISTORY_VIDEO_POSTER = "/videos/bg/M4QapdIvjkM.gif"
+const HISTORY_VIDEO_ASSETS = {
+  horizontal: {
+    src: "/videos/bg/M4QapdIvjkM.mp4",
+    poster: "/videos/bg/M4QapdIvjkM.gif",
+  },
+  vertical: {
+    src: "/videos/bg/tDThp7QpIL4.mp4",
+    poster: "/videos/bg/tDThp7QpIL4.jpg",
+  },
+} as const
 const MODE_STORAGE_KEY = "mlyn_mode"
 const LANG_STORAGE_KEY = "mlyn_lang"
 
@@ -496,6 +504,14 @@ function attemptPlay(video: HTMLVideoElement | null) {
     return
   }
 
+  prepareBackgroundVideo(video)
+  const maybePromise = video.play()
+  if (maybePromise && typeof maybePromise.catch === "function") {
+    maybePromise.catch(() => {})
+  }
+}
+
+function prepareBackgroundVideo(video: HTMLVideoElement) {
   video.muted = true
   video.defaultMuted = true
   video.playsInline = true
@@ -505,11 +521,6 @@ function attemptPlay(video: HTMLVideoElement | null) {
   try {
     video.volume = 0
   } catch {}
-
-  const maybePromise = video.play()
-  if (maybePromise && typeof maybePromise.catch === "function") {
-    maybePromise.catch(() => {})
-  }
 }
 
 function cx(...values: Array<string | false | null | undefined>) {
@@ -575,10 +586,12 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [videoReady, setVideoReady] = useState(false)
   const [localPlaying, setLocalPlaying] = useState(false)
+  const [isPortrait, setIsPortrait] = useState(false)
 
   const activeItem = copy.entries[activeIndex]
   const timelinePositions = getTimelinePositions(copy.entries)
   const isLastTimelineStep = activeIndex === copy.entries.length - 1
+  const historyVideo = isPortrait ? HISTORY_VIDEO_ASSETS.vertical : HISTORY_VIDEO_ASSETS.horizontal
 
   const getTimelineTargetTop = () => {
     const timelineSection = timelineSectionRef.current
@@ -620,6 +633,20 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       document.body.style.scrollSnapType = previousBodySnapType
     }
   }, [locale])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(orientation: portrait)")
+    const syncOrientation = () => setIsPortrait(mediaQuery.matches)
+
+    syncOrientation()
+    mediaQuery.addEventListener?.("change", syncOrientation)
+    window.addEventListener("resize", syncOrientation)
+
+    return () => {
+      mediaQuery.removeEventListener?.("change", syncOrientation)
+      window.removeEventListener("resize", syncOrientation)
+    }
+  }, [])
 
   useEffect(() => {
     try {
@@ -768,16 +795,26 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       return
     }
 
+    setVideoReady(false)
+    setLocalPlaying(false)
+    prepareBackgroundVideo(localVideo)
+    try {
+      localVideo.load()
+    } catch {}
+    if (!paused) {
+      attemptPlay(localVideo)
+    }
+  }, [historyVideo.poster, historyVideo.src, paused])
+
+  useEffect(() => {
+    const localVideo = localVideoRef.current
+    if (!localVideo) {
+      return
+    }
+
     const prepareVideo = () => {
-      localVideo.muted = true
-      localVideo.defaultMuted = true
+      prepareBackgroundVideo(localVideo)
       localVideo.loop = true
-      localVideo.playsInline = true
-      localVideo.defaultPlaybackRate = 1
-      localVideo.playbackRate = 1
-      try {
-        localVideo.volume = 0
-      } catch {}
       localVideo.setAttribute("muted", "")
       localVideo.setAttribute("autoplay", "")
       localVideo.setAttribute("playsinline", "")
@@ -904,7 +941,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       window.removeEventListener("touchstart", kickstartFromInteraction)
       window.removeEventListener("keydown", kickstartFromInteraction)
     }
-  }, [paused])
+  }, [historyVideo.src, paused])
 
   useEffect(() => {
     const localVideo = localVideoRef.current
@@ -957,17 +994,18 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       )}
     >
       <div className={styles.bgShell} aria-hidden="true">
-        <div className={styles.bgPoster} style={{ backgroundImage: `url("${HISTORY_VIDEO_POSTER}")` }} />
+        <div className={styles.bgPoster} style={{ backgroundImage: `url("${historyVideo.poster}")` }} />
         <video
+          key={historyVideo.src}
           ref={localVideoRef}
           className={styles.bgLocalVideo}
-          src={HISTORY_VIDEO_SRC}
+          src={historyVideo.src}
           autoPlay
           muted
           loop
           playsInline
           preload="auto"
-          poster={HISTORY_VIDEO_POSTER}
+          poster={historyVideo.poster}
           x-webkit-airplay="deny"
           disablePictureInPicture
           disableRemotePlayback
