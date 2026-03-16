@@ -16,6 +16,14 @@
       window.history.scrollRestoration = 'manual';
     }
   } catch (error) {}
+  const shouldForceTop = !window.location.hash;
+  window.__MLYN_BOOT_FORCE_TOP = shouldForceTop;
+  if (shouldForceTop) {
+    try {
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+    } catch (error) {}
+  }
   const assetRev = '20260309c';
   let visualMode = 'day';
   try {
@@ -482,10 +490,21 @@ body.pause-active section .content{filter:brightness(1.14);}
   margin-bottom:0;
 }
 #contact.view-faq .contact-faq-inline{order:0;margin-top:0;margin-bottom:12px;}
-#contact.view-faq .contact-address-block{order:1;}
+#contact.view-faq .contact-address-block{display:none;}
 .contact-faq-inline #resFaqList{max-height:170px;overflow:auto;padding-right:4px;}
 .contact-faq-inline .resfaq-q{padding:7px 0;}
 .contact-faq-inline .resfaq-a{padding:0 0 8px;}
+#contact.view-faq .contact-text-fx::before{
+  background:linear-gradient(
+    to bottom,
+    rgba(7,6,10,.12) 0%,
+    rgba(7,6,10,.28) 24%,
+    rgba(7,6,10,.54) 52%,
+    rgba(7,6,10,.86) 100%
+  );
+  backdrop-filter:blur(15px);
+  -webkit-backdrop-filter:blur(15px);
+}
 .con-detail{padding:16px 0;border-bottom:1px solid var(--border);}
 .con-detail a{font-size:.83rem;color:rgba(240,235,226,.65);text-decoration:none;transition:color .2s;}
 .con-detail a:hover{color:var(--gold);}
@@ -1065,7 +1084,7 @@ body.de .de{display:revert;}
               </div>
               <div class="founder-block">
                 <h3 class="founder-name">Andrea Kohoutová</h3>
-                <p class="founder-text"><span class="cs">Andrea je zpěvačka, baskytaristka kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, archeoložka a aktuálně hlavní pekařka mlýna :-). Stará se o provoz a zázemí mlýna, kde peče skvělý <a class="chleba-trigger" href="/chleba">domácí chléb</a> - důležitý bonus pro naše hosty.</span><span class="en">Andrea is a singer and bassist in <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, an archaeologist, and currently the head baker at the mill :-). She takes care of mill operations and facilities, where she bakes great <a class="chleba-trigger" href="/chleba">homemade bread</a> — an important bonus for our guests.</span><span class="de">Andrea ist Sängerin und Bassistin der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, Archäologin und aktuell Hauptbäckerin der Mühle :-). Sie kümmert sich um den Betrieb und das Umfeld der Mühle, wo sie hervorragendes <a class="chleba-trigger" href="/chleba">hausgemachtes Brot</a> backt — ein wichtiger Bonus für unsere Gäste.</span></p>
+                <p class="founder-text"><span class="cs">Andrea je zpěvačka, baskytaristka kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, archeoložka a aktuálně hlavní pekařka mlýna :-). Stará se o provoz a zázemí mlýna, kde peče skvělý <a class="chleba-trigger" href="/chleba">domácí chléb</a> – důležitý bonus pro naše hosty.</span><span class="en">Andrea is a singer and bassist in <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, an archaeologist, and currently the head baker at the mill :-). She takes care of mill operations and facilities, where she bakes great <a class="chleba-trigger" href="/chleba">homemade bread</a> — an important bonus for our guests.</span><span class="de">Andrea ist Sängerin und Bassistin der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, Archäologin und aktuell Hauptbäckerin der Mühle :-). Sie kümmert sich um den Betrieb und das Umfeld der Mühle, wo sie hervorragendes <a class="chleba-trigger" href="/chleba">hausgemachtes Brot</a> backt — ein wichtiger Bonus für unsere Gäste.</span></p>
               </div>
             </div>
           </div>
@@ -1137,6 +1156,20 @@ function shouldForceHomeToTop(){
   return !window.location.hash;
 }
 
+function clearInitialTopLockTimer(){
+  if(initialTopLockTimer){
+    clearTimeout(initialTopLockTimer);
+    initialTopLockTimer=null;
+  }
+}
+
+function releaseInitialTopLock(){
+  clearInitialTopLockTimer();
+  initialTopLockActive=false;
+  sectionSnapLocked=false;
+  try{document.documentElement.style.scrollBehavior='';}catch(error){}
+}
+
 function clearSectionSnapTimers(){
   if(sectionSnapTimer){
     clearTimeout(sectionSnapTimer);
@@ -1164,11 +1197,11 @@ function getNearestSectionForViewport(){
 }
 
 function scheduleSectionSettleSnap(){
-  if(sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
+  if(initialTopLockActive||sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
   if(sectionSnapTimer)clearTimeout(sectionSnapTimer);
   sectionSnapTimer=setTimeout(()=>{
     sectionSnapTimer=null;
-    if(sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
+    if(initialTopLockActive||sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
     const {section,distance}=getNearestSectionForViewport();
     if(!section)return;
     const targetTop=getSectionScrollTop(section);
@@ -1191,17 +1224,31 @@ function scheduleSectionSettleSnap(){
 function resetHomeViewportToHero(){
   if(!shouldForceHomeToTop())return;
   clearSectionSnapTimers();
+  clearInitialTopLockTimer();
+  initialTopLockActive=true;
+  sectionSnapLocked=true;
   currentSectionId='hero';
   hidePlaceHistoryOverlay(true);
   hideResidencyChlebaOverlay(true);
   hideResidencyPackageOverlay(true);
   closeInlineResidencyVideo(true);
   syncBackgroundVideos();
+  try{document.documentElement.style.scrollBehavior='auto';}catch(error){}
   const finish=()=>{
     window.scrollTo({top:0,behavior:'auto'});
     kickBgVideos();
+    primeActiveBackgroundPlayback();
   };
   requestAnimationFrame(()=>requestAnimationFrame(finish));
+  [140,420,860].forEach((delay)=>{
+    setTimeout(()=>{
+      if(!initialTopLockActive||!shouldForceHomeToTop())return;
+      finish();
+    },delay);
+  });
+  initialTopLockTimer=setTimeout(()=>{
+    releaseInitialTopLock();
+  },1200);
 }
 
 function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
@@ -1416,6 +1463,8 @@ let activeResidencyChlebaYoutubeIframe=null;
 let sectionSnapTimer=null;
 let sectionSnapLocked=false;
 let sectionSnapReleaseTimer=null;
+let initialTopLockActive=shouldForceHomeToTop();
+let initialTopLockTimer=null;
 let footerAutoHideTimer=null;
 let footerAutoHideLocked=false;
 let footerAutoHideAnimationFrame=null;
@@ -1487,8 +1536,8 @@ const RES_FAQ_ITEMS_BY_LANG={
     {q:'Straší na mlýně?',a:'Ne ;-)'},
     {q:'Jste plátci DPH?',a:'Ano, jsme plátci DPH. Všechny ceny na webu jsou uvedeny včetně DPH.'},
     {q:'Lze pronajmout celý objekt?',a:'Ano. Celý komplex lze rezervovat minimálně na 3 dny.'},
-    {q:'Smí se v mlýně kouřit?',a:'Nesmí. Mlýn je z velké části ze dřeva, je zde hodně protipožárních ochran, které by okamžitě spustili hlasitý poplacha a vzdálené notifikace - tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.'},
-    {q:'Mohu si dovézt vlastní aparaturu a je objekt dostatečně zabezpečen?',a:'Samozřejmě můžete, aparatura se dá vyložit přímo před studiem. Objekt je zabezpečen na několika úrovních, současně je na hrázy kde projede jen jedno auto. Vykrást takový objekt s aparaturou, která by opravdu těžko veřejně prodávala úplně nedává smysl... Zlodějům bychom nedoporučovali s ohledem na výše zmíněné okolnosti, nad tím vůbec uvažovat.... ;-)'},
+    {q:'Smí se v mlýně kouřit?',a:'Nesmí. Mlýn je z velké části ze dřeva, je zde hodně protipožárních ochran, které by okamžitě spustily hlasitý poplach a vzdálené notifikace – tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.'},
+    {q:'Mohu si dovézt vlastní aparaturu a je objekt dostatečně zabezpečen?',a:'Samozřejmě můžete, aparatura se dá vyložit přímo před studiem. Objekt je zabezpečen na několika úrovních, současně je přístup přes hráz, kde projede jen jedno auto. Vykrást takový objekt s aparaturou, která by se jen velmi těžko veřejně prodávala, úplně nedává smysl. Zlodějům bychom s ohledem na výše zmíněné okolnosti vůbec nedoporučovali o něčem takovém uvažovat... ;-)'},
     {q:'Poskytujete ubytování i samostatně?',a:'Ubytování je součástí pobytu ve studiu během kreativní práce.'},
     {q:'Jak se k nám dostanu?',a:'Autem: přímý přístup, soukromé parkování. Vlakem: 10 min pěšky ze stanice Trhanov. Letecky: 1h 45min z letiště Praha, 2h z letiště Mnichov, pick-up služba k dispozici.'},
     {q:'Mohu přijet i sám, nebo je akce určena pouze pro kapely a týmy?',a:'Jasně - pro sólo umělce je k dispozici i looper Plethora X5 od TC Electronic. ;-)'},
@@ -1781,6 +1830,31 @@ function forceResumeActiveVideo(){
     playBgVideo(activeVideo);
     if(activeVideo.paused&&activeVideo.readyState<2)scheduleBgRetry(activeVideo,420);
   }
+}
+
+function primeActiveBackgroundPlayback(delay=0){
+  const run=()=>{
+    if(pauseAllVideos||document.hidden)return;
+    const activeVideo=bgFrameBySectionId.get(currentSectionId);
+    if(!activeVideo)return;
+    activeVideo.muted=true;
+    activeVideo.defaultMuted=true;
+    activeVideo.volume=0;
+    activeVideo.autoplay=true;
+    activeVideo.loop=true;
+    activeVideo.playsInline=true;
+    activeVideo.preload='auto';
+    if(activeVideo.readyState===0||activeVideo.networkState===activeVideo.NETWORK_EMPTY){
+      try{activeVideo.load();}catch(e){}
+    }
+    playBgVideo(activeVideo);
+    if(activeVideo.paused)scheduleBgRetry(activeVideo,220);
+  };
+  if(delay>0){
+    setTimeout(run,delay);
+    return;
+  }
+  run();
 }
 
 function pauseBgVideo(video){
@@ -2494,11 +2568,29 @@ applyLang();
 }
 applyVisualMode(true);
 syncBackgroundVideos();
+primeActiveBackgroundPlayback();
 startBgAutoplayWatchdog();
 ['pointerdown','touchstart','keydown','wheel'].forEach(ev=>window.addEventListener(ev,kickBgVideos,{passive:true}));
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)kickBgVideos();});
-window.addEventListener('focus',kickBgVideos);
-window.addEventListener('pageshow',kickBgVideos);
+['touchstart','pointerdown','wheel'].forEach((ev)=>{
+  window.addEventListener(ev,()=>{
+    if(initialTopLockActive)releaseInitialTopLock();
+  },{passive:true});
+});
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden){
+    kickBgVideos();
+    primeActiveBackgroundPlayback(60);
+  }
+});
+window.addEventListener('focus',()=>{
+  kickBgVideos();
+  primeActiveBackgroundPlayback(60);
+});
+window.addEventListener('pageshow',()=>{
+  kickBgVideos();
+  primeActiveBackgroundPlayback(60);
+  primeActiveBackgroundPlayback(420);
+});
 window.addEventListener('resize',()=>{
   updateAllBackgroundVariants();
   ensurePlaceHistoryYoutube();
@@ -2516,6 +2608,9 @@ window.addEventListener('orientationchange',()=>setTimeout(()=>{
 window.addEventListener('load',()=>{
   updateAllBackgroundVariants(true);
   kickBgVideos();
+  primeActiveBackgroundPlayback(80);
+  primeActiveBackgroundPlayback(520);
+  primeActiveBackgroundPlayback(1400);
   handleFooterAutoHide();
   setTimeout(kickBgVideos,900);
   setTimeout(kickBgVideos,2200);

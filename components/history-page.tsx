@@ -192,7 +192,7 @@ const copyByLocale: Record<Locale, Copy> = {
         era: "Přelom tisíciletí",
         title: "Rozsáhlá rekonstrukce",
         paragraphs: [
-          "Od roku 1990 se mlýna ujali noví majitelé - manželé Svobodovi, kteří do něj vložili obrovské úsilí – poctivá rekonstrukce, příkup a rekultivace okolních pozemků, stavba zděné pece na chleba i dalšího zázemí.",
+          "Od roku 1990 se mlýna ujali noví majitelé – manželé Svobodovi, kteří do něj vložili obrovské úsilí – poctivá rekonstrukce, příkup a rekultivace okolních pozemků, stavba zděné pece na chleba i dalšího zázemí.",
         ],
       },
       {
@@ -577,6 +577,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const timelineSectionRef = useRef<HTMLElement | null>(null)
   const autoTimelineSnapTimerRef = useRef<number | null>(null)
   const autoTimelineSnapLockedRef = useRef(false)
+  const heroPanelAnchoredRef = useRef(false)
   const lastScrollYRef = useRef(0)
   const lastScrollDirectionRef = useRef<"up" | "down">("down")
   const [activeIndex, setActiveIndex] = useState(0)
@@ -756,13 +757,19 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       const viewportHeight = window.innerHeight
       const heroSection = heroSectionRef.current
       const heroRect = heroSection?.getBoundingClientRect()
-      const heroFullyLeading = !heroRect || heroRect.top <= 0
-      const heroNearlyPassed = !heroRect || heroRect.bottom <= viewportHeight * 0.24
-      if (!heroFullyLeading || !heroNearlyPassed) {
+      const heroTopAligned = !heroRect || Math.abs(heroRect.top) <= Math.max(10, viewportHeight * 0.015)
+      const heroMostlyVisible = !heroRect || heroRect.bottom >= viewportHeight * 0.76
+      if (heroTopAligned && heroMostlyVisible) {
+        heroPanelAnchoredRef.current = true
+      }
+
+      const heroFullyLeading = !heroRect || heroRect.top <= Math.max(6, viewportHeight * 0.01)
+      const heroNearlyPassed = !heroRect || heroRect.bottom <= viewportHeight * 0.16
+      if (!heroPanelAnchoredRef.current || !heroFullyLeading || !heroNearlyPassed) {
         return
       }
-      const minimumSnapStart = Math.min(viewportHeight * 0.34, 320)
-      const snapWindowEnd = targetTop - Math.max(18, viewportHeight * 0.08)
+      const minimumSnapStart = Math.min(viewportHeight * 0.5, 460)
+      const snapWindowEnd = targetTop - Math.max(16, viewportHeight * 0.04)
 
       if (currentY < minimumSnapStart || currentY >= snapWindowEnd) {
         return
@@ -781,6 +788,9 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
 
       if (Math.abs(currentY - previousY) > 2) {
         lastScrollDirectionRef.current = currentY > previousY ? "down" : "up"
+      }
+      if (currentY <= 8) {
+        heroPanelAnchoredRef.current = false
       }
       lastScrollYRef.current = currentY
 

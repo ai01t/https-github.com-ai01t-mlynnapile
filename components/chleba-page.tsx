@@ -70,7 +70,7 @@ const copyByLocale: Record<Locale, Copy> = {
     intro1:
       "Součástí každého pobytu i nahrávání je snídaně nebo brunch. Pečeme k nim vlastní kváskový chleba, vždy čerstvý, ve velké venkovní peci. Pečeme zde také pizzu ;-)",
     intro2:
-      "Pečeme jak kváskový tak i klasický chleba, vždy jen z prvotřídních surovin. Vzhledem k pozitivnímu ohlasu nakonec plánujeme dodávat i mimo studio... ;)",
+      "Pečeme jak kváskový, tak i klasický chleba, vždy jen z prvotřídních surovin. Vzhledem k pozitivnímu ohlasu nakonec plánujeme dodávat i mimo studio... ;)",
     backToPackages: "Zpět na Studio",
     contactCta: "Kontakt",
   },
