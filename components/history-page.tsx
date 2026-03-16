@@ -757,8 +757,23 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       const viewportHeight = window.innerHeight
       const heroSection = heroSectionRef.current
       const heroRect = heroSection?.getBoundingClientRect()
+      const heroNeedsAnchorSettle =
+        !heroPanelAnchoredRef.current &&
+        currentY > 18 &&
+        currentY < Math.min(viewportHeight * 0.42, 320) &&
+        (!heroRect || (heroRect.top < -10 && heroRect.bottom > viewportHeight * 0.58))
+
+      if (heroNeedsAnchorSettle) {
+        autoTimelineSnapLockedRef.current = true
+        window.scrollTo({ top: 0, behavior: "smooth" })
+        window.setTimeout(() => {
+          autoTimelineSnapLockedRef.current = false
+        }, 850)
+        return
+      }
+
       const heroTopAligned = !heroRect || Math.abs(heroRect.top) <= Math.max(10, viewportHeight * 0.015)
-      const heroMostlyVisible = !heroRect || heroRect.bottom >= viewportHeight * 0.76
+      const heroMostlyVisible = !heroRect || heroRect.bottom >= viewportHeight * 0.9
       if (heroTopAligned && heroMostlyVisible) {
         heroPanelAnchoredRef.current = true
       }

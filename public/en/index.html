@@ -494,16 +494,25 @@ body.pause-active section .content{filter:brightness(1.14);}
 .contact-faq-inline #resFaqList{max-height:170px;overflow:auto;padding-right:4px;}
 .contact-faq-inline .resfaq-q{padding:7px 0;}
 .contact-faq-inline .resfaq-a{padding:0 0 8px;}
+#contact.view-faq .contact-faq-inline{
+  background:rgba(7,6,10,.6);
+  border:1px solid rgba(201,185,154,.14);
+  border-radius:18px;
+  padding:20px 22px 16px;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  box-shadow:0 22px 60px rgba(0,0,0,.28);
+}
 #contact.view-faq .contact-text-fx::before{
   background:linear-gradient(
     to bottom,
-    rgba(7,6,10,.12) 0%,
-    rgba(7,6,10,.28) 24%,
-    rgba(7,6,10,.54) 52%,
-    rgba(7,6,10,.86) 100%
+    rgba(7,6,10,.24) 0%,
+    rgba(7,6,10,.48) 24%,
+    rgba(7,6,10,.72) 52%,
+    rgba(7,6,10,.92) 100%
   );
-  backdrop-filter:blur(15px);
-  -webkit-backdrop-filter:blur(15px);
+  backdrop-filter:blur(17px);
+  -webkit-backdrop-filter:blur(17px);
 }
 .con-detail{padding:16px 0;border-bottom:1px solid var(--border);}
 .con-detail a{font-size:.83rem;color:rgba(240,235,226,.65);text-decoration:none;transition:color .2s;}
@@ -1534,6 +1543,7 @@ let lang='cs';
 const RES_FAQ_ITEMS_BY_LANG={
   cs:[
     {q:'Straší na mlýně?',a:'Ne ;-)'},
+    {q:'Kolik stojí pobyt a kdy je možné rezervovat?',aHtml:'Na studiu stále pracujeme a ladíme poslední detaily. Ceník i rezervace budou brzy k dispozici. Pokud máte zájem, napište nám na <a href=\"mailto:mlynnapile@gmail.com\" class=\"underline\">mlynnapile@gmail.com</a> – ozveme se zpět. Připravujeme <a href=\"/booking\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">mlynnapile.cz/booking</a>.'},
     {q:'Jste plátci DPH?',a:'Ano, jsme plátci DPH. Všechny ceny na webu jsou uvedeny včetně DPH.'},
     {q:'Lze pronajmout celý objekt?',a:'Ano. Celý komplex lze rezervovat minimálně na 3 dny.'},
     {q:'Smí se v mlýně kouřit?',a:'Nesmí. Mlýn je z velké části ze dřeva, je zde hodně protipožárních ochran, které by okamžitě spustily hlasitý poplach a vzdálené notifikace – tzn. pokud si přivezete vlastní nástroje, budou v bezpečí.'},
@@ -1548,6 +1558,7 @@ const RES_FAQ_ITEMS_BY_LANG={
   ],
   en:[
     {q:'Is the mill haunted?',a:'No ;-)'},
+    {q:'How much does a stay cost and when will booking open?',aHtml:'We are still refining the final details of the studio. Pricing and booking will be available soon. If you are interested, write to us at <a href=\"mailto:mlynnapile@gmail.com\" class=\"underline\">mlynnapile@gmail.com</a> and we will get back to you. We are preparing <a href=\"/en/booking\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">mlynnapile.cz/booking</a>.'},
     {q:'Are you VAT registered?',a:'Yes, we are VAT registered. All prices on the website include VAT.'},
     {q:'Can the entire property be rented?',a:'Yes. The entire complex can be booked for a minimum of 3 days.'},
     {q:'Is smoking allowed in the mill?',a:'No. The mill is largely wooden and has extensive fire protection systems that would immediately trigger loud alarms and remote notifications, so your own instruments are safe.'},
@@ -1562,6 +1573,7 @@ const RES_FAQ_ITEMS_BY_LANG={
   ],
   de:[
     {q:'Spukt es in der Mühle?',a:'Nein ;-)'},
+    {q:'Was kostet der Aufenthalt und ab wann kann man reservieren?',aHtml:'Wir arbeiten noch an den letzten Details des Studios. Preise und Reservierungen werden bald verfügbar sein. Wenn Sie Interesse haben, schreiben Sie uns an <a href=\"mailto:mlynnapile@gmail.com\" class=\"underline\">mlynnapile@gmail.com</a> – wir melden uns zurück. Wir bereiten <a href=\"/de/buchung\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"underline\">mlynnapile.cz/booking</a> vor.'},
     {q:'Sind Sie umsatzsteuerpflichtig?',a:'Ja, wir sind umsatzsteuerpflichtig. Alle Preise auf der Website verstehen sich inklusive MwSt.'},
     {q:'Kann man das gesamte Objekt mieten?',a:'Ja. Der gesamte Komplex kann für mindestens 3 Tage gebucht werden.'},
     {q:'Ist Rauchen in der Mühle erlaubt?',a:'Nein. Die Mühle besteht größtenteils aus Holz und ist mit Brandschutzsystemen ausgestattet, die sofort Alarme und Fernbenachrichtigungen auslösen würden.'},
