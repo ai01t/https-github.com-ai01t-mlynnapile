@@ -4,7 +4,8 @@ import { useEffect } from "react"
 
 export default function EnglishPage() {
   useEffect(() => {
-    window.location.href = "/?lang=en"
+    const hash = window.location.hash || ""
+    window.location.href = `/?lang=en${hash}`
   }, [])
 
   return (

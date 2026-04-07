@@ -2,10 +2,11 @@
   --bg: #07060a;
   --stone: #c9b99a;
   --gold: #b08d57;
-  --gold-light: #d4aa72;
+  --gold-light: #d7b47d;
   --cream: #f0ebe2;
   --muted: #8b8178;
   --border: rgba(201, 185, 154, 0.14);
+  --footer-reveal-gap: 120px;
   position: relative;
   min-height: 100vh;
   overflow-x: hidden;
@@ -20,31 +21,54 @@
   inset: 0;
 }
 
+.bgVideo,
+.bgFrame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .bgShell {
   z-index: 0;
   overflow: hidden;
   background: #050506;
 }
 
+.bgVideo {
+  object-fit: cover;
+  filter: saturate(0.84) brightness(0.74);
+}
+
+.bgFrame {
+  border: 0;
+  transform: scale(1.18);
+  filter: saturate(0.84) brightness(0.72);
+}
+
 .bgPoster {
-  background-image: url("/videos/bg/VDj9aKHnpcw_hq.jpg");
   background-size: cover;
-  background-position: center;
-  opacity: 0.44;
-  filter: saturate(0.88);
+  background-position: center center;
+  opacity: 0.36;
+  filter: saturate(0.9) contrast(0.94);
+  transform: scale(1.02);
 }
 
 .bgOverlay {
   z-index: 1;
   background:
-    radial-gradient(circle at top, rgba(186, 148, 97, 0.12), transparent 40%),
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.62) 0%, rgba(7, 6, 10, 0.34) 30%, rgba(7, 6, 10, 0.84) 100%);
+    radial-gradient(circle at 20% 10%, rgba(186, 148, 97, 0.08), transparent 36%),
+    radial-gradient(circle at 78% 18%, rgba(110, 125, 144, 0.08), transparent 30%),
+    linear-gradient(to bottom, rgba(7, 6, 10, 0.68) 0%, rgba(7, 6, 10, 0.34) 34%, rgba(7, 6, 10, 0.86) 100%);
 }
 
 .nightMode .bgOverlay {
   background:
-    radial-gradient(circle at top, rgba(186, 148, 97, 0.08), transparent 36%),
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.74) 0%, rgba(7, 6, 10, 0.46) 32%, rgba(7, 6, 10, 0.9) 100%);
+    radial-gradient(circle at 18% 12%, rgba(186, 148, 97, 0.08), transparent 34%),
+    radial-gradient(circle at 82% 22%, rgba(98, 113, 140, 0.12), transparent 28%),
+    linear-gradient(to bottom, rgba(7, 6, 10, 0.82) 0%, rgba(7, 6, 10, 0.56) 34%, rgba(7, 6, 10, 0.94) 100%);
 }
 
 .nav {
@@ -56,7 +80,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 9px 40px;
+  padding: 22px 52px;
   transition: padding 0.4s, background 0.4s, border-color 0.4s;
   border-bottom: 1px solid rgba(201, 185, 154, 0.16);
   background: linear-gradient(to bottom, rgba(7, 6, 10, 0.72) 0%, rgba(7, 6, 10, 0.44) 70%, rgba(7, 6, 10, 0.18) 100%);
@@ -64,9 +88,9 @@
 }
 
 .navScrolled {
-  background: rgba(7, 6, 10, 0.9);
+  background: rgba(7, 6, 10, 0.92);
   backdrop-filter: blur(16px);
-  padding: 7px 40px;
+  padding: 14px 52px;
   border-color: rgba(201, 185, 154, 0.22);
 }
 
@@ -85,7 +109,7 @@
 
 .navLinks {
   display: flex;
-  gap: 26px;
+  gap: 32px;
   list-style: none;
 }
 
@@ -95,6 +119,7 @@
   text-transform: uppercase;
   color: rgba(240, 235, 226, 0.76);
   font-weight: 400;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
   text-decoration: none;
   transition: color 0.2s;
 }
@@ -106,7 +131,7 @@
 .navActions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .btnLang,
@@ -132,7 +157,7 @@
 }
 
 .btnPause {
-  padding: 4px 8px;
+  padding: 7px 12px;
 }
 
 .pauseIcon {
@@ -146,8 +171,8 @@
 }
 
 .btnMode {
-  padding: 4px 7px;
-  min-width: 32px;
+  padding: 7px 10px;
+  min-width: 42px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -166,8 +191,8 @@
 }
 
 .btnLang {
-  padding: 4px 7px;
-  min-width: 36px;
+  padding: 7px 10px;
+  min-width: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -302,280 +327,927 @@
 .pageShell {
   position: relative;
   z-index: 10;
-  max-width: 1280px;
+  width: min(1360px, calc(100% - 96px));
   margin: 0 auto;
-  padding: 148px 40px 80px;
+  padding: 124px 0 0;
+  min-height: calc(100vh - 96px + var(--footer-reveal-gap));
 }
 
-.hero {
+.experience {
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(320px, 0.78fr);
-  gap: 38px;
-  align-items: end;
+  grid-template-columns: minmax(360px, 0.9fr) minmax(520px, 1.1fr);
+  gap: 64px;
+  align-items: stretch;
+  min-height: calc(100vh - 188px);
+}
+
+.infoColumn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0 0 44px;
+  min-height: 640px;
 }
 
 .eyebrow {
   display: inline-block;
-  margin-bottom: 20px;
-  font-size: 0.62rem;
-  letter-spacing: 0.24em;
+  margin-bottom: 14px;
+  font-size: 0.66rem;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(201, 185, 154, 0.84);
-}
-
-.title {
-  font-size: clamp(3.6rem, 8vw, 7.2rem);
-  font-weight: 300;
-  line-height: 0.9;
-  color: var(--cream);
-  max-width: 8ch;
-}
-
-.title em {
-  font-style: italic;
-  color: var(--stone);
-}
-
-.leadCard {
-  border: 1px solid rgba(201, 185, 154, 0.18);
-  background: rgba(7, 6, 10, 0.46);
-  padding: 28px 30px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
-}
-
-.leadCard p {
-  font-size: 0.93rem;
-  line-height: 1.86;
-  color: rgba(240, 235, 226, 0.84);
-}
-
-.leadCard p + p {
-  margin-top: 14px;
-  color: rgba(240, 235, 226, 0.66);
-}
-
-.ctaRow {
-  margin-top: 24px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.btnPrimary,
-.btnSecondary {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
-}
-
-.btnPrimary {
-  background: var(--gold);
-  color: var(--bg);
-  padding: 14px 22px;
-}
-
-.btnPrimary:hover {
-  background: var(--gold-light);
-  transform: translateY(-1px);
-}
-
-.btnSecondary {
-  border: 1px solid rgba(176, 141, 87, 0.38);
-  color: var(--cream);
-  padding: 14px 22px;
-}
-
-.btnSecondary:hover {
-  border-color: rgba(212, 170, 114, 0.62);
-  color: #ffffff;
-}
-
-.monthsSection {
-  margin-top: 56px;
-}
-
-.sectionLabel {
-  font-size: 0.62rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: rgba(201, 185, 154, 0.72);
-}
-
-.monthsGrid {
-  margin-top: 18px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.monthCard {
-  border: 1px solid rgba(201, 185, 154, 0.14);
-  background: rgba(7, 6, 10, 0.42);
-  padding: 20px 20px 18px;
-  min-height: 184px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.monthHead {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.monthTitle {
-  font-size: 1.6rem;
-  font-weight: 400;
-  line-height: 0.98;
-}
-
-.status {
-  display: inline-flex;
-  align-items: center;
-  padding: 7px 10px;
-  border: 1px solid rgba(176, 141, 87, 0.26);
-  color: rgba(240, 235, 226, 0.78);
-  font-size: 0.58rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.statusBooked {
-  border-color: rgba(212, 170, 114, 0.48);
-  color: var(--gold-light);
-  background: rgba(176, 141, 87, 0.12);
-}
-
-.statusSoon {
-  border-color: rgba(201, 185, 154, 0.18);
-}
-
-.termList {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-}
-
-.termItem {
-  padding-top: 10px;
-  border-top: 1px solid rgba(201, 185, 154, 0.08);
-}
-
-.termRange {
-  display: block;
-  font-size: 0.8rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.86);
-}
-
-.termState {
-  display: block;
-  margin-top: 5px;
-  font-size: 0.74rem;
-  line-height: 1.6;
-  color: rgba(240, 235, 226, 0.58);
-}
-
-.termStateBooked {
-  color: var(--gold-light);
-}
-
-.noteCard {
-  margin-top: 20px;
-  max-width: 920px;
-  border: 1px solid rgba(201, 185, 154, 0.12);
-  background: rgba(7, 6, 10, 0.34);
-  padding: 18px 20px;
-}
-
-.noteCard p {
-  font-size: 0.82rem;
-  line-height: 1.75;
   color: rgba(240, 235, 226, 0.62);
 }
 
-@media (max-width: 1100px) {
+.title {
+  margin: 0;
+  font-size: clamp(3.7rem, 6vw, 6.2rem);
+  line-height: 0.92;
+  font-weight: 300;
+  color: var(--cream);
+  letter-spacing: -0.02em;
+}
+
+.title span {
+  display: block;
+}
+
+.title em {
+  display: block;
+  margin-top: 10px;
+  font-style: normal;
+  font-size: 0.56em;
+  line-height: 1;
+  color: rgba(212, 170, 114, 0.88);
+}
+
+.description {
+  margin-top: 26px;
+  max-width: 430px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.description p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.72;
+  color: rgba(240, 235, 226, 0.72);
+}
+
+.noticeDock {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 10px;
+  min-height: 52px;
+  max-width: 420px;
+}
+
+.bookingNotice {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 0 26px 0 0;
+  border: 0;
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+  opacity: 0;
+  transform: translateX(-42px);
+  pointer-events: none;
+  transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.42s ease;
+}
+
+.bookingNoticeOpen {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.bookingNotice p {
+  margin: 0;
+  flex: 1;
+  font-size: 0.7rem;
+  line-height: 1.56;
+  color: rgba(240, 235, 226, 0.76);
+}
+
+.bookingNoticeClose {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: rgba(240, 235, 226, 0.44);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  margin-top: 2px;
+}
+
+.bookingNoticeClose:hover {
+  color: rgba(240, 235, 226, 0.9);
+}
+
+.monthGuide {
+  margin-top: 18px;
+  max-width: 470px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+
+.monthGuideBlock + .monthGuideBlock {
+  margin-top: 22px;
+}
+
+.monthGuideBlock h3 {
+  margin: 0 0 10px;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(212, 170, 114, 0.82);
+}
+
+.monthGuideList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.monthGuideList li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 0.77rem;
+  line-height: 1.72;
+  color: rgba(240, 235, 226, 0.74);
+}
+
+.monthGuideList li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: rgba(212, 170, 114, 0.8);
+}
+
+.monthGuideLink {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: rgba(212, 170, 114, 0.44);
+  text-underline-offset: 0.18em;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.monthGuideLink:hover {
+  color: rgba(240, 235, 226, 0.96);
+  text-decoration-color: rgba(212, 170, 114, 0.82);
+}
+
+.monthGuideEventLeadActive {
+  color: rgba(213, 122, 122, 0.92);
+}
+
+.monthGuideNote {
+  margin: 16px 0 0;
+  font-size: 0.74rem;
+  line-height: 1.64;
+  color: rgba(240, 235, 226, 0.68);
+}
+
+.monthGuideNav {
+  margin-top: 14px;
+  margin-bottom: 22px;
+}
+
+.arrowGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.arrowButton {
+  appearance: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 185, 154, 0.16);
+  background: rgba(7, 6, 10, 0.18);
+  color: rgba(240, 235, 226, 0.7);
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: transform 0.22s ease, border-color 0.22s ease, color 0.22s ease, opacity 0.22s ease;
+}
+
+.arrowButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: rgba(212, 170, 114, 0.56);
+  color: var(--gold-light);
+}
+
+.arrowButton:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.monthGhost {
+  position: relative;
+  margin-top: 8px;
+  font-size: clamp(2.15rem, 3.8vw, 3.1rem);
+  line-height: 0.92;
+  color: rgba(240, 235, 226, 0.92);
+  text-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.stackColumn {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 640px;
+  overflow: visible;
+  padding-right: 220px;
+}
+
+.stackStage {
+  position: relative;
+  width: 100%;
+  min-height: 560px;
+  padding-top: 8px;
+  padding-right: 0;
+  overflow: visible;
+}
+
+.stackControls {
+  display: none;
+}
+
+.cardFrame {
+  position: absolute;
+  top: 46px;
+  left: 0;
+  width: 295px;
+  transform-origin: top left;
+  transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.45s ease;
+}
+
+.cardFrameFront {
+  cursor: default;
+}
+
+.cardLabel {
+  position: absolute;
+  top: -14px;
+  left: 16px;
+  transform: none;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  min-width: 110px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(201, 185, 154, 0.2);
+  background: linear-gradient(180deg, rgba(26, 22, 20, 0.94) 0%, rgba(12, 11, 15, 0.9) 100%);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  font-size: 0.52rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 226, 0.8);
+  text-align: center;
+  pointer-events: none;
+}
+
+.card {
+  position: relative;
+  width: min(100%, 295px);
+  aspect-ratio: 9 / 16;
+  height: auto;
+  max-height: min(74vh, 524px);
+  border-radius: 12px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.cardInactive {
+  cursor: pointer;
+}
+
+.cardClip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid rgba(201, 185, 154, 0.18);
+  background: rgba(16, 14, 18, 0.88);
+  backdrop-filter: blur(10px) saturate(0.98);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+}
+
+.cardClipFront {
+  background: rgba(16, 14, 18, 0.68);
+  backdrop-filter: blur(8px) saturate(1);
+}
+
+.cardMedia,
+.cardGradient,
+.cardShade {
+  position: absolute;
+  inset: 0;
+}
+
+.cardMedia {
+  overflow: hidden;
+  background: rgba(7, 6, 10, 0.16);
+}
+
+.cardGradient {
+  z-index: 1;
+  opacity: 1;
+}
+
+.cardGradientVideo {
+  opacity: 0.14;
+}
+
+.cardGradientFrontVideo {
+  opacity: 0.02;
+}
+
+.cardVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  pointer-events: none;
+  z-index: 0;
+  transform: scale(1.16);
+  filter: saturate(1.06) contrast(1.04);
+  transition: filter 0.28s ease, transform 0.28s ease;
+}
+
+.cardLocalVideo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  filter: saturate(1.06) contrast(1.05) brightness(0.98);
+  transition: filter 0.28s ease, transform 0.28s ease;
+}
+
+.seamlessVideo {
+  opacity: 0;
+  transition: opacity 0.52s ease;
+}
+
+.seamlessVideoVisible {
+  opacity: 1;
+}
+
+.cardShade {
+  z-index: 2;
+  background:
+    linear-gradient(to bottom, rgba(7, 6, 10, 0.08) 0%, rgba(7, 6, 10, 0.12) 22%, rgba(7, 6, 10, 0.44) 100%),
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.06), transparent 28%);
+}
+
+.cardClipFront .cardShade {
+  background:
+    linear-gradient(to bottom, rgba(7, 6, 10, 0.01) 0%, rgba(7, 6, 10, 0.05) 22%, rgba(7, 6, 10, 0.18) 100%),
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.08), transparent 28%);
+}
+
+.cardContent {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  padding: 16px;
+}
+
+.cardContentFront {
+  padding-top: 16px;
+  align-items: flex-end;
+}
+
+.cardContentPreview {
+  padding-top: 14px;
+}
+
+.calendarPanel {
+  padding: 18px 16px 12px;
+  background: linear-gradient(180deg, rgba(10, 10, 14, 0.18) 0%, rgba(10, 10, 14, 0.28) 100%);
+  border: 1px solid rgba(240, 235, 226, 0.08);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.16);
+  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, max-height 0.32s ease;
+}
+
+.calendarPanelFront {
+  width: fit-content;
+  max-width: 224px;
+  max-height: 294px;
+  overflow: hidden;
+  padding: 8px 8px 7px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(10, 10, 14, 0.16) 0%, rgba(10, 10, 14, 0.24) 100%);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
+}
+
+.cardClipFront:hover .calendarPanelFront {
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, rgba(10, 10, 14, 0.22) 0%, rgba(10, 10, 14, 0.3) 100%);
+  border-color: rgba(240, 235, 226, 0.12);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.2);
+}
+
+.calendarPanelPreview {
+  padding: 10px 12px 8px;
+  min-height: 42px;
+  max-height: 42px;
+  overflow: hidden;
+}
+
+.calendarHead {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+}
+
+.calendarYear {
+  position: relative;
+  display: inline-flex;
+  font-size: 0.44rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 226, 0.64);
+  text-align: right;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 26px);
+  gap: 3px;
+  margin-bottom: 6px;
+}
+
+.weekday {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 26px;
+  height: 18px;
+  font-size: 0.46rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 226, 0.56);
+}
+
+.calendarYear::before,
+.weekday::before,
+.dayButton span::before {
+  content: "";
+  position: absolute;
+  inset: -2px -4px;
+  border-radius: 4px;
+  background: rgba(8, 8, 12, 0.28);
+  backdrop-filter: blur(8px) saturate(1.02);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  z-index: -1;
+}
+
+.cardClip:hover .calendarYear::before,
+.cardClip:hover .weekday::before,
+.cardClip:hover .dayButton span::before {
+  opacity: 1;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 26px);
+  gap: 3px;
+  align-content: start;
+}
+
+.weekdaysHidden,
+.calendarGridHidden {
+  display: none;
+}
+
+.dayEmpty {
+  width: 26px;
+  height: 26px;
+}
+
+.dayButton {
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: rgba(240, 235, 226, 0.95);
+  font-size: 0.58rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.dayButton span {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4em;
+  min-height: 1.4em;
+}
+
+.dayButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: transparent;
+}
+
+.dayDisabled {
+  cursor: default;
+}
+
+.dayDisabled:hover {
+  transform: none;
+}
+
+.dayBlocked {
+  background: transparent;
+  color: rgba(255, 214, 195, 0.72);
+  text-decoration: line-through;
+}
+
+.dayArrival,
+.dayDeparture {
+  background: rgba(212, 170, 114, 0.86);
+  color: #1b1510;
+  box-shadow: 0 10px 24px rgba(176, 141, 87, 0.3);
+}
+
+.dayBetween {
+  background: rgba(212, 170, 114, 0.22);
+  color: rgba(255, 238, 210, 0.96);
+  box-shadow: inset 0 0 0 1px rgba(212, 170, 114, 0.1);
+}
+
+.footer {
+  position: relative;
+  z-index: 12;
+  margin-top: 0;
+  margin-left: 0;
+  width: 100%;
+  background: #000;
+  border-top: 1px solid rgba(201, 185, 154, 0.14);
+  padding: 24px 60px 26px;
+  min-height: 96px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  pointer-events: auto;
+}
+
+.ftCopy {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px;
+  background: rgba(7, 6, 10, 0.72);
+  backdrop-filter: blur(18px);
+}
+
+.modal {
+  position: relative;
+  width: min(720px, 100%);
+  padding: 34px 32px 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(201, 185, 154, 0.18);
+  background: rgba(12, 11, 15, 0.92);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46);
+}
+
+.modalClose {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: none;
+  color: rgba(240, 235, 226, 0.68);
+  font-size: 1.7rem;
+  cursor: pointer;
+}
+
+.modalEyebrow {
+  display: inline-block;
+  margin-bottom: 16px;
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(240, 235, 226, 0.58);
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: clamp(2.1rem, 5vw, 3.5rem);
+  line-height: 0.94;
+  font-weight: 300;
+  color: var(--cream);
+}
+
+.modalTitle em {
+  font-style: normal;
+  color: rgba(212, 170, 114, 0.86);
+}
+
+.modalMeta {
+  margin: 16px 0 0;
+  font-size: 0.86rem;
+  line-height: 1.7;
+  color: rgba(240, 235, 226, 0.7);
+}
+
+.emailDraft {
+  margin: 24px 0 0;
+  padding: 22px;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 185, 154, 0.16);
+  background: rgba(255, 255, 255, 0.03);
+  white-space: pre-wrap;
+  font-family: "Manrope", sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: rgba(240, 235, 226, 0.78);
+}
+
+.modalCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 22px;
+  min-height: 48px;
+  padding: 0 22px;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 170, 114, 0.4);
+  text-decoration: none;
+  color: var(--cream);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.modalCta:hover {
+  border-color: rgba(212, 170, 114, 0.74);
+  color: var(--gold-light);
+  background: rgba(212, 170, 114, 0.08);
+}
+
+@media (max-width: 1220px) {
+  .pageShell {
+    width: min(100%, calc(100% - 56px));
+  }
+
+  .experience {
+    grid-template-columns: minmax(300px, 0.92fr) minmax(420px, 1.08fr);
+    gap: 32px;
+  }
+
+  .stackStage {
+    padding-right: 0;
+  }
+
+  .stackColumn {
+    padding-right: 120px;
+  }
+
+  .cardFrame {
+    left: 8px;
+    width: 255px;
+  }
+
+  .card {
+    width: min(100%, 255px);
+    max-height: min(66vh, 454px);
+  }
+}
+
+@media (max-width: 980px) {
+  .bookingPage {
+    --footer-reveal-gap: 104px;
+  }
+
   .nav {
-    padding: 9px 22px;
+    padding: 12px 28px;
   }
 
   .navScrolled {
-    padding: 7px 22px;
+    padding: 10px 28px;
   }
 
   .navLinks {
     display: none;
   }
 
-  .navActions {
-    gap: 5px;
-  }
-
-  .btnLang,
-  .btnPause,
-  .btnMode {
-    padding: 4px 7px;
-  }
-
   .hamburger {
-    display: flex;
+    display: inline-flex;
   }
 
   .pageShell {
-    padding: 128px 24px 64px;
+    width: min(100%, calc(100% - 44px));
+    padding-top: 104px;
   }
 
-  .hero {
+  .experience {
     grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 26px;
+    min-height: auto;
   }
 
-  .monthsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .infoColumn {
+    min-height: auto;
+    padding-bottom: 0;
+  }
+
+  .monthGhost {
+    position: static;
+    margin-top: 10px;
+    margin-bottom: 18px;
+    font-size: clamp(2.2rem, 8.2vw, 3.2rem);
+    white-space: normal;
+  }
+
+  .stackColumn,
+  .stackStage {
+    min-height: 560px;
+  }
+
+  .stackColumn {
+    padding-right: 0;
+  }
+
+  .stackStage {
+    padding-top: 24px;
+    padding-right: 0;
+  }
+
+  .cardFrame {
+    top: 40px;
+    left: 8px;
+    width: 238px;
+  }
+
+  .card {
+    width: min(100%, 238px);
+    max-height: min(62vh, 422px);
   }
 }
 
-@media (orientation: portrait) {
-  .navLinks {
-    display: none;
+@media (max-width: 680px) {
+  .bookingPage {
+    --footer-reveal-gap: 88px;
   }
 
-  .hamburger {
-    display: flex;
+  .pageShell {
+    width: min(100%, calc(100% - 30px));
+    padding-top: 104px;
   }
-}
 
-@media (max-width: 720px) {
+  .infoColumn {
+    padding-top: 12px;
+  }
+
   .title {
-    font-size: clamp(3.2rem, 16vw, 5.5rem);
+    font-size: clamp(2.6rem, 12vw, 4.1rem);
   }
 
-  .leadCard {
-    padding: 22px 20px;
+  .description {
+    max-width: 100%;
   }
 
-  .monthsGrid {
-    grid-template-columns: 1fr;
+  .description p {
+    font-size: 0.8rem;
   }
 
-  .monthCard {
-    min-height: 0;
+  .noticeDock {
+    max-width: 100%;
+    min-height: 84px;
   }
 
-  .ctaRow {
-    flex-direction: column;
-    align-items: flex-start;
+  .monthGuide {
+    max-width: 100%;
+  }
+
+  .stackColumn,
+  .stackStage {
+    min-height: 490px;
+  }
+
+  .stackColumn {
+    padding-right: 0;
+  }
+
+  .stackStage {
+    padding-top: 20px;
+    padding-right: 0;
+  }
+
+  .cardFrame {
+    top: 34px;
+    left: 0;
+    width: min(100%, 252px);
+  }
+
+  .card {
+    width: min(100%, 252px);
+    max-height: 448px;
+    border-radius: 10px;
+  }
+
+  .cardLabel {
+    left: 12px;
+    top: 10px;
+    min-height: 30px;
+    min-width: 106px;
+    padding: 0 12px;
+    font-size: 0.56rem;
+  }
+
+  .cardContent {
+    padding: 48px 14px 14px;
+  }
+
+  .calendarPanel {
+    padding: 14px 12px 12px;
+  }
+
+  .weekdays,
+  .calendarGrid {
+    gap: 5px;
+  }
+
+  .dayButton {
+    border-radius: 8px;
+    font-size: 0.74rem;
+  }
+
+  .modalBackdrop {
+    padding: 14px;
+  }
+
+  .modal {
+    padding: 26px 18px 20px;
+    border-radius: 10px;
+  }
+
+  .emailDraft {
+    padding: 16px;
+    font-size: 0.82rem;
+  }
+
+  .footer {
+    margin-top: 0;
+    padding: 18px 28px 20px;
+    min-height: 84px;
+  }
+
+  .ftCopy {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
   }
 }

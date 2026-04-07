@@ -4244,7 +4244,9 @@ export default function Page() {
                   <div className="max-w-6xl mx-auto">
                     <Card className="bg-white/10 backdrop-blur-sm border-white/20">
                       <CardContent className="p-8">
-                        <h3 className="text-xl font-bold text-white mb-6">{t.about.faq}</h3>
+                        <h3 className="text-lg md:text-xl font-light tracking-[0.18em] uppercase text-white/92 mb-6">
+                          {t.about.faq}
+                        </h3>
                         <div className="space-y-3">
                           {t.about.faqItems.map((faq, index) => {
                             let Icon = HelpCircle
@@ -4311,7 +4313,7 @@ export default function Page() {
                                       className={`h-5 w-5 ${isDarkMode ? "text-blue-400" : "text-white/60"} flex-shrink-0 mt-0.5`}
                                     />
                                     <h4
-                                      className={`font-semibold text-white text-xs transition-colors ${isDarkMode ? "group-hover:text-blue-400" : "group-hover:text-secondary"}`}
+                                      className={`font-serif text-[0.95rem] md:text-base font-medium leading-snug tracking-[0.02em] text-white transition-colors ${isDarkMode ? "group-hover:text-blue-400" : "group-hover:text-secondary"}`}
                                     >
                                       {faq.q}
                                     </h4>
@@ -4322,7 +4324,7 @@ export default function Page() {
                                 </button>
                                 {openFaqIndex === index && (
                                   <p
-                                    className="text-xs text-white/80 mt-2 ml-8 leading-relaxed"
+                                    className="font-serif text-sm md:text-[0.95rem] text-white/80 mt-2 ml-8 leading-relaxed tracking-[0.01em]"
                                     dangerouslySetInnerHTML={{
                                       __html: faq.a.replace(
                                         /Plethora X5/g,

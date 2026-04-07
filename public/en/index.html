@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mlýn na Pile | Creative Mill Residency</title>
+<title>Mill at Pila | Creative Mill Residency</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -450,15 +450,17 @@ body.pause-active section .content{filter:brightness(1.14);}
   mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.18) 22%,rgba(0,0,0,.62) 58%,#000 100%);
 }
 .about-head{max-width:960px;}
-.about-layout{margin-top:24px;max-width:920px;}
-.contact-slider{overflow:hidden;max-width:880px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-.contact-track{display:flex;width:200%;transform:translateX(0);transition:transform .62s cubic-bezier(.22,.61,.36,1);}
+.about-layout{margin-top:24px;max-width:920px;min-height:430px;}
+.contact-slider{overflow:hidden;max-width:880px;min-height:430px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.contact-track{display:flex;align-items:stretch;width:200%;min-height:430px;transform:translateX(0);transition:transform .62s cubic-bezier(.22,.61,.36,1);}
 #contact.view-about .contact-track{transform:translateX(-50%);}
-.contact-pane{padding:20px 0;min-width:0;}
+.contact-pane{padding:20px 0;min-width:0;min-height:430px;}
 .contact-pane .con-details{margin-top:0;}
 .contact-pane .con-detail:first-child{padding-top:0;}
 .contact-pane-about .about-lead{max-width:860px;}
 .contact-pane{width:50%;}
+.contact-pane-details .con-details{min-height:100%;display:grid;grid-template-rows:auto minmax(0,1fr);align-content:start;}
+.contact-pane-about{display:flex;align-items:flex-start;}
 .contact-view-toggles{display:flex;gap:10px;margin-top:14px;}
 .contact-view-toggles .soc-link{padding:8px 14px;}
 .about-lead{font-size:.83rem;line-height:1.75;color:rgba(240,235,226,.65);max-width:780px;}
@@ -468,8 +470,8 @@ body.pause-active section .content{filter:brightness(1.14);}
 .contact-faq-inline{
   order:2;
   margin-top:12px;
-  height:auto;
-  min-height:0;
+  height:100%;
+  min-height:220px;
   padding:12px 0 8px;
   border:none;
   background:transparent;
@@ -489,9 +491,9 @@ body.pause-active section .content{filter:brightness(1.14);}
   color:rgba(240,235,226,.74);
   margin-bottom:0;
 }
-#contact.view-faq .contact-faq-inline{order:0;margin-top:0;margin-bottom:12px;}
+#contact.view-faq .contact-faq-inline{order:2;margin-top:12px;margin-bottom:0;}
 #contact.view-faq .contact-address-block{display:none;}
-.contact-faq-inline #resFaqList{max-height:170px;overflow:auto;padding-right:4px;}
+.contact-faq-inline #resFaqList{max-height:235px;overflow:auto;padding-right:4px;}
 .contact-faq-inline .resfaq-q{padding:7px 0;}
 .contact-faq-inline .resfaq-a{padding:0 0 8px;}
 #contact.view-faq .contact-faq-inline{
@@ -522,7 +524,7 @@ body.pause-active section .content{filter:brightness(1.14);}
   position:absolute;
   left:0;
   right:0;
-  bottom:max(0px,env(safe-area-inset-bottom));
+  bottom:72px;
   justify-content:center;
   margin-top:0;
   gap:14px;
@@ -585,10 +587,13 @@ body.de .de{display:revert;}
   #location .loc-text-fx{height:74%;}
   #contact .contact-text-fx{height:82%;}
   #residency .big-n{left:28px;top:96px;}
-  .about-layout{max-width:100%;}
-  .contact-slider{max-width:100%;}
+  .about-layout{max-width:100%;min-height:380px;}
+  .contact-slider{max-width:100%;min-height:380px;}
+  .contact-track{min-height:380px;}
+  .contact-pane{min-height:380px;}
+  .contact-faq-inline{min-height:190px;}
   .contact-faq-inline #resFaqList{max-height:220px;}
-  .contact-social-icons{bottom:max(0px,env(safe-area-inset-bottom));}
+  .contact-social-icons{bottom:52px;}
   .pkg-grid{grid-template-columns:repeat(2,1fr);}
   .rooms-grid{grid-template-columns:1fr;}
   .studio-main-panel .content{overflow:visible;min-height:auto;justify-content:flex-start;padding-top:110px;padding-bottom:60px;}
@@ -658,7 +663,7 @@ body.de .de{display:revert;}
 <div id="prog"></div>
 
 <nav id="nav">
-  <a href="#hero" class="nav-logo">Mlýn <em>na Pile</em></a>
+  <a href="#hero" class="nav-logo"><span class="cs">Mlýn <em>na Pile</em></span><span class="en">Mill <em>at Pila</em></span><span class="de">Mlýn <em>na Pile</em></span></a>
   <ul class="nav-links">
     <li><a href="#place" data-s="place"><span class="cs">Mlýn</span><span class="en">The Mill</span><span class="de">Mühle</span></a></li>
     <li><a href="#studio" data-s="studio"><span class="cs">Studio</span><span class="en">Studio</span><span class="de">Studio</span></a></li>
@@ -766,7 +771,7 @@ body.de .de{display:revert;}
     <div class="hero-badge cs">Retreat Studio</div>
     <div class="hero-badge en">Retreat Studio</div>
     <div class="hero-badge de">Retreat Studio</div>
-    <h1 class="hero-title">Mlýn<br><em>na Pile</em></h1>
+    <h1 class="hero-title"><span class="cs">Mlýn<br><em>na Pile</em></span><span class="en">Mill<br><em>at Pila</em></span><span class="de">Mlýn<br><em>na Pile</em></span></h1>
     <p class="hero-note cs">Unikátní prostor s historií sahající do 17. století.</p>
     <p class="hero-note en">A unique space with a history dating back to the 17th century.</p>
     <p class="hero-note de">Ein einzigartiger Ort mit Geschichte bis ins 17. Jahrhundert.</p>
@@ -1536,7 +1541,7 @@ const UI_TEXTS={
 };
 const TITLE_BY_LANG={
   cs:'Mlýn na Pile | Creative Mill Residency',
-  en:'Mlýn na Pile | Creative Mill Residency',
+  en:'Mill at Pila | Creative Mill Residency',
   de:'Mlýn na Pile | Kreatives Mill Retreat'
 };
 let lang='cs';
@@ -1588,10 +1593,18 @@ const RES_FAQ_ITEMS_BY_LANG={
   ]
 };
 
-function detectLangFromPathname(){
+function detectLangFromLocation(){
+  try{
+    const queryLang=new URLSearchParams(window.location.search||'').get('lang');
+    if(queryLang&&SUPPORTED_LANGS.includes(queryLang))return queryLang;
+  }catch(error){}
   const path=(window.location.pathname||'/').replace(/\/+$/,'');
   if(path.endsWith('/en'))return'en';
   if(path.endsWith('/de'))return'de';
+  try{
+    const stored=localStorage.getItem(LANG_STORAGE_KEY);
+    if(stored&&SUPPORTED_LANGS.includes(stored))return stored;
+  }catch(error){}
   return'cs';
 }
 
@@ -2565,7 +2578,8 @@ if(modeBtn){
     kickBgVideos();
   });
 }
-lang=detectLangFromPathname();
+lang=detectLangFromLocation();
+try{localStorage.setItem(LANG_STORAGE_KEY,lang);}catch(error){}
 setContactView('details');
 applyLang();
 
@@ -2709,7 +2723,7 @@ function switchToLanguage(nextLang){
 }
 
 window.addEventListener('popstate',()=>{
-  lang=detectLangFromPathname();
+  lang=detectLangFromLocation();
   applyLang();
 });
 

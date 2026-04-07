@@ -327,13 +327,13 @@
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: 156px 60px 88px;
-  max-width: 1360px;
-  margin: 0 auto;
+  padding: 156px 32px 88px;
 }
 
-.heroCopy {
-  width: min(100%, 640px);
+.heroInner {
+  width: min(100%, 860px);
+  margin: 0 auto;
+  text-align: center;
 }
 
 .secLabel {
@@ -346,11 +346,10 @@
 }
 
 .heroTitle {
-  font-size: clamp(3.6rem, 9vw, 8rem);
+  font-size: clamp(3.9rem, 9vw, 8.2rem);
   font-weight: 300;
   line-height: 0.88;
   color: var(--cream);
-  max-width: 8ch;
 }
 
 .heroTitle em {
@@ -358,39 +357,175 @@
   color: var(--stone);
 }
 
-.textCard {
-  max-width: none;
-  width: 100%;
-  border: 1px solid rgba(201, 185, 154, 0.18);
-  background: rgba(7, 6, 10, 0.42);
-  padding: 32px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.16);
+.storyCard {
+  max-width: 760px;
+  margin: 34px auto 0;
+  padding: 18px 0 0;
+  text-align: center;
+}
+
+.introCopy {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.introCopy p {
+  font-size: 0.97rem;
+  line-height: 1.92;
+  color: rgba(240, 235, 226, 0.86);
+}
+
+.introCopy p + p {
+  margin-top: 18px;
+  color: rgba(240, 235, 226, 0.76);
+}
+
+.breadSection,
+.ingredientsSection {
   margin-top: 34px;
 }
 
-.nightMode .textCard {
-  background: rgba(7, 6, 10, 0.54);
+.ingredientsSection {
+  margin-top: 20px;
 }
 
-.textCard p {
+.breadHeading {
+  font-size: clamp(1.9rem, 3.8vw, 2.8rem);
+  font-weight: 400;
+  color: var(--cream);
+  letter-spacing: 0.02em;
+  line-height: 1.08;
+}
+
+.breadList {
+  list-style: none;
+  margin: 18px auto 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+  max-width: 620px;
+}
+
+.breadItem {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
   font-size: 0.95rem;
-  line-height: 1.9;
-  color: rgba(240, 235, 226, 0.88);
+  line-height: 1.82;
+  color: rgba(240, 235, 226, 0.85);
+  text-align: left;
 }
 
-.textCard p + p {
-  margin-top: 18px;
-  font-size: 0.92rem;
-  line-height: 1.85;
-  color: rgba(240, 235, 226, 0.7);
+.breadItemNo {
+  color: rgba(240, 235, 226, 0.68);
+}
+
+.breadIcon {
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(201, 185, 154, 0.4);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-light);
+  font-size: 0.7rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.breadIconNo {
+  border-color: rgba(193, 106, 106, 0.6);
+  color: rgba(193, 106, 106, 0.95);
+}
+
+.detailWrap {
+  margin-top: 40px;
+}
+
+.faqBlock {
+  max-width: 860px;
+  margin: 46px auto 0;
+  text-align: left;
+}
+
+.faqHeader {
+  margin-bottom: 10px;
+}
+
+.faqTitle {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--cream);
+}
+
+.faqSubtitle {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(201, 185, 154, 0.72);
+}
+
+.faqList {
+  border-bottom: 1px solid rgba(240, 235, 226, 0.12);
+}
+
+.faqItem {
+  border-top: 1px solid rgba(240, 235, 226, 0.12);
+}
+
+.faqButton {
+  width: 100%;
+  border: 0;
+  background: none;
+  padding: 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.faqQuestion {
+  font-family: "Manrope", sans-serif;
+  font-size: 0.84rem;
+  font-weight: 300;
+  line-height: 1.45;
+  letter-spacing: 0;
+  color: rgba(240, 235, 226, 0.78);
+}
+
+.faqChevron {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  color: rgba(240, 235, 226, 0.58);
+  transition: transform 0.2s ease;
+}
+
+.faqChevronOpen {
+  transform: rotate(180deg);
+}
+
+.faqAnswer {
+  padding: 0 24px 16px 0;
+  font-family: "Manrope", sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.68;
+  color: rgba(240, 235, 226, 0.72);
+  white-space: pre-line;
 }
 
 .ctaRow {
-  margin-top: 30px;
+  margin-top: 34px;
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
+  justify-content: center;
 }
 
 .btnPrimary,
@@ -477,18 +612,47 @@
     font-size: clamp(3.5rem, 16vw, 5.8rem);
   }
 
-  .heroCopy {
+  .heroInner {
     width: 100%;
   }
 
-  .textCard {
-    padding: 24px 22px;
-    margin-top: 26px;
+  .storyCard {
+    margin-top: 24px;
+    padding-top: 12px;
   }
 
-  .textCard p {
+  .introCopy p {
     font-size: 0.9rem;
     line-height: 1.8;
+  }
+
+  .breadHeading {
+    font-size: 1.55rem;
+  }
+
+  .breadItem {
+    font-size: 0.88rem;
+  }
+
+  .detailItem p {
+    font-size: 0.86rem;
+  }
+
+  .faqBlock {
+    margin-top: 38px;
+  }
+
+  .faqTitle {
+    font-size: 2.25rem;
+  }
+
+  .faqQuestion {
+    font-size: 0.8rem;
+  }
+
+  .faqAnswer {
+    font-size: 0.76rem;
+    padding: 0 0 14px;
   }
 
   .ctaRow {

@@ -202,7 +202,7 @@ const copyByLocale: Record<Locale, Copy> = {
         paragraphs: [
           "Příběh Mlýna na Pile nekončí. V roce 2026 zde vzniká studio – nový tvůrčí prostor, který dává historickým zdem nový život a smysl.",
           "Po staletích, kdy mlýn sloužil hutnictví, mlynářství a bydlení, se otevírá jeho dosud nejnovější kapitola. Síla místa a klid zdejší krajiny vytvářejí jedinečné prostředí pro tvůrčí práci.",
-          "Přestože vodní kolo už dávno nemele, příběh Mlýna na Pile zůstává živý.",
+          "Mlýn žije dál.",
         ],
       },
     ],
@@ -229,7 +229,7 @@ const copyByLocale: Record<Locale, Copy> = {
       "The picturesque village of Pila, known by the old name Šnajberk, is part of Trhanov in the Domažlice district. Two large ponds, Velký and Šnajberský, define its centre.",
       "The name Šnajberk comes from the German word Schneidwerk, meaning a cutting machine or sawmill, and refers to the wood-processing operation that once stood here alongside the mill.",
     ],
-    timelineTitle: "History of Mlýn na Pile",
+    timelineTitle: "History of the Mill at Pila",
     timelineIntro:
       "From industrial beginnings through the miller families to the present form of the building. Click a year to switch chapters.",
     jumpToTimeline: "Timeline",
@@ -308,7 +308,7 @@ const copyByLocale: Record<Locale, Copy> = {
         era: "Mid-20th century",
         title: "End of milling",
         paragraphs: [
-          "Mlýn na Pile was definitively shut down. The water wheel stopped, and with it ended the milling era that had lasted here for nearly a century and a half, from the construction of the mill around 1810 through the generations of the Pavlík and Ludvík families.",
+          "The mill at Pila was definitively shut down. The water wheel stopped, and with it ended the milling era that had lasted here for nearly a century and a half, from the construction of the mill around 1810 through the generations of the Pavlík and Ludvík families.",
         ],
       },
       {
@@ -333,9 +333,9 @@ const copyByLocale: Record<Locale, Copy> = {
         era: "Present day",
         title: "A retreat studio at the mill",
         paragraphs: [
-          "The story of Mlýn na Pile does not end here. In 2026, a studio is created here, a new creative space that gives the historic walls new life and meaning.",
+          "The story of the mill at Pila does not end here. In 2026, a studio is created here, a new creative space that gives the historic walls new life and meaning.",
           "After centuries in which the mill served metallurgy, milling and living, its newest chapter opens. The strength of the place and the calm of the local landscape create a unique environment for creative work.",
-          "Although the water wheel no longer grinds, the story of Mlýn na Pile remains alive.",
+          "Although the water wheel no longer grinds, the story of the mill at Pila remains alive.",
         ],
       },
     ],
@@ -578,6 +578,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const autoTimelineSnapTimerRef = useRef<number | null>(null)
   const autoTimelineSnapLockedRef = useRef(false)
   const heroPanelAnchoredRef = useRef(false)
+  const previousVideoSrcRef = useRef<string | null>(null)
   const lastScrollYRef = useRef(0)
   const lastScrollDirectionRef = useRef<"up" | "down">("down")
   const [activeIndex, setActiveIndex] = useState(0)
@@ -831,9 +832,13 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     setVideoReady(false)
     setLocalPlaying(false)
     prepareBackgroundVideo(localVideo)
-    try {
-      localVideo.load()
-    } catch {}
+    const srcChanged = previousVideoSrcRef.current !== historyVideo.src
+    previousVideoSrcRef.current = historyVideo.src
+    if (srcChanged && localVideo.networkState === HTMLMediaElement.NETWORK_EMPTY) {
+      try {
+        localVideo.load()
+      } catch {}
+    }
     if (!paused) {
       attemptPlay(localVideo)
     }
@@ -871,21 +876,20 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       }
     }
 
-    const tryStart = (shouldReload = false) => {
+    const tryStart = () => {
       if (paused) {
         return
       }
 
       prepareVideo()
-      if (shouldReload && localVideo.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
-        localVideo.load()
-      }
       markReady()
-      const maybePromise = localVideo.play()
-      if (maybePromise && typeof maybePromise.catch === "function") {
-        maybePromise.catch(() => {
-          setLocalPlaying(false)
-        })
+      if (localVideo.paused) {
+        const maybePromise = localVideo.play()
+        if (maybePromise && typeof maybePromise.catch === "function") {
+          maybePromise.catch(() => {
+            setLocalPlaying(false)
+          })
+        }
       }
     }
 
@@ -906,8 +910,6 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         setLocalPlaying(false)
       }
     }
-    const onSuspend = () => tryStart()
-    const onEmptied = () => tryStart(true)
 
     prepareVideo()
     markReady()
@@ -924,14 +926,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     localVideo.addEventListener("timeupdate", onTimeUpdate)
     localVideo.addEventListener("pause", onPause)
     localVideo.addEventListener("waiting", onWaiting)
-    localVideo.addEventListener("suspend", onSuspend)
-    localVideo.addEventListener("emptied", onEmptied)
-
-    const retryTimers = [
-      window.setTimeout(() => tryStart(), 120),
-      window.setTimeout(() => tryStart(), 480),
-      window.setTimeout(() => tryStart(true), 1400),
-    ]
+    const retryTimers = [window.setTimeout(() => tryStart(), 120), window.setTimeout(() => tryStart(), 480)]
 
     const resumeIfNeeded = () => {
       if (document.visibilityState === "hidden" || paused) {
@@ -965,8 +960,6 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       localVideo.removeEventListener("timeupdate", onTimeUpdate)
       localVideo.removeEventListener("pause", onPause)
       localVideo.removeEventListener("waiting", onWaiting)
-      localVideo.removeEventListener("suspend", onSuspend)
-      localVideo.removeEventListener("emptied", onEmptied)
       document.removeEventListener("visibilitychange", resumeIfNeeded)
       window.removeEventListener("pageshow", resumeIfNeeded)
       window.removeEventListener("focus", resumeIfNeeded)
@@ -1053,7 +1046,15 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         <>
           <nav className={cx(styles.nav, navScrolled && styles.navScrolled)}>
             <Link href={getLocaleHomePath(locale)} className={cx(styles.navLogo, cormorant.className)}>
-              Mlýn <em>na Pile</em>
+              {locale === "en" ? (
+                <>
+                  Mill <em>at Pila</em>
+                </>
+              ) : (
+                <>
+                  Mlýn <em>na Pile</em>
+                </>
+              )}
             </Link>
 
             <ul className={styles.navLinks}>
