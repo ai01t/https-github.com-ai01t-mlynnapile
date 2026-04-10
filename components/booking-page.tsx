@@ -30,12 +30,11 @@ const VIDEOS = [
   null,
   null,
   null,
-  null,
-  null,
+  "9oQ3JNjBwbo",
+  "Wnn7LyRPdyE",
   null,
   null,
   "12wlur-ij3A",
-  null,
   null,
   null,
 ] as const
@@ -914,7 +913,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const touchStartXRef = useRef<number | null>(null)
   const [navScrolled, setNavScrolled] = useState(false)
   const [paused, setPaused] = useState(false)
-  const [nightMode, setNightMode] = useState(false)
+  const [nightMode] = useState(false)
   const [langOpen, setLangOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -938,7 +937,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     document.body.style.background = "#07060a"
 
     try {
-      setNightMode(window.localStorage.getItem(MODE_STORAGE_KEY) === "night")
       window.localStorage.setItem(LANG_STORAGE_KEY, locale)
     } catch {}
 
@@ -946,12 +944,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
       document.body.style.background = ""
     }
   }, [locale])
-
-  useEffect(() => {
-    try {
-      window.localStorage.setItem(MODE_STORAGE_KEY, nightMode ? "night" : "day")
-    } catch {}
-  }, [nightMode])
 
   useEffect(() => {
     const onScroll = () => setNavScrolled(window.scrollY > 60)
@@ -1015,7 +1007,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   }, [modalOpen, months.length])
 
   const pauseLabel = paused ? copy.resume : copy.pause
-  const modeLabel = nightMode ? copy.switchToDay : copy.switchToNight
 
   const arrivalDate =
     selection.arrivalMonthIndex !== null && selection.arrivalDay !== null
@@ -1153,28 +1144,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
           >
             <span className={styles.pauseIcon}>{paused ? "▶" : "II"}</span>
           </button>
-          <button
-            type="button"
-            className={cx(styles.btnMode, nightMode && styles.btnModeOn)}
-            aria-pressed={nightMode}
-            aria-label={modeLabel}
-            title={modeLabel}
-            onClick={() => setNightMode((current) => !current)}
-          >
-            <span className={styles.modeIcon} aria-hidden="true">
-              {nightMode ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <circle cx="12" cy="12" r="4.4" />
-                  <path d="M12 2.8v2.3M12 18.9v2.3M4.9 4.9l1.6 1.6M17.5 17.5l1.6 1.6M2.8 12h2.3M18.9 12h2.3M4.9 19.1l1.6-1.6M17.5 6.5l1.6-1.6" />
-                </svg>
-              )}
-            </span>
-          </button>
-
           <div ref={langSwitchRef} className={cx(styles.langSwitch, langOpen && styles.langSwitchOpen)}>
             <button
               type="button"

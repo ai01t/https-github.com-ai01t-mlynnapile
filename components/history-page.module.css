@@ -13,6 +13,11 @@
   color: var(--cream);
 }
 
+.bidirectionalMode {
+  height: 100svh;
+  overflow: hidden;
+}
+
 .embedded .hero {
   padding: 72px 24px 48px;
 }
@@ -363,6 +368,29 @@
   z-index: 10;
   scroll-snap-align: start;
   scroll-snap-stop: always;
+}
+
+.panelTrack {
+  position: relative;
+  z-index: 10;
+}
+
+.panelTrackBidirectional {
+  display: flex;
+  width: 200vw;
+  min-height: 100svh;
+  transition: transform 0.96s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+
+.panelTrackTimeline {
+  transform: translate3d(-100vw, 0, 0);
+}
+
+.panelSection {
+  flex: 0 0 100vw;
+  width: 100vw;
+  min-height: 100svh;
 }
 
 .hero {

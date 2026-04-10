@@ -578,6 +578,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const autoTimelineSnapTimerRef = useRef<number | null>(null)
   const autoTimelineSnapLockedRef = useRef(false)
   const heroPanelAnchoredRef = useRef(false)
+  const gestureStartRef = useRef<{ x: number; y: number } | null>(null)
   const previousVideoSrcRef = useRef<string | null>(null)
   const lastScrollYRef = useRef(0)
   const lastScrollDirectionRef = useRef<"up" | "down">("down")
@@ -590,11 +591,14 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const [videoReady, setVideoReady] = useState(false)
   const [localPlaying, setLocalPlaying] = useState(false)
   const [isPortrait, setIsPortrait] = useState(false)
+  const [bidirectionalEnabled, setBidirectionalEnabled] = useState(false)
+  const [timelineViewActive, setTimelineViewActive] = useState(false)
 
   const activeItem = copy.entries[activeIndex]
   const timelinePositions = getTimelinePositions(copy.entries)
   const isLastTimelineStep = activeIndex === copy.entries.length - 1
   const historyVideo = isPortrait ? HISTORY_VIDEO_ASSETS.vertical : HISTORY_VIDEO_ASSETS.horizontal
+  const useBidirectionalScroll = !embedded && bidirectionalEnabled
 
   const getTimelineTargetTop = () => {
     const timelineSection = timelineSectionRef.current
@@ -608,6 +612,11 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   }
 
   const scrollToTimeline = (behavior: ScrollBehavior = "smooth") => {
+    if (useBidirectionalScroll) {
+      setTimelineViewActive(true)
+      return
+    }
+
     const targetTop = getTimelineTargetTop()
 
     window.scrollTo({
@@ -650,6 +659,25 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       window.removeEventListener("resize", syncOrientation)
     }
   }, [])
+
+  useEffect(() => {
+    if (embedded) {
+      setBidirectionalEnabled(false)
+      return
+    }
+
+    const mediaQuery = window.matchMedia("(min-width: 981px) and (orientation: landscape)")
+    const syncBidirectional = () => setBidirectionalEnabled(mediaQuery.matches)
+
+    syncBidirectional()
+    mediaQuery.addEventListener?.("change", syncBidirectional)
+    window.addEventListener("resize", syncBidirectional)
+
+    return () => {
+      mediaQuery.removeEventListener?.("change", syncBidirectional)
+      window.removeEventListener("resize", syncBidirectional)
+    }
+  }, [embedded])
 
   useEffect(() => {
     try {
@@ -726,6 +754,17 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   }, [searchParams])
 
   useEffect(() => {
+    if (!useBidirectionalScroll) {
+      return
+    }
+
+    const shouldJumpToTimeline = window.location.hash === "#timeline" || Boolean(searchParams.get("year"))
+    if (shouldJumpToTimeline) {
+      setTimelineViewActive(true)
+    }
+  }, [searchParams, useBidirectionalScroll])
+
+  useEffect(() => {
     const onHashChange = () => {
       if (window.location.hash === "#timeline") {
         scrollToTimeline("smooth")
@@ -737,7 +776,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   }, [])
 
   useEffect(() => {
-    if (embedded) {
+    if (embedded || useBidirectionalScroll) {
       return
     }
 
@@ -821,7 +860,88 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       clearSnapTimer()
       window.removeEventListener("scroll", onScroll)
     }
-  }, [embedded])
+  }, [embedded, useBidirectionalScroll])
+
+  useEffect(() => {
+    if (!useBidirectionalScroll) {
+      return
+    }
+
+    const onWheel = (event: WheelEvent) => {
+      if (mobileNavOpen || Math.abs(event.deltaY) < 12) {
+        return
+      }
+
+      event.preventDefault()
+
+      if (event.deltaY > 0 && !timelineViewActive) {
+        setTimelineViewActive(true)
+      } else if (event.deltaY < 0 && timelineViewActive) {
+        setTimelineViewActive(false)
+      }
+    }
+
+    const onTouchStart = (event: TouchEvent) => {
+      const touch = event.touches[0]
+      if (!touch) return
+      gestureStartRef.current = { x: touch.clientX, y: touch.clientY }
+    }
+
+    const onTouchEnd = (event: TouchEvent) => {
+      if (!gestureStartRef.current) {
+        return
+      }
+
+      const touch = event.changedTouches[0]
+      if (!touch) {
+        gestureStartRef.current = null
+        return
+      }
+
+      const deltaX = touch.clientX - gestureStartRef.current.x
+      const deltaY = touch.clientY - gestureStartRef.current.y
+      gestureStartRef.current = null
+
+      if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < 46) {
+        return
+      }
+
+      if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX < -18 && !timelineViewActive) {
+          setTimelineViewActive(true)
+        } else if (deltaX > 18 && timelineViewActive) {
+          setTimelineViewActive(false)
+        }
+        return
+      }
+
+      if (deltaY < -18 && !timelineViewActive) {
+        setTimelineViewActive(true)
+      } else if (deltaY > 18 && timelineViewActive) {
+        setTimelineViewActive(false)
+      }
+    }
+
+    window.addEventListener("wheel", onWheel, { passive: false })
+    window.addEventListener("touchstart", onTouchStart, { passive: true })
+    window.addEventListener("touchend", onTouchEnd, { passive: true })
+
+    return () => {
+      window.removeEventListener("wheel", onWheel)
+      window.removeEventListener("touchstart", onTouchStart)
+      window.removeEventListener("touchend", onTouchEnd)
+    }
+  }, [mobileNavOpen, timelineViewActive, useBidirectionalScroll])
+
+  useEffect(() => {
+    if (!useBidirectionalScroll) {
+      return
+    }
+
+    const baseUrl = `${window.location.pathname}${window.location.search}`
+    const nextUrl = timelineViewActive ? `${baseUrl}#timeline` : baseUrl
+    window.history.replaceState(window.history.state, "", nextUrl)
+  }, [timelineViewActive, useBidirectionalScroll])
 
   useEffect(() => {
     const localVideo = localVideoRef.current
@@ -1012,6 +1132,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     <main
       className={cx(
         styles.historyPage,
+        useBidirectionalScroll && styles.bidirectionalMode,
         embedded && styles.embedded,
         manrope.className,
         nightMode && styles.nightMode,
@@ -1173,117 +1294,129 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         </>
       ) : null}
 
-        <section ref={heroSectionRef} className={styles.hero}>
-        <div className={styles.heroInner}>
-          <h1 className={cx(styles.heroTitle, cormorant.className)}>
-            {copy.titleTop}
-            <br />
-            <em>{copy.titleAccent}</em>
-          </h1>
+      <div
+        className={cx(
+          styles.panelTrack,
+          useBidirectionalScroll && styles.panelTrackBidirectional,
+          useBidirectionalScroll && timelineViewActive && styles.panelTrackTimeline,
+        )}
+      >
+        <section ref={heroSectionRef} className={cx(styles.hero, useBidirectionalScroll && styles.panelSection)}>
+          <div className={styles.heroInner}>
+            <h1 className={cx(styles.heroTitle, cormorant.className)}>
+              {copy.titleTop}
+              <br />
+              <em>{copy.titleAccent}</em>
+            </h1>
 
-          <article className={styles.storyCard}>
-            <h2 className={cx(styles.storyTitle, cormorant.className)}>{copy.introTitle}</h2>
-            {copy.introParagraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-            <a href="#timeline" className={styles.scrollCue} onClick={handleTimelineJump}>
-              <span>{copy.jumpToTimeline}</span>
-              <span className={styles.scrollCueArrow} aria-hidden="true">
-                ↓
-              </span>
-            </a>
-          </article>
-        </div>
-      </section>
-
-      <section id="timeline" ref={timelineSectionRef} className={styles.timelineSection}>
-        <div className={styles.timelineInner}>
-          <div className={styles.timelineHeader}>
-            <h2 className={cx(styles.timelineHeading, cormorant.className)}>{copy.timelineTitle}</h2>
-          </div>
-
-          <div className={styles.timelineRailWrap}>
-            <div className={styles.timelineRail}>
-              <div className={styles.timelineProgress} style={{ width: progressWidth }} />
-              {copy.entries.map((entry, index) => (
-                <button
-                  key={entry.year}
-                  type="button"
-                  className={cx(
-                    styles.timelinePoint,
-                    index === activeIndex && styles.timelinePointActive,
-                    index < activeIndex && styles.timelinePointPassed,
-                  )}
-                  aria-pressed={index === activeIndex}
-                  aria-label={`${entry.year} ${entry.title}`}
-                  onClick={() => setActiveIndex(index)}
-                  style={{
-                    left: `calc(${TIMELINE_INSET_PX}px + (100% - ${TIMELINE_INSET_PX * 2}px) * ${timelinePositions[index] ?? 0})`,
-                  }}
-                >
-                  <span className={styles.pointYear}>{entry.year}</span>
-                  <span className={styles.pointDot} />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <article className={styles.timelineCard} aria-live="polite">
-            <p className={styles.timelineEra}>{activeItem.era}</p>
-            <h3 className={cx(styles.timelineCardTitle, cormorant.className)}>{activeItem.title}</h3>
-
-            <div className={styles.timelineBody}>
-              {activeItem.paragraphs.map((paragraph) => (
+            <article className={styles.storyCard}>
+              <h2 className={cx(styles.storyTitle, cormorant.className)}>{copy.introTitle}</h2>
+              {copy.introParagraphs.map((paragraph) => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
+              <a href="#timeline" className={styles.scrollCue} onClick={handleTimelineJump}>
+                <span>{copy.jumpToTimeline}</span>
+                <span className={styles.scrollCueArrow} aria-hidden="true">
+                  ↓
+                </span>
+              </a>
+            </article>
+          </div>
+        </section>
+
+        <section
+          id="timeline"
+          ref={timelineSectionRef}
+          className={cx(styles.timelineSection, useBidirectionalScroll && styles.panelSection)}
+        >
+          <div className={styles.timelineInner}>
+            <div className={styles.timelineHeader}>
+              <h2 className={cx(styles.timelineHeading, cormorant.className)}>{copy.timelineTitle}</h2>
             </div>
 
-            {activeItem.details?.length ? (
-              <div className={styles.detailGrid}>
-                {activeItem.details.map((detail) => (
-                  <div key={`${detail.year}-${detail.text}`} className={styles.detailItem}>
-                    <span className={cx(styles.detailYear, cormorant.className)}>{detail.year}</span>
-                    <span className={styles.detailText}>{detail.text}</span>
-                  </div>
+            <div className={styles.timelineRailWrap}>
+              <div className={styles.timelineRail}>
+                <div className={styles.timelineProgress} style={{ width: progressWidth }} />
+                {copy.entries.map((entry, index) => (
+                  <button
+                    key={entry.year}
+                    type="button"
+                    className={cx(
+                      styles.timelinePoint,
+                      index === activeIndex && styles.timelinePointActive,
+                      index < activeIndex && styles.timelinePointPassed,
+                    )}
+                    aria-pressed={index === activeIndex}
+                    aria-label={`${entry.year} ${entry.title}`}
+                    onClick={() => setActiveIndex(index)}
+                    style={{
+                      left: `calc(${TIMELINE_INSET_PX}px + (100% - ${TIMELINE_INSET_PX * 2}px) * ${timelinePositions[index] ?? 0})`,
+                    }}
+                  >
+                    <span className={styles.pointYear}>{entry.year}</span>
+                    <span className={styles.pointDot} />
+                  </button>
                 ))}
               </div>
-            ) : null}
-
-            <div className={styles.timelineActions}>
-              <button
-                type="button"
-                className={styles.timelineArrow}
-                aria-label={copy.previous}
-                disabled={activeIndex === 0}
-                onClick={() => setActiveIndex((current) => Math.max(current - 1, 0))}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                  <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className={styles.timelineArrow}
-                aria-label={copy.next}
-                disabled={activeIndex === copy.entries.length - 1}
-                onClick={() => setActiveIndex((current) => Math.min(current + 1, copy.entries.length - 1))}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-                  <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
             </div>
 
-            {!embedded ? (
-              <div className={cx(styles.timelineFooter, isLastTimelineStep && styles.timelineFooterVisible)}>
-                <Link href={getSectionHref(locale, "contact")} className={styles.footerLink}>
-                  {copy.backToMill}
-                </Link>
+            <article className={styles.timelineCard} aria-live="polite">
+              <p className={styles.timelineEra}>{activeItem.era}</p>
+              <h3 className={cx(styles.timelineCardTitle, cormorant.className)}>{activeItem.title}</h3>
+
+              <div className={styles.timelineBody}>
+                {activeItem.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
               </div>
-            ) : null}
-          </article>
-        </div>
-      </section>
+
+              {activeItem.details?.length ? (
+                <div className={styles.detailGrid}>
+                  {activeItem.details.map((detail) => (
+                    <div key={`${detail.year}-${detail.text}`} className={styles.detailItem}>
+                      <span className={cx(styles.detailYear, cormorant.className)}>{detail.year}</span>
+                      <span className={styles.detailText}>{detail.text}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              <div className={styles.timelineActions}>
+                <button
+                  type="button"
+                  className={styles.timelineArrow}
+                  aria-label={copy.previous}
+                  disabled={activeIndex === 0}
+                  onClick={() => setActiveIndex((current) => Math.max(current - 1, 0))}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                    <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  className={styles.timelineArrow}
+                  aria-label={copy.next}
+                  disabled={activeIndex === copy.entries.length - 1}
+                  onClick={() => setActiveIndex((current) => Math.min(current + 1, copy.entries.length - 1))}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+                    <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </button>
+              </div>
+
+              {!embedded ? (
+                <div className={cx(styles.timelineFooter, isLastTimelineStep && styles.timelineFooterVisible)}>
+                  <Link href={getSectionHref(locale, "contact")} className={styles.footerLink}>
+                    {copy.backToMill}
+                  </Link>
+                </div>
+              ) : null}
+            </article>
+          </div>
+        </section>
+      </div>
     </main>
   )
 }

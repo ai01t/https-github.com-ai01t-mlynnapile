@@ -45,7 +45,7 @@
 <style>
 :root{--bg:#07060a;--stone:#c9b99a;--gold:#b08d57;--gold-light:#d4aa72;--cream:#f0ebe2;--muted:#6a6060;--border:rgba(201,185,154,0.12);--res-card-h:332px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;scroll-snap-type:y mandatory;overflow-y:scroll;}
+html{scroll-behavior:smooth;scroll-snap-type:y mandatory;scroll-padding-top:0;overflow-y:scroll;overscroll-behavior-y:none;}
 body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow-x:hidden;}
 body.mobile-nav-open{overflow:hidden;touch-action:none;}
 
@@ -115,7 +115,7 @@ body.night-mode .mode-icon-moon{display:inline-block;}
 .dot.active{background:var(--gold);height:20px;border-radius:2px;}
 
 /* SECTIONS */
-section{position:relative;min-height:100svh;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;display:flex;align-items:center;}
+section{position:relative;min-height:100svh;scroll-snap-align:start;scroll-snap-stop:always;scroll-margin-top:0;overflow:hidden;display:flex;align-items:center;}
 .content{position:relative;z-index:10;width:100%;max-width:1360px;margin:0 auto;padding:120px 60px 80px;}
 
 /* ═══════════════════════
@@ -478,12 +478,14 @@ body.pause-active section .content{filter:brightness(1.14);}
 }
 .contact-faq-head{margin-bottom:10px;}
 .contact-faq-title{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(1.36rem,2.72vw,2.32rem);
-  font-weight:300;
-  line-height:.9;
-  color:var(--cream);
-  margin:0 0 8px;
+  font-family:'Manrope',sans-serif;
+  font-size:.7rem;
+  font-weight:400;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  line-height:1.2;
+  color:rgba(240,235,226,.82);
+  margin:0 0 6px;
 }
 .contact-faq-inline .rules-label{
   font-size:.66rem;
@@ -1061,7 +1063,6 @@ body.de .de{display:revert;}
   <div class="contact-text-fx" aria-hidden="true"></div>
   <div class="content">
     <div class="about-head">
-      <span class="sec-label cs">Kontakt</span><span class="sec-label en">Contact</span><span class="sec-label de">Kontakt</span>
       <h2 class="sec-title rev"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></h2>
       <div class="contact-view-toggles rev rev-d1">
         <button type="button" id="aboutToggleBtn" class="soc-link soc-toggle" aria-pressed="false" aria-label="Zobrazit O nás">O nás</button>
@@ -1161,9 +1162,8 @@ dots.forEach((d)=>d.addEventListener('click',()=>scrollToSection(d.dataset.t,{be
 function getSectionScrollTop(section){
   if(!section)return 0;
   if(section.id==='hero')return 0;
-  const navHeight=nav?.getBoundingClientRect().height||0;
   const sectionTop=window.scrollY+section.getBoundingClientRect().top;
-  return Math.max(0,Math.round(sectionTop-navHeight-6));
+  return Math.max(0,Math.round(sectionTop));
 }
 
 function shouldForceHomeToTop(){
@@ -1193,6 +1193,46 @@ function clearSectionSnapTimers(){
     clearTimeout(sectionSnapReleaseTimer);
     sectionSnapReleaseTimer=null;
   }
+  if(sectionScrollAnimationFrame){
+    cancelAnimationFrame(sectionScrollAnimationFrame);
+    sectionScrollAnimationFrame=null;
+  }
+  sectionScrollAnimationToken+=1;
+}
+
+function easeInOutCubic(value){
+  if(value<.5)return 4*value*value*value;
+  return 1-Math.pow(-2*value+2,3)/2;
+}
+
+function animateWindowScroll(targetTop,duration=760){
+  const destination=Math.max(0,Math.round(targetTop));
+  const startTop=window.scrollY;
+  const distance=destination-startTop;
+  if(Math.abs(distance)<=1){
+    window.scrollTo({top:destination,behavior:'auto'});
+    return;
+  }
+  if(sectionScrollAnimationFrame){
+    cancelAnimationFrame(sectionScrollAnimationFrame);
+    sectionScrollAnimationFrame=null;
+  }
+  sectionScrollAnimationToken+=1;
+  const token=sectionScrollAnimationToken;
+  const startTime=performance.now();
+  const step=(now)=>{
+    if(token!==sectionScrollAnimationToken)return;
+    const progress=Math.min((now-startTime)/duration,1);
+    const eased=easeInOutCubic(progress);
+    window.scrollTo({top:Math.round(startTop+distance*eased),behavior:'auto'});
+    if(progress<1){
+      sectionScrollAnimationFrame=requestAnimationFrame(step);
+      return;
+    }
+    sectionScrollAnimationFrame=null;
+    window.scrollTo({top:destination,behavior:'auto'});
+  };
+  sectionScrollAnimationFrame=requestAnimationFrame(step);
 }
 
 function getNearestSectionForViewport(){
@@ -1210,29 +1250,126 @@ function getNearestSectionForViewport(){
   return {section:nearestSection,distance:nearestDistance};
 }
 
+function isDesktopSectionSnapMode(){
+  return window.innerWidth>1100&&window.matchMedia('(orientation:landscape)').matches;
+}
+
+function getSectionIndex(section){
+  return secs.indexOf(section);
+}
+
+function getViewportSectionIndex(){
+  const centerY=window.innerHeight*.5;
+  const centeredIndex=secs.findIndex((section)=>{
+    const rect=section.getBoundingClientRect();
+    return rect.top<=centerY&&rect.bottom>=centerY;
+  });
+  if(centeredIndex>=0)return centeredIndex;
+  const {section}=getNearestSectionForViewport();
+  return section?getSectionIndex(section):0;
+}
+
+function hasScrollableParent(target,deltaY){
+  let node=target instanceof Element?target:null;
+  while(node&&node!==document.body){
+    if(node.matches('input,textarea,select,[contenteditable="true"]'))return true;
+    const style=window.getComputedStyle(node);
+    const canScrollY=/(auto|scroll|overlay)/.test(style.overflowY||'');
+    if(canScrollY&&node.scrollHeight>node.clientHeight+4){
+      const canScrollUp=node.scrollTop>2;
+      const canScrollDown=node.scrollTop+node.clientHeight<node.scrollHeight-2;
+      if((deltaY<0&&canScrollUp)||(deltaY>0&&canScrollDown))return true;
+    }
+    node=node.parentElement;
+  }
+  return false;
+}
+
+function handleSectionWheelSnap(event){
+  if(!isDesktopSectionSnapMode()||initialTopLockActive||mobileNav?.classList.contains('open')||document.hidden)return;
+  if(event.ctrlKey||Math.abs(event.deltaY)<10)return;
+  if(hasScrollableParent(event.target,event.deltaY))return;
+  const now=Date.now();
+  if(sectionSnapLocked||now<wheelSnapCooldownUntil){
+    event.preventDefault();
+    return;
+  }
+  const currentSection=secs.find((section)=>section.id===currentSectionId);
+  const currentIndex=currentSection?getSectionIndex(currentSection):getViewportSectionIndex();
+  if(currentIndex<0)return;
+  const direction=event.deltaY>0?1:-1;
+  const isLast=currentIndex>=secs.length-1;
+  const isFirst=currentIndex<=0;
+  if((direction>0&&isLast)||(direction<0&&isFirst))return;
+  const nextIndex=Math.min(Math.max(currentIndex+direction,0),secs.length-1);
+  const nextSection=secs[nextIndex];
+  if(!nextSection)return;
+  wheelSnapCooldownUntil=now+1240;
+  event.preventDefault();
+  scrollToSection(nextSection.id,{behavior:'smooth'});
+}
+
+function handleSectionTouchStart(event){
+  const touch=event.touches&&event.touches[0];
+  if(!touch)return;
+  sectionTouchStartX=touch.clientX;
+  sectionTouchStartY=touch.clientY;
+}
+
+function handleSectionTouchEnd(event){
+  if(sectionTouchStartX===null||sectionTouchStartY===null)return;
+  const touch=event.changedTouches&&event.changedTouches[0];
+  const startX=sectionTouchStartX;
+  const startY=sectionTouchStartY;
+  sectionTouchStartX=null;
+  sectionTouchStartY=null;
+  if(!touch||initialTopLockActive||mobileNav?.classList.contains('open')||document.hidden)return;
+  const deltaX=touch.clientX-startX;
+  const deltaY=touch.clientY-startY;
+  if(Math.abs(deltaY)<56||Math.abs(deltaY)<Math.abs(deltaX))return;
+  if(hasScrollableParent(event.target,-deltaY))return;
+  const now=Date.now();
+  if(sectionSnapLocked||now<wheelSnapCooldownUntil)return;
+  const currentSection=secs.find((section)=>section.id===currentSectionId);
+  const currentIndex=currentSection?getSectionIndex(currentSection):getViewportSectionIndex();
+  if(currentIndex<0)return;
+  const direction=deltaY<0?1:-1;
+  const nextIndex=Math.min(Math.max(currentIndex+direction,0),secs.length-1);
+  if(nextIndex===currentIndex)return;
+  const nextSection=secs[nextIndex];
+  if(!nextSection)return;
+  wheelSnapCooldownUntil=now+1240;
+  scrollToSection(nextSection.id,{behavior:'smooth'});
+}
+
 function scheduleSectionSettleSnap(){
   if(initialTopLockActive||sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
   if(sectionSnapTimer)clearTimeout(sectionSnapTimer);
   sectionSnapTimer=setTimeout(()=>{
     sectionSnapTimer=null;
     if(initialTopLockActive||sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
+    if(isDesktopSectionSnapMode()&&window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-6)return;
     const {section,distance}=getNearestSectionForViewport();
     if(!section)return;
     const targetTop=getSectionScrollTop(section);
-    const viewportThreshold=Math.max(28,window.innerHeight*.12);
+    const viewportThreshold=Math.max(42,window.innerHeight*.15);
     const rawTop=section.getBoundingClientRect().top;
     const rawBottom=section.getBoundingClientRect().bottom;
     const nearTopEdge=Math.abs(rawTop)<=viewportThreshold;
     const nearBottomEdge=Math.abs(rawBottom-window.innerHeight)<=viewportThreshold;
-    const maxSnapDistance=Math.max(56,window.innerHeight*.18);
-    if((!nearTopEdge&&!nearBottomEdge)||distance<12||distance>maxSnapDistance)return;
+    const maxSnapDistance=isDesktopSectionSnapMode()?Math.max(220,window.innerHeight*.55):Math.max(88,window.innerHeight*.24);
+    const shouldSnap=isDesktopSectionSnapMode()
+      ?distance>=10&&distance<=maxSnapDistance
+      :((nearTopEdge||nearBottomEdge)&&distance>=12&&distance<=maxSnapDistance);
+    if(!shouldSnap)return;
     sectionSnapLocked=true;
-    window.scrollTo({top:targetTop,behavior:'smooth'});
+    wheelSnapCooldownUntil=Date.now()+1240;
+    animateWindowScroll(targetTop,780);
     sectionSnapReleaseTimer=setTimeout(()=>{
       sectionSnapLocked=false;
       sectionSnapReleaseTimer=null;
-    },980);
-  },240);
+    },1120);
+  },180);
 }
 
 function resetHomeViewportToHero(){
@@ -1271,6 +1408,8 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
   const performScroll=()=>{
     clearSectionSnapTimers();
     sectionSnapLocked=true;
+    const releaseDelay=behavior==='smooth'?1120:160;
+    wheelSnapCooldownUntil=Date.now()+releaseDelay;
     currentSectionId=sectionId;
     if(sectionId!=='place')hidePlaceHistoryOverlay(true);
     if(sectionId!=='residency'){
@@ -1281,11 +1420,16 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
     syncBackgroundVideos();
     const nextUrl=sectionId==='hero'?window.location.pathname:`${window.location.pathname}#${sectionId}`;
     window.history.replaceState({},'',nextUrl);
-    window.scrollTo({top:getSectionScrollTop(section),behavior});
+    const targetTop=getSectionScrollTop(section);
+    if(behavior==='smooth'){
+      animateWindowScroll(targetTop,760);
+    }else{
+      window.scrollTo({top:targetTop,behavior:'auto'});
+    }
     sectionSnapReleaseTimer=setTimeout(()=>{
       sectionSnapLocked=false;
       sectionSnapReleaseTimer=null;
-    },behavior==='smooth'?760:120);
+    },releaseDelay);
   };
   if(closeMenu){
     closeMobileNav();
@@ -1477,6 +1621,11 @@ let activeResidencyChlebaYoutubeIframe=null;
 let sectionSnapTimer=null;
 let sectionSnapLocked=false;
 let sectionSnapReleaseTimer=null;
+let wheelSnapCooldownUntil=0;
+let sectionScrollAnimationFrame=null;
+let sectionScrollAnimationToken=0;
+let sectionTouchStartX=null;
+let sectionTouchStartY=null;
 let initialTopLockActive=shouldForceHomeToTop();
 let initialTopLockTimer=null;
 let footerAutoHideTimer=null;
@@ -2602,6 +2751,9 @@ startBgAutoplayWatchdog();
     if(initialTopLockActive)releaseInitialTopLock();
   },{passive:true});
 });
+window.addEventListener('wheel',handleSectionWheelSnap,{passive:false});
+window.addEventListener('touchstart',handleSectionTouchStart,{passive:true});
+window.addEventListener('touchend',handleSectionTouchEnd,{passive:true});
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden){
     kickBgVideos();

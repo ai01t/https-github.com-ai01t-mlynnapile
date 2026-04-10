@@ -95,11 +95,6 @@ const copyByLocale: Record<Locale, Copy> = {
     faqSubtitle: "Často kladené otázky",
     details: [
       {
-        title: "Co pečeme k pobytu a nahrávání",
-        body:
-          "Součástí každého pobytu i nahrávání je snídaně nebo brunch. Pečeme k nim vlastní kváskový chleba, vždy čerstvý, ve velké venkovní peci. Pečeme zde také pizzu ;-)",
-      },
-      {
         title: "Proč kvásek",
         body:
           "Kvásek dává chlebu čas. Dlouhá fermentace umožňuje částečný rozklad některých složek obilí (např. složitějších sacharidů a bílkovin), takže bývá pro trávení šetrnější než běžné pečivo z droždí.",
@@ -128,6 +123,10 @@ const copyByLocale: Record<Locale, Copy> = {
         title: "Co v chlebu (ne)najdete",
         body:
           "Používáme jen základní suroviny: kvalitní mouku od českých mlýnů, námi ozkoušený poměr různých typů, vodu, kvásek, himalájskou sůl a bio kmín z farmy. Kvásek je možné od nás získat, recept je ale náš ;-) Bez éček, bez zlepšovadel, bez zbytečných přísad.",
+      },
+      {
+        title: "Patří chleba ke každému pobytu ve studiu?",
+        body: "Ano a pečeme zde také pizzu ;-)",
       },
     ],
     backToPackages: "Zpět na Studio",
