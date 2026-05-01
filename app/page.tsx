@@ -1908,18 +1908,7 @@ export default function Page() {
 
   const scrollToContentElement = useCallback((target: Element | null, behavior: ScrollBehavior = "smooth") => {
     if (!target) return
-
-    const rootElement = contentScrollRef.current
-    if (!rootElement) {
-      target.scrollIntoView({ behavior, block: "start" })
-      return
-    }
-
-    const rootRect = rootElement.getBoundingClientRect()
-    const targetRect = target.getBoundingClientRect()
-    const top = targetRect.top - rootRect.top + rootElement.scrollTop
-
-    rootElement.scrollTo({ top: Math.max(0, top), behavior })
+    target.scrollIntoView({ behavior, block: "start" })
   }, [])
 
   useEffect(() => {
@@ -2111,11 +2100,6 @@ export default function Page() {
   }, [currentVideoUrl, isDarkMode, isHorizontal, nextVideoUrl, startVideoCrossfade])
 
   useEffect(() => {
-    const rootElement = contentScrollRef.current
-    if (!rootElement) {
-      return
-    }
-
     const armIdleTimer = () => {
       clearSectionVideoIdle()
       sectionVideoIdleRef.current = setTimeout(() => {
@@ -2130,10 +2114,10 @@ export default function Page() {
       armIdleTimer()
     }
 
-    rootElement.addEventListener("scroll", handleScroll, { passive: true })
+    window.addEventListener("scroll", handleScroll, { passive: true })
 
     return () => {
-      rootElement.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("scroll", handleScroll)
       clearSectionVideoIdle()
     }
   }, [clearSectionVideoIdle, switchVideoToActiveSection])
@@ -2174,9 +2158,6 @@ export default function Page() {
   }, [clearSectionVideoIdle, clearVideoCrossfade])
 
   useEffect(() => {
-    const rootElement = contentScrollRef.current
-    if (!rootElement) return
-
     const sectionElements = observableSections
       .map((section) => ({
         section,
@@ -2233,7 +2214,7 @@ export default function Page() {
         updateActiveSection()
       },
       {
-        root: rootElement,
+        root: null,
         threshold: [0, 0.05, 0.1, 0.15, 0.2],
       },
     )
@@ -2590,10 +2571,10 @@ export default function Page() {
             background: "linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.5) 50%, transparent 100%)",
           }}
         />
-        <div className="h-screen flex flex-col">
+        <div>
           {showPresentationMessage && (
             <div
-              className="absolute left-1/2 -translate-x-1/2 top-16 text-white text-xl font-light z-50 transition-opacity duration-1000"
+              className="fixed left-1/2 -translate-x-1/2 top-16 text-white text-xl font-light z-50 transition-opacity duration-1000"
               style={{ opacity: presentationOpacity }}
             >
               {t.mlyn.endMessage}
@@ -2606,13 +2587,13 @@ export default function Page() {
             </div>
           )}
 
-          <div ref={contentScrollRef} className="flex-1 overflow-y-auto scroll-smooth snap-y snap-proximity">
+          <div ref={contentScrollRef}>
             <>
               <div
                 id="mlyn"
                 data-section-id="mlyn"
                 ref={mlynSectionRef}
-                className="snap-start min-h-screen pt-32 pb-32"
+                className="min-h-screen pt-32 pb-32"
               >
                 <div className="px-6 py-12">
                   <div className="text-center max-w-5xl mx-auto mb-16">
@@ -2729,7 +2710,7 @@ export default function Page() {
                 id="studio"
                 data-section-id="studio"
                 ref={studioSectionRef}
-                className="snap-start min-h-screen pt-32 pb-32"
+                className="min-h-screen pt-32 pb-32"
               >
                 {/* Hero Section */}
                 <div className="flex items-center justify-center px-6 py-16 text-white">
@@ -2988,7 +2969,7 @@ export default function Page() {
                 id="lokalita"
                 data-section-id="lokalita"
                 ref={lokalitaSectionRef}
-                className="snap-start min-h-screen px-6 py-12 pt-32 pb-32"
+                className="min-h-screen px-6 py-12 pt-32 pb-32"
               >
                 <div className="max-w-6xl mx-auto">
                   <div className="text-center mb-12">
@@ -3250,7 +3231,7 @@ export default function Page() {
                 id="equipment"
                 data-section-id="equipment"
                 ref={equipmentSectionRef}
-                className="snap-start min-h-screen px-6 py-12 pt-32 pb-32"
+                className="min-h-screen px-6 py-12 pt-32 pb-32"
               >
                 <div className="max-w-7xl mx-auto">
                   <div className="text-center mb-8">
@@ -3949,7 +3930,7 @@ export default function Page() {
                 id="contact"
                 data-section-id="contact"
                 ref={contactSectionRef}
-                className="snap-start min-h-screen pt-32 px-6 py-12 pb-32"
+                className="min-h-screen pt-32 px-6 py-12 pb-32"
               >
                 <div className="max-w-4xl mx-auto">
                   <div className="text-center mb-12">
@@ -4020,7 +4001,7 @@ export default function Page() {
                 id="about"
                 data-section-id="about"
                 ref={onasSectionRef}
-                className="snap-start min-h-screen pt-32 px-6 py-12 pb-32"
+                className="min-h-screen pt-32 px-6 py-12 pb-32"
               >
                 <div className="space-y-8">
                   {/* Section 1: Hero + History */}

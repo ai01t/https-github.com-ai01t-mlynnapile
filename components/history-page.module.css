@@ -366,8 +366,7 @@
 .timelineSection {
   position: relative;
   z-index: 10;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+  /* scroll-snap removed — native smooth scroll */
 }
 
 .panelTrack {
