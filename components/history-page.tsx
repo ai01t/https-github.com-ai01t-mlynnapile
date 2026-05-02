@@ -571,6 +571,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const embedded = searchParams.get("embed") === "1"
+  const forceHorizontalPanels = embedded && searchParams.get("horizontal") === "1"
   const localVideoRef = useRef<HTMLVideoElement | null>(null)
   const langSwitchRef = useRef<HTMLDivElement | null>(null)
   const heroSectionRef = useRef<HTMLElement | null>(null)
@@ -598,7 +599,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const timelinePositions = getTimelinePositions(copy.entries)
   const isLastTimelineStep = activeIndex === copy.entries.length - 1
   const historyVideo = isPortrait ? HISTORY_VIDEO_ASSETS.vertical : HISTORY_VIDEO_ASSETS.horizontal
-  const useBidirectionalScroll = !embedded && bidirectionalEnabled
+  const useBidirectionalScroll = forceHorizontalPanels || bidirectionalEnabled
 
   const getTimelineTargetTop = () => {
     const timelineSection = timelineSectionRef.current
@@ -661,12 +662,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   }, [])
 
   useEffect(() => {
-    if (embedded) {
-      setBidirectionalEnabled(false)
-      return
-    }
-
-    const mediaQuery = window.matchMedia("(min-width: 981px) and (orientation: landscape)")
+    const mediaQuery = window.matchMedia(embedded ? "(pointer: fine), (min-width: 641px)" : "(min-width: 981px) and (orientation: landscape)")
     const syncBidirectional = () => setBidirectionalEnabled(mediaQuery.matches)
 
     syncBidirectional()
@@ -1329,7 +1325,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
               <a href="#timeline" className={styles.scrollCue} onClick={handleTimelineJump}>
                 <span>{copy.jumpToTimeline}</span>
                 <span className={styles.scrollCueArrow} aria-hidden="true">
-                  ↓
+                  {useBidirectionalScroll ? "→" : "↓"}
                 </span>
               </a>
             </article>

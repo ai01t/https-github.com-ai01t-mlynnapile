@@ -686,6 +686,9 @@ body.de .de{display:revert;}
   .side-nav{display:none;}
   #history .history-embed-frame{pointer-events:none;}
 }
+@media(min-width:768px) and (max-width:1100px){
+  #history .history-embed-frame{pointer-events:auto;}
+}
 @media(orientation:portrait){
   html{scroll-snap-type:none;}
   section{scroll-snap-stop:normal;}
@@ -708,6 +711,9 @@ body.de .de{display:revert;}
     object-fit:cover;
     object-position:center center;
   }
+}
+@media(min-width:768px) and (orientation:portrait){
+  #history .history-embed-frame{pointer-events:auto;}
 }
 
 /* HAMBURGER */
@@ -1067,7 +1073,7 @@ body.de .de{display:revert;}
 <!-- ══ HISTORY ══ -->
 <section id="history">
   <div class="history-embed-shell">
-    <iframe class="history-embed-frame" src="/historie?embed=1" title="Historie Mlýna na Pile" loading="lazy" tabindex="-1"></iframe>
+    <iframe class="history-embed-frame" src="/historie?embed=1&horizontal=1" title="Historie Mlýna na Pile" loading="lazy" tabindex="-1"></iframe>
   </div>
 </section>
 
@@ -1515,51 +1521,9 @@ function handleHashNavigation({smooth=false}={}){
 }
 
 function setupHistoryIframeScrollBridge(){
-  if(!historyEmbedFrame)return;
-  const attach=()=>{
-    let frameWindow=null;
-    try{frameWindow=historyEmbedFrame.contentWindow;}catch(error){frameWindow=null;}
-    if(!frameWindow||frameWindow.__mlynHistorySnapBridge)return;
-    frameWindow.__mlynHistorySnapBridge=true;
-    let startX=null;
-    let startY=null;
-    frameWindow.addEventListener('wheel',(event)=>{
-      if(!isFullPageScrollMode()||Math.abs(event.deltaY)<6||event.ctrlKey)return;
-      event.preventDefault();
-      moveToAdjacentSection(event.deltaY>0?1:-1,{behavior:'smooth'});
-    },{passive:false,capture:true});
-    frameWindow.addEventListener('touchstart',(event)=>{
-      if(!isFullPageScrollMode())return;
-      const touch=event.touches&&event.touches[0];
-      if(!touch)return;
-      startX=touch.clientX;
-      startY=touch.clientY;
-    },{passive:true,capture:true});
-    frameWindow.addEventListener('touchmove',(event)=>{
-      if(!isFullPageScrollMode()||startX===null||startY===null)return;
-      const touch=event.touches&&event.touches[0];
-      if(!touch)return;
-      const dx=touch.clientX-startX;
-      const dy=touch.clientY-startY;
-      if(Math.abs(dy)<12||Math.abs(dy)<Math.abs(dx))return;
-      event.preventDefault();
-    },{passive:false,capture:true});
-    frameWindow.addEventListener('touchend',(event)=>{
-      if(!isFullPageScrollMode()||startX===null||startY===null)return;
-      const touch=event.changedTouches&&event.changedTouches[0];
-      const sx=startX;
-      const sy=startY;
-      startX=null;
-      startY=null;
-      if(!touch)return;
-      const dx=touch.clientX-sx;
-      const dy=touch.clientY-sy;
-      if(Math.abs(dy)<56||Math.abs(dy)<Math.abs(dx))return;
-      moveToAdjacentSection(dy<0?1:-1,{behavior:'smooth'});
-    },{passive:true,capture:true});
-  };
-  historyEmbedFrame.addEventListener('load',()=>setTimeout(attach,60));
-  setTimeout(attach,300);
+  // History now handles its first/second horizontal panel internally and
+  // posts edge scroll messages back to the parent. A parent capture bridge
+  // would steal that first scroll before the timeline can slide in.
 }
 
 function resetHomeViewportToHero(){

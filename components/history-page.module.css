@@ -566,6 +566,15 @@
   animation: scrollPulse 2.4s ease-in-out infinite;
 }
 
+.panelTrackBidirectional .scrollCue {
+  flex-direction: row;
+  gap: 12px;
+}
+
+.panelTrackBidirectional .scrollCueArrow {
+  animation: scrollPulseRight 2.4s ease-in-out infinite;
+}
+
 @keyframes scrollPulse {
   0%,
   100% {
@@ -575,6 +584,19 @@
 
   50% {
     transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+@keyframes scrollPulseRight {
+  0%,
+  100% {
+    transform: translateX(0);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: translateX(6px);
     opacity: 1;
   }
 }
