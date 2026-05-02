@@ -867,6 +867,14 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       return
     }
 
+    const parentSnapEnabled = () => {
+      try {
+        return embedded && window.parent.innerWidth >= 768
+      } catch {
+        return embedded && window.innerWidth >= 768
+      }
+    }
+
     const onWheel = (event: WheelEvent) => {
       if (mobileNavOpen || Math.abs(event.deltaY) < 12) {
         return
@@ -878,6 +886,8 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         setTimelineViewActive(true)
       } else if (event.deltaY < 0 && timelineViewActive) {
         setTimelineViewActive(false)
+      } else if (parentSnapEnabled()) {
+        window.parent.postMessage({ type: "history-embed-wheel", deltaY: event.deltaY }, window.location.origin)
       }
     }
 
@@ -919,6 +929,8 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         setTimelineViewActive(true)
       } else if (deltaY > 18 && timelineViewActive) {
         setTimelineViewActive(false)
+      } else if (parentSnapEnabled()) {
+        window.parent.postMessage({ type: "history-embed-swipe", deltaY: -deltaY }, window.location.origin)
       }
     }
 

@@ -14,6 +14,40 @@
   color: var(--cream);
 }
 
+.embedded {
+  background: transparent !important;
+}
+
+.embedded .pageShell {
+  min-height: 0 !important;
+  width: min(100%, calc(100% - 8px));
+  padding: 0;
+}
+
+.embedded .experience {
+  min-height: 0 !important;
+  gap: 32px;
+  align-items: start;
+}
+
+.embedded .infoColumn {
+  min-height: 0;
+  padding-bottom: 0;
+}
+
+.embedded .stackStage {
+  min-height: 520px;
+  padding-right: 44px;
+}
+
+.embedded .stackColumn {
+  padding-right: 72px;
+}
+
+.embedded .monthGuide {
+  max-width: 100%;
+}
+
 .bgShell,
 .bgPoster,
 .bgOverlay {
