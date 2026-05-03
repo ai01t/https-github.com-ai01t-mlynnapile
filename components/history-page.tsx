@@ -864,6 +864,11 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       return
     }
 
+    const previousHtmlOverflowX = document.documentElement.style.overflowX
+    const previousBodyOverflowX = document.body.style.overflowX
+    document.documentElement.style.overflowX = "hidden"
+    document.body.style.overflowX = "hidden"
+
     const parentSnapEnabled = () => {
       try {
         return embedded && window.parent.innerWidth >= 768
@@ -873,18 +878,27 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     }
 
     const onWheel = (event: WheelEvent) => {
-      if (mobileNavOpen || Math.abs(event.deltaY) < 12) {
+      if (mobileNavOpen) {
+        return
+      }
+
+      const deltaX = event.deltaX
+      const deltaY = event.deltaY
+      const horizontalIntent = Math.abs(deltaX) > Math.max(Math.abs(deltaY), 18)
+
+      if (!horizontalIntent && Math.abs(deltaY) < 12) {
         return
       }
 
       event.preventDefault()
+      window.scrollTo({ left: 0, top: 0, behavior: "auto" })
 
-      if (event.deltaY > 0 && !timelineViewActive) {
+      if (horizontalIntent && deltaX > 0 && !timelineViewActive) {
         setTimelineViewActive(true)
-      } else if (event.deltaY < 0 && timelineViewActive) {
+      } else if (horizontalIntent && deltaX < 0 && timelineViewActive) {
         setTimelineViewActive(false)
       } else if (parentSnapEnabled()) {
-        window.parent.postMessage({ type: "history-embed-wheel", deltaY: event.deltaY }, window.location.origin)
+        window.parent.postMessage({ type: "history-embed-wheel", deltaY }, window.location.origin)
       }
     }
 
@@ -922,21 +936,19 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         return
       }
 
-      if (deltaY < -18 && !timelineViewActive) {
-        setTimelineViewActive(true)
-      } else if (deltaY > 18 && timelineViewActive) {
-        setTimelineViewActive(false)
-      } else if (parentSnapEnabled()) {
+      if (parentSnapEnabled()) {
         window.parent.postMessage({ type: "history-embed-swipe", deltaY: -deltaY }, window.location.origin)
       }
     }
 
-    window.addEventListener("wheel", onWheel, { passive: false })
+    window.addEventListener("wheel", onWheel, { passive: false, capture: true })
     window.addEventListener("touchstart", onTouchStart, { passive: true })
     window.addEventListener("touchend", onTouchEnd, { passive: true })
 
     return () => {
-      window.removeEventListener("wheel", onWheel)
+      document.documentElement.style.overflowX = previousHtmlOverflowX
+      document.body.style.overflowX = previousBodyOverflowX
+      window.removeEventListener("wheel", onWheel, { capture: true })
       window.removeEventListener("touchstart", onTouchStart)
       window.removeEventListener("touchend", onTouchEnd)
     }
