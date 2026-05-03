@@ -632,8 +632,9 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     const previousHtmlSnapType = document.documentElement.style.scrollSnapType
     const previousBodySnapType = document.body.style.scrollSnapType
 
-    document.documentElement.style.scrollSnapType = "y proximity"
-    document.body.style.scrollSnapType = "y proximity"
+    // No scroll-snap — use native smooth scrolling only
+    document.documentElement.style.scrollSnapType = "none"
+    document.body.style.scrollSnapType = "none"
 
     try {
       setNightMode(window.localStorage.getItem(MODE_STORAGE_KEY) === "night")

@@ -45,8 +45,13 @@
 <style>
 :root{--bg:#07060a;--stone:#c9b99a;--gold:#b08d57;--gold-light:#d4aa72;--cream:#f0ebe2;--muted:#6a6060;--border:rgba(201,185,154,0.12);--res-card-h:332px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+<<<<<<< HEAD
 html{scroll-behavior:auto;scroll-snap-type:none;scroll-padding-top:0;overflow:hidden;overscroll-behavior-y:none;}
 body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow:hidden;}
+=======
+html{scroll-behavior:smooth;overflow-y:scroll;overscroll-behavior-y:none;}
+body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow-x:hidden;}
+>>>>>>> b2a7e0eeb33182ac0503883a5103edc9121274f7
 body.mobile-nav-open{overflow:hidden;touch-action:none;}
 @media(max-width:767px){
   html,body{overflow:auto;}
@@ -118,7 +123,11 @@ body.night-mode .mode-icon-moon{display:inline-block;}
 .dot.active{background:var(--gold);height:20px;border-radius:2px;}
 
 /* SECTIONS */
+<<<<<<< HEAD
 section{position:relative;min-height:100svh;scroll-snap-align:none;scroll-snap-stop:normal;scroll-margin-top:0;overflow:hidden;display:flex;align-items:center;}
+=======
+section{position:relative;min-height:100svh;overflow:hidden;display:flex;align-items:center;}
+>>>>>>> b2a7e0eeb33182ac0503883a5103edc9121274f7
 .content{position:relative;z-index:10;width:100%;max-width:1360px;margin:0 auto;padding:120px 60px 80px;}
 
 /* ═══════════════════════
@@ -675,8 +684,11 @@ body.de .de{display:revert;}
 }
 /* RESPONSIVE — nav (hamburger when menu stops fitting) */
 @media(max-width:1100px){
+<<<<<<< HEAD
   html{scroll-snap-type:none;}
   section{scroll-snap-stop:normal;}
+=======
+>>>>>>> b2a7e0eeb33182ac0503883a5103edc9121274f7
   nav{padding:16px 28px;}
   nav.scrolled{padding:12px 28px;}
   .nav-links{display:none;}
@@ -690,8 +702,11 @@ body.de .de{display:revert;}
   #history .history-embed-frame{pointer-events:auto;}
 }
 @media(orientation:portrait){
+<<<<<<< HEAD
   html{scroll-snap-type:none;}
   section{scroll-snap-stop:normal;}
+=======
+>>>>>>> b2a7e0eeb33182ac0503883a5103edc9121274f7
   .nav-links{display:none;}
   .hamburger{display:flex !important;}
   .side-nav{display:none;}
@@ -3058,12 +3073,16 @@ startBgAutoplayWatchdog();
     if(initialTopLockActive&&isFullPageScrollMode())releaseInitialTopLock();
   },{passive:true});
 });
+<<<<<<< HEAD
 window.addEventListener('wheel',handleSectionWheelSnap,{passive:false,capture:true});
 window.addEventListener('touchstart',handleSectionTouchStart,{passive:true,capture:true});
 window.addEventListener('touchmove',handleSectionTouchMove,{passive:false,capture:true});
 window.addEventListener('touchend',handleSectionTouchEnd,{passive:true,capture:true});
 window.addEventListener('keydown',handleSectionKeySnap,{capture:true});
 window.addEventListener('hashchange',()=>handleHashNavigation({smooth:true}));
+=======
+/* Scroll snap handlers removed — native smooth scrolling only */
+>>>>>>> b2a7e0eeb33182ac0503883a5103edc9121274f7
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden){
     kickBgVideos();

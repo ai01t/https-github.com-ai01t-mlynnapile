@@ -119,6 +119,22 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* ── Scroll reset: kill all scroll-snap, use native smooth scroll ── */
+html, html.mobile-scroll-optimized {
+  scroll-behavior: smooth !important;
+  scroll-snap-type: none !important;
+  scroll-padding-top: 0 !important;
+  overscroll-behavior: auto !important;
+}
+body, body.mobile-scroll-optimized {
+  scroll-snap-type: none !important;
+  overscroll-behavior: auto !important;
+}
+section, div {
+  scroll-snap-align: unset !important;
+  scroll-snap-stop: unset !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
