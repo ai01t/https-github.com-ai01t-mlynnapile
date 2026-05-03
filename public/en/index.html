@@ -18,6 +18,8 @@
   } catch (error) {}
   const shouldForceTop = !window.location.hash;
   window.__MLYN_BOOT_FORCE_TOP = shouldForceTop;
+  window.__MLYN_BOOT_FORCE_TOP_UNTIL = shouldForceTop ? Date.now() + 5200 : 0;
+  window.__MLYN_USER_SCROLL_INTENT = false;
   if (shouldForceTop) {
     try {
       document.documentElement.style.scrollBehavior = 'auto';
@@ -1284,6 +1286,14 @@ function shouldForceHomeToTop(){
   return !window.location.hash;
 }
 
+function isBootTopRestoreActive(){
+  return shouldForceHomeToTop()&&!window.__MLYN_USER_SCROLL_INTENT;
+}
+
+function markUserScrollIntent(){
+  window.__MLYN_USER_SCROLL_INTENT=true;
+}
+
 function clearInitialTopLockTimer(){
   if(initialTopLockTimer){
     clearTimeout(initialTopLockTimer);
@@ -1440,6 +1450,7 @@ function handleSectionWheelSnap(event){
   if(!isFullPageScrollMode()||mobileNav?.classList.contains('open')||document.hidden)return;
   if(event.ctrlKey||Math.abs(event.deltaY)<6)return;
   if(isInteractiveScrollTarget(event.target))return;
+  markUserScrollIntent();
   event.preventDefault();
   if(initialTopLockActive)releaseInitialTopLock();
   if(sectionSnapLocked||Date.now()<wheelSnapCooldownUntil){
@@ -1453,6 +1464,7 @@ function handleSectionTouchStart(event){
   if(!isFullPageScrollMode())return;
   const touch=event.touches&&event.touches[0];
   if(!touch)return;
+  markUserScrollIntent();
   sectionTouchStartX=touch.clientX;
   sectionTouchStartY=touch.clientY;
 }
@@ -1502,6 +1514,7 @@ function handleSectionKeySnap(event){
   }else{
     return;
   }
+  markUserScrollIntent();
   event.preventDefault();
   if(initialTopLockActive)releaseInitialTopLock();
   if(targetId){
@@ -1549,7 +1562,7 @@ function resetHomeViewportToHero(){
   const delays=isMobileNativeScrollMode()?[80,180,420,900,1500,2400]:[140,420,860];
   delays.forEach((delay)=>{
     setTimeout(()=>{
-      if(!initialTopLockActive||!shouldForceHomeToTop())return;
+      if(!shouldForceHomeToTop()||window.__MLYN_USER_SCROLL_INTENT)return;
       finish();
     },delay);
   });
@@ -3055,6 +3068,7 @@ startBgAutoplayWatchdog();
 ['pointerdown','touchstart','keydown','wheel'].forEach(ev=>window.addEventListener(ev,kickBgVideos,{passive:true}));
 ['touchstart','pointerdown','wheel'].forEach((ev)=>{
   window.addEventListener(ev,()=>{
+    markUserScrollIntent();
     if(initialTopLockActive&&isFullPageScrollMode())releaseInitialTopLock();
   },{passive:true});
 });
@@ -3303,8 +3317,16 @@ window.addEventListener('load',resetHomeViewportToHero);
 window.addEventListener('pageshow',()=>{
   resetHomeViewportToHero();
 });
+window.addEventListener('scroll',()=>{
+  if(!isBootTopRestoreActive())return;
+  if(window.scrollY<=2)return;
+  window.scrollTo({top:0,behavior:'auto'});
+},{passive:true,capture:true});
 window.addEventListener('load',()=>{
-  requestAnimationFrame(()=>handleHashNavigation({smooth:false}));
+  requestAnimationFrame(()=>{
+    if(shouldForceHomeToTop())resetHomeViewportToHero();
+    else handleHashNavigation({smooth:false});
+  });
 });
 updateNavCompactState();
 
