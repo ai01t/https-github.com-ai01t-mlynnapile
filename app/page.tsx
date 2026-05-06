@@ -1293,10 +1293,6 @@ export default function Page() {
         usedBy: "Kurt Cobain (Nirvana), Matthew Healy (The 1975), beabadoobee (solo).",
         source: "Zdroj: equipboard.com",
       },
-      "Maybach Teleman": {
-        tech: "Spec (Teleman T61): solid‑body T‑style, bolt‑on javorový krk, rosewood hmatník, 21 pražců, 25.5\" menzura, 2× Van Zandt single‑coil, 3‑way přepínač, nitrocellulózový aged finiš.",
-        source: "Zdroj: stageguitarservice.com, musicstore.com",
-      },
       "Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)": {
         tech: "Spec (D‑15M série): all‑solid mahagon, dreadnought (D‑14 fret), saténový finiš, 25.4\" menzura.",
         usedBy:
@@ -1351,10 +1347,6 @@ export default function Page() {
         tech: "Spec: mahagonové tělo s javorovým topem, set‑neck, humbuckery.",
         usedBy: "Noel Gallagher (Oasis), Jerry Cantrell (Alice in Chains).",
         source: "Zdroj: gibson.com, equipboard.com",
-      },
-      "Gibson Les Paul Traditional (2009)": {
-        tech: "Spec: mahagonové tělo s javorovým topem, 24.75\" menzura, set‑neck.",
-        source: "Zdroj: equipboard.com",
       },
       "Gibson Explorer": {
         tech: "Spec: mahagonové tělo, 24.75\" menzura, 22 pražců, snímače 490R/498T.",
@@ -1459,10 +1451,6 @@ export default function Page() {
         usedBy: "Kurt Cobain (Nirvana), Matthew Healy (The 1975), beabadoobee (solo).",
         source: "Source: equipboard.com",
       },
-      "Maybach Teleman": {
-        tech: "Spec (Teleman T61): solid‑body T‑style, bolt‑on maple neck, rosewood fingerboard, 21 frets, 25.5\" scale, 2× Van Zandt single‑coil, 3‑way switch, nitrocellulose aged finish.",
-        source: "Source: stageguitarservice.com, musicstore.com",
-      },
       "Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)": {
         tech: "Spec (D‑15M series): all‑solid mahogany, dreadnought (D‑14 fret), satin finish, 25.4\" scale.",
         usedBy:
@@ -1517,10 +1505,6 @@ export default function Page() {
         tech: "Spec: mahogany body with maple cap, set neck, humbuckers.",
         usedBy: "Noel Gallagher (Oasis), Jerry Cantrell (Alice in Chains).",
         source: "Source: gibson.com, equipboard.com",
-      },
-      "Gibson Les Paul Traditional (2009)": {
-        tech: "Spec: mahogany body with maple cap, 24.75\" scale, set neck.",
-        source: "Source: equipboard.com",
       },
       "Gibson Explorer": {
         tech: "Spec: mahogany body, 24.75\" scale, 22 frets, 490R/498T pickups.",
@@ -1625,10 +1609,6 @@ export default function Page() {
         usedBy: "Kurt Cobain (Nirvana), Matthew Healy (The 1975), beabadoobee (solo).",
         source: "Quelle: equipboard.com",
       },
-      "Maybach Teleman": {
-        tech: "Spec (Teleman T61): Solid‑Body T‑Style, bolt‑on Ahornhals, Palisander‑Griffbrett, 21 Bünde, 25,5\" Mensur, 2× Van Zandt Single‑Coils, 3‑Way‑Switch, Nitro‑Aged‑Finish.",
-        source: "Quelle: stageguitarservice.com, musicstore.com",
-      },
       "Martin Guitar D-15E (Upgrade with Martin Guitar Bridge Pin Liquid Metal DG)": {
         tech: "Spec (D‑15M‑Serie): durchgehend Mahagoni, Dreadnought (D‑14‑Fret), Satin‑Finish, 25,4\" Mensur.",
         usedBy:
@@ -1683,10 +1663,6 @@ export default function Page() {
         tech: "Spec: Mahagoni‑Korpus mit Ahorndecke, Set‑Neck, Humbucker.",
         usedBy: "Noel Gallagher (Oasis), Jerry Cantrell (Alice in Chains).",
         source: "Quelle: gibson.com, equipboard.com",
-      },
-      "Gibson Les Paul Traditional (2009)": {
-        tech: "Spec: Mahagoni‑Korpus mit Ahorndecke, 24,75\" Mensur, Set‑Neck.",
-        source: "Quelle: equipboard.com",
       },
       "Gibson Explorer": {
         tech: "Spec: Mahagoni‑Korpus, 24,75\" Mensur, 22 Bünde, 490R/498T Pickups.",
@@ -3313,9 +3289,6 @@ export default function Page() {
                                     <TooltipItem label="Gibson Firebird Studio (2006)" />
                                   </li>
                                   <li>
-                                    <TooltipItem label="Gibson Les Paul Traditional (2009)" />
-                                  </li>
-                                  <li>
                                     <TooltipItem label="Gibson Les Paul Studio (1993) (with Graph Tech Bridge Saddles)" />
                                   </li>
                                   <li>
@@ -3327,9 +3300,6 @@ export default function Page() {
                                 <p className="text-white font-medium text-sm mb-1">Ostatní elektrické:</p>
                                 <ul className="text-white/80 text-xs space-y-1.5">
                                   <li>• Harmony H14 (1984)</li>
-                                  <li>
-                                    <TooltipItem label="Maybach Teleman" />
-                                  </li>
                                   <li>• Wandre Cobra (1964)</li>
                                   <li>• Washburn WJ7S</li>
                                   <li>• Harley Benton Thinline</li>
