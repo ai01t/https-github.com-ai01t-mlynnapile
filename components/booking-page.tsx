@@ -24,6 +24,7 @@ const EMAIL = "mlynnapile@gmail.com"
 const START_Y = 2026
 const START_M = 3
 const TOTAL = 12
+const BOOKING_VIDEO_PLAYBACK_RATE = 0.42
 const VIDEOS = [
   "8ao2RN8xswo",
   "kgqpTmzPMa4",
@@ -633,12 +634,28 @@ function buildYoutubeUrl(videoId: string) {
     modestbranding: "1",
     iv_load_policy: "3",
     disablekb: "1",
+    enablejsapi: "1",
     fs: "0",
     playsinline: "1",
     vq: "hd1080",
   })
 
   return `https://www.youtube.com/embed/${videoId}?${params.toString()}`
+}
+
+function setYoutubeIframePlaybackRate(frame: HTMLIFrameElement | null, playbackRate: number) {
+  const target = frame?.contentWindow
+  if (!target) return
+
+  const postCommand = (func: string, args: unknown[] = []) => {
+    target.postMessage(JSON.stringify({ event: "command", func, args }), "https://www.youtube.com")
+  }
+
+  postCommand("setPlaybackRate", [playbackRate])
+  postCommand("playVideo")
+
+  window.setTimeout(() => postCommand("setPlaybackRate", [playbackRate]), 450)
+  window.setTimeout(() => postCommand("setPlaybackRate", [playbackRate]), 1200)
 }
 
 function renderGuideText(text: string) {
@@ -772,10 +789,12 @@ function SeamlessLoopVideo({
   src,
   poster,
   className,
+  playbackRate = 1,
 }: {
   src: string
   poster?: string | null
   className: string
+  playbackRate?: number
 }) {
   const videoRefs = [useRef<HTMLVideoElement | null>(null), useRef<HTMLVideoElement | null>(null)]
   const [activeLayer, setActiveLayer] = useState(0)
@@ -787,6 +806,7 @@ function SeamlessLoopVideo({
   const ensurePlayback = (layer: number) => {
     const target = videoRefs[layer].current
     if (!target) return
+    target.playbackRate = playbackRate
     target.play().catch(() => {})
   }
 
@@ -805,12 +825,14 @@ function SeamlessLoopVideo({
 
     if (first) {
       first.currentTime = 0
+      first.playbackRate = playbackRate
       ensurePlayback(0)
     }
 
     if (second) {
       second.pause()
       second.currentTime = 0
+      second.playbackRate = playbackRate
     }
 
     return () => {
@@ -819,7 +841,7 @@ function SeamlessLoopVideo({
         timeoutRef.current = null
       }
     }
-  }, [src])
+  }, [src, playbackRate])
 
   useEffect(() => {
     const handleVisibility = () => {
@@ -853,6 +875,7 @@ function SeamlessLoopVideo({
 
     transitionRef.current = true
     next.currentTime = 0
+    next.playbackRate = playbackRate
     ensurePlayback(nextLayer)
     setIncomingLayer(nextLayer)
 
@@ -893,6 +916,10 @@ function SeamlessLoopVideo({
             playsInline
             preload="metadata"
             disablePictureInPicture
+            onLoadedMetadata={() => {
+              const target = videoRefs[layer].current
+              if (target) target.playbackRate = playbackRate
+            }}
             onLoadedData={() => {
               if (layer === activeLayer || layer === incomingLayer) {
                 ensurePlayback(layer)
@@ -935,7 +962,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const activeMonth = months[currentIndex]
   const activeMonthGuide = MONTH_GUIDES_CS[activeMonth.month]
   const visibleMonths = months.slice(currentIndex, Math.min(currentIndex + 4, months.length))
-  const activeBackgroundPoster = "/images/aerial-view.jpeg"
 
   useEffect(() => {
     document.documentElement.lang = locale
@@ -1211,7 +1237,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     <div className={cx(styles.bookingPage, embedded && styles.embedded, manrope.className, nightMode && styles.nightMode)}>
       {!embedded ? (
         <div className={styles.bgShell} aria-hidden="true">
-          <div className={styles.bgPoster} style={{ backgroundImage: `url("${activeBackgroundPoster}")` }} />
           <div className={styles.bgOverlay} />
         </div>
       ) : null}
@@ -1431,6 +1456,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               className={styles.cardLocalVideo}
                               src={month.localVideoSrc}
                               poster={month.localPosterSrc ?? undefined}
+                              playbackRate={BOOKING_VIDEO_PLAYBACK_RATE}
                             />
                           ) : null}
                           {!paused && !month.localVideoSrc && month.youtubeId ? (
@@ -1443,6 +1469,9 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               loading={visibleIndex <= 2 ? "eager" : "lazy"}
                               referrerPolicy="strict-origin-when-cross-origin"
                               tabIndex={-1}
+                              onLoad={(event) => {
+                                setYoutubeIframePlaybackRate(event.currentTarget, BOOKING_VIDEO_PLAYBACK_RATE)
+                              }}
                             />
                           ) : null}
                           <div

@@ -1,821 +1,342 @@
 "use client"
 
-import { Cormorant_Garamond, Manrope } from "next/font/google"
+import { Cormorant_Garamond, Manrope, Rock_Salt } from "next/font/google"
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
-import { useRouter } from "next/navigation"
-import { ChevronDown } from "lucide-react"
+import { useEffect, useState } from "react"
+import { Flame, Guitar, HandHeart, Heart, ShoppingCart, Skull, Sparkles, Wheat, Zap } from "lucide-react"
 import styles from "@/components/chleba-page.module.css"
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
+  weight: ["600", "700"],
 })
 
 const manrope = Manrope({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["500", "600", "700", "800"],
 })
 
-const LOCAL_VIDEO_SRC = "/videos/bg/NYqybmh85G4_hq.mp4"
-const LOCAL_VIDEO_POSTER = "/videos/bg/NYqybmh85G4_hq.jpg"
-const MODE_STORAGE_KEY = "mlyn_mode"
-const LANG_STORAGE_KEY = "mlyn_lang"
+const rockSalt = Rock_Salt({
+  subsets: ["latin"],
+  weight: ["400"],
+})
+
+const VARIANT_STORAGE_KEY = "mlyn_chleba_variant"
 
 type Locale = "cs" | "en" | "de"
+type Variant = "solid" | "wild"
 
-type Copy = {
-  mill: string
-  studio: string
-  equipment: string
-  accommodation: string
-  location: string
-  history: string
-  contact: string
-  pause: string
-  resume: string
-  switchToNight: string
-  switchToDay: string
-  selectLanguage: string
-  menu: string
-  close: string
-  label: string
-  titleTop: string
-  titleAccent: string
-  intro1: string
-  intro2: string
-  craftTitle: string
-  benefits: string[]
-  ingredients: Array<{ text: string; kind: "ok" | "no" }>
-  faqTitle: string
-  faqSubtitle: string
-  details: Array<{ title: string; body: string }>
-  backToPackages: string
-  contactCta: string
+type Bread = {
+  name: string
+  weight: string
+  character: string
+  image: string
+  backTitle: string
+  backText: string
 }
 
-const copyByLocale: Record<Locale, Copy> = {
+const breads: Bread[] = [
+  {
+    name: "Usmrkanec",
+    weight: "250 g",
+    character: "Malý bochník s velkým egem. Kapsový riff ke kávě, máslu i výletu.",
+    image: "/images/chleba-cards/usmrkanec.svg",
+    backTitle: "Hlavní vrstva",
+    backText: "Opravdový chleba je vždycky první. Fotka, kůrka, střídka, chuť. Postava jen přidává charakter.",
+  },
+  {
+    name: "Princ Kvasoň",
+    weight: "840 g",
+    character: "Dvorní kváskový favorit. Zlatá kůrka, vláčná střídka, čistý střed.",
+    image: "/images/chleba-cards/princ-kvason.svg",
+    backTitle: "Druhá vrstva",
+    backText: "Chlebová postavička může žít jako ikonka, badge, samolepka, reels grafika nebo plakát.",
+  },
+  {
+    name: "Jeho Výsost",
+    weight: "1200 g",
+    character: "Král mlýna. Velký rodinný bochník pro dlouhý stůl a hladovou partu.",
+    image: "/images/chleba-cards/jeho-vysost.svg",
+    backTitle: "Třetí vrstva",
+    backText: "Naming a copy mají vlastní hlas. Každý bochník má povahu, váhu i jasnou roli.",
+  },
+  {
+    name: "Drahá Polovička",
+    weight: "cca 600 g",
+    character: "Lepší polovička. Menší kus, pořád dost důstojnosti na další krajíc.",
+    image: "/images/chleba-cards/draha-polovicka.svg",
+    backTitle: "Food-first",
+    backText: "Solidní verze nechá černý plakát ustoupit a nechá mluvit fotku chleba.",
+  },
+  {
+    name: "Flint Firestarter",
+    weight: "917 g",
+    character: "Ohnivá legenda. Kůrka s názorem, temnější tón a pec v krvi.",
+    image: "/images/chleba-cards/flint-firestarter.svg",
+    backTitle: "Oheň",
+    backText: "Kámen. Voda. Oheň. Kvas. Ruce. Rock'n'roll. Tady se nepeče normálně.",
+  },
+  {
+    name: "Mlýnský Prašan",
+    weight: "1000 g",
+    character: "Rustikální prašan z mlýna. Moučný podpis a chuť bez okecávání.",
+    image: "/images/chleba-cards/mlynsky-prasan.svg",
+    backTitle: "Mlýn",
+    backText: "Mouka z českých mlýnů, voda z vlastního zdroje a místo, které má zvuk.",
+  },
+]
+
+const localeCopy = {
   cs: {
-    mill: "Mlýn",
-    studio: "Studio",
-    equipment: "Vybavení",
-    accommodation: "Ubytování",
-    location: "Lokalita",
-    history: "Historie",
-    contact: "Kontakt",
-    pause: "Pauza",
-    resume: "Přehrát",
-    switchToNight: "Přepnout na noční režim",
-    switchToDay: "Přepnout na denní režim",
-    selectLanguage: "Vybrat jazyk",
-    menu: "Menu",
-    close: "Zavřít",
-    label: "Domácí chléb",
-    titleTop: "Chleba ze",
-    titleAccent: "mlýna",
-    intro1:
-      "Součástí každého pobytu i nahrávání je snídaně nebo brunch. Všechno kolem chleba bereme stejně poctivě jako samotné studio: pomalu, řemeslně a z dobrých surovin.",
-    intro2:
-      "Pečeme jak kváskový, tak i klasický chleba, vždy jen z prvotřídních surovin. Vzhledem k pozitivnímu ohlasu nakonec plánujeme dodávat i mimo studio... ;)",
-    craftTitle: "Řemeslný kváskový chleba z naší pece",
-    benefits: [
-      "přirozené kvašení z živého kvásku",
-      "lepší stravitelnost díky fermentaci",
-      "lepší využitelnost minerálů",
-      "zasytí na delší dobu (nižší glykemická odezva)",
-      "delší čerstvost bez konzervantů",
-    ],
-    ingredients: [
-      { text: "kvalitní mouka od českých mlýnů", kind: "ok" },
-      { text: "voda · kvásek · himalájská sůl · bio kmín z farmy", kind: "ok" },
-      { text: "bez éček a zlepšovadel", kind: "no" },
-    ],
-    faqTitle: "FAQ",
-    faqSubtitle: "Často kladené otázky",
-    details: [
-      {
-        title: "Proč kvásek",
-        body:
-          "Kvásek dává chlebu čas. Dlouhá fermentace umožňuje částečný rozklad některých složek obilí (např. složitějších sacharidů a bílkovin), takže bývá pro trávení šetrnější než běžné pečivo z droždí.",
-      },
-      {
-        title: "Zasycení a glykemická odezva",
-        body:
-          "Oproti běžnému bílému pečivu se sacharidy uvolňují pomaleji. To znamená pozvolnější glykemickou odezvu a delší pocit sytosti. V praxi to často vede k tomu, že člověk sní menší množství a nemá tak rychlý hlad.",
-      },
-      {
-        title: "Hmotnost a sytost",
-        body:
-          "Z chleba samotného se nepřibírá – rozhoduje celkový příjem energie. Protože je kváskový chleba sytější, příjem energie bývá nižší a v konečném důsledku má pozitivnější vliv než běžné drožďové pečivo.",
-      },
-      {
-        title: "Minerály, které tělo využije",
-        body:
-          "Fermentace pomáhá snižovat obsah kyseliny fytové, která omezuje vstřebávání minerálů. Tělo tak může lépe využít například železo, zinek nebo hořčík.",
-      },
-      {
-        title: "Proč vydrží déle",
-        body:
-          "Přirozeně kyselé prostředí vzniklé fermentací zpomaluje vysychání i kažení chleba, takže vydrží déle bez použití konzervantů.",
-      },
-      {
-        title: "Co v chlebu (ne)najdete",
-        body:
-          "Používáme jen základní suroviny: kvalitní mouku od českých mlýnů, námi ozkoušený poměr různých typů, vodu, kvásek, himalájskou sůl a bio kmín z farmy. Kvásek je možné od nás získat, recept je ale náš ;-) Bez éček, bez zlepšovadel, bez zbytečných přísad.",
-      },
-      {
-        title: "Patří chleba ke každému pobytu ve studiu?",
-        body: "Ano a pečeme zde také pizzu ;-)",
-      },
-    ],
-    backToPackages: "Zpět na Studio",
-    contactCta: "Kontakt",
+    homePath: "/",
+    contactPath: "/kontakt",
+    nav: ["Chleby", "O mlýně", "Andrea", "Kde nás najdeš", "Kontakt"],
+    title: ["Chleba", "z rockového", "mlýna"],
+    lead: "Peče Andrea Kohoutová z kapely Anteater. Kvásek zrovna nedrží basu, ale drží chleba při životě.",
+    cta: "Naše chleby",
+    deckTitle: "Namíchej si karty",
+    stamp: "Kvas. Oheň. Čas. A trochu rock'n'rollu.",
+    solid: "Solidní verze",
+    wild: "Rocková verze",
   },
   en: {
-    mill: "The Mill",
-    studio: "Studio",
-    equipment: "Equipment",
-    accommodation: "Accommodation",
-    location: "Location",
-    history: "History",
-    contact: "Contact",
-    pause: "Pause",
-    resume: "Play",
-    switchToNight: "Switch to night mode",
-    switchToDay: "Switch to day mode",
-    selectLanguage: "Select language",
-    menu: "Menu",
-    close: "Close",
-    label: "Bread from the mill",
-    titleTop: "Bread from",
-    titleAccent: "the mill",
-    intro1:
-      "Breakfast or brunch is part of every stay and recording session. Everything around the bread follows the same approach as the studio itself: slow, crafted, and built on good ingredients.",
-    intro2:
-      "It is not decoration or a side detail. It is part of a place that works differently from ordinary studios: recording, calm, nature, warmth from the oven, and things that keep their own rhythm.",
-    craftTitle: "Craft sourdough bread from our oven",
-    benefits: [
-      "natural fermentation with a live starter",
-      "easier digestion thanks to fermentation",
-      "better mineral availability",
-      "keeps you full longer (lower glycemic response)",
-      "stays fresh longer without preservatives",
-    ],
-    ingredients: [
-      { text: "quality flour from Czech mills", kind: "ok" },
-      { text: "water · starter · Himalayan salt · organic caraway from a farm", kind: "ok" },
-      { text: "no additives or improvers", kind: "no" },
-    ],
-    faqTitle: "FAQ",
-    faqSubtitle: "Frequently asked questions",
-    details: [
-      {
-        title: "What we bake for stays and sessions",
-        body:
-          "Breakfast or brunch is part of every stay and recording session. We bake our own sourdough bread for it, always fresh, in the large outdoor oven. We also bake pizza here ;-)",
-      },
-      {
-        title: "Why sourdough",
-        body:
-          "Sourdough gives bread time. Long fermentation helps partially break down some grain components, making the bread gentler on the body than standard baked goods.",
-      },
-      {
-        title: "Satiety without spikes",
-        body:
-          "Compared to regular bread, carbohydrates are released more slowly. That means it keeps you full for longer.",
-      },
-      {
-        title: "Minerals your body can use",
-        body:
-          "Fermentation helps reduce phytic acid, which limits mineral absorption. The body can better use iron, zinc, and magnesium.",
-      },
-      {
-        title: "Why it stays fresh longer",
-        body:
-          "The naturally acidic environment created by fermentation slows drying and spoilage, so the bread stays fresh without preservatives.",
-      },
-      {
-        title: "Clean ingredients",
-        body:
-          "We use only basic ingredients: quality flour from Czech mills, water, starter, Himalayan salt, and organic caraway from a farm. No additives, no improvers.",
-      },
-    ],
-    backToPackages: "Back to studio",
-    contactCta: "Contact",
+    homePath: "/en",
+    contactPath: "/en/contact",
+    nav: ["Breads", "The mill", "Andrea", "Find us", "Contact"],
+    title: ["Bread", "from the rock", "mill"],
+    lead: "Baked by Andrea Kohoutová from Anteater. The starter may not hold the bass, but it keeps bread alive.",
+    cta: "Our breads",
+    deckTitle: "Mix the cards",
+    stamp: "Starter. Fire. Time. And a little rock'n'roll.",
+    solid: "Refined",
+    wild: "Rock version",
   },
   de: {
-    mill: "Mühle",
-    studio: "Studio",
-    equipment: "Ausstattung",
-    accommodation: "Unterkunft",
-    location: "Lage",
-    history: "Geschichte",
-    contact: "Kontakt",
-    pause: "Pause",
-    resume: "Abspielen",
-    switchToNight: "Zum Nachtmodus wechseln",
-    switchToDay: "Zum Tagmodus wechseln",
-    selectLanguage: "Sprache wählen",
-    menu: "Menü",
-    close: "Schließen",
-    label: "Brot aus der Mühle",
-    titleTop: "Brot aus",
-    titleAccent: "der Mühle",
-    intro1:
-      "Zu jedem Aufenthalt und jeder Recording-Session gehört ein Frühstück oder Brunch. Alles rund um das Brot folgt demselben Ansatz wie das Studio selbst: langsam, handwerklich und aus guten Zutaten.",
-    intro2:
-      "Es ist keine Dekoration und kein Nebendetail. Es ist Teil eines Ortes, der anders funktioniert als gewöhnliche Studios: Recording, Ruhe, Natur, Wärme aus dem Ofen und Dinge, die ihren eigenen Rhythmus haben.",
-    craftTitle: "Handwerkliches Sauerteigbrot aus unserem Ofen",
-    benefits: [
-      "natürliche Fermentation mit lebendigem Sauerteig",
-      "bessere Bekömmlichkeit durch Fermentation",
-      "bessere Verfügbarkeit von Mineralstoffen",
-      "sättigt länger (niedrigere glykämische Reaktion)",
-      "längere Frische ohne Konservierungsstoffe",
-    ],
-    ingredients: [
-      { text: "hochwertiges Mehl aus tschechischen Mühlen", kind: "ok" },
-      { text: "Wasser · Sauerteig · Himalaya-Salz · Bio-Kümmel vom Hof", kind: "ok" },
-      { text: "ohne Zusatzstoffe und Backverbesserer", kind: "no" },
-    ],
-    faqTitle: "FAQ",
-    faqSubtitle: "Häufig gestellte Fragen",
-    details: [
-      {
-        title: "Was wir für Aufenthalte und Sessions backen",
-        body:
-          "Zu jedem Aufenthalt und jeder Recording-Session gehört ein Frühstück oder Brunch. Dafür backen wir unser eigenes Sauerteigbrot, immer frisch, im großen Außenofen. Hier backen wir auch Pizza ;-)",
-      },
-      {
-        title: "Warum Sauerteig",
-        body:
-          "Sauerteig gibt dem Brot Zeit. Die lange Fermentation baut einige Bestandteile des Getreides teilweise ab, wodurch das Brot für den Körper bekömmlicher ist als gewöhnliches Gebäck.",
-      },
-      {
-        title: "Sättigung ohne Schwankungen",
-        body:
-          "Im Vergleich zu normalem Gebäck werden die Kohlenhydrate langsamer freigesetzt. Dadurch sättigt das Brot länger.",
-      },
-      {
-        title: "Mineralien, die der Körper nutzen kann",
-        body:
-          "Die Fermentation senkt den Gehalt an Phytinsäure, die die Mineralstoffaufnahme hemmt. So kann der Körper Eisen, Zink oder Magnesium besser verwerten.",
-      },
-      {
-        title: "Warum es länger hält",
-        body:
-          "Das natürlich saure Milieu der Fermentation verlangsamt Austrocknung und Verderb, sodass das Brot ohne Konservierungsstoffe länger frisch bleibt.",
-      },
-      {
-        title: "Reine Zutaten",
-        body:
-          "Wir verwenden nur Grundzutaten: hochwertiges Mehl aus tschechischen Mühlen, Wasser, Sauerteig, Himalaya-Salz und Bio-Kümmel vom Hof. Ohne Zusatzstoffe, ohne Verbesserer.",
-      },
-    ],
-    backToPackages: "Zurück ins Studio",
-    contactCta: "Kontakt",
+    homePath: "/de",
+    contactPath: "/de/kontakt",
+    nav: ["Brote", "Die Muhle", "Andrea", "Wo wir sind", "Kontakt"],
+    title: ["Brot", "aus der Rock", "Muhle"],
+    lead: "Gebacken von Andrea Kohoutová von Anteater. Der Sauerteig hält nicht den Bass, aber das Brot am Leben.",
+    cta: "Unsere Brote",
+    deckTitle: "Karten mischen",
+    stamp: "Sauerteig. Feuer. Zeit. Und etwas Rock'n'Roll.",
+    solid: "Serios",
+    wild: "Rock-Version",
   },
-}
-
-const localeNames: Record<Locale, string> = {
-  cs: "Čeština",
-  en: "English",
-  de: "Deutsch",
-}
-
-function getLocaleHomePath(locale: Locale) {
-  if (locale === "cs") return "/"
-  if (locale === "en") return "/?lang=en"
-  return "/?lang=de"
-}
-
-function getBreadPath(locale: Locale) {
-  return locale === "cs" ? "/chleba" : `/${locale}/chleba`
-}
-
-function getHistoryPath(locale: Locale) {
-  if (locale === "cs") {
-    return "/historie"
-  }
-
-  if (locale === "en") {
-    return "/en/history"
-  }
-
-  return "/de/geschichte"
-}
-
-function getSectionHref(locale: Locale, sectionId: string) {
-  return `${getLocaleHomePath(locale)}#${sectionId}`
-}
-
-function attemptPlay(video: HTMLVideoElement | null) {
-  if (!video) {
-    return
-  }
-
-  video.muted = true
-  video.defaultMuted = true
-  video.playsInline = true
-  try {
-    video.volume = 0
-  } catch {}
-  const maybePromise = video.play()
-  if (maybePromise && typeof maybePromise.catch === "function") {
-    maybePromise.catch(() => {})
-  }
-}
+} satisfies Record<Locale, {
+  homePath: string
+  contactPath: string
+  nav: string[]
+  title: string[]
+  lead: string
+  cta: string
+  deckTitle: string
+  stamp: string
+  solid: string
+  wild: string
+}>
 
 function cx(...values: Array<string | false | null | undefined>) {
   return values.filter(Boolean).join(" ")
 }
 
 export default function ChlebaPage({ locale }: { locale: Locale }) {
-  const copy = copyByLocale[locale]
-  const router = useRouter()
-  const localVideoRef = useRef<HTMLVideoElement | null>(null)
-  const langSwitchRef = useRef<HTMLDivElement | null>(null)
-  const [navScrolled, setNavScrolled] = useState(false)
-  const [paused, setPaused] = useState(false)
-  const [nightMode, setNightMode] = useState(false)
-  const [langOpen, setLangOpen] = useState(false)
-  const [mobileNavOpen, setMobileNavOpen] = useState(false)
-  const [videoReady, setVideoReady] = useState(false)
-  const [localPlaying, setLocalPlaying] = useState(false)
-  const [openDetailIndex, setOpenDetailIndex] = useState<number | null>(null)
+  const copy = localeCopy[locale]
+  const [variant, setVariant] = useState<Variant>("wild")
+  const [flippedCards, setFlippedCards] = useState<string[]>([])
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.body.style.background = "#07060a"
 
     try {
-      setNightMode(window.localStorage.getItem(MODE_STORAGE_KEY) === "night")
-      window.localStorage.setItem(LANG_STORAGE_KEY, locale)
+      const savedVariant = window.localStorage.getItem(VARIANT_STORAGE_KEY)
+      if (savedVariant === "solid" || savedVariant === "wild") {
+        setVariant(savedVariant)
+      }
     } catch {}
-
-    return () => {
-      document.body.style.background = ""
-    }
   }, [locale])
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(MODE_STORAGE_KEY, nightMode ? "night" : "day")
+      window.localStorage.setItem(VARIANT_STORAGE_KEY, variant)
     } catch {}
-  }, [nightMode])
+  }, [variant])
 
-  useEffect(() => {
-    const onScroll = () => {
-      setNavScrolled(window.scrollY > 60)
-    }
-
-    onScroll()
-    window.addEventListener("scroll", onScroll, { passive: true })
-    return () => window.removeEventListener("scroll", onScroll)
-  }, [])
-
-  useEffect(() => {
-    if (!langOpen) {
-      return
-    }
-
-    const onPointerDown = (event: MouseEvent) => {
-      if (langSwitchRef.current && !langSwitchRef.current.contains(event.target as Node)) {
-        setLangOpen(false)
-      }
-    }
-
-    document.addEventListener("mousedown", onPointerDown)
-    return () => document.removeEventListener("mousedown", onPointerDown)
-  }, [langOpen])
-
-  useEffect(() => {
-    document.body.style.overflow = mobileNavOpen ? "hidden" : ""
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [mobileNavOpen])
-
-  useEffect(() => {
-    const localVideo = localVideoRef.current
-    if (!localVideo) {
-      return
-    }
-
-    const prepareVideo = () => {
-      localVideo.muted = true
-      localVideo.defaultMuted = true
-      localVideo.loop = true
-      localVideo.playsInline = true
-      localVideo.defaultPlaybackRate = 1
-      localVideo.playbackRate = 1
-      try {
-        localVideo.volume = 0
-      } catch {}
-      localVideo.setAttribute("muted", "")
-      localVideo.setAttribute("autoplay", "")
-      localVideo.setAttribute("playsinline", "")
-      localVideo.setAttribute("webkit-playsinline", "true")
-      localVideo.setAttribute("x-webkit-airplay", "deny")
-    }
-
-    const markReady = () => {
-      if (localVideo.readyState >= 2) {
-        setVideoReady(true)
-        if (!paused && localVideo.paused) {
-          attemptPlay(localVideo)
-        }
-      }
-    }
-
-    const markPlaying = () => {
-      if (localVideo.currentTime > 0.04 || !localVideo.paused) {
-        setVideoReady(true)
-        setLocalPlaying(true)
-      }
-    }
-
-    const tryStart = (shouldReload = false) => {
-      if (paused) {
-        return
-      }
-      prepareVideo()
-      if (shouldReload && localVideo.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
-        localVideo.load()
-      }
-      markReady()
-      const maybePromise = localVideo.play()
-      if (maybePromise && typeof maybePromise.catch === "function") {
-        maybePromise.catch(() => {
-          setLocalPlaying(false)
-        })
-      }
-    }
-
-    const onLoadedMetadata = () => markReady()
-    const onLoadedData = () => markReady()
-    const onCanPlay = () => markReady()
-    const onCanPlayThrough = () => markReady()
-    const onPlaying = () => markPlaying()
-    const onPlay = () => markPlaying()
-    const onTimeUpdate = () => markPlaying()
-    const onPause = () => {
-      if (!paused) {
-        setLocalPlaying(false)
-      }
-    }
-    const onSuspend = () => tryStart()
-    const onEmptied = () => tryStart(true)
-    const onWaiting = () => {
-      if (!paused) {
-        setLocalPlaying(false)
-      }
-    }
-
-    prepareVideo()
-    markReady()
-    if (localVideo.networkState === HTMLMediaElement.NETWORK_EMPTY) {
-      localVideo.load()
-    }
-
-    localVideo.addEventListener("loadedmetadata", onLoadedMetadata)
-    localVideo.addEventListener("loadeddata", onLoadedData)
-    localVideo.addEventListener("canplay", onCanPlay)
-    localVideo.addEventListener("canplaythrough", onCanPlayThrough)
-    localVideo.addEventListener("play", onPlay)
-    localVideo.addEventListener("playing", onPlaying)
-    localVideo.addEventListener("timeupdate", onTimeUpdate)
-    localVideo.addEventListener("pause", onPause)
-    localVideo.addEventListener("waiting", onWaiting)
-    localVideo.addEventListener("suspend", onSuspend)
-    localVideo.addEventListener("emptied", onEmptied)
-
-    const retryTimers = [
-      window.setTimeout(() => tryStart(), 120),
-      window.setTimeout(() => tryStart(), 480),
-      window.setTimeout(() => tryStart(true), 1400),
-      window.setTimeout(() => tryStart(true), 2600),
-    ]
-    const retryInterval = window.setInterval(() => {
-      if (!paused && (localVideo.paused || localVideo.readyState < 2)) {
-        tryStart(true)
-      }
-    }, 2200)
-
-    const resumeIfNeeded = () => {
-      if (document.visibilityState === "hidden" || paused) {
-        return
-      }
-      tryStart()
-    }
-
-    const kickstartFromInteraction = () => {
-      if (paused) {
-        return
-      }
-      tryStart()
-    }
-
-    document.addEventListener("visibilitychange", resumeIfNeeded)
-    window.addEventListener("pageshow", resumeIfNeeded)
-    window.addEventListener("focus", resumeIfNeeded)
-    window.addEventListener("pointerdown", kickstartFromInteraction, { passive: true })
-    window.addEventListener("touchstart", kickstartFromInteraction, { passive: true })
-    window.addEventListener("keydown", kickstartFromInteraction)
-
-    return () => {
-      retryTimers.forEach((timerId) => window.clearTimeout(timerId))
-      window.clearInterval(retryInterval)
-      localVideo.removeEventListener("loadedmetadata", onLoadedMetadata)
-      localVideo.removeEventListener("loadeddata", onLoadedData)
-      localVideo.removeEventListener("canplay", onCanPlay)
-      localVideo.removeEventListener("canplaythrough", onCanPlayThrough)
-      localVideo.removeEventListener("play", onPlay)
-      localVideo.removeEventListener("playing", onPlaying)
-      localVideo.removeEventListener("timeupdate", onTimeUpdate)
-      localVideo.removeEventListener("pause", onPause)
-      localVideo.removeEventListener("waiting", onWaiting)
-      localVideo.removeEventListener("suspend", onSuspend)
-      localVideo.removeEventListener("emptied", onEmptied)
-      document.removeEventListener("visibilitychange", resumeIfNeeded)
-      window.removeEventListener("pageshow", resumeIfNeeded)
-      window.removeEventListener("focus", resumeIfNeeded)
-      window.removeEventListener("pointerdown", kickstartFromInteraction)
-      window.removeEventListener("touchstart", kickstartFromInteraction)
-      window.removeEventListener("keydown", kickstartFromInteraction)
-    }
-  }, [paused])
-
-  useEffect(() => {
-    const localVideo = localVideoRef.current
-
-    if (paused) {
-      localVideo?.pause()
-      return
-    }
-
-    attemptPlay(localVideo)
-  }, [paused])
-
-  const navigateToLocale = (nextLocale: Locale) => {
-    setLangOpen(false)
-    setMobileNavOpen(false)
-    try {
-      window.localStorage.setItem(LANG_STORAGE_KEY, nextLocale)
-    } catch {}
-    router.push(getBreadPath(nextLocale))
+  function toggleCard(name: string) {
+    setFlippedCards((current) =>
+      current.includes(name) ? current.filter((item) => item !== name) : [...current, name],
+    )
   }
 
-  const navItems = [
-    { href: getSectionHref(locale, "place"), label: copy.mill },
-    { href: getSectionHref(locale, "studio"), label: copy.studio },
-    { href: getSectionHref(locale, "equipment"), label: copy.equipment },
-    { href: getSectionHref(locale, "residency"), label: copy.accommodation },
-    { href: getSectionHref(locale, "location"), label: copy.location },
-    { href: getHistoryPath(locale), label: copy.history },
-    { href: getSectionHref(locale, "contact"), label: copy.contact },
-  ]
-
   return (
-    <main
-      className={cx(
-        styles.breadPage,
-        manrope.className,
-        nightMode && styles.nightMode,
-        videoReady && styles.videoReady,
-        localPlaying && styles.localPlaying,
-      )}
-    >
-      <div className={styles.bgShell} aria-hidden="true">
-        <div className={styles.bgPoster} />
-        <video
-          ref={localVideoRef}
-          className={styles.bgLocalVideo}
-          src={LOCAL_VIDEO_SRC}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster={LOCAL_VIDEO_POSTER}
-          x-webkit-airplay="deny"
-          disablePictureInPicture
-          disableRemotePlayback
-        />
-        <div className={styles.bgOverlay} />
-      </div>
+    <main className={cx(styles.page, manrope.className, variant === "solid" && styles.pageSolid)}>
+      <div className={styles.grain} />
 
-      <nav className={cx(styles.nav, navScrolled && styles.navScrolled)}>
-        <Link href={getLocaleHomePath(locale)} className={cx(styles.navLogo, cormorant.className)}>
-          Mlýn <em>na Pile</em>
-        </Link>
+      <section className={styles.poster}>
+        <header className={styles.nav}>
+          <Link href={copy.homePath} className={cx(styles.logo, cormorant.className)}>
+            <span>Mlýn</span>
+            <span>na Pile</span>
+            <small>Založeno 2020</small>
+          </Link>
 
-        <ul className={styles.navLinks}>
-          {navItems.map((item) => (
-            <li key={item.href}>
-              <a href={item.href}>{item.label}</a>
-            </li>
-          ))}
-        </ul>
+          <nav className={styles.navLinks} aria-label="Chleba navigace">
+            <a href="#karty">{copy.nav[0]}</a>
+            <a href="#o-mlyne">{copy.nav[1]}</a>
+            <a href="#andrea">{copy.nav[2]}</a>
+            <a href="#kde">{copy.nav[3]}</a>
+            <Link href={copy.contactPath}>{copy.nav[4]}</Link>
+          </nav>
 
-        <div className={styles.navActions}>
-          <button
-            className={cx(styles.btnPause, paused && styles.btnPauseOn)}
-            type="button"
-            aria-pressed={paused}
-            aria-label={paused ? copy.resume : copy.pause}
-            title={paused ? copy.resume : copy.pause}
-            onClick={() => setPaused((current) => !current)}
-          >
-            <span className={styles.pauseIcon} aria-hidden="true">
-              {paused ? "▶" : "II"}
-            </span>
-          </button>
-
-          <button
-            className={cx(styles.btnMode, nightMode && styles.btnModeOn)}
-            type="button"
-            aria-pressed={nightMode}
-            aria-label={nightMode ? copy.switchToDay : copy.switchToNight}
-            title={nightMode ? copy.switchToDay : copy.switchToNight}
-            onClick={() => setNightMode((current) => !current)}
-          >
-            {!nightMode ? (
-              <span className={styles.modeIcon} aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                  <circle cx="12" cy="12" r="4.2" />
-                  <path d="M12 2.5v3" />
-                  <path d="M12 18.5v3" />
-                  <path d="M2.5 12h3" />
-                  <path d="M18.5 12h3" />
-                  <path d="M5.2 5.2l2.1 2.1" />
-                  <path d="M16.7 16.7l2.1 2.1" />
-                  <path d="M18.8 5.2l-2.1 2.1" />
-                  <path d="M7.3 16.7l-2.1 2.1" />
-                </svg>
-              </span>
-            ) : (
-              <span className={styles.modeIcon} aria-hidden="true">
-                <svg viewBox="0 0 24 24">
-                  <path fill="currentColor" d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a7 7 0 1 0 9.7 9.7Z" />
-                  <path fill="currentColor" d="M18.3 4.2l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z" />
-                </svg>
-              </span>
-            )}
-          </button>
-
-          <div
-            ref={langSwitchRef}
-            className={cx(styles.langSwitch, langOpen && styles.langSwitchOpen)}
-          >
+          <div className={styles.navIcons} aria-label="Verze webu">
             <button
-              className={styles.btnLang}
               type="button"
-              aria-label={copy.selectLanguage}
-              aria-haspopup="true"
-              aria-expanded={langOpen}
-              onClick={() => setLangOpen((current) => !current)}
+              className={cx(styles.modeButton, variant === "solid" && styles.modeButtonActive)}
+              onClick={() => setVariant("solid")}
             >
-              <span className={styles.langIcon} aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M3 12h18" />
-                  <path d="M12 3a14 14 0 0 1 0 18" />
-                  <path d="M12 3a14 14 0 0 0 0 18" />
-                </svg>
-              </span>
-              <span className={styles.langCaret} aria-hidden="true">
-                ▾
-              </span>
+              {copy.solid}
             </button>
-            <div className={styles.langMenu} role="menu" aria-label={copy.selectLanguage}>
-              {(["cs", "en", "de"] as const).map((itemLocale) => (
-                <button
-                  key={itemLocale}
-                  type="button"
-                  className={cx(styles.langOption, locale === itemLocale && styles.langOptionActive)}
-                  role="menuitem"
-                  onClick={() => navigateToLocale(itemLocale)}
-                >
-                  {localeNames[itemLocale]}
-                </button>
-              ))}
-            </div>
+            <button
+              type="button"
+              className={cx(styles.modeButton, variant === "wild" && styles.modeButtonActive)}
+              onClick={() => setVariant("wild")}
+            >
+              {copy.wild}
+            </button>
+            <Zap className={styles.topIcon} />
+            <span className={styles.horns}>🤘</span>
+            <span className={styles.cartWrap}>
+              <ShoppingCart className={styles.cart} />
+              <small>0</small>
+            </span>
+          </div>
+        </header>
+
+        <section className={styles.hero}>
+          <div className={styles.heroCopy}>
+            <h1 className={cx(styles.title, rockSalt.className)}>
+              <span>{copy.title[0]}</span>
+              <span>{copy.title[1]}</span>
+              <span>{copy.title[2]}</span>
+            </h1>
+            <p>{copy.lead}</p>
+            <a href="#karty" className={cx(styles.heroButton, rockSalt.className)}>
+              {copy.cta} <span>→</span>
+            </a>
           </div>
 
-          <button
-            className={styles.hamburger}
-            type="button"
-            aria-label={copy.menu}
-            onClick={() => setMobileNavOpen(true)}
-          >
-            <span className={styles.hamburgerLabel}>{copy.menu.toUpperCase()}</span>
-          </button>
-        </div>
-      </nav>
+          <div className={styles.heroPhoto}>
+            <img src="/images/chleba-hero.jpeg" alt="Kváskový chleba z Mlýna na Pile" />
+          </div>
 
-      <div className={cx(styles.mobileNav, mobileNavOpen && styles.mobileNavOpen)}>
-        <button className={styles.closeNav} type="button" onClick={() => setMobileNavOpen(false)}>
-          {copy.close}
-        </button>
-        {navItems.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            className={cormorant.className}
-            onClick={() => setMobileNavOpen(false)}
-          >
-            {item.label}
-          </a>
-        ))}
-      </div>
+          <aside className={styles.paperNote}>
+            <span className={styles.noteCrown}>♕</span>
+            <p>{copy.stamp}</p>
+          </aside>
 
-      <section className={styles.hero}>
-        <div className={styles.heroInner}>
-          <span className={styles.secLabel}>{copy.label}</span>
-          <h1 className={cx(styles.heroTitle, cormorant.className)}>
-            {copy.titleTop}
-            <br />
-            <em>{copy.titleAccent}</em>
-          </h1>
+          <Zap className={styles.bigBolt} />
+          <Sparkles className={styles.heroSparkle} />
+        </section>
 
-          <article className={styles.storyCard}>
-            <div className={styles.introCopy}>
-              <p>{copy.intro1}</p>
-              <p>{copy.intro2}</p>
-            </div>
-
-            <section className={styles.breadSection}>
-              <h2 className={cx(styles.breadHeading, cormorant.className)}>{copy.craftTitle}</h2>
-              <ul className={styles.breadList}>
-                {copy.benefits.map((item) => (
-                  <li key={item} className={styles.breadItem}>
-                    <span className={styles.breadIcon} aria-hidden="true">
-                      ✓
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <section className={styles.ingredientsSection}>
-              <ul className={styles.breadList}>
-                {copy.ingredients.map((item) => (
-                  <li
-                    key={item.text}
-                    className={cx(styles.breadItem, item.kind === "no" && styles.breadItemNo)}
-                  >
-                    <span
-                      className={cx(styles.breadIcon, item.kind === "no" && styles.breadIconNo)}
-                      aria-hidden="true"
-                    >
-                      {item.kind === "no" ? "✕" : "✓"}
-                    </span>
-                    <span>{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-
-            <div className={styles.faqBlock}>
-              <div className={styles.faqHeader}>
-                <span className={styles.faqSubtitle}>{copy.faqSubtitle}</span>
-              </div>
-              <div className={styles.faqList}>
-                {copy.details.map((detail, index) => (
-                  <div key={detail.title} className={styles.faqItem}>
-                    <button
-                      type="button"
-                      className={styles.faqButton}
-                      onClick={() => setOpenDetailIndex(openDetailIndex === index ? null : index)}
-                    >
-                      <span className={styles.faqQuestion}>{detail.title}</span>
-                      <ChevronDown
-                        className={cx(styles.faqChevron, openDetailIndex === index && styles.faqChevronOpen)}
-                      />
-                    </button>
-                    {openDetailIndex === index ? (
-                      <p className={styles.faqAnswer}>
-                        {detail.body}
-                      </p>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.ctaRow}>
-              <a href={getSectionHref(locale, "residency")} className={styles.btnSecondary}>
-                {copy.backToPackages}
-              </a>
-              <a href={getSectionHref(locale, "contact")} className={styles.btnPrimary}>
-                {copy.contactCta}
-              </a>
+        <section className={styles.promiseBar} aria-label="Slib značky">
+          <article>
+            <Skull />
+            <div>
+              <h2>Přirozený kvásek</h2>
+              <p>Žádné droždí. Čas, trpělivost a živej kvásek.</p>
             </div>
           </article>
-        </div>
+          <article>
+            <Wheat />
+            <div>
+              <h2>Lokální suroviny</h2>
+              <p>Mouky z českých mlýnů, voda z vlastního zdroje.</p>
+            </div>
+          </article>
+          <article>
+            <Heart />
+            <div>
+              <h2>Žádné zkratky</h2>
+              <p>Poctivá práce, dlouhé kvašení, opravdová chuť.</p>
+            </div>
+          </article>
+        </section>
+
+        <section id="karty" className={styles.deck}>
+          <div className={styles.deckLabel}>
+            <span>★</span>
+            <h2 className={rockSalt.className}>{copy.deckTitle}</h2>
+            <span>★</span>
+          </div>
+
+          <div className={styles.cards}>
+            {breads.map((bread, index) => {
+              const isFlipped = flippedCards.includes(bread.name)
+
+              return (
+                <button
+                  type="button"
+                  key={bread.name}
+                  className={cx(styles.card, isFlipped && styles.cardFlipped)}
+                  onClick={() => toggleCard(bread.name)}
+                  aria-pressed={isFlipped}
+                >
+                  <span className={styles.cardInner}>
+                    <span className={styles.cardFace}>
+                      <span className={styles.cardNumber}>{index + 1}.</span>
+                      <span className={styles.character}>
+                        <img src={bread.image} alt="" />
+                      </span>
+                      <span className={styles.cardBread}>
+                        <img src="/images/chleba-hero.jpeg" alt="" />
+                      </span>
+                      <strong>{bread.name}</strong>
+                      <em>{bread.weight}</em>
+                    </span>
+
+                    <span className={cx(styles.cardFace, styles.cardBack)}>
+                      <b>{bread.backTitle}</b>
+                      <span>{bread.character}</span>
+                      <p>{bread.backText}</p>
+                      <small>Klikni zpět</small>
+                    </span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+
+        <footer className={styles.footerBar}>
+          <article>
+            <Flame />
+            <div>
+              <h2>Pečeme na ohni</h2>
+              <p>Chléb má oheň v krvi. Kůrka, co křupe a duše, co hřeje.</p>
+            </div>
+          </article>
+          <article id="o-mlyne">
+            <Wheat />
+            <div>
+              <h2>Z mlýna na Pile</h2>
+              <p>Meleme vlastní mouku z lokálního obilí. Čerstvě. Poctivě. Na místě.</p>
+            </div>
+          </article>
+          <article id="andrea">
+            <HandHeart />
+            <div>
+              <h2>Ručně a poctivě</h2>
+              <p>Žádné zkratky. Jen ruce, čas a cit pro správné těsto.</p>
+            </div>
+          </article>
+          <article id="kde">
+            <Guitar />
+            <div>
+              <h2>Hudba v nás je</h2>
+              <p>Zní to v peci. Zní to v nás. Zní to i mimo ni.</p>
+            </div>
+          </article>
+        </footer>
       </section>
     </main>
   )

@@ -45,6 +45,7 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
 .blbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mut);margin-bottom:8px;display:flex;align-items:center;gap:8px}
 .blbl::after{content:"";flex:1;height:1px;background:var(--brd)}
 .btxt{font-size:13px;line-height:1.45;color:#a8a5a0;white-space:pre-line}
+.mblk-toggle{display:none}
 .upgrade-txt{color:#b8a878;font-size:12px}
 .forsale-inline{display:inline-block;margin-left:10px;padding:2px 8px;background:#0d1a0d;border:1px solid rgba(100,180,100,0.35);border-radius:4px;color:#7ec87e;text-decoration:none;font-size:11px;font-weight:500;letter-spacing:0.3px;vertical-align:middle;white-space:nowrap}
 .forsale-inline:hover{color:#a8e0a8;border-color:rgba(100,180,100,0.6)}
@@ -139,6 +140,37 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
   .blbl{font-size:8px}
   .btxt{font-size:12px}
   .zoom-photo{margin-top:8px}
+}
+@media (max-width: 760px), (orientation: portrait) {
+  body{background:transparent}
+  #tabs{min-height:34px;background:rgba(7,6,10,.74)}
+  #main{gap:0}
+  #list{max-height:34vh;background:rgba(7,6,10,.38)}
+  .row{min-height:58px;align-items:center;padding:8px 12px;font-size:12px}
+  .row-thumb{width:46px;height:46px}
+  .acc-hdr{padding:10px 14px;font-size:11px}
+  #det{padding:18px 14px 28px;background:rgba(7,6,10,.18)}
+  #dc.on{gap:10px}
+  .dtit{font-size:25px;margin-bottom:10px}
+  .dtit-sub{font-size:10px;margin-top:4px}
+  .mblk{order:2;margin:0;border-top:1px solid rgba(201,185,154,.16)}
+  .mblk-toggle{appearance:none;width:100%;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;background:none;border:0;color:rgba(232,228,221,.82);font:600 10px/1.2 -apple-system,'Segoe UI',system-ui,sans-serif;letter-spacing:1.8px;text-transform:uppercase;text-align:left;cursor:pointer}
+  .mblk-toggle::after{content:"+";font-size:16px;font-weight:300;color:var(--acc);line-height:1;transition:transform .18s}
+  .mblk.open .mblk-toggle::after{transform:rotate(45deg)}
+  .mblk-body{display:block;padding:0 0 14px}
+  .mblk:not(.open) .mblk-body{display:none}
+  .mblk .blbl{display:none}
+  .mblk .btxt{font-size:12px;line-height:1.55;color:rgba(232,228,221,.68)}
+  .chips{gap:6px;padding-bottom:4px}
+  .chip{font-size:10px;padding:5px 8px;background:rgba(18,18,22,.66)}
+  .vcards{order:1;margin:0 0 4px;gap:8px}
+  .vcard{background:rgba(7,6,10,.38)}
+  .vcard-ctp{border:1px solid rgba(201,185,154,.16)}
+  .vcard-below{padding:0;background:transparent}
+  .zoom-photo,.drum-img,.hydropower-logo,.img-slide{order:1;margin-top:2px;margin-bottom:6px}
+  .zoom-photo{border:1px solid rgba(201,185,154,.16)}
+  .mblk-source{order:3}
+  .src{border-top:1px solid rgba(201,185,154,.16);margin-top:0;padding-top:0;font-size:10px}
 }
 </style>
 </head>
@@ -400,7 +432,7 @@ function showUAD(pluginName){
   const dKey=UAD_NAME_MAP[pluginName];
   const d=(dKey&&D[dKey])?D[dKey]:{};
   let h='<div class="dtit">'+esc(pluginName)+'</div>';
-  if(d.tech) h+='<div class="btxt" style="font-size:12px;color:var(--mut);margin:4px 0 16px;line-height:1.5">'+esc(d.tech)+'</div>';
+  if(d.tech) h+=detailBlock('Technické specifikace','<div class="btxt" style="font-size:12px;color:var(--mut);line-height:1.5">'+esc(d.tech)+'</div>');
   const _upi={'Avalon VT-737sp Channel Strip':UADP_AVALON_IMG,'Century Tube Channel Strip':UADP_CENTURY_IMG,'Helios Type 69 Preamp & EQ':UADP_HELIOS69_IMG,'Helios Type 69 Legacy EQ':UADP_HELIOS69_IMG,'Manley Reference Microphone Preamp':UADP_MANLEY_IMG,'Neve 1073 Preamp & EQ Collection':UADP_NEVE1073_IMG,'Neve 1073SE Classic Console EQ':UADP_NEVE1073_IMG,'UA 610-A Tube Preamp & EQ':UADP_610_IMG,'UA 610-B Tube Preamp & EQ':UADP_610_IMG,'V76 Preamplifier':UADP_V76_IMG,'dbx 160 Compressor / Limiter':UADP_DBX160_IMG,'Empirical Labs EL8 Distressor':UADP_DISTRESSOR_IMG,'Fairchild 660 Compressor':UADP_FAIRCHILD_IMG,'Fairchild 670 Compressor':UADP_FAIRCHILD_IMG,'Fairchild 670 Legacy':UADP_FAIRCHILD_IMG,'Teletronix LA-2A Leveler':UADP_LA2A_IMG,'Teletronix LA-2A Gray':UADP_LA2A_IMG,'Teletronix LA-2A Silver':UADP_LA2A_IMG,'Teletronix LA-2A Legacy':UADP_LA2A_IMG,'Teletronix LA-3A Classic Audio Leveler':UADP_LA3A_IMG,'UA 175B Tube Compressor':UADP_UA175_176_IMG,'UA 176 Tube Compressor':UADP_UA175_176_IMG,'UA 1176 Rev A Classic Limiter':UADP_1176_IMG,'UA 1176AE Classic Limiter':UADP_1176_IMG,'UA 1176LN Rev E Classic Limiter':UADP_1176_IMG,'UA 1176LN Legacy':UADP_1176_IMG,'UA 1176SE Legacy':UADP_1176_IMG,'Cambridge EQ':UADP_CAMBRIDGE_IMG,'Pultec EQP-1A Passive EQ':UADP_PULTEC_IMG,'Pultec MEQ-5 Passive EQ':UADP_PULTEC_IMG,'Pultec HLF-3C Passive EQ':UADP_PULTEC_IMG,'Pultec EQP-1A Legacy':UADP_PULTEC_IMG,'Pultec Pro Legacy':UADP_PULTEC_IMG,'Oxide Tape Recorder':UADP_OXIDE_IMG,'Studer A800 Multichannel Tape Recorder':UADP_STUDER_IMG,'Brigade Chorus':UADP_BRIGADE_IMG,'Cooper Time Cube Mk II Delay':UADP_COOPER_IMG,'EP-34 Tape Echo':UADP_EP34_IMG,'Galaxy Tape Echo':UADP_GALAXY_IMG,'Studio D Chorus':UADP_STUDIO_D_IMG,'Ampeg SVT-VR Classic Bass Amplifier':UADP_AMPEG_SVT_IMG,'Marshall Plexi Classic Amplifier':UADP_MARSHALL_PLEXI_IMG,'Raw Distortion':UADP_DISTORTION_IMG,'TS Overdrive':UADP_DISTORTION_IMG,"UAD Dream '65 Reverb Amplifier":UADP_DREAM65_IMG,"UAD Ruby '63 Top Boost Amplifier":UADP_RUBY63_IMG,"UAD Woodrow '55 Instrument Amplifier":UADP_WOODROW55_IMG,"UAD Lion '68 Super Lead Amplifier":UADP_LION68_IMG,'Lexicon 224 Digital Reverb':UADP_LEXICON224_IMG,'Pure Plate Reverb':UADP_PURE_PLATE_IMG,'Sound City Studios':UADP_SOUND_CITY_IMG,'PolyMAX Synth':UADP_POLYMAX_IMG,'Verve Analog Machines Essentials':UADP_VERVE_IMG};
   const _uimgSrc=_upi[pluginName]||UAD_IMG;
   h+='<div class="zoom-photo" style="margin-top:14px"><div class="zoom-inner"><img src="'+_uimgSrc+'" alt="'+esc(pluginName)+'" /></div></div>';
@@ -412,7 +444,7 @@ function showUAD(pluginName){
       const url=domains[t];
       return url?'<a href="'+url+'" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">'+t+'</a>':esc(t);
     });
-    h+='<div class="src">Zdroj: '+srcLinks.join(', ')+'</div>';
+    h+=detailBlock('Zdroj','<div class="src">Zdroj: '+srcLinks.join(', ')+'</div>','mblk-source');
   }
   const dc=document.getElementById('dc');
   dc.innerHTML=h;
@@ -430,7 +462,7 @@ function showApolloView(sub){
   });
   const dc=document.getElementById('dc');
   if(sub==='plugins'){
-    dc.innerHTML='<div class="dtit">Pluginy & Unison</div><div class="btxt" style="font-size:13px;line-height:1.7;color:#b0ada8;margin-top:12px">Onboard DSP supports UAD plug-ins via VST, AU, and AAX 64 formats in all major DAWs. Zde najde <a href="#" onclick="event.preventDefault();switchTab(\'audioproc\');setTimeout(()=>showUAD(UAD_PLUGIN_CATS[0].plugins[0]),10)" style="color:var(--acc2);text-decoration:none;border-bottom:1px solid rgba(200,169,110,0.4);cursor:pointer">plug-iny</a>, které máme k dispozici.</div>';
+    dc.innerHTML='<div class="dtit">Pluginy & Unison</div>'+detailBlock('Technické specifikace','<div class="btxt" style="font-size:13px;line-height:1.7;color:#b0ada8">Onboard DSP supports UAD plug-ins via VST, AU, and AAX 64 formats in all major DAWs. Zde najde <a href="#" onclick="event.preventDefault();switchTab(\'audioproc\');setTimeout(()=>showUAD(UAD_PLUGIN_CATS[0].plugins[0]),10)" style="color:var(--acc2);text-decoration:none;border-bottom:1px solid rgba(200,169,110,0.4);cursor:pointer">plug-iny</a>, které máme k dispozici.</div>');
     pinSourceBottom();
     dc.className='on';
     document.getElementById('empty').style.display='none';
@@ -439,22 +471,22 @@ function showApolloView(sub){
   let h='';
   if(sub==='main'){
     h+='<div class="dtit">Universal Audio Apollo X8P Gen 2 Studio+</div>';
-    h+='<div class="btxt" style="font-size:13px;line-height:1.6;color:#b0ada8;margin-bottom:22px">Profesionální zvuková karta s 8 Unison předzesilovači, která se umí nastavit sama. Díky funkci Auto Gain stačí jediné kliknutí — karta automaticky zkalibruje úrovně vstupu. Studio jsme záměrně navrhli tak, aby hudebníci mohli tvořit bez rušení a bez nutnosti technické asistence :-) (ale v případě potřeby, jsme plně k dispozici).</div>';
     h+='<div class="zoom-photo"><div class="zoom-inner"><img src="'+APOLLO_IMG+'" alt="Universal Audio Apollo X8P" /></div></div>';
-    h+='<div class="src">Zdroj: <a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a></div>';
+    h+=detailBlock('Technické specifikace','<div class="btxt" style="font-size:13px;line-height:1.6;color:#b0ada8">Profesionální zvuková karta s 8 Unison předzesilovači, která se umí nastavit sama. Díky funkci Auto Gain stačí jediné kliknutí — karta automaticky zkalibruje úrovně vstupu. Studio jsme záměrně navrhli tak, aby hudebníci mohli tvořit bez rušení a bez nutnosti technické asistence :-) (ale v případě potřeby, jsme plně k dispozici).</div>');
+    h+=detailBlock('Zdroj','<div class="src">Zdroj: <a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a></div>','mblk-source');
   } else if(sub==='tech'){
     h+='<div class="dtit">Technické detaily</div>';
-    h+='<div class="blk"><div class="blbl">Specifikace</div><div class="btxt">Thunderbolt 3 audio interface. 16 vstupů × 22 výstupů. 24-bit/192 kHz. HEXA Core DSP (UAD plug-iny v reálném čase). 8× Unison™ preamp. Celkový dynamic range: 129 dB.</div></div>';
     h+='<div class="zoom-photo"><div class="zoom-inner"><img src="'+APOLLO_IMG+'" alt="Universal Audio Apollo X8P" /></div></div>';
-    h+='<div class="src">Zdroj: <a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a></div>';
+    h+=detailBlock('Specifikace','<div class="btxt">Thunderbolt 3 audio interface. 16 vstupů × 22 výstupů. 24-bit/192 kHz. HEXA Core DSP (UAD plug-iny v reálném čase). 8× Unison™ preamp. Celkový dynamic range: 129 dB.</div>');
+    h+=detailBlock('Zdroj','<div class="src">Zdroj: <a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a></div>','mblk-source');
   } else if(sub==='io'){
     h+='<div class="dtit">Vstupy & výstupy</div>';
-    h+='<div class="blk"><div class="blbl">Analogové vstupy</div><div class="btxt">8× Combo (XLR/TRS) Unison™ mic/line/Hi-Z preamp (přední panel)\n8× Analog line in (TRS, zadní panel)</div></div>';
-    h+='<div class="blk"><div class="blbl">Analogové výstupy</div><div class="btxt">8× Analog line out (TRS, zadní panel)\n2× Monitor out L/R (TRS)\n2× Headphone out (přední panel, ¼")</div></div>';
-    h+='<div class="blk"><div class="blbl">Digitální I/O</div><div class="btxt">2× Optical ADAT/S/MUX (až 8ch @ 44.1/48 kHz)\n1× AES/EBU (XLR, 2ch)\n1× S/PDIF (RCA)\n1× BNC Word Clock in/out</div></div>';
-    h+='<div class="blk"><div class="blbl">Připojení</div><div class="btxt">Thunderbolt 3 (2× porty pro daisy-chain)\nUSB-C (monitoring pouze)</div></div>';
     h+='<div class="zoom-photo" style="margin-top:18px;background:rgba(7,6,10,.72)"><div class="zoom-inner"><img src="'+APOLLO_REAR_IMG+'" alt="Apollo X8P zadní panel" style="background:rgba(7,6,10,.72);padding:12px 0" /></div></div>';
-    h+='<div class="src">Zdroj: <a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a></div>';
+    h+=detailBlock('Analogové vstupy','<div class="btxt">8× Combo (XLR/TRS) Unison™ mic/line/Hi-Z preamp (přední panel)\n8× Analog line in (TRS, zadní panel)</div>');
+    h+=detailBlock('Analogové výstupy','<div class="btxt">8× Analog line out (TRS, zadní panel)\n2× Monitor out L/R (TRS)\n2× Headphone out (přední panel, ¼")</div>');
+    h+=detailBlock('Digitální I/O','<div class="btxt">2× Optical ADAT/S/MUX (až 8ch @ 44.1/48 kHz)\n1× AES/EBU (XLR, 2ch)\n1× S/PDIF (RCA)\n1× BNC Word Clock in/out</div>');
+    h+=detailBlock('Připojení','<div class="btxt">Thunderbolt 3 (2× porty pro daisy-chain)\nUSB-C (monitoring pouze)</div>');
+    h+=detailBlock('Zdroj','<div class="src">Zdroj: <a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a></div>','mblk-source');
   }
   dc.innerHTML=h;
   pinSourceBottom();
@@ -764,10 +796,23 @@ function renderBelow(s){
   return linkItems(linkAnteater(s));
 }
 
+function detailBlock(label,html,extraClass=''){
+  return '<div class="blk mblk '+extraClass+'">'+
+    '<button type="button" class="mblk-toggle" onclick="toggleMobileDetail(this)">'+esc(label)+'</button>'+
+    '<div class="mblk-body"><div class="blbl">'+esc(label)+'</div>'+html+'</div>'+
+    '</div>';
+}
+
+function toggleMobileDetail(btn){
+  const block=btn.closest('.mblk');
+  if(!block) return;
+  block.classList.toggle('open');
+}
+
 function pinSourceBottom(){
   const dc=document.getElementById('dc');
   if(!dc) return;
-  const src=dc.querySelector('.src');
+  const src=dc.querySelector('.mblk-source')||dc.querySelector('.src');
   if(src) dc.appendChild(src);
 }
 
@@ -788,24 +833,25 @@ function show(name,catLabel){
   if(d.forsale) h+=' <a class="forsale-inline" href="'+esc(d.forsale)+'" target="_blank">🏷 Na prodej</a>';
   if(subName) h+='<div class="dtit-sub">'+esc(subName)+'</div>';
   h+='</div>';
-  if(d.tech) h+='<div class="blk"><div class="blbl">Technické specifikace</div><div class="btxt">'+esc(d.tech)+'</div></div>';
-  if(d.upgrade) h+='<div class="blk"><div class="blbl">Upgrade</div><div class="btxt upgrade-txt">'+esc(d.upgrade)+'</div></div>';
+  if(d.tech) h+=detailBlock('Technické specifikace','<div class="btxt">'+esc(d.tech)+'</div>');
+  if(d.upgrade) h+=detailBlock('Upgrade','<div class="btxt upgrade-txt">'+esc(d.upgrade)+'</div>');
   if(d.usedBy&&d.usedBy.length&&activeTab!=='sw'){
-    h+='<div class="blk"><div class="blbl">Používají / používali také</div><div class="chips">';
-    d.usedBy.forEach(a=>{h+='<span class="chip">'+esc(a)+'</span>';});
-    h+='</div></div>';
+    let used='<div class="chips">';
+    d.usedBy.forEach(a=>{used+='<span class="chip">'+esc(a)+'</span>';});
+    used+='</div>';
+    h+=detailBlock('Používají / používali také',used);
   }
   if(d.note){
     const hasAnteaterVid=d.videos&&d.videos.some(v=>(v.title||'').includes('Anteater'));
-    h+='<div class="blk"><div class="blbl">Poznámka</div><div class="btxt">'+linkAnteater(esc(d.note));
-    if(hasAnteaterVid) h+='<div style="margin-top:8px;font-size:11px;color:#8a8580;font-style:italic">Kompletní chain, který v klipu slyšíte, je k dispozici ve studiu.</div>';
-    h+='</div></div>';
+    let noteHtml='<div class="btxt">'+linkAnteater(esc(d.note));
+    if(hasAnteaterVid) noteHtml+='<div style="margin-top:8px;font-size:11px;color:#8a8580;font-style:italic">Kompletní chain, který v klipu slyšíte, je k dispozici ve studiu.</div>';
+    noteHtml+='</div>';
+    h+=detailBlock('Poznámka',noteHtml);
   }
   if(d.blocks&&d.blocks.length){
     d.blocks.forEach((block)=>{
-      h+='<div class="blk"><div class="blbl">'+esc(block.label)+'</div><div class="btxt">';
-      h+=block.html?block.html:esc(block.text||'').replace(/\n/g,'<br>');
-      h+='</div></div>';
+      const body='<div class="btxt">'+(block.html?block.html:esc(block.text||'').replace(/\n/g,'<br>'))+'</div>';
+      h+=detailBlock(block.label,body);
     });
   }
 
@@ -825,7 +871,7 @@ function show(name,catLabel){
         h+='<div class="ctp-play"><span>▶</span></div>';
         h+='</div>';
       }
-      if(below) h+='<div class="vcard-below">'+renderBelow(esc(below))+'</div>';
+      if(below) h+='<div class="vcard-below">'+detailBlock('Použitý chain','<div class="btxt">'+renderBelow(esc(below))+'</div>','mblk-compact')+'</div>';
       h+='</div>';
     });
     h+='</div>';
@@ -849,7 +895,7 @@ function show(name,catLabel){
       const url=domains[t];
       return url ? '<a href="'+url+'" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">'+t+'</a>' : esc(t);
     });
-    h+='<div class="src">Zdroj: '+srcLinks.join(', ')+'</div>';
+    h+=detailBlock('Zdroj','<div class="src">Zdroj: '+srcLinks.join(', ')+'</div>','mblk-source');
   }
 
   const dc=document.getElementById('dc');

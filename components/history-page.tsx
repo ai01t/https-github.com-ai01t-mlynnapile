@@ -869,13 +869,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     document.documentElement.style.overflowX = "hidden"
     document.body.style.overflowX = "hidden"
 
-    const parentSnapEnabled = () => {
-      try {
-        return embedded && window.parent.innerWidth >= 768
-      } catch {
-        return embedded && window.innerWidth >= 768
-      }
-    }
+    const parentSnapEnabled = () => embedded
 
     const onWheel = (event: WheelEvent) => {
       if (mobileNavOpen) {

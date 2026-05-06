@@ -984,11 +984,130 @@
 }
 
 @media (max-width: 640px) {
+  .nav {
+    height: 72px;
+    padding: 14px 18px;
+    background: linear-gradient(180deg, rgba(7, 6, 10, 0.9), rgba(7, 6, 10, 0.52));
+  }
+
+  .navLogo {
+    font-size: 1.12rem;
+  }
+
+  .hero {
+    min-height: 100svh;
+    align-items: center;
+    padding: 104px 18px 44px;
+  }
+
+  .heroInner {
+    width: 100%;
+  }
+
+  .secLabel,
+  .cardLabel {
+    font-size: 0.54rem;
+    letter-spacing: 0.22em;
+  }
+
+  .heroTitle {
+    font-size: clamp(3.3rem, 18vw, 4.9rem);
+  }
+
+  .storyCard {
+    margin-top: 24px;
+    padding-top: 0;
+  }
+
+  .storyTitle {
+    font-size: clamp(1.65rem, 8vw, 2.25rem);
+  }
+
   .timelineIntro,
   .storyCard p,
   .timelineBody p {
+    font-size: 0.86rem;
+    line-height: 1.72;
+  }
+
+  .scrollCue {
+    margin-top: 22px;
+    letter-spacing: 0.18em;
+  }
+
+  .panelTrackBidirectional .scrollCue {
+    justify-content: center;
+  }
+
+  .timelineSection {
+    min-height: 100svh;
+    padding: 96px 16px 52px;
+    align-items: center;
+  }
+
+  .timelineInner {
+    min-height: calc(100svh - 148px);
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    align-content: center;
+  }
+
+  .timelineTitle {
+    font-size: clamp(2.4rem, 13vw, 3.7rem);
+  }
+
+  .timelineRailWrap {
+    margin-top: 18px;
+    padding-bottom: 8px;
+  }
+
+  .timelineRail {
+    min-width: 740px;
+  }
+
+  .timelineYear {
+    font-size: 0.72rem;
+  }
+
+  .timelineCard {
+    padding-top: 12px;
+  }
+
+  .timelineCardTitle {
+    font-size: clamp(1.55rem, 8vw, 2.18rem);
+  }
+
+  .timelineBody {
+    margin-top: 14px;
+  }
+
+  .timelineBody p + p {
+    margin-top: 10px;
+  }
+
+  .detailGrid {
+    margin-top: 12px;
+    gap: 3px;
+  }
+
+  .detailItem {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 8px;
+    padding: 7px 0;
+  }
+
+  .detailYear {
     font-size: 0.92rem;
-    line-height: 1.84;
+  }
+
+  .detailText {
+    font-size: 0.78rem;
+    line-height: 1.44;
+  }
+
+  .timelineActions {
+    margin-top: 18px;
+    gap: 14px;
   }
 
   .ctaRow,
@@ -1001,12 +1120,65 @@
   .btnSecondary {
     width: 100%;
   }
+}
 
-  .timelineActions {
-    justify-content: center;
+@media (max-width: 767px) and (orientation: landscape) {
+  .nav {
+    height: 58px;
+    padding: 10px 18px;
+  }
+
+  .hero {
+    min-height: 100svh;
+    padding: 74px 24px 30px;
+  }
+
+  .heroTitle {
+    font-size: clamp(2.9rem, 10vw, 4.5rem);
+  }
+
+  .storyCard {
+    max-width: 720px;
+    margin-top: 18px;
+  }
+
+  .storyTitle {
+    font-size: clamp(1.35rem, 5vw, 2rem);
+  }
+
+  .storyCard p {
+    font-size: 0.78rem;
+    line-height: 1.5;
+    margin-top: 10px;
   }
 
   .scrollCue {
-    letter-spacing: 0.18em;
+    margin-top: 14px;
+  }
+
+  .timelineSection {
+    min-height: 100svh;
+    padding: 72px 24px 32px;
+  }
+
+  .timelineInner {
+    min-height: calc(100svh - 104px);
+  }
+
+  .timelineTitle {
+    font-size: clamp(2.2rem, 8vw, 3.3rem);
+  }
+
+  .timelineRailWrap {
+    margin-top: 12px;
+  }
+
+  .timelineCardTitle {
+    font-size: clamp(1.35rem, 5vw, 2rem);
+  }
+
+  .timelineBody p {
+    font-size: 0.78rem;
+    line-height: 1.5;
   }
 }

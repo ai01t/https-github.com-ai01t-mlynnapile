@@ -739,6 +739,123 @@ body.de .de{display:revert;}
   .founder-text{font-size:.72rem;line-height:1.45;}
 
 }
+
+/* MOBILE EXPERIENCE — phone layouts are intentionally calmer than desktop. */
+@media(max-width:767px){
+  html,body{overflow:auto;scroll-snap-type:none;overscroll-behavior-y:auto;}
+  section{display:block;min-height:auto;overflow:visible;scroll-snap-align:none;}
+  section#hero,
+  section#history{min-height:100svh;overflow:hidden;}
+  nav{height:72px;padding:14px 18px;background:linear-gradient(180deg,rgba(7,6,10,.9),rgba(7,6,10,.55));}
+  nav.scrolled{padding:12px 18px;}
+  .nav-logo{font-size:1.12rem;}
+  .nav-actions{gap:6px;}
+  .btn-lang,.btn-pause,.btn-mode{min-width:34px;height:32px;padding:6px 8px;}
+  .hamburger{min-width:58px;height:34px;}
+  .content{padding:92px 18px 44px;}
+  .sec-label{font-size:.56rem;letter-spacing:.22em;}
+  .sec-title{font-size:clamp(3.05rem,17vw,5.4rem);line-height:.9;}
+  .big-n{display:none;}
+
+  #residency{min-height:auto;overflow:hidden;}
+  #residency .content{padding:92px 0 46px;}
+  #residency .sec-label,
+  #residency .sec-title,
+  #residency .res-intro,
+  #residency .residency-actions,
+  #residency .rules-box{margin-left:18px;margin-right:18px;}
+  #residency .sec-title{font-size:clamp(4rem,21vw,6.1rem);}
+  .res-intro{max-width:none;margin-top:16px;margin-bottom:24px;font-size:.8rem;line-height:1.64;color:rgba(240,235,226,.68);}
+  .residency-stage{overflow:visible;}
+  .residency-track{display:block;width:100%;min-height:0;transform:none!important;}
+  #residency.booking-open .residency-track{transform:none!important;}
+  .residency-panel{min-height:0;padding-bottom:0;}
+  .residency-main-panel{padding-right:0;}
+  .residency-booking-panel{padding:28px 18px 0;}
+  #residency:not(.booking-open) .residency-booking-panel{display:none;}
+  #residency.booking-open .residency-main-panel{display:none;}
+  .residency-actions{margin-top:0;margin-bottom:22px;}
+  .residency-booking-trigger{min-width:0;padding-inline:24px;}
+  .pkg-grid{display:flex;grid-template-columns:none;gap:14px;background:transparent;margin:0 0 28px;padding:0 18px 18px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .pkg-grid::-webkit-scrollbar{display:none;}
+  .pkg-grid::after{content:"";flex:0 0 4px;}
+  .pkg-card{flex:0 0 min(78vw,340px);min-height:350px;padding:28px 22px;border:1px solid rgba(201,185,154,.2);background:linear-gradient(180deg,rgba(13,11,14,.82),rgba(7,6,10,.68));backdrop-filter:blur(16px);scroll-snap-align:center;}
+  .pkg-num{font-size:2.6rem;margin-bottom:16px;}
+  .pkg-name{font-size:1.48rem;margin-bottom:10px;}
+  .pkg-tags{font-size:.54rem;line-height:1.72;margin-bottom:16px;}
+  .pkg-text{font-size:.77rem;line-height:1.65;color:rgba(240,235,226,.64);}
+  .rules-box.rules-list-tight{height:auto;min-height:0;margin-top:0;padding:24px 20px;}
+  .rules-list{gap:12px;}
+  .rules-list li{font-size:.76rem;line-height:1.56;}
+  .residency-booking-frame{min-height:640px;height:640px;}
+
+  #equipment{min-height:auto;}
+  #equipment .content{padding:92px 18px 44px;}
+  .eq-intro{max-width:none;margin-top:16px;font-size:.8rem;line-height:1.64;color:rgba(240,235,226,.68);}
+  .eq-text-wrap{margin-top:18px;border-radius:16px;}
+  .eq-text-card{padding:18px 16px;}
+  .eq-text-card p{font-size:.76rem;line-height:1.62;}
+  .eq-embed-wrap{height:72vh;min-height:520px;max-height:none;margin:20px -18px 0;border-left:0;border-right:0;border-radius:0;overflow:auto;-webkit-overflow-scrolling:touch;}
+  .eq-embed-frame{min-width:760px;}
+
+  #history .history-embed-frame{pointer-events:auto;touch-action:auto;background:#07060a;}
+}
+
+@media(max-width:767px) and (orientation:landscape){
+  nav{height:58px;padding:10px 18px;}
+  .content{padding:74px 24px 34px;}
+  .sec-title{font-size:clamp(2.8rem,11vw,4.6rem);}
+  #residency .content{padding:72px 0 34px;}
+  #residency .sec-title{font-size:clamp(3.2rem,14vw,5rem);}
+  .res-intro{margin-bottom:18px;}
+  .pkg-grid{gap:12px;padding-bottom:14px;}
+  .pkg-card{flex-basis:min(44vw,330px);min-height:250px;padding:20px 18px;}
+  .pkg-num{font-size:2rem;}
+  .pkg-name{font-size:1.16rem;}
+  .pkg-tags{font-size:.49rem;}
+  .pkg-text{font-size:.68rem;line-height:1.48;}
+  .rules-box.rules-list-tight{display:none;}
+  .eq-embed-wrap{height:68vh;min-height:360px;}
+  .residency-booking-frame{min-height:520px;height:520px;}
+}
+
+@media(max-width:1024px) and (orientation:landscape) and (max-height:560px){
+  html,body{overflow:auto;scroll-snap-type:none;overscroll-behavior-y:auto;}
+  section{display:block;min-height:auto;overflow:visible;scroll-snap-align:none;}
+  section#hero,
+  section#history{min-height:100svh;overflow:hidden;}
+  nav{height:58px;padding:10px 20px;}
+  .content{padding:74px 24px 34px;}
+  .sec-title{font-size:clamp(2.8rem,10vw,4.8rem);}
+  #residency{min-height:auto;overflow:hidden;}
+  #residency .content{padding:72px 0 34px;}
+  #residency .sec-label,
+  #residency .sec-title,
+  #residency .res-intro,
+  #residency .residency-actions,
+  #residency .rules-box{margin-left:24px;margin-right:24px;}
+  #residency .sec-title{font-size:clamp(3.2rem,12vw,5rem);}
+  #residency .big-n{display:none;}
+  .res-intro{max-width:560px;margin-top:14px;margin-bottom:18px;font-size:.76rem;line-height:1.5;}
+  .residency-track{display:block;width:100%;min-height:0;transform:none!important;}
+  #residency.booking-open .residency-track{transform:none!important;}
+  .residency-panel{min-height:0;padding-bottom:0;}
+  .residency-main-panel{padding-right:0;}
+  .residency-booking-panel{padding:22px 24px 0;}
+  #residency:not(.booking-open) .residency-booking-panel{display:none;}
+  #residency.booking-open .residency-main-panel{display:none;}
+  .pkg-grid{display:flex;grid-template-columns:none;gap:12px;background:transparent;margin:0 0 20px;padding:0 24px 14px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .pkg-grid::-webkit-scrollbar{display:none;}
+  .pkg-grid::after{content:"";flex:0 0 4px;}
+  .pkg-card{flex:0 0 min(44vw,330px);min-height:250px;padding:20px 18px;border:1px solid rgba(201,185,154,.2);background:linear-gradient(180deg,rgba(13,11,14,.82),rgba(7,6,10,.68));backdrop-filter:blur(16px);scroll-snap-align:center;}
+  .pkg-num{font-size:2rem;margin-bottom:12px;}
+  .pkg-name{font-size:1.16rem;margin-bottom:8px;}
+  .pkg-tags{font-size:.49rem;line-height:1.55;margin-bottom:10px;}
+  .pkg-text{font-size:.68rem;line-height:1.48;}
+  .rules-box.rules-list-tight{display:none;}
+  .eq-embed-wrap{height:68vh;min-height:360px;max-height:none;}
+  #history .history-embed-frame{pointer-events:auto;touch-action:auto;}
+}
 </style>
 </head>
 <body class="video-booting">
@@ -1380,7 +1497,9 @@ function getNearestSectionForViewport(){
 }
 
 function isFullPageScrollMode(){
-  return window.innerWidth>=768;
+  const coarsePointer=window.matchMedia('(pointer: coarse)').matches;
+  const shortLandscape=window.matchMedia('(orientation: landscape)').matches&&window.innerHeight<560;
+  return window.innerWidth>=768&&!shortLandscape&&!(coarsePointer&&window.innerWidth<1024);
 }
 
 function isMobileNativeScrollMode(){
@@ -1672,6 +1791,22 @@ function setBookingEmbedHeight(rawHeight){
   bookingEmbedFrame.style.height=`${nextHeight}px`;
 }
 
+function getResidencyVideoRate(){
+  return residencyBookingOpen?RESIDENCY_BOOKING_VIDEO_RATE:1;
+}
+
+function applyVideoRate(video,rate){
+  if(!video)return;
+  try{video.playbackRate=rate;}catch(e){}
+}
+
+function syncResidencyVideoRates(){
+  const rate=getResidencyVideoRate();
+  applyVideoRate(bgFrameBySectionId.get('residency'),rate);
+  applyVideoRate(residencyChlebaVideo,rate);
+  residencyPkgKeys.forEach((key)=>applyVideoRate(residencyPkgVideos[key],rate));
+}
+
 function setResidencyBooking(open,{instant=false}={}){
   if(!residencySection||!residencyStage)return;
   residencyBookingOpen=Boolean(open);
@@ -1679,6 +1814,7 @@ function setResidencyBooking(open,{instant=false}={}){
     residencyStage.classList.add('is-instant');
   }
   residencySection.classList.toggle('booking-open',residencyBookingOpen);
+  syncResidencyVideoRates();
   if(residencyBookingOpen){
     ensureBookingEmbedLoaded();
     syncBookingEmbedSrc();
@@ -1691,6 +1827,20 @@ function setResidencyBooking(open,{instant=false}={}){
   }
 }
 
+function moveAdjacentFromEmbeddedSection(sourceSection,deltaY,{minDelta=8,behavior='smooth'}={}){
+  const numericDelta=Number(deltaY)||0;
+  if(Math.abs(numericDelta)<minDelta)return false;
+  if(isFullPageScrollMode()){
+    return moveToAdjacentSection(numericDelta>0?1:-1,{behavior});
+  }
+  if(!sourceSection)return false;
+  const sourceIndex=Math.max(0,getSectionIndex(sourceSection));
+  const nextIndex=Math.min(Math.max(sourceIndex+(numericDelta>0?1:-1),0),secs.length-1);
+  const targetSection=secs[nextIndex];
+  if(!targetSection||targetSection===sourceSection)return false;
+  return scrollToSection(targetSection.id,{behavior});
+}
+
 function handleBookingEmbedMessage(event){
   if(event.origin!==window.location.origin)return;
   const fromBooking=bookingEmbedFrame&&event.source===bookingEmbedFrame.contentWindow;
@@ -1700,27 +1850,19 @@ function handleBookingEmbedMessage(event){
   const data=event.data;
   if(!data||typeof data!=='object')return;
   if(fromHistory&&data.type==='history-embed-wheel'){
-    const deltaY=Number(data.deltaY)||0;
-    if(Math.abs(deltaY)<8)return;
-    moveToAdjacentSection(deltaY>0?1:-1,{behavior:'smooth'});
+    moveAdjacentFromEmbeddedSection(document.getElementById('history'),data.deltaY,{minDelta:8});
     return;
   }
   if(fromHistory&&data.type==='history-embed-swipe'){
-    const deltaY=Number(data.deltaY)||0;
-    if(Math.abs(deltaY)<32)return;
-    moveToAdjacentSection(deltaY>0?1:-1,{behavior:'smooth'});
+    moveAdjacentFromEmbeddedSection(document.getElementById('history'),data.deltaY,{minDelta:32});
     return;
   }
   if(fromEquipment&&data.type==='equipment-embed-wheel'){
-    const deltaY=Number(data.deltaY)||0;
-    if(Math.abs(deltaY)<8)return;
-    moveToAdjacentSection(deltaY>0?1:-1,{behavior:'smooth'});
+    moveAdjacentFromEmbeddedSection(document.getElementById('equipment'),data.deltaY,{minDelta:8});
     return;
   }
   if(fromEquipment&&data.type==='equipment-embed-swipe'){
-    const deltaY=Number(data.deltaY)||0;
-    if(Math.abs(deltaY)<32)return;
-    moveToAdjacentSection(deltaY>0?1:-1,{behavior:'smooth'});
+    moveAdjacentFromEmbeddedSection(document.getElementById('equipment'),data.deltaY,{minDelta:32});
     return;
   }
   if(!fromBooking)return;
@@ -1730,15 +1872,11 @@ function handleBookingEmbedMessage(event){
   }
   if(!residencyBookingOpen)return;
   if(data.type==='booking-embed-wheel'){
-    const deltaY=Number(data.deltaY)||0;
-    if(Math.abs(deltaY)<8)return;
-    moveToAdjacentSection(deltaY>0?1:-1,{behavior:'smooth'});
+    moveAdjacentFromEmbeddedSection(document.getElementById('residency'),data.deltaY,{minDelta:8});
     return;
   }
   if(data.type==='booking-embed-swipe'){
-    const deltaY=Number(data.deltaY)||0;
-    if(Math.abs(deltaY)<32)return;
-    moveToAdjacentSection(deltaY>0?1:-1,{behavior:'smooth'});
+    moveAdjacentFromEmbeddedSection(document.getElementById('residency'),data.deltaY,{minDelta:32});
   }
 }
 
@@ -1867,6 +2005,7 @@ const residencyPkgInlineVideoIds={
   otherside:'X7lvikbWnMQ',
   fuel:'5INpfHr0lu4'
 };
+const RESIDENCY_BOOKING_VIDEO_RATE=.38;
 let activeInlineResidencyPkg=null;
 const resFaqList=document.getElementById('resFaqList');
 const BG_ASSET_REV='20260309c';
@@ -2264,6 +2403,7 @@ function playBgVideo(video){
   };
   const activeVideo=bgFrameBySectionId.get(currentSectionId);
   if(activeVideo!==video)return;
+  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
   if(!video.paused&&video.readyState>=2){
     markBgVideoFrame(video);
     markBgVideoPlaying(video);
@@ -2279,7 +2419,7 @@ function playBgVideo(video){
   video.defaultMuted=true;
   video.volume=0;
   video.controls=false;
-  video.playbackRate=1;
+  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
   if(video.__playPending)return;
   video.__playPending=true;
   const p=video.play();
@@ -2436,6 +2576,7 @@ function playResidencyPackageVideo(key){
   if(!video||pauseAllVideos||currentSectionId!=='residency')return;
   video.muted=true;
   video.defaultMuted=true;
+  applyVideoRate(video,getResidencyVideoRate());
   const p=video.play();
   if(p&&typeof p.then==='function'){
     p.then(()=>setResidencyPackageBlocked(key,false)).catch(()=>setResidencyPackageBlocked(key,true));
