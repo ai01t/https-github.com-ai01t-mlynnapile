@@ -42,8 +42,8 @@
 
 .bgPoster {
   z-index: 0;
-  background-image: url("/videos/bg/NYqybmh85G4_hq.jpg");
-  background-position: center;
+  background-image: url("/images/chleba-hero.jpeg");
+  background-position: center 54%;
   background-size: cover;
   opacity: 0.98;
   filter: saturate(0.98) contrast(1.02);

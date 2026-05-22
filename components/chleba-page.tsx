@@ -18,8 +18,6 @@ const manrope = Manrope({
   weight: ["300", "400", "500", "600"],
 })
 
-const LOCAL_VIDEO_SRC = "/videos/bg/NYqybmh85G4_hq.mp4"
-const LOCAL_VIDEO_POSTER = "/videos/bg/NYqybmh85G4_hq.jpg"
 const MODE_STORAGE_KEY = "mlyn_mode"
 const LANG_STORAGE_KEY = "mlyn_lang"
 
@@ -589,20 +587,6 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
     >
       <div className={styles.bgShell} aria-hidden="true">
         <div className={styles.bgPoster} />
-        <video
-          ref={localVideoRef}
-          className={styles.bgLocalVideo}
-          src={LOCAL_VIDEO_SRC}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster={LOCAL_VIDEO_POSTER}
-          x-webkit-airplay="deny"
-          disablePictureInPicture
-          disableRemotePlayback
-        />
         <div className={styles.bgOverlay} />
       </div>
 
