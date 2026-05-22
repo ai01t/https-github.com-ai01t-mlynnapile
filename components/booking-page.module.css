@@ -14,40 +14,6 @@
   color: var(--cream);
 }
 
-.embedded {
-  background: transparent !important;
-}
-
-.embedded .pageShell {
-  min-height: 0 !important;
-  width: min(100%, calc(100% - 8px));
-  padding: 0;
-}
-
-.embedded .experience {
-  min-height: 0 !important;
-  gap: 32px;
-  align-items: start;
-}
-
-.embedded .infoColumn {
-  min-height: 0;
-  padding-bottom: 0;
-}
-
-.embedded .stackStage {
-  min-height: 520px;
-  padding-right: 44px;
-}
-
-.embedded .stackColumn {
-  padding-right: 72px;
-}
-
-.embedded .monthGuide {
-  max-width: 100%;
-}
-
 .bgShell,
 .bgPoster,
 .bgOverlay {
@@ -68,10 +34,7 @@
 .bgShell {
   z-index: 0;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(176, 141, 87, 0.08), transparent 34%),
-    radial-gradient(circle at 78% 20%, rgba(82, 88, 102, 0.12), transparent 30%),
-    linear-gradient(180deg, #09080c 0%, #050506 54%, #07060a 100%);
+  background: #050506;
 }
 
 .bgVideo {
@@ -96,7 +59,9 @@
 .bgOverlay {
   z-index: 1;
   background:
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.42) 0%, rgba(7, 6, 10, 0.18) 34%, rgba(7, 6, 10, 0.72) 100%);
+    radial-gradient(circle at 20% 10%, rgba(186, 148, 97, 0.08), transparent 36%),
+    radial-gradient(circle at 78% 18%, rgba(110, 125, 144, 0.08), transparent 30%),
+    linear-gradient(to bottom, rgba(7, 6, 10, 0.68) 0%, rgba(7, 6, 10, 0.34) 34%, rgba(7, 6, 10, 0.86) 100%);
 }
 
 .nightMode .bgOverlay {

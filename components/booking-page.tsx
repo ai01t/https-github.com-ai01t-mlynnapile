@@ -3,7 +3,7 @@
 import { Cormorant_Garamond, Manrope } from "next/font/google"
 import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import styles from "@/components/booking-page.module.css"
 
 const cormorant = Cormorant_Garamond({
@@ -24,7 +24,6 @@ const EMAIL = "mlynnapile@gmail.com"
 const START_Y = 2026
 const START_M = 3
 const TOTAL = 12
-const BOOKING_VIDEO_PLAYBACK_RATE = 0.42
 const VIDEOS = [
   "8ao2RN8xswo",
   "kgqpTmzPMa4",
@@ -634,28 +633,12 @@ function buildYoutubeUrl(videoId: string) {
     modestbranding: "1",
     iv_load_policy: "3",
     disablekb: "1",
-    enablejsapi: "1",
     fs: "0",
     playsinline: "1",
     vq: "hd1080",
   })
 
   return `https://www.youtube.com/embed/${videoId}?${params.toString()}`
-}
-
-function setYoutubeIframePlaybackRate(frame: HTMLIFrameElement | null, playbackRate: number) {
-  const target = frame?.contentWindow
-  if (!target) return
-
-  const postCommand = (func: string, args: unknown[] = []) => {
-    target.postMessage(JSON.stringify({ event: "command", func, args }), "https://www.youtube.com")
-  }
-
-  postCommand("setPlaybackRate", [playbackRate])
-  postCommand("playVideo")
-
-  window.setTimeout(() => postCommand("setPlaybackRate", [playbackRate]), 450)
-  window.setTimeout(() => postCommand("setPlaybackRate", [playbackRate]), 1200)
 }
 
 function renderGuideText(text: string) {
@@ -789,12 +772,10 @@ function SeamlessLoopVideo({
   src,
   poster,
   className,
-  playbackRate = 1,
 }: {
   src: string
   poster?: string | null
   className: string
-  playbackRate?: number
 }) {
   const videoRefs = [useRef<HTMLVideoElement | null>(null), useRef<HTMLVideoElement | null>(null)]
   const [activeLayer, setActiveLayer] = useState(0)
@@ -806,7 +787,6 @@ function SeamlessLoopVideo({
   const ensurePlayback = (layer: number) => {
     const target = videoRefs[layer].current
     if (!target) return
-    target.playbackRate = playbackRate
     target.play().catch(() => {})
   }
 
@@ -825,14 +805,12 @@ function SeamlessLoopVideo({
 
     if (first) {
       first.currentTime = 0
-      first.playbackRate = playbackRate
       ensurePlayback(0)
     }
 
     if (second) {
       second.pause()
       second.currentTime = 0
-      second.playbackRate = playbackRate
     }
 
     return () => {
@@ -841,7 +819,7 @@ function SeamlessLoopVideo({
         timeoutRef.current = null
       }
     }
-  }, [src, playbackRate])
+  }, [src])
 
   useEffect(() => {
     const handleVisibility = () => {
@@ -875,7 +853,6 @@ function SeamlessLoopVideo({
 
     transitionRef.current = true
     next.currentTime = 0
-    next.playbackRate = playbackRate
     ensurePlayback(nextLayer)
     setIncomingLayer(nextLayer)
 
@@ -916,10 +893,6 @@ function SeamlessLoopVideo({
             playsInline
             preload="metadata"
             disablePictureInPicture
-            onLoadedMetadata={() => {
-              const target = videoRefs[layer].current
-              if (target) target.playbackRate = playbackRate
-            }}
             onLoadedData={() => {
               if (layer === activeLayer || layer === incomingLayer) {
                 ensurePlayback(layer)
@@ -936,12 +909,8 @@ function SeamlessLoopVideo({
 export default function BookingPage({ locale }: { locale: Locale }) {
   const copy = copyByLocale[locale]
   const router = useRouter()
-  const searchParams = useSearchParams()
   const langSwitchRef = useRef<HTMLDivElement | null>(null)
   const touchStartXRef = useRef<number | null>(null)
-  const touchStartYRef = useRef<number | null>(null)
-  const mainRef = useRef<HTMLElement | null>(null)
-  const lastPostedHeightRef = useRef(0)
   const [navScrolled, setNavScrolled] = useState(false)
   const [paused, setPaused] = useState(false)
   const [nightMode] = useState(false)
@@ -956,16 +925,16 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     departureDay: null,
   })
   const [modalOpen, setModalOpen] = useState(false)
-  const embedded = searchParams.get("embed") === "1"
 
   const months = useMemo(() => buildMonths(locale), [locale])
   const activeMonth = months[currentIndex]
   const activeMonthGuide = MONTH_GUIDES_CS[activeMonth.month]
   const visibleMonths = months.slice(currentIndex, Math.min(currentIndex + 4, months.length))
+  const activeBackgroundPoster = "/images/aerial-view.jpeg"
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.body.style.background = embedded ? "transparent" : "#07060a"
+    document.body.style.background = "#07060a"
 
     try {
       window.localStorage.setItem(LANG_STORAGE_KEY, locale)
@@ -974,18 +943,14 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     return () => {
       document.body.style.background = ""
     }
-  }, [locale, embedded])
+  }, [locale])
 
   useEffect(() => {
-    if (embedded) {
-      setNavScrolled(false)
-      return
-    }
     const onScroll = () => setNavScrolled(window.scrollY > 60)
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
-  }, [embedded])
+  }, [])
 
   useEffect(() => {
     if (!langOpen) return
@@ -999,11 +964,11 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   }, [langOpen])
 
   useEffect(() => {
-    document.body.style.overflow = !embedded && (mobileNavOpen || modalOpen) ? "hidden" : ""
+    document.body.style.overflow = mobileNavOpen || modalOpen ? "hidden" : ""
     return () => {
       document.body.style.overflow = ""
     }
-  }, [embedded, mobileNavOpen, modalOpen])
+  }, [mobileNavOpen, modalOpen])
 
   useEffect(() => {
     const showTimer = window.setTimeout(() => setBookingNoticeOpen(true), 260)
@@ -1014,93 +979,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
       window.clearTimeout(hideTimer)
     }
   }, [])
-
-  useEffect(() => {
-    if (!embedded) return
-
-    const postHeight = () => {
-      const main = mainRef.current
-      if (!main || window.parent === window) return
-      const nextHeight = Math.max(400, Math.min(6000, Math.round(main.getBoundingClientRect().height)))
-      if (Math.abs(nextHeight - lastPostedHeightRef.current) <= 4) return
-      lastPostedHeightRef.current = nextHeight
-      window.parent.postMessage({ type: "booking-embed-height", h: nextHeight }, window.location.origin)
-    }
-
-    postHeight()
-
-    const resizeObserver = new ResizeObserver(() => {
-      window.requestAnimationFrame(postHeight)
-    })
-
-    if (mainRef.current) {
-      resizeObserver.observe(mainRef.current)
-    }
-
-    window.addEventListener("resize", postHeight, { passive: true })
-    window.addEventListener("load", postHeight)
-
-    return () => {
-      resizeObserver.disconnect()
-      window.removeEventListener("resize", postHeight)
-      window.removeEventListener("load", postHeight)
-    }
-  }, [embedded, locale, currentIndex, bookingNoticeOpen, modalOpen, selection])
-
-  useEffect(() => {
-    if (!embedded) return
-
-    const parentSnapEnabled = () => {
-      try {
-        return window.parent.innerWidth >= 768
-      } catch {
-        return window.innerWidth >= 768
-      }
-    }
-
-    const onWheel = (event: WheelEvent) => {
-      if (modalOpen) return
-      if (!parentSnapEnabled()) return
-      event.preventDefault()
-      window.parent.postMessage({ type: "booking-embed-wheel", deltaY: event.deltaY }, window.location.origin)
-    }
-
-    const onTouchStart = (event: TouchEvent) => {
-      if (!parentSnapEnabled()) return
-      const touch = event.touches[0]
-      if (!touch) return
-      touchStartXRef.current = touch.clientX
-      touchStartYRef.current = touch.clientY
-    }
-
-    const onTouchEnd = (event: TouchEvent) => {
-      if (modalOpen) return
-      if (!parentSnapEnabled()) return
-      if (touchStartYRef.current === null || touchStartXRef.current === null) return
-
-      const touch = event.changedTouches[0]
-      if (!touch) return
-
-      const deltaX = touch.clientX - touchStartXRef.current
-      const deltaY = touch.clientY - touchStartYRef.current
-
-      touchStartXRef.current = null
-      touchStartYRef.current = null
-
-      if (Math.abs(deltaY) < 48 || Math.abs(deltaY) < Math.abs(deltaX)) return
-      window.parent.postMessage({ type: "booking-embed-swipe", deltaY }, window.location.origin)
-    }
-
-    window.addEventListener("wheel", onWheel, { passive: false })
-    window.addEventListener("touchstart", onTouchStart, { passive: true })
-    window.addEventListener("touchend", onTouchEnd, { passive: true })
-
-    return () => {
-      window.removeEventListener("wheel", onWheel)
-      window.removeEventListener("touchstart", onTouchStart)
-      window.removeEventListener("touchend", onTouchEnd)
-    }
-  }, [embedded, modalOpen])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -1234,98 +1112,93 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className={cx(styles.bookingPage, embedded && styles.embedded, manrope.className, nightMode && styles.nightMode)}>
-      {!embedded ? (
-        <div className={styles.bgShell} aria-hidden="true">
-          <div className={styles.bgOverlay} />
-        </div>
-      ) : null}
+    <div className={cx(styles.bookingPage, manrope.className, nightMode && styles.nightMode)}>
+      <div className={styles.bgShell} aria-hidden="true">
+        <div className={styles.bgPoster} style={{ backgroundImage: `url("${activeBackgroundPoster}")` }} />
+        <div className={styles.bgOverlay} />
+      </div>
 
-      {!embedded && (
-        <>
-          <nav className={cx(styles.nav, navScrolled && styles.navScrolled)}>
-            <Link href={getLocaleHomePath(locale)} className={cx(styles.navLogo, cormorant.className)}>
-              {getBrand(locale, copy)}
-            </Link>
+      <nav className={cx(styles.nav, navScrolled && styles.navScrolled)}>
+        <Link href={getLocaleHomePath(locale)} className={cx(styles.navLogo, cormorant.className)}>
+          {getBrand(locale, copy)}
+        </Link>
 
-            <ul className={styles.navLinks}>
-              <li><Link href={getSectionHref(locale, "place")}>{copy.mill}</Link></li>
-              <li><Link href={getSectionHref(locale, "studio")}>{copy.studio}</Link></li>
-              <li><Link href={getSectionHref(locale, "equipment")}>{copy.equipment}</Link></li>
-              <li><Link href={getSectionHref(locale, "residency")}>{copy.accommodation}</Link></li>
-              <li><Link href={getSectionHref(locale, "location")}>{copy.location}</Link></li>
-              <li><Link href={getHistoryPath(locale)}>{copy.history}</Link></li>
-              <li><Link href={getSectionHref(locale, "contact")}>{copy.contact}</Link></li>
-            </ul>
+        <ul className={styles.navLinks}>
+          <li><Link href={getSectionHref(locale, "place")}>{copy.mill}</Link></li>
+          <li><Link href={getSectionHref(locale, "studio")}>{copy.studio}</Link></li>
+          <li><Link href={getSectionHref(locale, "equipment")}>{copy.equipment}</Link></li>
+          <li><Link href={getSectionHref(locale, "residency")}>{copy.accommodation}</Link></li>
+          <li><Link href={getSectionHref(locale, "location")}>{copy.location}</Link></li>
+          <li><Link href={getHistoryPath(locale)}>{copy.history}</Link></li>
+          <li><Link href={getSectionHref(locale, "contact")}>{copy.contact}</Link></li>
+        </ul>
 
-            <div className={styles.navActions}>
-              <button
-                type="button"
-                className={cx(styles.btnPause, paused && styles.btnPauseOn)}
-                aria-pressed={paused}
-                aria-label={pauseLabel}
-                title={pauseLabel}
-                onClick={() => setPaused((current) => !current)}
-              >
-                <span className={styles.pauseIcon}>{paused ? "▶" : "II"}</span>
-              </button>
-              <div ref={langSwitchRef} className={cx(styles.langSwitch, langOpen && styles.langSwitchOpen)}>
-                <button
-                  type="button"
-                  className={styles.btnLang}
-                  aria-expanded={langOpen}
-                  aria-haspopup="menu"
-                  aria-label={copy.selectLanguage}
-                  title={copy.selectLanguage}
-                  onClick={() => setLangOpen((current) => !current)}
-                >
-                  <span className={styles.langIcon} aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <path d="M3 12h18" />
-                      <path d="M12 3a15.3 15.3 0 0 1 4 9 15.3 15.3 0 0 1-4 9 15.3 15.3 0 0 1-4-9 15.3 15.3 0 0 1 4-9Z" />
-                      <circle cx="12" cy="12" r="9" />
-                    </svg>
-                  </span>
-                  <span className={styles.langCaret} aria-hidden="true">▾</span>
-                </button>
-                <div className={styles.langMenu} role="menu">
-                  {(["cs", "en", "de"] as Locale[]).map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      className={cx(styles.langOption, option === locale && styles.langOptionActive)}
-                      role="menuitemradio"
-                      aria-checked={option === locale}
-                      onClick={() => switchLanguage(option)}
-                    >
-                      {localeNames[option]}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <button type="button" className={styles.hamburger} onClick={() => setMobileNavOpen(true)}>
-                <span className={styles.hamburgerLabel}>{copy.menu}</span>
-              </button>
-            </div>
-          </nav>
-
-          <div className={cx(styles.mobileNav, mobileNavOpen && styles.mobileNavOpen)}>
-            <button type="button" className={styles.closeNav} onClick={() => setMobileNavOpen(false)}>
-              {copy.close}
+        <div className={styles.navActions}>
+          <button
+            type="button"
+            className={cx(styles.btnPause, paused && styles.btnPauseOn)}
+            aria-pressed={paused}
+            aria-label={pauseLabel}
+            title={pauseLabel}
+            onClick={() => setPaused((current) => !current)}
+          >
+            <span className={styles.pauseIcon}>{paused ? "▶" : "II"}</span>
+          </button>
+          <div ref={langSwitchRef} className={cx(styles.langSwitch, langOpen && styles.langSwitchOpen)}>
+            <button
+              type="button"
+              className={styles.btnLang}
+              aria-expanded={langOpen}
+              aria-haspopup="menu"
+              aria-label={copy.selectLanguage}
+              title={copy.selectLanguage}
+              onClick={() => setLangOpen((current) => !current)}
+            >
+              <span className={styles.langIcon} aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M3 12h18" />
+                  <path d="M12 3a15.3 15.3 0 0 1 4 9 15.3 15.3 0 0 1-4 9 15.3 15.3 0 0 1-4-9 15.3 15.3 0 0 1 4-9Z" />
+                  <circle cx="12" cy="12" r="9" />
+                </svg>
+              </span>
+              <span className={styles.langCaret} aria-hidden="true">▾</span>
             </button>
-            <Link href={getSectionHref(locale, "place")} onClick={() => setMobileNavOpen(false)}>{copy.mill}</Link>
-            <Link href={getSectionHref(locale, "studio")} onClick={() => setMobileNavOpen(false)}>{copy.studio}</Link>
-            <Link href={getSectionHref(locale, "equipment")} onClick={() => setMobileNavOpen(false)}>{copy.equipment}</Link>
-            <Link href={getSectionHref(locale, "residency")} onClick={() => setMobileNavOpen(false)}>{copy.accommodation}</Link>
-            <Link href={getSectionHref(locale, "location")} onClick={() => setMobileNavOpen(false)}>{copy.location}</Link>
-            <Link href={getHistoryPath(locale)} onClick={() => setMobileNavOpen(false)}>{copy.history}</Link>
-            <Link href={getSectionHref(locale, "contact")} onClick={() => setMobileNavOpen(false)}>{copy.contact}</Link>
+            <div className={styles.langMenu} role="menu">
+              {(["cs", "en", "de"] as Locale[]).map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className={cx(styles.langOption, option === locale && styles.langOptionActive)}
+                  role="menuitemradio"
+                  aria-checked={option === locale}
+                  onClick={() => switchLanguage(option)}
+                >
+                  {localeNames[option]}
+                </button>
+              ))}
+            </div>
           </div>
-        </>
-      )}
 
-      <main ref={mainRef} className={styles.pageShell}>
+          <button type="button" className={styles.hamburger} onClick={() => setMobileNavOpen(true)}>
+            <span className={styles.hamburgerLabel}>{copy.menu}</span>
+          </button>
+        </div>
+      </nav>
+
+      <div className={cx(styles.mobileNav, mobileNavOpen && styles.mobileNavOpen)}>
+        <button type="button" className={styles.closeNav} onClick={() => setMobileNavOpen(false)}>
+          {copy.close}
+        </button>
+        <Link href={getSectionHref(locale, "place")} onClick={() => setMobileNavOpen(false)}>{copy.mill}</Link>
+        <Link href={getSectionHref(locale, "studio")} onClick={() => setMobileNavOpen(false)}>{copy.studio}</Link>
+        <Link href={getSectionHref(locale, "equipment")} onClick={() => setMobileNavOpen(false)}>{copy.equipment}</Link>
+        <Link href={getSectionHref(locale, "residency")} onClick={() => setMobileNavOpen(false)}>{copy.accommodation}</Link>
+        <Link href={getSectionHref(locale, "location")} onClick={() => setMobileNavOpen(false)}>{copy.location}</Link>
+        <Link href={getHistoryPath(locale)} onClick={() => setMobileNavOpen(false)}>{copy.history}</Link>
+        <Link href={getSectionHref(locale, "contact")} onClick={() => setMobileNavOpen(false)}>{copy.contact}</Link>
+      </div>
+
+      <main className={styles.pageShell}>
         <section className={styles.experience}>
           <div className={styles.infoColumn}>
             <div className={styles.noticeDock} aria-live="polite">
@@ -1456,7 +1329,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               className={styles.cardLocalVideo}
                               src={month.localVideoSrc}
                               poster={month.localPosterSrc ?? undefined}
-                              playbackRate={BOOKING_VIDEO_PLAYBACK_RATE}
                             />
                           ) : null}
                           {!paused && !month.localVideoSrc && month.youtubeId ? (
@@ -1469,9 +1341,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               loading={visibleIndex <= 2 ? "eager" : "lazy"}
                               referrerPolicy="strict-origin-when-cross-origin"
                               tabIndex={-1}
-                              onLoad={(event) => {
-                                setYoutubeIframePlaybackRate(event.currentTarget, BOOKING_VIDEO_PLAYBACK_RATE)
-                              }}
                             />
                           ) : null}
                           <div
@@ -1555,11 +1424,9 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
       </main>
 
-      {!embedded && (
-        <footer className={styles.footer}>
-          <span className={styles.ftCopy}>© 2026 | Design &amp; Development: Ing. Jindřich Traxmandl</span>
-        </footer>
-      )}
+      <footer className={styles.footer}>
+        <span className={styles.ftCopy}>© 2026 | Design &amp; Development: Ing. Jindřich Traxmandl</span>
+      </footer>
 
       {modalOpen && arrivalDate && departureDate && nights ? (
         <div className={styles.modalBackdrop} onClick={() => setModalOpen(false)}>

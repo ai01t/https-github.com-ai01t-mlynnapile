@@ -571,7 +571,6 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const embedded = searchParams.get("embed") === "1"
-  const forceHorizontalPanels = embedded && searchParams.get("horizontal") === "1"
   const localVideoRef = useRef<HTMLVideoElement | null>(null)
   const langSwitchRef = useRef<HTMLDivElement | null>(null)
   const heroSectionRef = useRef<HTMLElement | null>(null)
@@ -599,7 +598,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const timelinePositions = getTimelinePositions(copy.entries)
   const isLastTimelineStep = activeIndex === copy.entries.length - 1
   const historyVideo = isPortrait ? HISTORY_VIDEO_ASSETS.vertical : HISTORY_VIDEO_ASSETS.horizontal
-  const useBidirectionalScroll = forceHorizontalPanels || bidirectionalEnabled
+  const useBidirectionalScroll = !embedded && bidirectionalEnabled
 
   const getTimelineTargetTop = () => {
     const timelineSection = timelineSectionRef.current
@@ -663,7 +662,12 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   }, [])
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(embedded ? "(pointer: fine), (min-width: 641px)" : "(min-width: 981px) and (orientation: landscape)")
+    if (embedded) {
+      setBidirectionalEnabled(false)
+      return
+    }
+
+    const mediaQuery = window.matchMedia("(min-width: 981px) and (orientation: landscape)")
     const syncBidirectional = () => setBidirectionalEnabled(mediaQuery.matches)
 
     syncBidirectional()
@@ -864,35 +868,17 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       return
     }
 
-    const previousHtmlOverflowX = document.documentElement.style.overflowX
-    const previousBodyOverflowX = document.body.style.overflowX
-    document.documentElement.style.overflowX = "hidden"
-    document.body.style.overflowX = "hidden"
-
-    const parentSnapEnabled = () => embedded
-
     const onWheel = (event: WheelEvent) => {
-      if (mobileNavOpen) {
-        return
-      }
-
-      const deltaX = event.deltaX
-      const deltaY = event.deltaY
-      const horizontalIntent = Math.abs(deltaX) > Math.max(Math.abs(deltaY), 18)
-
-      if (!horizontalIntent && Math.abs(deltaY) < 12) {
+      if (mobileNavOpen || Math.abs(event.deltaY) < 12) {
         return
       }
 
       event.preventDefault()
-      window.scrollTo({ left: 0, top: 0, behavior: "auto" })
 
-      if (horizontalIntent && deltaX > 0 && !timelineViewActive) {
+      if (event.deltaY > 0 && !timelineViewActive) {
         setTimelineViewActive(true)
-      } else if (horizontalIntent && deltaX < 0 && timelineViewActive) {
+      } else if (event.deltaY < 0 && timelineViewActive) {
         setTimelineViewActive(false)
-      } else if (parentSnapEnabled()) {
-        window.parent.postMessage({ type: "history-embed-wheel", deltaY }, window.location.origin)
       }
     }
 
@@ -930,19 +916,19 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         return
       }
 
-      if (parentSnapEnabled()) {
-        window.parent.postMessage({ type: "history-embed-swipe", deltaY: -deltaY }, window.location.origin)
+      if (deltaY < -18 && !timelineViewActive) {
+        setTimelineViewActive(true)
+      } else if (deltaY > 18 && timelineViewActive) {
+        setTimelineViewActive(false)
       }
     }
 
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true })
+    window.addEventListener("wheel", onWheel, { passive: false })
     window.addEventListener("touchstart", onTouchStart, { passive: true })
     window.addEventListener("touchend", onTouchEnd, { passive: true })
 
     return () => {
-      document.documentElement.style.overflowX = previousHtmlOverflowX
-      document.body.style.overflowX = previousBodyOverflowX
-      window.removeEventListener("wheel", onWheel, { capture: true })
+      window.removeEventListener("wheel", onWheel)
       window.removeEventListener("touchstart", onTouchStart)
       window.removeEventListener("touchend", onTouchEnd)
     }
@@ -1332,7 +1318,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
               <a href="#timeline" className={styles.scrollCue} onClick={handleTimelineJump}>
                 <span>{copy.jumpToTimeline}</span>
                 <span className={styles.scrollCueArrow} aria-hidden="true">
-                  {useBidirectionalScroll ? "→" : "↓"}
+                  ↓
                 </span>
               </a>
             </article>
