@@ -1156,6 +1156,158 @@ body.de .de{display:revert;}
   <span class="ft-copy"><span class="cs">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="en">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="de">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span></span>
 </footer>
 
+<script>
+(() => {
+  const wrapper = document.getElementById('fullpage');
+  const sections = wrapper ? [...wrapper.querySelectorAll(':scope > section[id]')] : [];
+  if (!wrapper || !sections.length) return;
+
+  const sectionIds = sections.map((section) => section.id);
+  let index = Math.max(0, sectionIds.indexOf((window.location.hash || '').slice(1)));
+  let locked = false;
+  let touchStartX = null;
+  let touchStartY = null;
+  let releaseTimer = null;
+
+  const clamp = (value) => Math.min(Math.max(value, 0), sections.length - 1);
+  const getOffset = (nextIndex) => Math.round(nextIndex * window.innerHeight);
+
+  const markActive = (sectionId) => {
+    document.querySelectorAll('.dot').forEach((dot) => {
+      dot.classList.toggle('active', dot.dataset.t === sectionId);
+    });
+    document.querySelectorAll('.nav-links a').forEach((link) => {
+      link.classList.toggle('active', link.dataset.s === sectionId);
+    });
+  };
+
+  const release = () => {
+    if (releaseTimer) clearTimeout(releaseTimer);
+    releaseTimer = setTimeout(() => {
+      locked = false;
+      releaseTimer = null;
+    }, 140);
+  };
+
+  const moveTo = (nextIndex, { replace = true } = {}) => {
+    index = clamp(nextIndex);
+    const section = sections[index];
+    if (!section) return;
+
+    locked = true;
+    wrapper.style.transition = 'none';
+    wrapper.style.transform = `translate3d(0, -${getOffset(index)}px, 0)`;
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+    const nextUrl = section.id === 'hero' ? window.location.pathname : `${window.location.pathname}#${section.id}`;
+    if (replace) {
+      window.history.replaceState({}, '', nextUrl);
+    } else {
+      window.history.pushState({}, '', nextUrl);
+    }
+    markActive(section.id);
+    release();
+  };
+
+  const moveBy = (direction) => {
+    if (locked) return;
+    moveTo(index + direction);
+  };
+
+  const shouldIgnore = (target) => {
+    return target instanceof Element && Boolean(target.closest(
+      'input,textarea,select,[contenteditable="true"],.lang-menu,.mobile-nav,.eq-embed-frame,.history-embed-frame,#resFaqList'
+    ));
+  };
+
+  const init = () => {
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('hard-pager-ready');
+    wrapper.classList.add('hard-pager');
+    sections.forEach((section) => {
+      section.style.height = '100svh';
+      section.style.minHeight = '100svh';
+      section.style.overflow = 'hidden';
+    });
+    moveTo(index, { replace: true });
+    window.__MLYN_HARD_PAGER_ACTIVE = true;
+  };
+
+  window.addEventListener('wheel', (event) => {
+    if (Math.abs(event.deltaY) < 8 || event.ctrlKey || shouldIgnore(event.target)) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    moveBy(event.deltaY > 0 ? 1 : -1);
+  }, { capture: true, passive: false });
+
+  window.addEventListener('touchstart', (event) => {
+    const touch = event.touches && event.touches[0];
+    if (!touch) return;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+  }, { capture: true, passive: true });
+
+  window.addEventListener('touchend', (event) => {
+    if (touchStartX === null || touchStartY === null || shouldIgnore(event.target)) return;
+    const touch = event.changedTouches && event.changedTouches[0];
+    const startX = touchStartX;
+    const startY = touchStartY;
+    touchStartX = null;
+    touchStartY = null;
+    if (!touch) return;
+    const deltaX = touch.clientX - startX;
+    const deltaY = touch.clientY - startY;
+    if (Math.abs(deltaY) < 42 || Math.abs(deltaY) < Math.abs(deltaX)) return;
+    event.stopImmediatePropagation();
+    moveBy(deltaY < 0 ? 1 : -1);
+  }, { capture: true, passive: true });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || shouldIgnore(event.target)) return;
+    const directions = { ArrowDown: 1, PageDown: 1, ' ': 1, ArrowUp: -1, PageUp: -1 };
+    if (event.key === 'Home') {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      moveTo(0);
+      return;
+    }
+    if (event.key === 'End') {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      moveTo(sections.length - 1);
+      return;
+    }
+    const direction = directions[event.key];
+    if (!direction) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    moveBy(direction);
+  }, { capture: true });
+
+  document.addEventListener('click', (event) => {
+    const anchor = event.target instanceof Element ? event.target.closest('a[href^="#"]') : null;
+    if (!anchor) return;
+    const sectionId = anchor.getAttribute('href').slice(1);
+    const nextIndex = sectionIds.indexOf(sectionId);
+    if (nextIndex < 0) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    moveTo(nextIndex, { replace: true });
+    document.getElementById('mobileNav')?.classList.remove('open');
+    document.body.classList.remove('mobile-nav-open');
+  }, { capture: true });
+
+  window.addEventListener('resize', () => moveTo(index, { replace: true }));
+  window.addEventListener('hashchange', () => {
+    const nextIndex = sectionIds.indexOf((window.location.hash || '').slice(1));
+    if (nextIndex >= 0) moveTo(nextIndex, { replace: true });
+  });
+
+  init();
+})();
+</script>
+
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script src="vendor/fullpage/fullpage.min.js"></script>
 <script>
@@ -1488,6 +1640,7 @@ function handleSectionKeySnap(event){
 }
 
 function resetHomeViewportToHero(){
+  if(window.__MLYN_HARD_PAGER_ACTIVE)return;
   if(fullPageInstance)return;
   if(!shouldForceHomeToTop())return;
   clearSectionSnapTimers();
@@ -2934,6 +3087,7 @@ function hardPagerMoveBy(direction){
 }
 
 function initHardPager(){
+  if(window.__MLYN_HARD_PAGER_ACTIVE)return;
   const wrapper=document.getElementById('fullpage');
   if(!wrapper||!secs.length)return;
   if(fullPageInstance?.destroy){
