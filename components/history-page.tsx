@@ -579,6 +579,10 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const autoTimelineSnapTimerRef = useRef<number | null>(null)
   const autoTimelineSnapLockedRef = useRef(false)
   const heroPanelAnchoredRef = useRef(false)
+  const panelWheelLockUntilRef = useRef(0)
+  const panelWheelAccumXRef = useRef(0)
+  const panelWheelAccumYRef = useRef(0)
+  const panelWheelLastTsRef = useRef(0)
   const gestureStartRef = useRef<{ x: number; y: number } | null>(null)
   const previousVideoSrcRef = useRef<string | null>(null)
   const lastScrollYRef = useRef(0)
@@ -663,7 +667,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   }, [])
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia(embedded ? "(pointer: fine), (min-width: 641px)" : "(min-width: 981px) and (orientation: landscape)")
+    const mediaQuery = window.matchMedia("(min-width: 981px) and (orientation: landscape)")
     const syncBidirectional = () => setBidirectionalEnabled(mediaQuery.matches)
 
     syncBidirectional()
@@ -674,7 +678,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       mediaQuery.removeEventListener?.("change", syncBidirectional)
       window.removeEventListener("resize", syncBidirectional)
     }
-  }, [embedded])
+  }, [])
 
   useEffect(() => {
     try {
@@ -869,30 +873,63 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
     document.documentElement.style.overflowX = "hidden"
     document.body.style.overflowX = "hidden"
 
-    const parentSnapEnabled = () => embedded
+    const notifyParentScroll = (direction: "next" | "prev") => {
+      if (!embedded || window.parent === window) {
+        return
+      }
+      window.parent.postMessage({ type: "history-embed-scroll", direction }, window.location.origin)
+    }
 
     const onWheel = (event: WheelEvent) => {
       if (mobileNavOpen) {
         return
       }
 
-      const deltaX = event.deltaX
-      const deltaY = event.deltaY
-      const horizontalIntent = Math.abs(deltaX) > Math.max(Math.abs(deltaY), 18)
+      event.preventDefault()
 
-      if (!horizontalIntent && Math.abs(deltaY) < 12) {
+      const now = Date.now()
+      if (now < panelWheelLockUntilRef.current) {
+        panelWheelAccumXRef.current = 0
+        panelWheelAccumYRef.current = 0
         return
       }
 
-      event.preventDefault()
-      window.scrollTo({ left: 0, top: 0, behavior: "auto" })
+      // Akumulace malých trackpadových kroků; pauza delší než 420 ms akumulaci resetuje.
+      if (now - panelWheelLastTsRef.current > 420) {
+        panelWheelAccumXRef.current = 0
+        panelWheelAccumYRef.current = 0
+      }
+      panelWheelLastTsRef.current = now
+      panelWheelAccumXRef.current += event.deltaX
+      panelWheelAccumYRef.current += event.deltaY
 
-      if (horizontalIntent && deltaX > 0 && !timelineViewActive) {
-        setTimelineViewActive(true)
-      } else if (horizontalIntent && deltaX < 0 && timelineViewActive) {
-        setTimelineViewActive(false)
-      } else if (parentSnapEnabled()) {
-        window.parent.postMessage({ type: "history-embed-wheel", deltaY }, window.location.origin)
+      const magnitudeX = Math.abs(panelWheelAccumXRef.current)
+      const magnitudeY = Math.abs(panelWheelAccumYRef.current)
+      if (Math.max(magnitudeY, magnitudeX) < 26) {
+        return
+      }
+
+      const horizontal = magnitudeX > magnitudeY
+      const forward = horizontal ? panelWheelAccumXRef.current > 0 : panelWheelAccumYRef.current > 0
+      panelWheelAccumXRef.current = 0
+      panelWheelAccumYRef.current = 0
+
+      if (forward) {
+        if (!timelineViewActive) {
+          panelWheelLockUntilRef.current = now + 1100
+          setTimelineViewActive(true)
+        } else if (!horizontal) {
+          panelWheelLockUntilRef.current = now + 900
+          notifyParentScroll("next")
+        }
+      } else {
+        if (timelineViewActive) {
+          panelWheelLockUntilRef.current = now + 1100
+          setTimelineViewActive(false)
+        } else if (!horizontal) {
+          panelWheelLockUntilRef.current = now + 900
+          notifyParentScroll("prev")
+        }
       }
     }
 
@@ -930,8 +967,10 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
         return
       }
 
-      if (parentSnapEnabled()) {
-        window.parent.postMessage({ type: "history-embed-swipe", deltaY: -deltaY }, window.location.origin)
+      if (deltaY < -18 && !timelineViewActive) {
+        setTimelineViewActive(true)
+      } else if (deltaY > 18 && timelineViewActive) {
+        setTimelineViewActive(false)
       }
     }
 
@@ -946,7 +985,67 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
       window.removeEventListener("touchstart", onTouchStart)
       window.removeEventListener("touchend", onTouchEnd)
     }
-  }, [mobileNavOpen, timelineViewActive, useBidirectionalScroll])
+  }, [embedded, mobileNavOpen, timelineViewActive, useBidirectionalScroll])
+
+  useEffect(() => {
+    if (!embedded) {
+      return
+    }
+
+    const onMessage = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) {
+        return
+      }
+      if (event.data?.type === "history-embed-cooldown") {
+        panelWheelLockUntilRef.current = Date.now() + 1200
+      }
+    }
+
+    window.addEventListener("message", onMessage)
+    return () => window.removeEventListener("message", onMessage)
+  }, [embedded])
+
+  // Stacked embed (úzká okna): obsah se scrolluje nativně, na krajích se scroll předá rodičovskému Swiperu.
+  useEffect(() => {
+    if (!embedded || useBidirectionalScroll) {
+      return
+    }
+
+    const notifyParentScroll = (direction: "next" | "prev") => {
+      if (window.parent === window) {
+        return
+      }
+      window.parent.postMessage({ type: "history-embed-scroll", direction }, window.location.origin)
+    }
+
+    const onWheel = (event: WheelEvent) => {
+      const doc = document.documentElement
+      const atTop = window.scrollY <= 2
+      const atBottom = window.innerHeight + window.scrollY >= doc.scrollHeight - 2
+      if (!atTop && !atBottom) {
+        return
+      }
+
+      const now = Date.now()
+      if (now < panelWheelLockUntilRef.current) {
+        event.preventDefault()
+        return
+      }
+
+      if (event.deltaY > 20 && atBottom) {
+        panelWheelLockUntilRef.current = now + 900
+        event.preventDefault()
+        notifyParentScroll("next")
+      } else if (event.deltaY < -20 && atTop) {
+        panelWheelLockUntilRef.current = now + 900
+        event.preventDefault()
+        notifyParentScroll("prev")
+      }
+    }
+
+    window.addEventListener("wheel", onWheel, { passive: false })
+    return () => window.removeEventListener("wheel", onWheel)
+  }, [embedded, useBidirectionalScroll])
 
   useEffect(() => {
     if (!useBidirectionalScroll) {

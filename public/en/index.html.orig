@@ -333,67 +333,6 @@ body.pause-active section .content{filter:brightness(1.14);}
 #residency .res-intro,
 #residency .pkg-grid,
 #residency .rules-box{position:relative;z-index:1;}
-.residency-stage{position:relative;overflow:hidden;}
-.residency-stage.is-instant .residency-track{transition:none;}
-.residency-track{
-  position:relative;
-  display:grid;
-  grid-template-columns:100% 100%;
-  width:100%;
-  min-height:calc(100svh - 180px);
-  transform:translate3d(0,0,0);
-  transition:transform .82s cubic-bezier(.22,.86,.24,1);
-  will-change:transform;
-}
-#residency.booking-open .residency-track{transform:translate3d(-100%,0,0);}
-.residency-panel{position:relative;min-width:0;}
-.residency-main-panel{padding-right:16px;}
-.residency-booking-panel{
-  padding-left:28px;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-}
-#residency.booking-open .residency-main-panel{pointer-events:none;}
-#residency:not(.booking-open) .residency-booking-panel{pointer-events:none;}
-.residency-actions{
-  position:relative;
-  z-index:1;
-  display:flex;
-  gap:14px;
-  flex-wrap:wrap;
-  margin-top:-28px;
-  margin-bottom:44px;
-}
-.residency-booking-trigger{min-width:182px;}
-.residency-booking-toolbar{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  margin-bottom:18px;
-}
-.residency-booking-back{padding-inline:26px;}
-.residency-booking-caption{
-  font-size:.58rem;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:rgba(240,235,226,.46);
-}
-.residency-booking-shell{
-  position:relative;
-  z-index:1;
-  width:100%;
-}
-.residency-booking-frame{
-  display:block;
-  width:100%;
-  height:760px;
-  min-height:400px;
-  max-height:6000px;
-  border:0;
-  background:transparent;
-}
 .res-intro{
   max-width:520px;
   font-size:.9rem;
@@ -658,10 +597,6 @@ body.de .de{display:revert;}
   .contact-faq-inline #resFaqList{max-height:220px;}
   .contact-social-icons{bottom:52px;}
   .pkg-grid{grid-template-columns:repeat(2,1fr);}
-  .residency-track{min-height:auto;}
-  .residency-main-panel{padding-right:0;}
-  .residency-booking-panel{padding-left:12px;}
-  .residency-booking-toolbar{flex-direction:column;align-items:flex-start;}
   .rooms-grid{grid-template-columns:1fr;}
   .studio-main-panel .content{overflow:visible;min-height:auto;justify-content:flex-start;padding-top:110px;padding-bottom:60px;}
   .eq-text-grid{grid-template-columns:1fr;}
@@ -686,11 +621,6 @@ body.de .de{display:revert;}
   .hamburger{display:flex !important;}
   .side-nav{display:none;}
   #history .history-embed-frame{pointer-events:none;}
-  .residency-track{min-height:auto;}
-  .residency-panel{padding-bottom:0;}
-  .residency-booking-panel{padding-left:0;}
-  .residency-actions{margin-top:-10px;margin-bottom:28px;}
-  .residency-booking-frame{min-height:520px;}
   .bg-video iframe,
   .bg-video video,
   .bg-video .bg-fallback{
@@ -701,12 +631,6 @@ body.de .de{display:revert;}
     object-fit:cover;
     object-position:center center;
   }
-}
-@media(min-width:768px) and (max-width:1100px){
-  #history .history-embed-frame{pointer-events:auto;}
-}
-@media(min-width:768px) and (orientation:portrait){
-  #history .history-embed-frame{pointer-events:auto;}
 }
 
 /* HAMBURGER */
@@ -1077,7 +1001,7 @@ html,body{overflow:hidden!important;height:100%;}
 <!-- ══ HISTORY ══ -->
 <section id="history" class="swiper-slide">
   <div class="history-embed-shell">
-    <iframe class="history-embed-frame" src="/historie?embed=1&horizontal=1" title="Historie Mlýna na Pile" loading="eager" tabindex="-1"></iframe>
+    <iframe class="history-embed-frame" src="/en/history?embed=1" title="History of the Mill at Pila" loading="lazy" tabindex="-1"></iframe>
   </div>
 </section>
 
@@ -1111,21 +1035,13 @@ html,body{overflow:hidden!important;height:100%;}
     <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-fuel" src="/videos/bg/5INpfHr0lu4.gif?v=20260224a" alt="" aria-hidden="true">
   </div>
   <div class="content">
-    <div class="residency-stage" id="residencyStage">
-      <div class="residency-track">
-        <div class="residency-panel residency-main-panel">
-          <div class="big-n">6500<span style="font-size:.35em;opacity:.5">m²</span></div>
-          <span class="sec-label cs">Nahrávání + Ubytování</span><span class="sec-label en">Recording + Accommodation</span><span class="sec-label de">Recording + Unterkunft</span>
-          <h2 class="sec-title rev"><span class="cs">Čtyři<br><em>balíčky</em></span><span class="en">Four<br><em>packages</em></span><span class="de">Vier<br><em>Pakete</em></span></h2>
-          <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <a class="chleba-trigger" href="/chleba">chléb</a> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-          <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <a class="chleba-trigger" href="/chleba">bread</a>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-          <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
-          <div class="residency-actions rev rev-d2">
-            <button type="button" class="btn-secondary residency-booking-trigger" data-open-booking="1">
-              <span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span>
-            </button>
-          </div>
-          <div class="pkg-grid rev rev-d2">
+    <div class="big-n">6500<span style="font-size:.35em;opacity:.5">m²</span></div>
+    <span class="sec-label cs">Nahrávání + Ubytování</span><span class="sec-label en">Recording + Accommodation</span><span class="sec-label de">Recording + Unterkunft</span>
+    <h2 class="sec-title rev"><span class="cs">Čtyři<br><em>balíčky</em></span><span class="en">Four<br><em>packages</em></span><span class="de">Vier<br><em>Pakete</em></span></h2>
+    <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <a class="chleba-trigger" href="/chleba">chléb</a> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+    <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <a class="chleba-trigger" href="/chleba">bread</a>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+    <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
+    <div class="pkg-grid rev rev-d2">
       <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Into the Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
       <div class="pkg-card" data-pkg="underwater"><div class="pkg-num">02</div><div class="pkg-name">Underwater</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Sauna</span><span class="en">#Main studio #Sauna</span><span class="de">#Hauptstudio #Sauna</span></span><p class="pkg-text cs">Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka. Skromné ale stylové a útulné přespání přímo v prostorách bývalé mlýnice.</p><p class="pkg-text en">Closest to the music, sleeping literally beneath the studio floor and below the pond level. Modest but stylish accommodation in the former mill.</p><p class="pkg-text de">Ganz nah an der Musik: Schlafen direkt unter dem Studioboden und unter der Teichoberfläche. Schlicht, aber stilvoll und gemütlich in der ehemaligen Mühle.</p></div>
       <div class="pkg-card" data-pkg="otherside"><div class="pkg-num">03</div><div class="pkg-name">Otherside</div><span class="pkg-tags"><span class="cs">#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV</span><span class="en">#Control room #Traditional Czech room #Two rooms #TV</span><span class="de">#Regieraum #Traditionelle Stube #Zwei Zimmer #TV</span></span><p class="pkg-text cs">Pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple + ubytování ve staročeské světnici. Vhodné i pro nehudební kreativní aktivity.</p><p class="pkg-text en">For post-production: 6K Apple Pro XDR with full Apple peripherals + accommodation in a traditional Czech room. Suitable for non-musical creative activities too.</p><p class="pkg-text de">Für Postproduktion: 6K Apple Pro XDR inkl. kompletter Apple-Peripherie + Unterkunft in einer traditionellen tschechischen Stube. Auch für nicht-musikalische Kreativarbeit geeignet.</p></div>
@@ -1138,30 +1054,6 @@ html,body{overflow:hidden!important;height:100%;}
         <li><span class="cs">Energetická nezávislost - zřízena dostatečná kapacita pro nerušený provoz studia.</span><span class="en">Energy independence — sufficient capacity is installed for uninterrupted studio operation.</span><span class="de">Energieunabhängigkeit — ausreichende Kapazität für einen ungestörten Studiobetrieb ist vorhanden.</span></li>
         <li><span class="cs">U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.</span><span class="en">All packages include parking in the mill area under CCTV surveillance.</span><span class="de">Bei allen Paketen ist Parken im kameragesicherten Mühlenareal möglich.</span></li>
       </ul>
-    </div>
-        </div>
-        <div class="residency-panel residency-booking-panel">
-          <div class="residency-booking-toolbar rev rev-d1">
-            <button type="button" class="btn-secondary residency-booking-back" data-close-booking="1">
-              <span class="cs">Zpět na ubytování</span><span class="en">Back to accommodation</span><span class="de">Zurück zur Unterkunft</span>
-            </button>
-            <span class="residency-booking-caption">
-              <span class="cs">Booking uvnitř sekce ubytování</span><span class="en">Booking inside the accommodation section</span><span class="de">Booking innerhalb der Unterkunftssektion</span>
-            </span>
-          </div>
-          <div class="residency-booking-shell rev rev-d2">
-            <iframe
-              id="bookingEmbedFrame"
-              class="residency-booking-frame"
-              src=""
-              title="Booking"
-              loading="lazy"
-              scrolling="no"
-              tabindex="-1"
-            ></iframe>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -1321,72 +1213,6 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
   return true;
 }
 
-function getBookingEmbedPath(nextLang=lang){
-  const base=BOOKING_EMBED_BASE_BY_LANG[nextLang]||BOOKING_EMBED_BASE_BY_LANG.cs;
-  return `${base}?embed=1`;
-}
-
-function syncBookingEmbedSrc(force=false){
-  if(!bookingEmbedFrame)return;
-  const nextSrc=getBookingEmbedPath(lang);
-  const currentSrc=bookingEmbedFrame.getAttribute('src')||'';
-  if(force||currentSrc!==nextSrc){
-    bookingEmbedFrame.setAttribute('src',nextSrc);
-  }
-}
-
-function ensureBookingEmbedLoaded(){
-  if(!bookingEmbedFrame)return;
-  const currentSrc=bookingEmbedFrame.getAttribute('src')||'';
-  if(currentSrc)return;
-  syncBookingEmbedSrc(true);
-}
-
-function setBookingEmbedHeight(rawHeight){
-  if(!bookingEmbedFrame)return;
-  const nextHeight=Math.max(400,Math.min(6000,Math.round(Number(rawHeight)||0)));
-  if(!Number.isFinite(nextHeight))return;
-  if(Math.abs(nextHeight-residencyBookingHeight)<=4)return;
-  residencyBookingHeight=nextHeight;
-  bookingEmbedFrame.style.height=`${nextHeight}px`;
-}
-
-function getResidencyVideoRate(){
-  return residencyBookingOpen?RESIDENCY_BOOKING_VIDEO_RATE:1;
-}
-
-function applyVideoRate(video,rate){
-  if(!video)return;
-  try{video.playbackRate=rate;}catch(e){}
-}
-
-function syncResidencyVideoRates(){
-  const rate=getResidencyVideoRate();
-  applyVideoRate(bgFrameBySectionId.get('residency'),rate);
-  applyVideoRate(residencyChlebaVideo,rate);
-  residencyPkgKeys.forEach((key)=>applyVideoRate(residencyPkgVideos[key],rate));
-}
-
-function setResidencyBooking(open,{instant=false}={}){
-  if(!residencySection||!residencyStage)return;
-  residencyBookingOpen=Boolean(open);
-  if(instant){
-    residencyStage.classList.add('is-instant');
-  }
-  residencySection.classList.toggle('booking-open',residencyBookingOpen);
-  syncResidencyVideoRates();
-  if(residencyBookingOpen){
-    ensureBookingEmbedLoaded();
-    syncBookingEmbedSrc();
-    hideResidencyChlebaOverlay(true);
-    hideResidencyPackageOverlay(true);
-    closeInlineResidencyVideo(true);
-  }
-  if(instant){
-    requestAnimationFrame(()=>residencyStage.classList.remove('is-instant'));
-  }
-}
-
 /* BG VIDEOS */
 const bgVideoFrames=[...document.querySelectorAll('.bg-video video')];
 const bgFrameBySectionId=new Map(
@@ -1414,10 +1240,6 @@ const placeTimeline=placeSection?.querySelector('.place-right')||null;
 const placeHistoryVideo=placeSection?.querySelector('.history-overlay')||null;
 const residencySection=document.getElementById('residency');
 const residencyBgWrap=residencySection?.querySelector('.bg-video')||null;
-const residencyStage=document.getElementById('residencyStage');
-const bookingEmbedFrame=document.getElementById('bookingEmbedFrame');
-const residencyBookingOpenTriggers=[...document.querySelectorAll('[data-open-booking]')];
-const residencyBookingCloseTriggers=[...document.querySelectorAll('[data-close-booking]')];
 const residencyChlebaVideo=residencySection?.querySelector('.chleba-overlay')||null;
 const chlebaTriggers=[...document.querySelectorAll('#residency .chleba-trigger')];
 const residencyPkgCards=[...document.querySelectorAll('#residency .pkg-card[data-pkg]')];
@@ -1434,7 +1256,6 @@ const residencyPkgInlineVideoIds={
   otherside:'X7lvikbWnMQ',
   fuel:'5INpfHr0lu4'
 };
-const RESIDENCY_BOOKING_VIDEO_RATE=.38;
 let activeInlineResidencyPkg=null;
 const resFaqList=document.getElementById('resFaqList');
 const BG_ASSET_REV='20260309c';
@@ -1488,8 +1309,6 @@ let placeHistoryHideTimer=null;
 let residencyChlebaHideTimer=null;
 let residencyPkgHideTimer=null;
 let activeResidencyPkg=null;
-let residencyBookingOpen=false;
-let residencyBookingHeight=760;
 let activeBgYoutubeSectionId='';
 let activeBgYoutubeVideoId='';
 let activeBgYoutubeIframe=null;
@@ -1503,11 +1322,6 @@ const langOptions=[...document.querySelectorAll('.lang-option')];
 const LANG_STORAGE_KEY='mlyn_lang';
 const SUPPORTED_LANGS=['cs','en','de'];
 const EQUIPMENT_EMBED_BASE='/equipment-table/studio-equipment.html';
-const BOOKING_EMBED_BASE_BY_LANG={
-  cs:'/booking',
-  en:'/en/booking',
-  de:'/de/buchung'
-};
 const UI_TEXTS={
   cs:{
     about:'O nás',
@@ -1522,8 +1336,7 @@ const UI_TEXTS={
     resume:'Přehrát',
     switchToNight:'Přepnout na noční režim',
     switchToDay:'Přepnout na denní režim',
-    equipmentTableTitle:'Vybavení studia',
-    bookingEmbedTitle:'Booking'
+    equipmentTableTitle:'Vybavení studia'
   },
   en:{
     about:'About',
@@ -1538,8 +1351,7 @@ const UI_TEXTS={
     resume:'Play',
     switchToNight:'Switch to night mode',
     switchToDay:'Switch to day mode',
-    equipmentTableTitle:'Studio equipment',
-    bookingEmbedTitle:'Booking'
+    equipmentTableTitle:'Studio equipment'
   },
   de:{
     about:'Über uns',
@@ -1554,8 +1366,7 @@ const UI_TEXTS={
     resume:'Abspielen',
     switchToNight:'Zum Nachtmodus wechseln',
     switchToDay:'Zum Tagmodus wechseln',
-    equipmentTableTitle:'Studioausstattung',
-    bookingEmbedTitle:'Booking'
+    equipmentTableTitle:'Studioausstattung'
   }
 };
 const TITLE_BY_LANG={
@@ -1817,7 +1628,6 @@ function playBgVideo(video){
   };
   const activeVideo=bgFrameBySectionId.get(currentSectionId);
   if(activeVideo!==video)return;
-  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
   if(!video.paused&&video.readyState>=2){
     markBgVideoFrame(video);
     markBgVideoPlaying(video);
@@ -1833,7 +1643,7 @@ function playBgVideo(video){
   video.defaultMuted=true;
   video.volume=0;
   video.controls=false;
-  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
+  video.playbackRate=1;
   if(video.__playPending)return;
   video.__playPending=true;
   const p=video.play();
@@ -1990,7 +1800,6 @@ function playResidencyPackageVideo(key){
   if(!video||pauseAllVideos||currentSectionId!=='residency')return;
   video.muted=true;
   video.defaultMuted=true;
-  applyVideoRate(video,getResidencyVideoRate());
   const p=video.play();
   if(p&&typeof p.then==='function'){
     p.then(()=>setResidencyPackageBlocked(key,false)).catch(()=>setResidencyPackageBlocked(key,true));
@@ -2714,12 +2523,6 @@ function applyLang(){
     eqEmbedFrame.setAttribute('title',text.equipmentTableTitle);
     eqEmbedFrame.src=`${EQUIPMENT_EMBED_BASE}?lang=${lang}`;
   }
-  if(bookingEmbedFrame){
-    bookingEmbedFrame.setAttribute('title',text.bookingEmbedTitle);
-    if(bookingEmbedFrame.getAttribute('src')){
-      syncBookingEmbedSrc(true);
-    }
-  }
   setPauseState(pauseAllVideos);
   updateModeButtonLabel();
   renderResFaq();
@@ -2818,16 +2621,6 @@ function updateNavCompactState(){
 }
 if(hbtn)hbtn.addEventListener('click',toggleMobileNav);
 if(closeNav)closeNav.addEventListener('click',closeMobileNav);
-residencyBookingOpenTriggers.forEach((trigger)=>{
-  trigger.addEventListener('click',()=>{
-    setResidencyBooking(true);
-  });
-});
-residencyBookingCloseTriggers.forEach((trigger)=>{
-  trigger.addEventListener('click',()=>{
-    setResidencyBooking(false);
-  });
-});
 document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .nav-logo[href^="#"]').forEach((anchor)=>{
   anchor.addEventListener('click',(event)=>{
     const href=anchor.getAttribute('href')||'';
@@ -2895,37 +2688,14 @@ updateNavCompactState();
         }
       }
     });
-    let bookingWheelLockUntil=0;
     window.addEventListener('message',(event)=>{
       if(event.origin!==window.location.origin)return;
       const data=event.data;
-      if(!data||typeof data!=='object')return;
-      if(data.type==='history-embed-scroll'){
-        const active=secs[swiper.activeIndex];
-        if(!active||active.id!=='history')return;
-        if(data.direction==='next')swiper.slideNext(700);
-        else if(data.direction==='prev')swiper.slidePrev(700);
-        return;
-      }
-      if(bookingEmbedFrame&&event.source===bookingEmbedFrame.contentWindow){
-        if(data.type==='booking-embed-height'){
-          setBookingEmbedHeight(data.h);
-          return;
-        }
-        if(!residencyBookingOpen)return;
-        if(data.type==='booking-embed-wheel'||data.type==='booking-embed-swipe'){
-          const active=secs[swiper.activeIndex];
-          if(!active||active.id!=='residency')return;
-          const dy=Number(data.deltaY)||0;
-          const minDelta=data.type==='booking-embed-wheel'?8:32;
-          if(Math.abs(dy)<minDelta)return;
-          const now=Date.now();
-          if(now<bookingWheelLockUntil)return;
-          bookingWheelLockUntil=now+900;
-          if(dy>0)swiper.slideNext(700);
-          else swiper.slidePrev(700);
-        }
-      }
+      if(!data||data.type!=='history-embed-scroll')return;
+      const active=secs[swiper.activeIndex];
+      if(!active||active.id!=='history')return;
+      if(data.direction==='next')swiper.slideNext(700);
+      else if(data.direction==='prev')swiper.slidePrev(700);
     });
     const initialSection=secs[swiper.activeIndex];
     if(initialSection)applySectionChange(initialSection.id);
