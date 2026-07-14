@@ -11,13 +11,6 @@
 <link id="heroVideoPreload" rel="preload" as="video" href="/videos/bg/VDj9aKHnpcw_hq.mp4?v=20260309c" type="video/mp4">
 <script>
 (() => {
-  const assetPath = (path) => {
-    if (window.location.protocol === 'file:' && typeof path === 'string' && path.startsWith('/')) {
-      return path.slice(1);
-    }
-    return path;
-  };
-  window.__MLYN_ASSET_PATH = assetPath;
   try {
     if ('scrollRestoration' in window.history) {
       window.history.scrollRestoration = 'manual';
@@ -40,8 +33,8 @@
   const heroId = visualMode === 'night'
     ? (isPortrait ? 'M4QkWhz7CDo' : 'bPBM5J8v_aQ')
     : (isPortrait ? 'yYFR6g6jlaA' : 'VDj9aKHnpcw_hq');
-  const posterSrc = assetPath(`/videos/bg/${heroId}.jpg?v=${assetRev}`);
-  const videoSrc = assetPath(`/videos/bg/${heroId}.mp4?v=${assetRev}`);
+  const posterSrc = `/videos/bg/${heroId}.jpg?v=${assetRev}`;
+  const videoSrc = `/videos/bg/${heroId}.mp4?v=${assetRev}`;
   window.__MLYN_INITIAL_HERO_ID = heroId;
   const posterPreload = document.getElementById('heroPosterPreload');
   const videoPreload = document.getElementById('heroVideoPreload');
@@ -52,8 +45,8 @@
 <style>
 :root{--bg:#07060a;--stone:#c9b99a;--gold:#b08d57;--gold-light:#d4aa72;--cream:#f0ebe2;--muted:#6a6060;--border:rgba(201,185,154,0.12);--res-card-h:332px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:auto;overflow:hidden;overscroll-behavior:none;scroll-snap-type:none;}
-body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow:hidden;height:100svh;}
+html{scroll-behavior:smooth;overflow-y:scroll;overscroll-behavior-y:none;}
+body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow-x:hidden;}
 body.mobile-nav-open{overflow:hidden;touch-action:none;}
 
 /* GRAIN */
@@ -122,22 +115,11 @@ body.night-mode .mode-icon-moon{display:inline-block;}
 .dot.active{background:var(--gold);height:20px;border-radius:2px;}
 
 /* SECTIONS */
-section{position:relative;height:100svh;min-height:100svh;overflow:hidden;display:flex;align-items:center;scroll-snap-align:unset;scroll-snap-stop:normal;flex:0 0 100svh;}
+section{position:relative;min-height:100svh;overflow:hidden;display:flex;align-items:center;}
 .content{position:relative;z-index:10;width:100%;max-width:1360px;margin:0 auto;padding:120px 60px 80px;}
-
-@media (prefers-reduced-motion:reduce){
-html{scroll-behavior:auto;overscroll-behavior-y:auto;scroll-snap-type:none;}
-section{scroll-snap-align:unset;scroll-snap-stop:normal;}
-}
-
-#fullpage{position:relative;z-index:1;height:100svh;min-height:100svh;width:100%;overflow:visible;transform:translate3d(0,0,0);transition:transform .72s cubic-bezier(.76,0,.24,1);will-change:transform;}
-#fullpage.pager-instant{transition:none!important;}
-#fullpage.hard-pager{transform:translate3d(0,0,0);}
-#fullpage.hard-pager section{height:100svh;min-height:100svh;}
-body.pager-ready,body.hard-pager-ready{height:100svh;overflow:hidden;}
-body.pager-ready footer,body.hard-pager-ready footer{display:none;}
-.fp-section{overflow:hidden;}
-.fp-overflow{width:100%;}
+/* jemný rozostřený halo pod textem pro lepší čitelnost nad videem */
+.content,.hero-stats,.scroll-cue{text-shadow:0 1px 3px rgba(7,6,10,.5),0 0 18px rgba(7,6,10,.42);}
+.content iframe,.content img,.content svg,.content .big-n,.eq-embed-wrap,.residency-booking-shell{text-shadow:none;}
 
 /* ═══════════════════════
    BG SYSTEM
@@ -354,6 +336,67 @@ body.pause-active section .content{filter:brightness(1.14);}
 #residency .res-intro,
 #residency .pkg-grid,
 #residency .rules-box{position:relative;z-index:1;}
+.residency-stage{position:relative;overflow:hidden;}
+.residency-stage.is-instant .residency-track{transition:none;}
+.residency-track{
+  position:relative;
+  display:grid;
+  grid-template-columns:100% 100%;
+  width:100%;
+  min-height:calc(100svh - 180px);
+  transform:translate3d(0,0,0);
+  transition:transform .82s cubic-bezier(.22,.86,.24,1);
+  will-change:transform;
+}
+#residency.booking-open .residency-track{transform:translate3d(-100%,0,0);}
+.residency-panel{position:relative;min-width:0;}
+.residency-main-panel{padding-right:16px;}
+.residency-booking-panel{
+  padding-left:28px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+}
+#residency.booking-open .residency-main-panel{pointer-events:none;}
+#residency:not(.booking-open) .residency-booking-panel{pointer-events:none;}
+.residency-actions{
+  position:relative;
+  z-index:1;
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:-28px;
+  margin-bottom:44px;
+}
+.residency-booking-trigger{min-width:182px;}
+.residency-booking-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:18px;
+}
+.residency-booking-back{padding-inline:26px;}
+.residency-booking-caption{
+  font-size:.58rem;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:rgba(240,235,226,.46);
+}
+.residency-booking-shell{
+  position:relative;
+  z-index:1;
+  width:100%;
+}
+.residency-booking-frame{
+  display:block;
+  width:100%;
+  height:760px;
+  min-height:400px;
+  max-height:6000px;
+  border:0;
+  background:transparent;
+}
 .res-intro{
   max-width:520px;
   font-size:.9rem;
@@ -586,6 +629,8 @@ footer{
   pointer-events:auto;
 }
 .ft-copy{font-size:.6rem;letter-spacing:.12em;color:var(--muted);}
+.ft-link{color:inherit;text-decoration:none;border-bottom:1px solid rgba(201,185,154,.35);transition:color .2s,border-color .2s;}
+.ft-link:hover{color:var(--gold-light);border-color:rgba(176,141,87,.6);}
 .ft-mark{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:rgba(176,141,87,.3);letter-spacing:.08em;}
 
 /* REVEAL */
@@ -618,6 +663,10 @@ body.de .de{display:revert;}
   .contact-faq-inline #resFaqList{max-height:220px;}
   .contact-social-icons{bottom:52px;}
   .pkg-grid{grid-template-columns:repeat(2,1fr);}
+  .residency-track{min-height:auto;}
+  .residency-main-panel{padding-right:0;}
+  .residency-booking-panel{padding-left:12px;}
+  .residency-booking-toolbar{flex-direction:column;align-items:flex-start;}
   .rooms-grid{grid-template-columns:1fr;}
   .studio-main-panel .content{overflow:visible;min-height:auto;justify-content:flex-start;padding-top:110px;padding-bottom:60px;}
   .eq-text-grid{grid-template-columns:1fr;}
@@ -642,6 +691,11 @@ body.de .de{display:revert;}
   .hamburger{display:flex !important;}
   .side-nav{display:none;}
   #history .history-embed-frame{pointer-events:none;}
+  .residency-track{min-height:auto;}
+  .residency-panel{padding-bottom:0;}
+  .residency-booking-panel{padding-left:0;}
+  .residency-actions{margin-top:-10px;margin-bottom:28px;}
+  .residency-booking-frame{min-height:520px;}
   .bg-video iframe,
   .bg-video video,
   .bg-video .bg-fallback{
@@ -652,6 +706,12 @@ body.de .de{display:revert;}
     object-fit:cover;
     object-position:center center;
   }
+}
+@media(min-width:768px) and (max-width:1100px){
+  #history .history-embed-frame{pointer-events:auto;}
+}
+@media(min-width:768px) and (orientation:portrait){
+  #history .history-embed-frame{pointer-events:auto;}
 }
 
 /* HAMBURGER */
@@ -675,6 +735,15 @@ body.de .de{display:revert;}
   .founder-text{font-size:.72rem;line-height:1.45;}
 
 }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+<style id="swiper-overrides">
+html,body{overflow:hidden!important;height:100%;}
+.main-swiper{width:100vw;height:100vh;}
+.main-swiper>.swiper-wrapper>section.swiper-slide{width:100vw;height:100vh;overflow-y:auto;overflow-x:hidden;}
+.main-swiper .swiper-pagination{display:none;}
+#contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:56px;padding:12px 60px;}
+#contact .content{position:relative;z-index:10;}
 </style>
 </head>
 <body class="video-booting">
@@ -757,8 +826,9 @@ body.de .de{display:revert;}
 </div>
 
 <!-- ══ HERO ══ -->
-<main id="fullpage">
-<section id="hero">
+<div class="swiper main-swiper">
+<div class="swiper-wrapper">
+<section id="hero" class="swiper-slide">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="auto" poster="/videos/bg/VDj9aKHnpcw_hq.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -778,12 +848,8 @@ body.de .de{display:revert;}
     const fallback = section?.querySelector('.bg-fallback');
     if (!video || !source) return;
     wrap?.classList.toggle('uses-portrait-asset',heroId==='yYFR6g6jlaA'||heroId==='M4QkWhz7CDo');
-    const posterSrc = window.__MLYN_ASSET_PATH
-      ? window.__MLYN_ASSET_PATH(`/videos/bg/${heroId}.jpg?v=${assetRev}`)
-      : `/videos/bg/${heroId}.jpg?v=${assetRev}`;
-    const videoSrc = window.__MLYN_ASSET_PATH
-      ? window.__MLYN_ASSET_PATH(`/videos/bg/${heroId}.mp4?v=${assetRev}`)
-      : `/videos/bg/${heroId}.mp4?v=${assetRev}`;
+    const posterSrc = `/videos/bg/${heroId}.jpg?v=${assetRev}`;
+    const videoSrc = `/videos/bg/${heroId}.mp4?v=${assetRev}`;
     source.setAttribute('src', videoSrc);
     video.setAttribute('poster', posterSrc);
     video.poster = posterSrc;
@@ -813,7 +879,7 @@ body.de .de{display:revert;}
 </section>
 
 <!-- ══ PLACE ══ -->
-<section id="place">
+<section id="place" class="swiper-slide">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -855,7 +921,7 @@ body.de .de{display:revert;}
 </section>
 
 <!-- ══ STUDIO ══ -->
-<section id="studio" style="overflow:hidden;padding:0;">
+<section id="studio" class="swiper-slide" style="padding:0;">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/O431B93W9UY.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -924,7 +990,7 @@ body.de .de{display:revert;}
 
 
 <!-- ══ EQUIPMENT ══ -->
-<section id="equipment">
+<section id="equipment" class="swiper-slide">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/MczOR3DstPg.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -948,7 +1014,7 @@ body.de .de{display:revert;}
 </section>
 
 <!-- ══ LOCATION ══ -->
-<section id="location">
+<section id="location" class="swiper-slide">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/tWtT7cB1Tus.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1014,14 +1080,14 @@ body.de .de{display:revert;}
 </section>
 
 <!-- ══ HISTORY ══ -->
-<section id="history">
+<section id="history" class="swiper-slide">
   <div class="history-embed-shell">
-    <iframe class="history-embed-frame" src="/historie?embed=1" title="Historie Mlýna na Pile" loading="lazy" tabindex="-1"></iframe>
+    <iframe class="history-embed-frame" src="/historie?embed=1&horizontal=1" title="Historie Mlýna na Pile" loading="eager" tabindex="-1"></iframe>
   </div>
 </section>
 
 <!-- ══ RESIDENCY ══ -->
-<section id="residency">
+<section id="residency" class="swiper-slide">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/gTqXu9xU_7k.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1050,13 +1116,21 @@ body.de .de{display:revert;}
     <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-fuel" src="/videos/bg/5INpfHr0lu4.gif?v=20260224a" alt="" aria-hidden="true">
   </div>
   <div class="content">
-    <div class="big-n">6500<span style="font-size:.35em;opacity:.5">m²</span></div>
-    <span class="sec-label cs">Nahrávání + Ubytování</span><span class="sec-label en">Recording + Accommodation</span><span class="sec-label de">Recording + Unterkunft</span>
-    <h2 class="sec-title rev"><span class="cs">Čtyři<br><em>balíčky</em></span><span class="en">Four<br><em>packages</em></span><span class="de">Vier<br><em>Pakete</em></span></h2>
-    <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <a class="chleba-trigger" href="/chleba">chléb</a> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-    <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <a class="chleba-trigger" href="/chleba">bread</a>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-    <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
-    <div class="pkg-grid rev rev-d2">
+    <div class="residency-stage" id="residencyStage">
+      <div class="residency-track">
+        <div class="residency-panel residency-main-panel">
+          <div class="big-n">6500<span style="font-size:.35em;opacity:.5">m²</span></div>
+          <span class="sec-label cs">Nahrávání + Ubytování</span><span class="sec-label en">Recording + Accommodation</span><span class="sec-label de">Recording + Unterkunft</span>
+          <h2 class="sec-title rev"><span class="cs">Čtyři<br><em>balíčky</em></span><span class="en">Four<br><em>packages</em></span><span class="de">Vier<br><em>Pakete</em></span></h2>
+          <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <a class="chleba-trigger" href="/chleba">chléb</a> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+          <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <a class="chleba-trigger" href="/chleba">bread</a>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
+          <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
+          <div class="residency-actions rev rev-d2">
+            <button type="button" class="btn-secondary residency-booking-trigger" data-open-booking="1">
+              <span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span>
+            </button>
+          </div>
+          <div class="pkg-grid rev rev-d2">
       <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Into the Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
       <div class="pkg-card" data-pkg="underwater"><div class="pkg-num">02</div><div class="pkg-name">Underwater</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Sauna</span><span class="en">#Main studio #Sauna</span><span class="de">#Hauptstudio #Sauna</span></span><p class="pkg-text cs">Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka. Skromné ale stylové a útulné přespání přímo v prostorách bývalé mlýnice.</p><p class="pkg-text en">Closest to the music, sleeping literally beneath the studio floor and below the pond level. Modest but stylish accommodation in the former mill.</p><p class="pkg-text de">Ganz nah an der Musik: Schlafen direkt unter dem Studioboden und unter der Teichoberfläche. Schlicht, aber stilvoll und gemütlich in der ehemaligen Mühle.</p></div>
       <div class="pkg-card" data-pkg="otherside"><div class="pkg-num">03</div><div class="pkg-name">Otherside</div><span class="pkg-tags"><span class="cs">#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV</span><span class="en">#Control room #Traditional Czech room #Two rooms #TV</span><span class="de">#Regieraum #Traditionelle Stube #Zwei Zimmer #TV</span></span><p class="pkg-text cs">Pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple + ubytování ve staročeské světnici. Vhodné i pro nehudební kreativní aktivity.</p><p class="pkg-text en">For post-production: 6K Apple Pro XDR with full Apple peripherals + accommodation in a traditional Czech room. Suitable for non-musical creative activities too.</p><p class="pkg-text de">Für Postproduktion: 6K Apple Pro XDR inkl. kompletter Apple-Peripherie + Unterkunft in einer traditionellen tschechischen Stube. Auch für nicht-musikalische Kreativarbeit geeignet.</p></div>
@@ -1070,11 +1144,35 @@ body.de .de{display:revert;}
         <li><span class="cs">U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.</span><span class="en">All packages include parking in the mill area under CCTV surveillance.</span><span class="de">Bei allen Paketen ist Parken im kameragesicherten Mühlenareal möglich.</span></li>
       </ul>
     </div>
+        </div>
+        <div class="residency-panel residency-booking-panel">
+          <div class="residency-booking-toolbar rev rev-d1">
+            <button type="button" class="btn-secondary residency-booking-back" data-close-booking="1">
+              <span class="cs">Zpět na ubytování</span><span class="en">Back to accommodation</span><span class="de">Zurück zur Unterkunft</span>
+            </button>
+            <span class="residency-booking-caption">
+              <span class="cs">Booking uvnitř sekce ubytování</span><span class="en">Booking inside the accommodation section</span><span class="de">Booking innerhalb der Unterkunftssektion</span>
+            </span>
+          </div>
+          <div class="residency-booking-shell rev rev-d2">
+            <iframe
+              id="bookingEmbedFrame"
+              class="residency-booking-frame"
+              src=""
+              title="Booking"
+              loading="lazy"
+              scrolling="no"
+              tabindex="-1"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ══ CONTACT ══ -->
-<section id="contact">
+<section id="contact" class="swiper-slide">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/7UU7KmxEE6s.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1140,19 +1238,17 @@ body.de .de{display:revert;}
       </a>
     </div>
   </div>
-</section>
-
-</main>
-
 <footer>
-  <span class="ft-copy"><span class="cs">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="en">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="de">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span></span>
+  <span class="ft-copy"><span class="cs">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="en">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="de">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span></span>
 </footer>
+</section>
+</div>
+<div class="swiper-pagination"></div>
+</div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script>
 /* SCROLL / PROGRESS / NAV */
-const MLYN_NATIVE_SCROLL=true;
-window.__MLYN_NATIVE_SCROLL=true;
 const nav=document.getElementById('nav'),prog=document.getElementById('prog');
 const residencySectionDom=document.getElementById('residency');
 const locationSectionDom=document.getElementById('location');
@@ -1162,430 +1258,64 @@ if(locationSectionDom&&residencySectionDom&&residencySectionDom.nextElementSibli
 const secs=[...document.querySelectorAll('section')];
 const dots=[...document.querySelectorAll('.dot')];
 const links=[...document.querySelectorAll('.nav-links a')];
-const fullPageAnchors=secs.map((section)=>section.id).filter(Boolean);
-let fullPageInstance=null;
-const pagerWrapper=document.getElementById('fullpage');
-let pagerIndex=0;
-let pagerReleaseTimer=null;
-const PAGER_TRANSITION_MS=720;
-const PAGER_WHEEL_IDLE_MS=280;
-const PAGER_WHEEL_THRESHOLD=6;
-let pagerWheelDelta=0;
-let pagerWheelResetTimer=null;
-let pagerTransitionUntil=0;
-let pagerTouchStartX=null;
-let pagerTouchStartY=null;
-let hardPagerIndex=0;
-let hardPagerLocked=false;
-let hardPagerReleaseTimer=null;
-let hardPagerTouchStartX=null;
-let hardPagerTouchStartY=null;
-let fallbackSnapTimer=null;
-let fallbackSnapLocked=false;
-let fallbackSnapReleaseTimer=null;
-let fallbackTouchStartY=null;
-let fallbackTouchStartX=null;
-
-function assetPath(path){
-  if(window.__MLYN_ASSET_PATH)return window.__MLYN_ASSET_PATH(path);
-  if(window.location.protocol==='file:'&&typeof path==='string'&&path.startsWith('/'))return path.slice(1);
-  return path;
-}
-
-function normalizeLocalAssetPaths(){
-  if(window.location.protocol!=='file:')return;
-  let changedMedia=false;
-  document.querySelectorAll('[src],[poster],[href]').forEach((element)=>{
-    ['src','poster','href'].forEach((attr)=>{
-      const value=element.getAttribute(attr);
-      if(!value||!value.startsWith('/'))return;
-      if(
-        value.startsWith('/videos/')||
-        value.startsWith('/images/')||
-        value.startsWith('/equipment-table/')||
-        value.startsWith('/vendor/')
-      ){
-        element.setAttribute(attr,value.slice(1));
-        if(element.tagName==='SOURCE'||element.tagName==='VIDEO'||element.tagName==='IMG')changedMedia=true;
-      }
-    });
-  });
-  if(changedMedia){
-    document.querySelectorAll('video').forEach((video)=>{
-      try{video.load();}catch(error){}
-    });
-  }
-}
-normalizeLocalAssetPaths();
-
-window.addEventListener('scroll',()=>{
-  const st=window.scrollY,dh=document.documentElement.scrollHeight-innerHeight;
-  prog.style.width=(st/dh*100)+'%';
-  nav.classList.toggle('scrolled',st>60);
-  let cur='';
-  secs.forEach(s=>{if(s.getBoundingClientRect().top<=innerHeight*.55)cur=s.id;});
-  if(cur&&cur!==currentSectionId){
-    currentSectionId=cur;
-    if(cur!=='place')hidePlaceHistoryOverlay(true);
-    if(cur!=='residency'){
+function applySectionChange(sectionId){
+  if(!sectionId)return;
+  if(sectionId!==currentSectionId){
+    currentSectionId=sectionId;
+    if(sectionId!=='place')hidePlaceHistoryOverlay(true);
+    if(sectionId!=='residency'){
       hideResidencyChlebaOverlay(true);
       hideResidencyPackageOverlay(true);
       closeInlineResidencyVideo(true);
     }
     syncBackgroundVideos();
   }
-  dots.forEach(d=>d.classList.toggle('active',d.dataset.t===cur));
-  links.forEach(a=>a.classList.toggle('active',a.dataset.s===cur));
-  handleFooterAutoHide();
-});
-dots.forEach((d)=>d.addEventListener('click',()=>scrollToSection(d.dataset.t,{behavior:'smooth'})));
-
-function getSectionScrollTop(section){
-  if(!section)return 0;
-  if(section.id==='hero')return 0;
-  const sectionTop=window.scrollY+section.getBoundingClientRect().top;
-  return Math.max(0,Math.round(sectionTop));
+  nav.classList.toggle('scrolled',sectionId!=='hero');
+  dots.forEach(d=>d.classList.toggle('active',d.dataset.t===sectionId));
+  links.forEach(a=>a.classList.toggle('active',a.dataset.s===sectionId));
 }
+window.__MLYN_applySectionChange=applySectionChange;
+dots.forEach((d)=>d.addEventListener('click',()=>scrollToSection(d.dataset.t,{behavior:'smooth'})));
 
 function shouldForceHomeToTop(){
   return !window.location.hash;
 }
 
-function clearInitialTopLockTimer(){
-  if(initialTopLockTimer){
-    clearTimeout(initialTopLockTimer);
-    initialTopLockTimer=null;
-  }
-}
-
-function releaseInitialTopLock(){
-  clearInitialTopLockTimer();
-  initialTopLockActive=false;
-  sectionSnapLocked=false;
-  try{document.documentElement.style.scrollBehavior='';}catch(error){}
-}
-
-function clearSectionSnapTimers(){
-  if(sectionSnapTimer){
-    clearTimeout(sectionSnapTimer);
-    sectionSnapTimer=null;
-  }
-  if(sectionSnapReleaseTimer){
-    clearTimeout(sectionSnapReleaseTimer);
-    sectionSnapReleaseTimer=null;
-  }
-  if(sectionScrollAnimationFrame){
-    cancelAnimationFrame(sectionScrollAnimationFrame);
-    sectionScrollAnimationFrame=null;
-  }
-  sectionScrollAnimationToken+=1;
-}
-
-function easeInOutCubic(value){
-  if(value<.5)return 4*value*value*value;
-  return 1-Math.pow(-2*value+2,3)/2;
-}
-
-function animateWindowScroll(targetTop,duration=760){
-  const destination=Math.max(0,Math.round(targetTop));
-  const startTop=window.scrollY;
-  const distance=destination-startTop;
-  if(Math.abs(distance)<=1){
-    window.scrollTo({top:destination,behavior:'auto'});
-    return;
-  }
-  if(sectionScrollAnimationFrame){
-    cancelAnimationFrame(sectionScrollAnimationFrame);
-    sectionScrollAnimationFrame=null;
-  }
-  sectionScrollAnimationToken+=1;
-  const token=sectionScrollAnimationToken;
-  const startTime=performance.now();
-  const step=(now)=>{
-    if(token!==sectionScrollAnimationToken)return;
-    const progress=Math.min((now-startTime)/duration,1);
-    const eased=easeInOutCubic(progress);
-    window.scrollTo({top:Math.round(startTop+distance*eased),behavior:'auto'});
-    if(progress<1){
-      sectionScrollAnimationFrame=requestAnimationFrame(step);
-      return;
-    }
-    sectionScrollAnimationFrame=null;
-    window.scrollTo({top:destination,behavior:'auto'});
-  };
-  sectionScrollAnimationFrame=requestAnimationFrame(step);
-}
-
-function getNearestSectionForViewport(){
-  const scrollTop=window.scrollY;
-  let nearestSection=null;
-  let nearestDistance=Number.POSITIVE_INFINITY;
-  secs.forEach((section)=>{
-    const targetTop=getSectionScrollTop(section);
-    const distance=Math.abs(targetTop-scrollTop);
-    if(distance<nearestDistance){
-      nearestSection=section;
-      nearestDistance=distance;
-    }
-  });
-  return {section:nearestSection,distance:nearestDistance};
-}
-
-function isDesktopSectionSnapMode(){
-  return window.innerWidth>1100&&window.matchMedia('(orientation:landscape)').matches;
-}
-
-function getSectionIndex(section){
-  return secs.indexOf(section);
-}
-
-function getViewportSectionIndex(){
-  const centerY=window.innerHeight*.5;
-  const centeredIndex=secs.findIndex((section)=>{
-    const rect=section.getBoundingClientRect();
-    return rect.top<=centerY&&rect.bottom>=centerY;
-  });
-  if(centeredIndex>=0)return centeredIndex;
-  const {section}=getNearestSectionForViewport();
-  return section?getSectionIndex(section):0;
-}
-
-function hasScrollableParent(target,deltaY){
-  let node=target instanceof Element?target:null;
-  while(node&&node!==document.body){
-    if(node.matches('input,textarea,select,[contenteditable="true"]'))return true;
-    const style=window.getComputedStyle(node);
-    const canScrollY=/(auto|scroll|overlay)/.test(style.overflowY||'');
-    if(canScrollY&&node.scrollHeight>node.clientHeight+4){
-      const canScrollUp=node.scrollTop>2;
-      const canScrollDown=node.scrollTop+node.clientHeight<node.scrollHeight-2;
-      if((deltaY<0&&canScrollUp)||(deltaY>0&&canScrollDown))return true;
-    }
-    node=node.parentElement;
-  }
-  return false;
-}
-
-function handleSectionWheelSnap(event){
-  if(!isDesktopSectionSnapMode()||initialTopLockActive||mobileNav?.classList.contains('open')||document.hidden)return;
-  if(event.ctrlKey||Math.abs(event.deltaY)<10)return;
-  if(hasScrollableParent(event.target,event.deltaY))return;
-  const now=Date.now();
-  if(sectionSnapLocked||now<wheelSnapCooldownUntil){
-    event.preventDefault();
-    return;
-  }
-  const currentSection=secs.find((section)=>section.id===currentSectionId);
-  const currentIndex=currentSection?getSectionIndex(currentSection):getViewportSectionIndex();
-  if(currentIndex<0)return;
-  const direction=event.deltaY>0?1:-1;
-  const isLast=currentIndex>=secs.length-1;
-  const isFirst=currentIndex<=0;
-  if((direction>0&&isLast)||(direction<0&&isFirst))return;
-  const nextIndex=Math.min(Math.max(currentIndex+direction,0),secs.length-1);
-  const nextSection=secs[nextIndex];
-  if(!nextSection)return;
-  wheelSnapCooldownUntil=now+1240;
-  event.preventDefault();
-  scrollToSection(nextSection.id,{behavior:'smooth'});
-}
-
-function handleSectionTouchStart(event){
-  const touch=event.touches&&event.touches[0];
-  if(!touch)return;
-  sectionTouchStartX=touch.clientX;
-  sectionTouchStartY=touch.clientY;
-}
-
-function handleSectionTouchEnd(event){
-  if(sectionTouchStartX===null||sectionTouchStartY===null)return;
-  const touch=event.changedTouches&&event.changedTouches[0];
-  const startX=sectionTouchStartX;
-  const startY=sectionTouchStartY;
-  sectionTouchStartX=null;
-  sectionTouchStartY=null;
-  if(!touch||initialTopLockActive||mobileNav?.classList.contains('open')||document.hidden)return;
-  const deltaX=touch.clientX-startX;
-  const deltaY=touch.clientY-startY;
-  if(Math.abs(deltaY)<56||Math.abs(deltaY)<Math.abs(deltaX))return;
-  if(hasScrollableParent(event.target,-deltaY))return;
-  const now=Date.now();
-  if(sectionSnapLocked||now<wheelSnapCooldownUntil)return;
-  const currentSection=secs.find((section)=>section.id===currentSectionId);
-  const currentIndex=currentSection?getSectionIndex(currentSection):getViewportSectionIndex();
-  if(currentIndex<0)return;
-  const direction=deltaY<0?1:-1;
-  const nextIndex=Math.min(Math.max(currentIndex+direction,0),secs.length-1);
-  if(nextIndex===currentIndex)return;
-  const nextSection=secs[nextIndex];
-  if(!nextSection)return;
-  wheelSnapCooldownUntil=now+1240;
-  scrollToSection(nextSection.id,{behavior:'smooth'});
-}
-
-function scheduleSectionSettleSnap(){
-  if(initialTopLockActive||sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
-  if(sectionSnapTimer)clearTimeout(sectionSnapTimer);
-  sectionSnapTimer=setTimeout(()=>{
-    sectionSnapTimer=null;
-    if(initialTopLockActive||sectionSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
-    if(isDesktopSectionSnapMode()&&window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-6)return;
-    const {section,distance}=getNearestSectionForViewport();
-    if(!section)return;
-    const targetTop=getSectionScrollTop(section);
-    const viewportThreshold=Math.max(42,window.innerHeight*.15);
-    const rawTop=section.getBoundingClientRect().top;
-    const rawBottom=section.getBoundingClientRect().bottom;
-    const nearTopEdge=Math.abs(rawTop)<=viewportThreshold;
-    const nearBottomEdge=Math.abs(rawBottom-window.innerHeight)<=viewportThreshold;
-    const maxSnapDistance=isDesktopSectionSnapMode()?Math.max(220,window.innerHeight*.55):Math.max(88,window.innerHeight*.24);
-    const shouldSnap=isDesktopSectionSnapMode()
-      ?distance>=10&&distance<=maxSnapDistance
-      :((nearTopEdge||nearBottomEdge)&&distance>=12&&distance<=maxSnapDistance);
-    if(!shouldSnap)return;
-    sectionSnapLocked=true;
-    wheelSnapCooldownUntil=Date.now()+1240;
-    animateWindowScroll(targetTop,780);
-    sectionSnapReleaseTimer=setTimeout(()=>{
-      sectionSnapLocked=false;
-      sectionSnapReleaseTimer=null;
-    },1120);
-  },180);
-}
-
-function handleSectionKeySnap(event){
-  if(!isDesktopSectionSnapMode()||initialTopLockActive||mobileNav?.classList.contains('open')||document.hidden)return;
-  if(event.defaultPrevented||event.metaKey||event.ctrlKey||event.altKey)return;
-  if(event.target instanceof Element&&event.target.closest('input,textarea,select,button,a,[contenteditable="true"]'))return;
-  const directionByKey={
-    ArrowDown:1,
-    PageDown:1,
-    ' ':1,
-    ArrowUp:-1,
-    PageUp:-1
-  };
-  if(event.key==='Home'){
-    event.preventDefault();
-    scrollToSection(secs[0]?.id,{behavior:'smooth'});
-    return;
-  }
-  if(event.key==='End'){
-    event.preventDefault();
-    scrollToSection(secs[secs.length-1]?.id,{behavior:'smooth'});
-    return;
-  }
-  const direction=directionByKey[event.key];
-  if(!direction)return;
-  const now=Date.now();
-  if(sectionSnapLocked||now<wheelSnapCooldownUntil){
-    event.preventDefault();
-    return;
-  }
-  const currentSection=secs.find((section)=>section.id===currentSectionId);
-  const currentIndex=currentSection?getSectionIndex(currentSection):getViewportSectionIndex();
-  if(currentIndex<0)return;
-  const nextIndex=Math.min(Math.max(currentIndex+direction,0),secs.length-1);
-  if(nextIndex===currentIndex)return;
-  event.preventDefault();
-  wheelSnapCooldownUntil=now+1240;
-  scrollToSection(secs[nextIndex].id,{behavior:'smooth'});
-}
-
 function resetHomeViewportToHero(){
-  clearNativeSectionSnapTimer();
-  nativeSectionSnapLocked=true;
-  nativeSectionSnapTargetTop=0;
-  if(window.__MLYN_HARD_PAGER_ACTIVE)return;
-  if(fullPageInstance)return;
   if(!shouldForceHomeToTop())return;
-  clearSectionSnapTimers();
-  clearInitialTopLockTimer();
-  initialTopLockActive=true;
-  sectionSnapLocked=true;
   currentSectionId='hero';
   hidePlaceHistoryOverlay(true);
   hideResidencyChlebaOverlay(true);
   hideResidencyPackageOverlay(true);
   closeInlineResidencyVideo(true);
   syncBackgroundVideos();
-  try{document.documentElement.style.scrollBehavior='auto';}catch(error){}
-  const finish=()=>{
-    window.scrollTo({top:0,behavior:'auto'});
-    kickBgVideos();
-    primeActiveBackgroundPlayback();
-  };
-  requestAnimationFrame(()=>requestAnimationFrame(finish));
-  [140,420,860].forEach((delay)=>{
-    setTimeout(()=>{
-      if(!initialTopLockActive||!shouldForceHomeToTop())return;
-      finish();
-    },delay);
-  });
-  initialTopLockTimer=setTimeout(()=>{
-    releaseInitialTopLock();
-    releaseNativeSectionSnap(120);
-  },1200);
-}
-
-function resetDocumentScrollOffset(){
-  try{window.scrollTo({top:0,left:0,behavior:'auto'});}catch(error){}
-  document.documentElement.scrollTop=0;
-  document.body.scrollTop=0;
-}
-
-function lockPagerWheel(duration=PAGER_TRANSITION_MS+PAGER_WHEEL_IDLE_MS){
-  nativeWheelSnapLocked=true;
-  if(pagerReleaseTimer)clearTimeout(pagerReleaseTimer);
-  pagerReleaseTimer=setTimeout(()=>{
-    nativeWheelSnapLocked=false;
-    pagerReleaseTimer=null;
-  },duration);
-}
-
-function normalizeWheelDelta(event){
-  let delta=event.deltaY;
-  if(event.deltaMode===1)delta*=32;
-  if(event.deltaMode===2)delta*=window.innerHeight;
-  return delta;
-}
-
-function setPagerIndex(index,{instant=false,replaceHash=true}={}){
-  if(!secs.length)return false;
-  const nextIndex=Math.min(Math.max(index,0),secs.length-1);
-  const section=secs[nextIndex];
-  if(!section)return false;
-  pagerIndex=nextIndex;
-  clearNativeSectionSnapTimer();
-  nativeSectionSnapLocked=false;
-  pagerWheelDelta=0;
-  if(pagerWheelResetTimer){
-    clearTimeout(pagerWheelResetTimer);
-    pagerWheelResetTimer=null;
+  if(window.mainSwiper&&typeof window.mainSwiper.slideTo==='function'){
+    window.mainSwiper.slideTo(0,0);
   }
-  pagerTransitionUntil=performance.now()+(instant?0:PAGER_TRANSITION_MS);
-  lockPagerWheel(instant?90:PAGER_TRANSITION_MS+PAGER_WHEEL_IDLE_MS);
-  resetDocumentScrollOffset();
-  if(pagerWrapper){
-    if(instant)pagerWrapper.classList.add('pager-instant');
-    pagerWrapper.style.transform=`translate3d(0, -${Math.round(nextIndex*window.innerHeight)}px, 0)`;
-    if(instant)requestAnimationFrame(()=>pagerWrapper.classList.remove('pager-instant'));
-  }
-  document.body.classList.add('pager-ready');
-  resetDocumentScrollOffset();
-  updateActiveSectionState(section.id);
-  if(replaceHash){
-    const nextUrl=section.id==='hero'?`${window.location.pathname}${window.location.search}`:`${window.location.pathname}${window.location.search}#${section.id}`;
-    window.history.replaceState({},'',nextUrl);
-  }
-  return true;
+  kickBgVideos();
+  primeActiveBackgroundPlayback();
 }
 
 function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
   const section=document.getElementById(sectionId);
   if(!section)return false;
   const performScroll=()=>{
-    const index=secs.indexOf(section);
-    return setPagerIndex(index,{instant:behavior==='auto',replaceHash:true});
+    currentSectionId=sectionId;
+    if(sectionId!=='place')hidePlaceHistoryOverlay(true);
+    if(sectionId!=='residency'){
+      hideResidencyChlebaOverlay(true);
+      hideResidencyPackageOverlay(true);
+      closeInlineResidencyVideo(true);
+    }
+    syncBackgroundVideos();
+    const nextUrl=sectionId==='hero'?window.location.pathname:`${window.location.pathname}#${sectionId}`;
+    window.history.replaceState({},'',nextUrl);
+    if(window.mainSwiper&&typeof window.mainSwiper.slideTo==='function'){
+      const idx=secs.indexOf(section);
+      if(idx>=0)window.mainSwiper.slideTo(idx,behavior==='smooth'?700:0);
+    }else{
+      window.__MLYN_PENDING_SLIDE_ID=sectionId;
+    }
   };
   if(closeMenu){
     closeMobileNav();
@@ -1596,199 +1326,70 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
   return true;
 }
 
-function clearNativeSectionSnapTimer(){
-  if(nativeSectionSnapTimer){
-    clearTimeout(nativeSectionSnapTimer);
-    nativeSectionSnapTimer=null;
+function getBookingEmbedPath(nextLang=lang){
+  const base=BOOKING_EMBED_BASE_BY_LANG[nextLang]||BOOKING_EMBED_BASE_BY_LANG.cs;
+  return `${base}?embed=1`;
+}
+
+function syncBookingEmbedSrc(force=false){
+  if(!bookingEmbedFrame)return;
+  const nextSrc=getBookingEmbedPath(lang);
+  const currentSrc=bookingEmbedFrame.getAttribute('src')||'';
+  if(force||currentSrc!==nextSrc){
+    bookingEmbedFrame.setAttribute('src',nextSrc);
   }
 }
 
-function releaseNativeSectionSnap(delay=720){
-  if(nativeSectionSnapReleaseTimer)clearTimeout(nativeSectionSnapReleaseTimer);
-  nativeSectionSnapReleaseTimer=setTimeout(()=>{
-    if(nativeSectionSnapTargetTop!==null&&Math.abs(window.scrollY-nativeSectionSnapTargetTop)>3){
-      window.scrollTo({top:nativeSectionSnapTargetTop,behavior:'auto'});
-      releaseNativeSectionSnap(120);
-      return;
-    }
-    nativeSectionSnapLocked=false;
-    nativeSectionSnapTargetTop=null;
-    nativeSectionSnapReleaseTimer=null;
-  },delay);
+function ensureBookingEmbedLoaded(){
+  if(!bookingEmbedFrame)return;
+  const currentSrc=bookingEmbedFrame.getAttribute('src')||'';
+  if(currentSrc)return;
+  syncBookingEmbedSrc(true);
 }
 
-function getNearestNativeSection(){
-  const y=window.scrollY;
-  return secs.reduce((best,section)=>{
-    const top=getSectionScrollTop(section);
-    const distance=Math.abs(top-y);
-    return distance<best.distance?{section,top,distance}:best;
-  },{section:null,top:0,distance:Number.POSITIVE_INFINITY});
+function setBookingEmbedHeight(rawHeight){
+  if(!bookingEmbedFrame)return;
+  const nextHeight=Math.max(400,Math.min(6000,Math.round(Number(rawHeight)||0)));
+  if(!Number.isFinite(nextHeight))return;
+  if(Math.abs(nextHeight-residencyBookingHeight)<=4)return;
+  residencyBookingHeight=nextHeight;
+  bookingEmbedFrame.style.height=`${nextHeight}px`;
 }
 
-function updateActiveSectionState(sectionId){
-  if(!sectionId)return;
-  currentSectionId=sectionId;
-  if(sectionId!=='place')hidePlaceHistoryOverlay(true);
-  if(sectionId!=='residency'){
+function getResidencyVideoRate(){
+  return residencyBookingOpen?RESIDENCY_BOOKING_VIDEO_RATE:1;
+}
+
+function applyVideoRate(video,rate){
+  if(!video)return;
+  try{video.playbackRate=rate;}catch(e){}
+}
+
+function syncResidencyVideoRates(){
+  const rate=getResidencyVideoRate();
+  applyVideoRate(bgFrameBySectionId.get('residency'),rate);
+  applyVideoRate(residencyChlebaVideo,rate);
+  residencyPkgKeys.forEach((key)=>applyVideoRate(residencyPkgVideos[key],rate));
+}
+
+function setResidencyBooking(open,{instant=false}={}){
+  if(!residencySection||!residencyStage)return;
+  residencyBookingOpen=Boolean(open);
+  if(instant){
+    residencyStage.classList.add('is-instant');
+  }
+  residencySection.classList.toggle('booking-open',residencyBookingOpen);
+  syncResidencyVideoRates();
+  if(residencyBookingOpen){
+    ensureBookingEmbedLoaded();
+    syncBookingEmbedSrc();
     hideResidencyChlebaOverlay(true);
     hideResidencyPackageOverlay(true);
     closeInlineResidencyVideo(true);
   }
-  dots.forEach((dot)=>dot.classList.toggle('active',dot.dataset.t===sectionId));
-  links.forEach((link)=>link.classList.toggle('active',link.dataset.s===sectionId));
-  syncBackgroundVideos();
-}
-
-function nativeSnapToNearestSection({behavior='smooth',updateHash=true}={}){
-  const nearest=getNearestNativeSection();
-  if(!nearest.section)return;
-  setPagerIndex(secs.indexOf(nearest.section),{instant:behavior==='auto',replaceHash:updateHash});
-}
-
-function scheduleNativeSectionSnap(delay=160){
-  if(nativeSectionSnapLocked||nativeWheelSnapLocked||mobileNav?.classList.contains('open'))return;
-  clearNativeSectionSnapTimer();
-  nativeSectionSnapTimer=setTimeout(()=>{
-    nativeSectionSnapTimer=null;
-    if(nativeSectionSnapLocked||nativeWheelSnapLocked||mobileNav?.classList.contains('open'))return;
-    nativeSnapToNearestSection({behavior:'auto',updateHash:true});
-  },delay);
-}
-
-function getNativeViewportSectionIndex(){
-  return Math.min(Math.max(pagerIndex,0),Math.max(secs.length-1,0));
-}
-
-function releaseNativeWheelSnap(delay=760){
-  lockPagerWheel(delay);
-}
-
-function shouldIgnoreNativeWheelTarget(target,deltaY){
-  if(hasScrollableParent(target,deltaY))return true;
-  return target instanceof Element&&Boolean(target.closest('input,textarea,select,button,[contenteditable="true"],.lang-menu,.mobile-nav,.eq-embed-frame,.history-embed-frame,#resFaqList'));
-}
-
-function nativeWheelSnapByDirection(direction){
-  if(nativeWheelSnapLocked||mobileNav?.classList.contains('open'))return false;
-  const currentIndex=getNativeViewportSectionIndex();
-  const nextIndex=Math.min(Math.max(currentIndex+direction,0),secs.length-1);
-  if(nextIndex===currentIndex)return false;
-  return scrollToSection(secs[nextIndex].id,{behavior:'smooth'});
-}
-
-function handleNativeWheelSectionSnap(event){
-  if(event.ctrlKey)return;
-  const delta=normalizeWheelDelta(event);
-  if(shouldIgnoreNativeWheelTarget(event.target,delta))return;
-  event.preventDefault();
-  event.stopImmediatePropagation();
-  if(Math.abs(delta)<.5)return;
-  if(nativeWheelSnapLocked){
-    const remaining=Math.max(0,pagerTransitionUntil-performance.now())+PAGER_WHEEL_IDLE_MS;
-    lockPagerWheel(Math.max(PAGER_WHEEL_IDLE_MS,remaining));
-    return;
+  if(instant){
+    requestAnimationFrame(()=>residencyStage.classList.remove('is-instant'));
   }
-  pagerWheelDelta+=delta;
-  if(pagerWheelResetTimer)clearTimeout(pagerWheelResetTimer);
-  pagerWheelResetTimer=setTimeout(()=>{
-    pagerWheelDelta=0;
-    pagerWheelResetTimer=null;
-  },140);
-  if(Math.abs(pagerWheelDelta)<PAGER_WHEEL_THRESHOLD)return;
-  const direction=pagerWheelDelta>0?1:-1;
-  pagerWheelDelta=0;
-  if(pagerWheelResetTimer){
-    clearTimeout(pagerWheelResetTimer);
-    pagerWheelResetTimer=null;
-  }
-  nativeWheelSnapByDirection(direction);
-}
-
-function handleNativeKeySectionSnap(event){
-  if(event.defaultPrevented||event.metaKey||event.ctrlKey||event.altKey)return;
-  if(event.target instanceof Element&&event.target.closest('input,textarea,select,button,a,[contenteditable="true"]'))return;
-  const directions={ArrowDown:1,PageDown:1,' ':1,ArrowUp:-1,PageUp:-1};
-  if(event.key==='Home'){
-    event.preventDefault();
-    nativeWheelSnapLocked=true;
-    scrollToSection(secs[0]?.id,{behavior:'smooth'});
-    releaseNativeWheelSnap(820);
-    return;
-  }
-  if(event.key==='End'){
-    event.preventDefault();
-    nativeWheelSnapLocked=true;
-    scrollToSection(secs[secs.length-1]?.id,{behavior:'smooth'});
-    releaseNativeWheelSnap(820);
-    return;
-  }
-  const direction=directions[event.key];
-  if(!direction)return;
-  event.preventDefault();
-  nativeWheelSnapByDirection(direction);
-}
-
-function clearFooterAutoHide(){
-  if(footerAutoHideTimer){
-    clearTimeout(footerAutoHideTimer);
-    footerAutoHideTimer=null;
-  }
-  clearFooterAutoHideAnimation();
-}
-
-function clearFooterAutoHideAnimation(){
-  if(footerAutoHideAnimationFrame){
-    cancelAnimationFrame(footerAutoHideAnimationFrame);
-    footerAutoHideAnimationFrame=null;
-  }
-  if(footerAutoHideBehaviorRestore){
-    footerAutoHideBehaviorRestore.root.style.scrollBehavior=footerAutoHideBehaviorRestore.rootValue;
-    footerAutoHideBehaviorRestore.body.style.scrollBehavior=footerAutoHideBehaviorRestore.bodyValue;
-    footerAutoHideBehaviorRestore=null;
-  }
-}
-
-function getFooterHideTarget(){
-  if(!footerEl)return 0;
-  return Math.max(0,footerEl.offsetTop-window.innerHeight+2);
-}
-
-function animateFooterHideScroll(targetTop,duration=1850){
-  clearFooterAutoHideAnimation();
-  const startTop=window.scrollY;
-  const delta=targetTop-startTop;
-  if(Math.abs(delta)<2){
-    window.scrollTo(0,targetTop);
-    return;
-  }
-  const root=document.documentElement;
-  const body=document.body;
-  footerAutoHideBehaviorRestore={
-    root,
-    body,
-    rootValue:root.style.scrollBehavior,
-    bodyValue:body.style.scrollBehavior
-  };
-  root.style.scrollBehavior='auto';
-  body.style.scrollBehavior='auto';
-  const startTime=performance.now();
-  const ease=t=>1-Math.pow(1-t,3);
-  const step=now=>{
-    const progress=Math.min((now-startTime)/duration,1);
-    const eased=ease(progress);
-    window.scrollTo(0,Math.round(startTop+delta*eased));
-    if(progress<1){
-      footerAutoHideAnimationFrame=requestAnimationFrame(step);
-      return;
-    }
-    clearFooterAutoHideAnimation();
-  };
-  footerAutoHideAnimationFrame=requestAnimationFrame(step);
-}
-
-function handleFooterAutoHide(){
-  // No automatic scroll correction here; section alignment is handled by the single native settle snapper.
 }
 
 /* BG VIDEOS */
@@ -1818,6 +1419,10 @@ const placeTimeline=placeSection?.querySelector('.place-right')||null;
 const placeHistoryVideo=placeSection?.querySelector('.history-overlay')||null;
 const residencySection=document.getElementById('residency');
 const residencyBgWrap=residencySection?.querySelector('.bg-video')||null;
+const residencyStage=document.getElementById('residencyStage');
+const bookingEmbedFrame=document.getElementById('bookingEmbedFrame');
+const residencyBookingOpenTriggers=[...document.querySelectorAll('[data-open-booking]')];
+const residencyBookingCloseTriggers=[...document.querySelectorAll('[data-close-booking]')];
 const residencyChlebaVideo=residencySection?.querySelector('.chleba-overlay')||null;
 const chlebaTriggers=[...document.querySelectorAll('#residency .chleba-trigger')];
 const residencyPkgCards=[...document.querySelectorAll('#residency .pkg-card[data-pkg]')];
@@ -1834,6 +1439,7 @@ const residencyPkgInlineVideoIds={
   otherside:'X7lvikbWnMQ',
   fuel:'5INpfHr0lu4'
 };
+const RESIDENCY_BOOKING_VIDEO_RATE=.38;
 let activeInlineResidencyPkg=null;
 const resFaqList=document.getElementById('resFaqList');
 const BG_ASSET_REV='20260309c';
@@ -1887,40 +1493,26 @@ let placeHistoryHideTimer=null;
 let residencyChlebaHideTimer=null;
 let residencyPkgHideTimer=null;
 let activeResidencyPkg=null;
+let residencyBookingOpen=false;
+let residencyBookingHeight=760;
 let activeBgYoutubeSectionId='';
 let activeBgYoutubeVideoId='';
 let activeBgYoutubeIframe=null;
 let activePlaceHistoryYoutubeIframe=null;
 let activeResidencyChlebaYoutubeIframe=null;
-let sectionSnapTimer=null;
-let sectionSnapLocked=false;
-let sectionSnapReleaseTimer=null;
-let nativeSectionSnapTimer=null;
-let nativeSectionSnapLocked=false;
-let nativeSectionSnapReleaseTimer=null;
-let nativeSectionSnapTargetTop=null;
-let nativeLastScrollAt=0;
-let nativeWheelSnapLocked=false;
-let wheelSnapCooldownUntil=0;
-let sectionScrollAnimationFrame=null;
-let sectionScrollAnimationToken=0;
-let sectionTouchStartX=null;
-let sectionTouchStartY=null;
-let initialTopLockActive=shouldForceHomeToTop();
-let initialTopLockTimer=null;
-let footerAutoHideTimer=null;
-let footerAutoHideLocked=false;
-let footerAutoHideAnimationFrame=null;
-let footerAutoHideBehaviorRestore=null;
 const bgVideoProgressState=new WeakMap();
 const lbtn=document.getElementById('lbtn');
 const langSwitch=document.getElementById('langSwitch');
 const langMenu=document.getElementById('langMenu');
 const langOptions=[...document.querySelectorAll('.lang-option')];
-const footerEl=document.querySelector('footer');
 const LANG_STORAGE_KEY='mlyn_lang';
 const SUPPORTED_LANGS=['cs','en','de'];
 const EQUIPMENT_EMBED_BASE='/equipment-table/studio-equipment.html';
+const BOOKING_EMBED_BASE_BY_LANG={
+  cs:'/booking',
+  en:'/en/booking',
+  de:'/de/buchung'
+};
 const UI_TEXTS={
   cs:{
     about:'O nás',
@@ -1935,7 +1527,8 @@ const UI_TEXTS={
     resume:'Přehrát',
     switchToNight:'Přepnout na noční režim',
     switchToDay:'Přepnout na denní režim',
-    equipmentTableTitle:'Vybavení studia'
+    equipmentTableTitle:'Vybavení studia',
+    bookingEmbedTitle:'Booking'
   },
   en:{
     about:'About',
@@ -1950,7 +1543,8 @@ const UI_TEXTS={
     resume:'Play',
     switchToNight:'Switch to night mode',
     switchToDay:'Switch to day mode',
-    equipmentTableTitle:'Studio equipment'
+    equipmentTableTitle:'Studio equipment',
+    bookingEmbedTitle:'Booking'
   },
   de:{
     about:'Über uns',
@@ -1965,7 +1559,8 @@ const UI_TEXTS={
     resume:'Abspielen',
     switchToNight:'Zum Nachtmodus wechseln',
     switchToDay:'Zum Tagmodus wechseln',
-    equipmentTableTitle:'Studioausstattung'
+    equipmentTableTitle:'Studioausstattung',
+    bookingEmbedTitle:'Booking'
   }
 };
 const TITLE_BY_LANG={
@@ -2227,6 +1822,7 @@ function playBgVideo(video){
   };
   const activeVideo=bgFrameBySectionId.get(currentSectionId);
   if(activeVideo!==video)return;
+  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
   if(!video.paused&&video.readyState>=2){
     markBgVideoFrame(video);
     markBgVideoPlaying(video);
@@ -2242,7 +1838,7 @@ function playBgVideo(video){
   video.defaultMuted=true;
   video.volume=0;
   video.controls=false;
-  video.playbackRate=1;
+  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
   if(video.__playPending)return;
   video.__playPending=true;
   const p=video.play();
@@ -2399,6 +1995,7 @@ function playResidencyPackageVideo(key){
   if(!video||pauseAllVideos||currentSectionId!=='residency')return;
   video.muted=true;
   video.defaultMuted=true;
+  applyVideoRate(video,getResidencyVideoRate());
   const p=video.play();
   if(p&&typeof p.then==='function'){
     p.then(()=>setResidencyPackageBlocked(key,false)).catch(()=>setResidencyPackageBlocked(key,true));
@@ -2499,8 +2096,8 @@ function updateSectionBackgroundVariant(sectionId,force=false){
   if(!media||!media.video||!media.source)return;
   const videoId=resolveSectionVideoId(sectionId);
   if(!videoId)return;
-  const nextVideoSrc=assetPath(`/videos/bg/${videoId}.mp4?v=${BG_ASSET_REV}`);
-  const nextPosterSrc=assetPath(`/videos/bg/${videoId}.jpg?v=${BG_ASSET_REV}`);
+  const nextVideoSrc=`/videos/bg/${videoId}.mp4?v=${BG_ASSET_REV}`;
+  const nextPosterSrc=`/videos/bg/${videoId}.jpg?v=${BG_ASSET_REV}`;
   const currentVideoSrc=media.source.getAttribute('src')||'';
   media.wrap?.classList.toggle('uses-portrait-asset',PORTRAIT_BG_ASSET_IDS.has(videoId));
   if(!force&&currentVideoSrc===nextVideoSrc)return;
@@ -3026,160 +2623,6 @@ syncBackgroundVideos();
 primeActiveBackgroundPlayback();
 startBgAutoplayWatchdog();
 ['pointerdown','touchstart','keydown','wheel'].forEach(ev=>window.addEventListener(ev,kickBgVideos,{passive:true}));
-['touchstart','pointerdown','wheel'].forEach((ev)=>{
-  window.addEventListener(ev,()=>{
-    if(initialTopLockActive)releaseInitialTopLock();
-  },{passive:true});
-});
-function syncFullPageSection(sectionId){
-  if(!sectionId)return;
-  currentSectionId=sectionId;
-  if(sectionId!=='place')hidePlaceHistoryOverlay(true);
-  if(sectionId!=='residency'){
-    hideResidencyChlebaOverlay(true);
-    hideResidencyPackageOverlay(true);
-    closeInlineResidencyVideo(true);
-  }
-  dots.forEach((dot)=>dot.classList.toggle('active',dot.dataset.t===sectionId));
-  links.forEach((link)=>link.classList.toggle('active',link.dataset.s===sectionId));
-  syncBackgroundVideos();
-  handleFooterAutoHide();
-}
-
-function getSectionIndexById(sectionId){
-  return Math.max(0,secs.findIndex((section)=>section.id===sectionId));
-}
-
-function releaseHardPagerLock(delay=960){
-  if(hardPagerReleaseTimer)clearTimeout(hardPagerReleaseTimer);
-  hardPagerReleaseTimer=setTimeout(()=>{
-    hardPagerLocked=false;
-    hardPagerReleaseTimer=null;
-  },delay);
-}
-
-function hardPagerMoveTo(index,{replaceHash=false,instant=false}={}){
-  if(!secs.length)return;
-  const nextIndex=Math.min(Math.max(index,0),secs.length-1);
-  const section=secs[nextIndex];
-  if(!section)return;
-  hardPagerIndex=nextIndex;
-  hardPagerLocked=!instant;
-  const wrapper=document.getElementById('fullpage');
-  if(wrapper){
-    const offsetPx=Math.round(nextIndex*window.innerHeight);
-    wrapper.style.transition='none';
-    wrapper.style.transform=`translate3d(0, -${offsetPx}px, 0)`;
-  }
-  currentSectionId=section.id;
-  syncFullPageSection(section.id);
-  const nextUrl=section.id==='hero'?window.location.pathname:`${window.location.pathname}#${section.id}`;
-  if(replaceHash){
-    window.history.replaceState({},'',nextUrl);
-  }else{
-    window.history.pushState({},'',nextUrl);
-  }
-  releaseHardPagerLock(120);
-}
-
-function hardPagerMoveBy(direction){
-  if(hardPagerLocked)return;
-  hardPagerMoveTo(hardPagerIndex+direction,{replaceHash:true});
-}
-
-function initHardPager(){
-  // Disabled: native scrolling plus a single settle snapper is the active scroll system.
-}
-
-function shouldIgnoreHardPagerTarget(target){
-  return target instanceof Element&&Boolean(target.closest('input,textarea,select,[contenteditable="true"],.lang-menu,.mobile-nav,.eq-embed-frame,.history-embed-frame,#resFaqList'));
-}
-
-
-function initFullPageScroll(){
-  // Native browser scrolling is the single authoritative scroll system.
-}
-
-
-function isFullPageReady(){
-  return Boolean(fullPageInstance&&document.documentElement.classList.contains('fp-enabled'));
-}
-
-function clearFallbackSnapTimer(){
-  if(fallbackSnapTimer){
-    clearTimeout(fallbackSnapTimer);
-    fallbackSnapTimer=null;
-  }
-}
-
-function releaseFallbackSnapLock(delay=980){
-  if(fallbackSnapReleaseTimer)clearTimeout(fallbackSnapReleaseTimer);
-  fallbackSnapReleaseTimer=setTimeout(()=>{
-    fallbackSnapLocked=false;
-    fallbackSnapReleaseTimer=null;
-  },delay);
-}
-
-function getFallbackSectionTop(section){
-  return Math.max(0,Math.round(window.scrollY+section.getBoundingClientRect().top));
-}
-
-function getFallbackNearestSection(){
-  const y=window.scrollY;
-  return secs.reduce((best,section,index)=>{
-    const top=getFallbackSectionTop(section);
-    const distance=Math.abs(top-y);
-    return distance<best.distance?{section,index,top,distance}:best;
-  },{section:secs[0],index:0,top:0,distance:Number.POSITIVE_INFINITY});
-}
-
-function fallbackSnapToSection(section,behavior='smooth'){
-  if(!section)return;
-  clearFallbackSnapTimer();
-  fallbackSnapLocked=true;
-  currentSectionId=section.id;
-  syncFullPageSection(section.id);
-  const targetTop=getFallbackSectionTop(section);
-  window.history.replaceState({},'',section.id==='hero'?window.location.pathname:`${window.location.pathname}#${section.id}`);
-  window.scrollTo({top:targetTop,behavior});
-  releaseFallbackSnapLock(behavior==='auto'?120:980);
-}
-
-function fallbackSnapByDirection(direction){
-  if(isFullPageReady())return false;
-  if(initialTopLockActive||mobileNav?.classList.contains('open')||document.hidden)return false;
-  if(fallbackSnapLocked)return true;
-  const nearest=getFallbackNearestSection();
-  const currentIndex=nearest.index;
-  const nextIndex=Math.min(Math.max(currentIndex+direction,0),secs.length-1);
-  const nextSection=secs[nextIndex];
-  if(!nextSection||nextIndex===currentIndex){
-    fallbackSnapToSection(nearest.section);
-    return true;
-  }
-  fallbackSnapToSection(nextSection);
-  return true;
-}
-
-function scheduleFallbackSettleSnap(delay=140){
-  if(isFullPageReady())return;
-  if(initialTopLockActive||fallbackSnapLocked||mobileNav?.classList.contains('open')||document.hidden)return;
-  clearFallbackSnapTimer();
-  fallbackSnapTimer=setTimeout(()=>{
-    fallbackSnapTimer=null;
-    if(isFullPageReady()||fallbackSnapLocked||document.hidden)return;
-    const nearest=getFallbackNearestSection();
-    if(nearest.section&&nearest.distance>3){
-      fallbackSnapToSection(nearest.section);
-    }
-  },delay);
-}
-
-function shouldIgnoreFallbackWheel(target,deltaY){
-  if(hasScrollableParent(target,deltaY))return true;
-  return target instanceof Element&&Boolean(target.closest('input,textarea,select,[contenteditable="true"],.lang-menu,.mobile-nav'));
-}
-
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden){
     kickBgVideos();
@@ -3200,14 +2643,12 @@ window.addEventListener('resize',()=>{
   ensurePlaceHistoryYoutube();
   ensureResidencyChlebaYoutube();
   ensureActiveBgYoutube();
-  handleFooterAutoHide();
 });
 window.addEventListener('orientationchange',()=>setTimeout(()=>{
   updateAllBackgroundVariants(true);
   ensurePlaceHistoryYoutube();
   ensureResidencyChlebaYoutube();
   ensureActiveBgYoutube();
-  handleFooterAutoHide();
 },120));
 window.addEventListener('load',()=>{
   updateAllBackgroundVariants(true);
@@ -3215,7 +2656,6 @@ window.addEventListener('load',()=>{
   primeActiveBackgroundPlayback(80);
   primeActiveBackgroundPlayback(520);
   primeActiveBackgroundPlayback(1400);
-  handleFooterAutoHide();
   setTimeout(kickBgVideos,900);
   setTimeout(kickBgVideos,2200);
 });
@@ -3278,6 +2718,12 @@ function applyLang(){
   if(eqEmbedFrame){
     eqEmbedFrame.setAttribute('title',text.equipmentTableTitle);
     eqEmbedFrame.src=`${EQUIPMENT_EMBED_BASE}?lang=${lang}`;
+  }
+  if(bookingEmbedFrame){
+    bookingEmbedFrame.setAttribute('title',text.bookingEmbedTitle);
+    if(bookingEmbedFrame.getAttribute('src')){
+      syncBookingEmbedSrc(true);
+    }
   }
   setPauseState(pauseAllVideos);
   updateModeButtonLabel();
@@ -3377,6 +2823,16 @@ function updateNavCompactState(){
 }
 if(hbtn)hbtn.addEventListener('click',toggleMobileNav);
 if(closeNav)closeNav.addEventListener('click',closeMobileNav);
+residencyBookingOpenTriggers.forEach((trigger)=>{
+  trigger.addEventListener('click',()=>{
+    setResidencyBooking(true);
+  });
+});
+residencyBookingCloseTriggers.forEach((trigger)=>{
+  trigger.addEventListener('click',()=>{
+    setResidencyBooking(false);
+  });
+});
 document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .nav-logo[href^="#"]').forEach((anchor)=>{
   anchor.addEventListener('click',(event)=>{
     const href=anchor.getAttribute('href')||'';
@@ -3389,51 +2845,107 @@ document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .n
 });
 window.addEventListener('resize',updateNavCompactState);
 window.addEventListener('orientationchange',()=>setTimeout(updateNavCompactState,80));
-window.addEventListener('wheel',handleNativeWheelSectionSnap,{capture:true,passive:false});
-window.addEventListener('keydown',handleNativeKeySectionSnap,{capture:true});
-window.addEventListener('touchstart',(event)=>{
-  const touch=event.touches&&event.touches[0];
-  if(!touch)return;
-  pagerTouchStartX=touch.clientX;
-  pagerTouchStartY=touch.clientY;
-},{capture:true,passive:true});
-window.addEventListener('touchend',(event)=>{
-  if(pagerTouchStartX===null||pagerTouchStartY===null)return;
-  const touch=event.changedTouches&&event.changedTouches[0];
-  const startX=pagerTouchStartX;
-  const startY=pagerTouchStartY;
-  pagerTouchStartX=null;
-  pagerTouchStartY=null;
-  if(!touch||shouldIgnoreNativeWheelTarget(event.target,0))return;
-  const deltaX=touch.clientX-startX;
-  const deltaY=touch.clientY-startY;
-  if(Math.abs(deltaY)<46||Math.abs(deltaY)<Math.abs(deltaX))return;
-  event.preventDefault();
-  event.stopImmediatePropagation();
-  nativeWheelSnapByDirection(deltaY<0?1:-1);
-},{capture:true,passive:false});
-window.addEventListener('resize',()=>setPagerIndex(pagerIndex,{instant:true,replaceHash:false}));
-
 window.addEventListener('load',updateNavCompactState);
-function initSectionPager(){
-  resetDocumentScrollOffset();
-  const hash=(window.location.hash||'').slice(1);
-  const initialSection=(hash&&document.getElementById(hash))?document.getElementById(hash):secs[0];
-  setPagerIndex(Math.max(0,secs.indexOf(initialSection)),{instant:true,replaceHash:Boolean(hash)});
-}
-window.addEventListener('load',()=>{
-  updateNavCompactState();
-  initSectionPager();
-});
-window.addEventListener('pageshow',initSectionPager);
-window.addEventListener('hashchange',()=>{
-  const hash=(window.location.hash||'').slice(1);
-  const section=hash?document.getElementById(hash):secs[0];
-  if(section)setPagerIndex(Math.max(0,secs.indexOf(section)),{instant:false,replaceHash:false});
+window.addEventListener('load',resetHomeViewportToHero);
+window.addEventListener('pageshow',()=>{
+  resetHomeViewportToHero();
 });
 updateNavCompactState();
-requestAnimationFrame(initSectionPager);
 
+/* SWIPER — vertikální slider sekcí */
+(function initMainSwiper(){
+  function boot(){
+    if(!window.Swiper)return;
+    const hashId=(window.location.hash||'').slice(1);
+    let startIndex=0;
+    if(hashId){
+      const target=document.getElementById(hashId);
+      const idx=target?secs.indexOf(target):-1;
+      if(idx>=0)startIndex=idx;
+    }
+    const swiper=new window.Swiper('.main-swiper',{
+      direction:'vertical',
+      slidesPerView:1,
+      speed:700,
+      mousewheel:{
+        forceToAxis:true,
+        releaseOnEdges:false,
+        sensitivity:1,
+        thresholdDelta:50,
+        thresholdTime:500
+      },
+      keyboard:{enabled:true},
+      pagination:{el:'.swiper-pagination',clickable:true},
+      resistance:true,
+      resistanceRatio:0,
+      followFinger:false,
+      shortSwipes:false,
+      longSwipesRatio:0.15,
+      initialSlide:startIndex
+    });
+    window.mainSwiper=swiper;
+    swiper.on('progress',(s,progress)=>{
+      if(prog)prog.style.width=(Math.max(0,Math.min(1,progress))*100)+'%';
+    });
+    swiper.on('slideChange',()=>{
+      const section=secs[swiper.activeIndex];
+      if(!section)return;
+      applySectionChange(section.id);
+      const nextUrl=section.id==='hero'?window.location.pathname:`${window.location.pathname}#${section.id}`;
+      window.history.replaceState({},'',nextUrl);
+      if(section.id==='history'){
+        const frame=document.querySelector('.history-embed-frame');
+        if(frame&&frame.contentWindow){
+          try{frame.contentWindow.postMessage({type:'history-embed-cooldown'},window.location.origin);}catch(e){}
+        }
+      }
+    });
+    let bookingWheelLockUntil=0;
+    window.addEventListener('message',(event)=>{
+      if(event.origin!==window.location.origin)return;
+      const data=event.data;
+      if(!data||typeof data!=='object')return;
+      if(data.type==='history-embed-scroll'){
+        const active=secs[swiper.activeIndex];
+        if(!active||active.id!=='history')return;
+        if(data.direction==='next')swiper.slideNext(700);
+        else if(data.direction==='prev')swiper.slidePrev(700);
+        return;
+      }
+      if(bookingEmbedFrame&&event.source===bookingEmbedFrame.contentWindow){
+        if(data.type==='booking-embed-height'){
+          setBookingEmbedHeight(data.h);
+          return;
+        }
+        if(!residencyBookingOpen)return;
+        if(data.type==='booking-embed-wheel'||data.type==='booking-embed-swipe'){
+          const active=secs[swiper.activeIndex];
+          if(!active||active.id!=='residency')return;
+          const dy=Number(data.deltaY)||0;
+          const minDelta=data.type==='booking-embed-wheel'?8:32;
+          if(Math.abs(dy)<minDelta)return;
+          const now=Date.now();
+          if(now<bookingWheelLockUntil)return;
+          bookingWheelLockUntil=now+900;
+          if(dy>0)swiper.slideNext(700);
+          else swiper.slidePrev(700);
+        }
+      }
+    });
+    const initialSection=secs[swiper.activeIndex];
+    if(initialSection)applySectionChange(initialSection.id);
+    if(window.__MLYN_PENDING_SLIDE_ID){
+      const pending=document.getElementById(window.__MLYN_PENDING_SLIDE_ID);
+      window.__MLYN_PENDING_SLIDE_ID=null;
+      const idx=pending?secs.indexOf(pending):-1;
+      if(idx>=0)swiper.slideTo(idx,0);
+    }
+  }
+  const script=document.createElement('script');
+  script.src='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
+  script.onload=boot;
+  document.head.appendChild(script);
+})();
 </script>
 </body>
 </html>

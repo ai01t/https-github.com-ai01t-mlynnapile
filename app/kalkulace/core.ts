@@ -4,6 +4,7 @@
 // V kódu nejsou žádné osobní údaje.
 export const defaultCompany = {
   subtitle: "ZEDNICKÉ PRÁCE",
+  logo: "", // nahrané logo jako data-URL (obrázek)
   name: "",
   address: "",
   ico: "",
@@ -14,6 +15,7 @@ export const defaultCompany = {
   register: "Fyzická osoba zapsaná v živnostenském rejstříku.",
   vatNote: "Nejsem plátce DPH.",
   account: "",
+  bank: "", // název banky (nepovinné, na faktuře)
   dueDays: 14,
   validityDays: 30,
 };
@@ -53,6 +55,43 @@ export const defaultWalls = [
   { id: "stena-3", name: "Stěna 3", width: 400, height: 250, scope: "visual", openings: [], workIds: ["malba"] },
   { id: "stena-4", name: "Stěna 4", width: 300, height: 250, scope: "damaged", openings: [], workIds: ["oklep", "perlinka", "malba"] },
 ];
+
+// Stěny jsou seskupené do místností (taby v horní části kalkulačky).
+export const defaultRooms = [{ id: "room-1", name: "Místnost 1", walls: defaultWalls }];
+
+export const uidRoom = () => `room-${Math.random().toString(36).slice(2, 9)}`;
+
+// Nová prázdná místnost s jednou výchozí stěnou.
+export const makeRoom = (index: number) => ({
+  id: uidRoom(),
+  name: `Místnost ${index}`,
+  walls: [
+    {
+      id: `stena-${Math.random().toString(36).slice(2, 9)}`,
+      name: "Stěna 1",
+      width: 300,
+      height: 250,
+      scope: "damaged",
+      openings: [],
+      workIds: ["oklep", "perlinka", "malba"],
+    },
+  ],
+});
+
+// Zploštění místností na jeden seznam stěn pro výpočet a dokumenty.
+// U více místností se název stěny doplní o místnost („Kuchyň – Stěna 1“).
+export const flattenRooms = (rooms: any[]) => {
+  if (!rooms?.length) return [];
+  if (rooms.length === 1) return rooms[0].walls;
+  return rooms.flatMap((room: any) => room.walls.map((wall: any) => ({ ...wall, name: `${room.name} – ${wall.name}` })));
+};
+
+// Zpětná kompatibilita: starší uložená data mají jen walls bez místností.
+export const roomsFromData = (data: any) => {
+  if (data?.rooms?.length) return data.rooms;
+  if (data?.walls?.length) return [{ id: "room-1", name: "Místnost 1", walls: data.walls }];
+  return JSON.parse(JSON.stringify(defaultRooms));
+};
 
 export const defaultMaterials = [
   { id: "penetrace", name: "Penetrace hloubková", source: "plaster", unit: "l", cons: 0.15, reserve: 15, price: 120, on: true },
@@ -255,7 +294,141 @@ const KEYS = {
   companySettings: "kalk.company",
   presets: "kalk.presets",
   invoiceSeq: "kalk.invoiceSeq",
+  quoteSeq: "kalk.quoteSeq",
+  design: "kalk.design",
+  trash: "kalk.trash",
 };
+
+// Koš na smazané místnosti; položky starší než 7 dní se při načtení automaticky mažou.
+export const TRASH_TTL_DAYS = 7;
+
+// ---------- vzhled aplikace ----------
+
+// Pět barevných motivů. Všechny hodnoty jdou do CSS proměnných,
+// komponenty používají var(--brand), var(--card) atd.
+export const THEMES: Record<string, any> = {
+  bordo: {
+    name: "Bordó klasik",
+    dark: false,
+    vars: {
+      "--brand": "#820c0c", "--brand-dark": "#6b0a0a",
+      "--bg": "#f5f5f4", "--bg-soft": "#fafaf9", "--card": "#ffffff", "--header-bg": "rgba(255,255,255,.94)",
+      "--text": "#171717", "--text-soft": "#404040", "--muted": "#737373", "--line": "#e4e4e7",
+      "--radius": "10px", "--radius-sm": "8px",
+    },
+  },
+  indigo: {
+    name: "Moderní indigo",
+    dark: false,
+    vars: {
+      "--brand": "#4338ca", "--brand-dark": "#3730a3",
+      "--bg": "#eef1f7", "--bg-soft": "#f6f8fc", "--card": "#ffffff", "--header-bg": "rgba(255,255,255,.94)",
+      "--text": "#0f172a", "--text-soft": "#334155", "--muted": "#64748b", "--line": "#dbe1ea",
+      "--radius": "16px", "--radius-sm": "12px",
+    },
+  },
+  mono: {
+    name: "Minimal mono",
+    dark: false,
+    vars: {
+      "--brand": "#111111", "--brand-dark": "#000000",
+      "--bg": "#ffffff", "--bg-soft": "#f5f5f5", "--card": "#ffffff", "--header-bg": "rgba(255,255,255,.94)",
+      "--text": "#111111", "--text-soft": "#3f3f3f", "--muted": "#8a8a8a", "--line": "#d9d9d9",
+      "--radius": "4px", "--radius-sm": "3px",
+    },
+  },
+  dark: {
+    name: "Tmavý režim",
+    dark: true,
+    vars: {
+      "--brand": "#e11d48", "--brand-dark": "#be123c",
+      "--bg": "#0f1115", "--bg-soft": "#1a1d23", "--card": "#16191f", "--header-bg": "rgba(22,25,31,.94)",
+      "--text": "#f4f4f5", "--text-soft": "#d4d4d8", "--muted": "#8b8f98", "--line": "#2a2e37",
+      "--radius": "12px", "--radius-sm": "9px",
+    },
+  },
+  smaragd: {
+    name: "Smaragd",
+    dark: false,
+    vars: {
+      "--brand": "#047857", "--brand-dark": "#065f46",
+      "--bg": "#f3f6f2", "--bg-soft": "#f9fbf8", "--card": "#ffffff", "--header-bg": "rgba(255,255,255,.94)",
+      "--text": "#14201b", "--text-soft": "#38463f", "--muted": "#6b7a72", "--line": "#dde5df",
+      "--radius": "12px", "--radius-sm": "9px",
+    },
+  },
+};
+
+export const defaultDesign = {
+  theme: "bordo",
+  fontScale: 100, // % velikost písma (přes root font-size)
+  lineHeight: 1.5, // řádkování
+  letterSpacing: 0, // prostrkání v px
+  space: 1, // násobek mezer mezi bloky
+  zoom: 100, // % měřítko celého rozhraní
+};
+
+// Styl (CSS proměnné + typografie) pro kořenový prvek aplikace.
+export function designStyle(design: any) {
+  const theme = THEMES[design.theme] ?? THEMES.bordo;
+  return {
+    ...theme.vars,
+    "--space": design.space,
+    lineHeight: design.lineHeight,
+    letterSpacing: `${design.letterSpacing}px`,
+    zoom: (design.zoom ?? 100) / 100,
+    colorScheme: theme.dark ? ("dark" as const) : ("light" as const),
+  } as any;
+}
+
+// Dokumenty (nabídka, faktura) jsou vždy „papírově" světlé kvůli tisku;
+// akcentní barva motivu zůstává.
+export const DOC_STYLE = {
+  "--bg": "#f5f5f4", "--bg-soft": "#fafaf9", "--card": "#ffffff",
+  "--text": "#171717", "--text-soft": "#404040", "--muted": "#737373", "--line": "#e4e4e7",
+  "--space": 1,
+  background: "#ffffff", color: "#171717",
+  colorScheme: "light" as const,
+  lineHeight: 1.5, letterSpacing: "0px",
+} as any;
+
+// Mezery mezi bloky se škálují proměnnou --space (posuvník ve Vzhledu).
+export const SPACING_CSS = `
+  [data-kalk] .p-4 { padding: calc(1rem * var(--space, 1)); }
+  [data-kalk] .p-3 { padding: calc(.75rem * var(--space, 1)); }
+  [data-kalk] .gap-3 { gap: calc(.75rem * var(--space, 1)); }
+  [data-kalk] .gap-2 { gap: calc(.5rem * var(--space, 1)); }
+  [data-kalk] .space-y-3 > :not([hidden]) ~ :not([hidden]) { margin-top: calc(.75rem * var(--space, 1)); }
+  [data-kalk] .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: calc(.5rem * var(--space, 1)); }
+  [data-kalk] .mb-3 { margin-bottom: calc(.75rem * var(--space, 1)); }
+  [data-kalk] .mt-4 { margin-top: calc(1rem * var(--space, 1)); }
+`;
+
+// Načte obrázek loga, zmenší na max. 512 px a vrátí data-URL (PNG).
+export function readLogoFile(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (!file.type.startsWith("image/")) return reject(new Error("Vyber prosím obrázek (PNG, JPG, SVG…)."));
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Soubor se nepodařilo přečíst."));
+    reader.onload = () => {
+      const dataUrl = String(reader.result);
+      const img = new Image();
+      img.onerror = () => reject(new Error("Obrázek se nepodařilo načíst."));
+      img.onload = () => {
+        const max = 512;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        if (scale === 1 && dataUrl.length < 300_000) return resolve(dataUrl);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/png"));
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+  });
+}
 
 const read = (key: string, fallback: any) => {
   if (typeof window === "undefined") return fallback;
@@ -295,10 +468,20 @@ export const storage = {
     };
   },
   savePresets: (presets: any) => write(KEYS.presets, presets),
+  loadDesign: () => ({ ...defaultDesign, ...read(KEYS.design, {}) }),
+  saveDesign: (design: any) => write(KEYS.design, design),
+  loadTrash: (): any[] => {
+    const cutoff = Date.now() - TRASH_TTL_DAYS * 24 * 60 * 60 * 1000;
+    const kept = (read(KEYS.trash, []) as any[]).filter((item: any) => new Date(item.deletedAt).getTime() > cutoff);
+    write(KEYS.trash, kept);
+    return kept;
+  },
+  saveTrash: (trash: any[]) => write(KEYS.trash, trash),
   clearPresets: () => {
     if (typeof window === "undefined") return;
     window.localStorage.removeItem(KEYS.presets);
     window.localStorage.removeItem(KEYS.companySettings);
+    window.localStorage.removeItem(KEYS.design);
   },
   nextInvoiceNumber: () => {
     const year = new Date().getFullYear();
@@ -306,6 +489,22 @@ export const storage = {
     const next = seq.year === year ? seq.seq + 1 : 1;
     write(KEYS.invoiceSeq, { year, seq: next });
     return `${year}${String(next).padStart(3, "0")}`;
+  },
+  // číslo nabídky se přidělí při prvním uložení (N + rok + pořadí)
+  nextQuoteNumber: () => {
+    const year = new Date().getFullYear();
+    const seq = read(KEYS.quoteSeq, { year, seq: 0 });
+    const next = seq.year === year ? seq.seq + 1 : 1;
+    write(KEYS.quoteSeq, { year, seq: next });
+    return `N${year}${String(next).padStart(5, "0")}`;
+  },
+  // náhled dalšího čísla bez posunu řady (pro automatický název rozpracované nabídky)
+  peekQuoteNumber: () => {
+    if (typeof window === "undefined") return "";
+    const year = new Date().getFullYear();
+    const seq = read(KEYS.quoteSeq, { year, seq: 0 });
+    const next = seq.year === year ? seq.seq + 1 : 1;
+    return `N${year}${String(next).padStart(5, "0")}`;
   },
 };
 
