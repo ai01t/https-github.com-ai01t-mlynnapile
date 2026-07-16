@@ -46,7 +46,7 @@
 :root{--bg:#07060a;--stone:#c9b99a;--gold:#b08d57;--gold-light:#d4aa72;--cream:#f0ebe2;--muted:#6a6060;--border:rgba(201,185,154,0.12);--res-card-h:332px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;overflow-y:scroll;overscroll-behavior-y:none;}
-body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow-x:hidden;}
+body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow-x:hidden;overflow-x:clip;}
 body.mobile-nav-open{overflow:hidden;touch-action:none;}
 
 /* GRAIN */
@@ -736,14 +736,12 @@ body.de .de{display:revert;}
 
 }
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-<style id="swiper-overrides">
-html,body{overflow:hidden!important;height:100%;}
-.main-swiper{width:100vw;height:100vh;}
-.main-swiper>.swiper-wrapper>section.swiper-slide{width:100vw;height:100vh;overflow-y:auto;overflow-x:hidden;}
-.main-swiper .swiper-pagination{display:none;}
+<style id="native-scroll-overrides">
+html{-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;}
+section{scroll-snap-align:start;scroll-snap-stop:always;}
 #contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:56px;padding:12px 60px;}
 #contact .content{position:relative;z-index:10;}
+.residency-booking-trigger{background:rgba(7,6,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
 </style>
 </head>
 <body class="video-booting">
@@ -826,9 +824,7 @@ html,body{overflow:hidden!important;height:100%;}
 </div>
 
 <!-- ══ HERO ══ -->
-<div class="swiper main-swiper">
-<div class="swiper-wrapper">
-<section id="hero" class="swiper-slide">
+<section id="hero">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="auto" poster="/videos/bg/VDj9aKHnpcw_hq.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -879,7 +875,7 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ PLACE ══ -->
-<section id="place" class="swiper-slide">
+<section id="place">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -921,7 +917,7 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ STUDIO ══ -->
-<section id="studio" class="swiper-slide" style="padding:0;">
+<section id="studio" style="padding:0;">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/O431B93W9UY.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -990,7 +986,7 @@ html,body{overflow:hidden!important;height:100%;}
 
 
 <!-- ══ EQUIPMENT ══ -->
-<section id="equipment" class="swiper-slide">
+<section id="equipment">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/MczOR3DstPg.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1014,7 +1010,7 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ LOCATION ══ -->
-<section id="location" class="swiper-slide">
+<section id="location">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/tWtT7cB1Tus.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1080,14 +1076,14 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ HISTORY ══ -->
-<section id="history" class="swiper-slide">
+<section id="history">
   <div class="history-embed-shell">
     <iframe class="history-embed-frame" src="/historie?embed=1&horizontal=1" title="Historie Mlýna na Pile" loading="eager" tabindex="-1"></iframe>
   </div>
 </section>
 
 <!-- ══ RESIDENCY ══ -->
-<section id="residency" class="swiper-slide">
+<section id="residency">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/gTqXu9xU_7k.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1172,7 +1168,7 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ CONTACT ══ -->
-<section id="contact" class="swiper-slide">
+<section id="contact">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/7UU7KmxEE6s.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1242,9 +1238,6 @@ html,body{overflow:hidden!important;height:100%;}
   <span class="ft-copy"><span class="cs">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="en">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="de">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span></span>
 </footer>
 </section>
-</div>
-<div class="swiper-pagination"></div>
-</div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script>
@@ -1268,14 +1261,37 @@ function applySectionChange(sectionId){
       hideResidencyPackageOverlay(true);
       closeInlineResidencyVideo(true);
     }
+    if(sectionId==='history'){
+      const frame=document.querySelector('.history-embed-frame');
+      if(frame&&frame.contentWindow){
+        try{frame.contentWindow.postMessage({type:'history-embed-cooldown'},window.location.origin);}catch(e){}
+      }
+    }
     syncBackgroundVideos();
   }
-  nav.classList.toggle('scrolled',sectionId!=='hero');
   dots.forEach(d=>d.classList.toggle('active',d.dataset.t===sectionId));
   links.forEach(a=>a.classList.toggle('active',a.dataset.s===sectionId));
 }
 window.__MLYN_applySectionChange=applySectionChange;
 dots.forEach((d)=>d.addEventListener('click',()=>scrollToSection(d.dataset.t,{behavior:'smooth'})));
+
+/* NATIVNÍ SCROLL — progress bar, stav navu a detekce aktivní sekce */
+let scrollRafPending=false;
+function handleNativeScroll(){
+  scrollRafPending=false;
+  const st=window.scrollY;
+  const dh=document.documentElement.scrollHeight-innerHeight;
+  if(prog)prog.style.width=(dh>0?Math.min(100,st/dh*100):0)+'%';
+  nav.classList.toggle('scrolled',st>60);
+  let cur=secs.length?secs[0].id:'';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=innerHeight*.55)cur=s.id;});
+  if(cur)applySectionChange(cur);
+}
+window.addEventListener('scroll',()=>{
+  if(scrollRafPending)return;
+  scrollRafPending=true;
+  requestAnimationFrame(handleNativeScroll);
+},{passive:true});
 
 function shouldForceHomeToTop(){
   return !window.location.hash;
@@ -1289,9 +1305,7 @@ function resetHomeViewportToHero(){
   hideResidencyPackageOverlay(true);
   closeInlineResidencyVideo(true);
   syncBackgroundVideos();
-  if(window.mainSwiper&&typeof window.mainSwiper.slideTo==='function'){
-    window.mainSwiper.slideTo(0,0);
-  }
+  window.scrollTo({top:0,behavior:'auto'});
   kickBgVideos();
   primeActiveBackgroundPlayback();
 }
@@ -1310,12 +1324,8 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
     syncBackgroundVideos();
     const nextUrl=sectionId==='hero'?window.location.pathname:`${window.location.pathname}#${sectionId}`;
     window.history.replaceState({},'',nextUrl);
-    if(window.mainSwiper&&typeof window.mainSwiper.slideTo==='function'){
-      const idx=secs.indexOf(section);
-      if(idx>=0)window.mainSwiper.slideTo(idx,behavior==='smooth'?700:0);
-    }else{
-      window.__MLYN_PENDING_SLIDE_ID=sectionId;
-    }
+    const targetTop=sectionId==='hero'?0:Math.max(0,Math.round(window.scrollY+section.getBoundingClientRect().top));
+    window.scrollTo({top:targetTop,behavior});
   };
   if(closeMenu){
     closeMobileNav();
@@ -2852,100 +2862,107 @@ window.addEventListener('pageshow',()=>{
 });
 updateNavCompactState();
 
-/* SWIPER — vertikální slider sekcí */
-(function initMainSwiper(){
-  function boot(){
-    if(!window.Swiper)return;
-    const hashId=(window.location.hash||'').slice(1);
-    let startIndex=0;
-    if(hashId){
-      const target=document.getElementById(hashId);
-      const idx=target?secs.indexOf(target):-1;
-      if(idx>=0)startIndex=idx;
+/* NATIVNÍ SCROLL — most pro vložené iframy (historie / booking / vybavení).
+   Uvnitř vysoké sekce scroll průchozí; na kraji akumulace deltas -> plynulý skok na sousední sekci (snap). */
+(function initEmbedScrollBridge(){
+  let embedNavLockUntil=0;
+  let embedAccum=0;
+  let embedAccumTs=0;
+  function scrollToAdjacent(fromId,dir){
+    const idx=secs.findIndex(s=>s.id===fromId);
+    if(idx<0)return;
+    const next=secs[Math.min(Math.max(idx+dir,0),secs.length-1)];
+    if(next&&next.id!==fromId)scrollToSection(next.id,{behavior:'smooth'});
+  }
+  function nudgeAdjacent(fromId,dy,minDelta){
+    const now=Date.now();
+    if(now<embedNavLockUntil)return;
+    if(now-embedAccumTs>500)embedAccum=0;
+    embedAccumTs=now;
+    embedAccum+=dy;
+    if(Math.abs(embedAccum)<minDelta)return;
+    const dir=embedAccum>0?1:-1;
+    embedAccum=0;
+    embedNavLockUntil=now+900;
+    scrollToAdjacent(fromId,dir);
+  }
+  function passthroughScroll(fromId,deltaY,minDelta){
+    const el=document.getElementById(fromId);
+    if(!el)return;
+    const dy=Number(deltaY)||0;
+    if(!dy)return;
+    const rect=el.getBoundingClientRect();
+    const atTop=rect.top>=-4;
+    const atBottom=rect.bottom<=innerHeight+4;
+    const canScrollInside=(dy>0&&!atBottom)||(dy<0&&!atTop);
+    if(canScrollInside){
+      window.scrollBy({top:dy,behavior:'auto'});
+      return;
     }
-    const swiper=new window.Swiper('.main-swiper',{
-      direction:'vertical',
-      slidesPerView:1,
-      speed:700,
-      mousewheel:{
-        forceToAxis:true,
-        releaseOnEdges:false,
-        sensitivity:1,
-        thresholdDelta:50,
-        thresholdTime:500
-      },
-      keyboard:{enabled:true},
-      pagination:{el:'.swiper-pagination',clickable:true},
-      resistance:true,
-      resistanceRatio:0,
-      followFinger:false,
-      shortSwipes:false,
-      longSwipesRatio:0.15,
-      initialSlide:startIndex
-    });
-    window.mainSwiper=swiper;
-    swiper.on('progress',(s,progress)=>{
-      if(prog)prog.style.width=(Math.max(0,Math.min(1,progress))*100)+'%';
-    });
-    swiper.on('slideChange',()=>{
-      const section=secs[swiper.activeIndex];
-      if(!section)return;
-      applySectionChange(section.id);
-      const nextUrl=section.id==='hero'?window.location.pathname:`${window.location.pathname}#${section.id}`;
-      window.history.replaceState({},'',nextUrl);
-      if(section.id==='history'){
-        const frame=document.querySelector('.history-embed-frame');
-        if(frame&&frame.contentWindow){
-          try{frame.contentWindow.postMessage({type:'history-embed-cooldown'},window.location.origin);}catch(e){}
-        }
-      }
-    });
-    let bookingWheelLockUntil=0;
-    window.addEventListener('message',(event)=>{
-      if(event.origin!==window.location.origin)return;
-      const data=event.data;
-      if(!data||typeof data!=='object')return;
-      if(data.type==='history-embed-scroll'){
-        const active=secs[swiper.activeIndex];
-        if(!active||active.id!=='history')return;
-        if(data.direction==='next')swiper.slideNext(700);
-        else if(data.direction==='prev')swiper.slidePrev(700);
+    nudgeAdjacent(fromId,dy,minDelta);
+  }
+  window.addEventListener('message',(event)=>{
+    if(event.origin!==window.location.origin)return;
+    const data=event.data;
+    if(!data||typeof data!=='object')return;
+    if(data.type==='history-embed-scroll'){
+      if(currentSectionId!=='history')return;
+      const now=Date.now();
+      if(now<embedNavLockUntil)return;
+      embedNavLockUntil=now+900;
+      scrollToAdjacent('history',data.direction==='next'?1:-1);
+      return;
+    }
+    if(data.type==='equipment-embed-wheel'){
+      if(currentSectionId!=='equipment')return;
+      passthroughScroll('equipment',data.deltaY,140);
+      return;
+    }
+    if(data.type==='equipment-embed-swipe'){
+      if(currentSectionId!=='equipment')return;
+      passthroughScroll('equipment',data.deltaY,32);
+      return;
+    }
+    if(bookingEmbedFrame&&event.source===bookingEmbedFrame.contentWindow){
+      if(data.type==='booking-embed-height'){
+        setBookingEmbedHeight(data.h);
         return;
       }
-      if(bookingEmbedFrame&&event.source===bookingEmbedFrame.contentWindow){
-        if(data.type==='booking-embed-height'){
-          setBookingEmbedHeight(data.h);
-          return;
-        }
-        if(!residencyBookingOpen)return;
-        if(data.type==='booking-embed-wheel'||data.type==='booking-embed-swipe'){
-          const active=secs[swiper.activeIndex];
-          if(!active||active.id!=='residency')return;
-          const dy=Number(data.deltaY)||0;
-          const minDelta=data.type==='booking-embed-wheel'?8:32;
-          if(Math.abs(dy)<minDelta)return;
-          const now=Date.now();
-          if(now<bookingWheelLockUntil)return;
-          bookingWheelLockUntil=now+900;
-          if(dy>0)swiper.slideNext(700);
-          else swiper.slidePrev(700);
-        }
+      if(data.type==='booking-embed-wheel'){
+        if(currentSectionId!=='residency')return;
+        passthroughScroll('residency',data.deltaY,140);
+        return;
       }
-    });
-    const initialSection=secs[swiper.activeIndex];
-    if(initialSection)applySectionChange(initialSection.id);
-    if(window.__MLYN_PENDING_SLIDE_ID){
-      const pending=document.getElementById(window.__MLYN_PENDING_SLIDE_ID);
-      window.__MLYN_PENDING_SLIDE_ID=null;
-      const idx=pending?secs.indexOf(pending):-1;
-      if(idx>=0)swiper.slideTo(idx,0);
+      if(data.type==='booking-embed-swipe'){
+        if(currentSectionId!=='residency')return;
+        passthroughScroll('residency',data.deltaY,32);
+      }
     }
-  }
-  const script=document.createElement('script');
-  script.src='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-  script.onload=boot;
-  document.head.appendChild(script);
+  });
 })();
+
+/* Eager přednačtení všech videí sekcí po startu (odstupňovaně) — žádné načítací kolečko při scrollu */
+window.addEventListener('load',()=>{
+  const queue=secs.map((s)=>s.querySelector('.bg-video video')).filter(Boolean);
+  queue.forEach((video,i)=>{
+    setTimeout(()=>{
+      if(video.preload!=='auto')video.preload='auto';
+      if(video.networkState===HTMLMediaElement.NETWORK_EMPTY){
+        try{video.load();}catch(e){}
+      }
+    },400+i*350);
+  });
+});
+
+/* Start: hash → sekce, jinak nahoru; aktivace výchozí sekce */
+window.addEventListener('load',()=>{
+  try{document.documentElement.style.scrollBehavior='';}catch(e){}
+  const hashId=(window.location.hash||'').slice(1);
+  if(hashId&&document.getElementById(hashId)){
+    requestAnimationFrame(()=>scrollToSection(hashId,{behavior:'auto'}));
+  }
+  requestAnimationFrame(handleNativeScroll);
+});
 </script>
 </body>
 </html>
