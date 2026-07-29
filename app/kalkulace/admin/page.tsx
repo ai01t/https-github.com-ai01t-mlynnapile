@@ -13,6 +13,7 @@ import {
   fetchAres,
   n,
   readLogoFile,
+  setStorageNamespace,
   SPACING_CSS,
   storage,
   THEMES,
@@ -29,6 +30,8 @@ const SOURCE_LABELS = {
 };
 
 export default function AdminPage() {
+  // Administrace vždy edituje výchozí instanci (bez jmenného prostoru).
+  setStorageNamespace("");
   const [company, setCompany] = useState(defaultCompany);
   const [presets, setPresets] = useState({ works: [], globalRows: [], materials: [], settings: {} });
   const [design, setDesign] = useState(defaultDesign);
@@ -404,6 +407,15 @@ export default function AdminPage() {
             Uložit vše
           </Button>
         </div>
+
+        <footer className="mt-4 border-t border-[var(--line)] pt-3 text-center text-xs text-[var(--muted)]">
+          © 2026{" "}
+          <a href="/kalkulace/design" className="font-bold text-[var(--brand)] hover:underline" title="Nastavení výchozího vzhledu aplikace (správce)">Design</a>
+          {" & Development — "}
+          <a href="https://mlynnapile.cz/jindra" target="_blank" rel="noopener noreferrer" className="font-bold text-[var(--text-soft)] transition hover:text-[var(--brand)]">
+            Ing. Jindřich Traxmandl
+          </a>
+        </footer>
       </div>
     </main>
   );

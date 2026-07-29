@@ -6,7 +6,7 @@
 // Souřadnice jsou přímo v centimetrech (1 jednotka SVG = 1 cm).
 
 import { useMemo, useRef, useState } from "react";
-import { Check, Eraser, MousePointerClick, PenLine, Shapes, X } from "lucide-react";
+import { Check, Eraser, Image as ImageIcon, MousePointerClick, PenLine, Shapes, X } from "lucide-react";
 import { f2, n, uid } from "./core";
 
 type Pt = { x: number; y: number };
@@ -209,8 +209,35 @@ export default function SketchModal({ room, works, onApply, close }: any) {
   const [stroke, setStroke] = useState<Pt[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drag, setDrag] = useState<number | null>(null);
+  const [underlay, setUnderlay] = useState<string | null>(null); // importovaný nákres architekta (podklad k obkreslení)
+  const [underlayOpacity, setUnderlayOpacity] = useState(45);
   const svgRef = useRef<SVGSVGElement>(null);
   const drawing = useRef(false);
+
+  // import nákresu: obrázek se zmenší a zobrazí jako průsvitný podklad, přes který se kreslí
+  const importDrawing = (file?: File) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      window.alert("Vyber prosím obrázek nákresu (PNG, JPG…).");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 1600;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        setUnderlay(canvas.toDataURL("image/jpeg", 0.82));
+        if (mode === "start") setMode("draw");
+      };
+      img.src = String(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const defaultHeight = Math.round(n(room.walls?.[0]?.height)) || 250;
 
@@ -325,7 +352,19 @@ export default function SketchModal({ room, works, onApply, close }: any) {
           <h1 className="text-lg font-black">
             Náčrt půdorysu — <span style={{ color: "var(--brand)" }}>{room.name}</span>
           </h1>
-          <div className="ml-auto flex gap-2">
+          <div className="ml-auto flex flex-wrap items-center gap-2">
+            {underlay && (
+              <label className="inline-flex items-center gap-1.5 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] px-2 py-1.5 text-xs font-bold text-[var(--muted)]" title="Průhlednost importovaného nákresu">
+                Podklad
+                <input type="range" min={10} max={90} value={underlayOpacity} onChange={(event) => setUnderlayOpacity(Number(event.target.value))} className="w-16 accent-[var(--brand)]" />
+                <button type="button" onClick={() => setUnderlay(null)} title="Odebrat nákres" className="text-[var(--muted)] hover:text-red-600">✕</button>
+              </label>
+            )}
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] px-3 py-2 text-sm font-bold hover:bg-[var(--bg-soft)]" title="Importuj nákres od architekta a obkresli ho">
+              <ImageIcon className="h-4 w-4" />
+              {underlay ? "Změnit nákres" : "Importovat nákres"}
+              <input type="file" accept="image/*" className="hidden" onChange={(event) => importDrawing(event.target.files?.[0])} />
+            </label>
             {mode === "edit" && (
               <button type="button" onClick={() => { setMode("start"); setSelected(null); }} className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] px-3 py-2 text-sm font-bold hover:bg-[var(--bg-soft)]">
                 <Eraser className="h-4 w-4" />
@@ -393,6 +432,7 @@ export default function SketchModal({ room, works, onApply, close }: any) {
               onPointerMove={drawMove}
               onPointerUp={drawUp}
             >
+              {underlay && <image href={underlay} x={0} y={0} width={CANVAS.w} height={CANVAS.h} preserveAspectRatio="xMidYMid meet" opacity={underlayOpacity / 100} style={{ pointerEvents: "none" }} />}
               <Grid />
               {stroke.length > 1 && (
                 <polyline points={stroke.map((p) => `${p.x},${p.y}`).join(" ")} fill="none" stroke="var(--brand)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" opacity="0.8" />
@@ -405,6 +445,7 @@ export default function SketchModal({ room, works, onApply, close }: any) {
           <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_250px]">
             <div>
               <svg ref={svgRef} viewBox={viewBox} className="w-full touch-none rounded-[var(--radius-sm)] border-2 border-[var(--line)] bg-white" onClick={() => setSelected(null)}>
+                {underlay && <image href={underlay} x={0} y={0} width={CANVAS.w} height={CANVAS.h} preserveAspectRatio="xMidYMid meet" opacity={underlayOpacity / 100} style={{ pointerEvents: "none" }} />}
                 <Grid />
                 <polygon points={points.map((p) => `${p.x},${p.y}`).join(" ")} fill="var(--brand)" fillOpacity="0.06" stroke="none" />
                 {/* stěny */}
