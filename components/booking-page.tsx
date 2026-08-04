@@ -5,6 +5,8 @@ import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import styles from "@/components/booking-page.module.css"
+import PageBgLayer from "@/components/page-bg-layer"
+import { loadBgConfig } from "@/lib/page-bg"
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -937,6 +939,11 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const copy = copyByLocale[locale]
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [adminBg, setAdminBg] = useState(false)
+  useEffect(() => {
+    const c = loadBgConfig("booking")
+    setAdminBg(Boolean(c.image || c.video))
+  }, [])
   const langSwitchRef = useRef<HTMLDivElement | null>(null)
   const touchStartXRef = useRef<number | null>(null)
   const touchStartYRef = useRef<number | null>(null)
@@ -1235,11 +1242,12 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
   return (
     <div className={cx(styles.bookingPage, embedded && styles.embedded, manrope.className, nightMode && styles.nightMode)}>
-      {!embedded ? (
+      {!embedded && !adminBg ? (
         <div className={styles.bgShell} aria-hidden="true">
           <div className={styles.bgOverlay} />
         </div>
       ) : null}
+      {!embedded && adminBg ? <PageBgLayer pageId="booking" /> : null}
 
       {!embedded && (
         <>

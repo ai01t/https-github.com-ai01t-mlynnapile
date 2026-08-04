@@ -46,7 +46,7 @@
 :root{--bg:#07060a;--stone:#c9b99a;--gold:#b08d57;--gold-light:#d4aa72;--cream:#f0ebe2;--muted:#6a6060;--border:rgba(201,185,154,0.12);--res-card-h:332px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;overflow-y:scroll;overscroll-behavior-y:none;}
-body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow-x:hidden;}
+body{background:var(--bg);color:var(--cream);font-family:'Manrope',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;cursor:auto;overflow-x:hidden;overflow-x:clip;}
 body.mobile-nav-open{overflow:hidden;touch-action:none;}
 
 /* GRAIN */
@@ -117,6 +117,9 @@ body.night-mode .mode-icon-moon{display:inline-block;}
 /* SECTIONS */
 section{position:relative;min-height:100svh;overflow:hidden;display:flex;align-items:center;}
 .content{position:relative;z-index:10;width:100%;max-width:1360px;margin:0 auto;padding:120px 60px 80px;}
+/* jemný rozostřený halo pod textem pro lepší čitelnost nad videem */
+.content,.hero-stats,.scroll-cue{text-shadow:0 1px 3px rgba(7,6,10,.5),0 0 18px rgba(7,6,10,.42);}
+.content iframe,.content img,.content svg,.content .big-n,.eq-embed-wrap,.residency-booking-shell{text-shadow:none;}
 
 /* ═══════════════════════
    BG SYSTEM
@@ -604,6 +607,8 @@ body.pause-active section .content{filter:brightness(1.14);}
 .founder-block{border-top:1px solid rgba(201,185,154,.22);padding-top:12px;margin-top:12px;}
 .founder-block:first-of-type{border-top:none;padding-top:0;margin-top:0;}
 .founder-name{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;color:var(--cream);margin-bottom:6px;}
+.founder-link{color:inherit;text-decoration:none;border-bottom:1px solid rgba(201,185,154,.32);transition:color .2s,border-color .2s;}
+.founder-link:hover{color:var(--gold-light);border-color:rgba(176,141,87,.65);}
 .founder-text{font-size:.78rem;line-height:1.58;color:rgba(240,235,226,.86);}
 .anteater-link{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(176,141,87,.45);}
 .anteater-link:hover{color:var(--gold-light);border-bottom-color:rgba(212,170,114,.7);}
@@ -626,6 +631,8 @@ footer{
   pointer-events:auto;
 }
 .ft-copy{font-size:.6rem;letter-spacing:.12em;color:var(--muted);}
+.ft-link{color:inherit;text-decoration:none;border-bottom:1px solid rgba(201,185,154,.35);transition:color .2s,border-color .2s;}
+.ft-link:hover{color:var(--gold-light);border-color:rgba(176,141,87,.6);}
 .ft-mark{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:rgba(176,141,87,.3);letter-spacing:.08em;}
 
 /* REVEAL */
@@ -731,14 +738,13 @@ body.de .de{display:revert;}
 
 }
 </style>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
-<style id="swiper-overrides">
-html,body{overflow:hidden!important;height:100%;}
-.main-swiper{width:100vw;height:100vh;}
-.main-swiper>.swiper-wrapper>section.swiper-slide{width:100vw;height:100vh;overflow-y:auto;overflow-x:hidden;}
-.main-swiper .swiper-pagination{display:none;}
+<style id="native-scroll-overrides">
+html{-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;}
+section{scroll-snap-align:start;scroll-snap-stop:always;}
 #contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:56px;padding:12px 60px;}
 #contact .content{position:relative;z-index:10;}
+.residency-booking-trigger{background:rgba(7,6,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.bg-video video.loop-fading{opacity:0!important;}
 </style>
 </head>
 <body class="video-booting">
@@ -821,9 +827,7 @@ html,body{overflow:hidden!important;height:100%;}
 </div>
 
 <!-- ══ HERO ══ -->
-<div class="swiper main-swiper">
-<div class="swiper-wrapper">
-<section id="hero" class="swiper-slide">
+<section id="hero">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="auto" poster="/videos/bg/VDj9aKHnpcw_hq.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -874,7 +878,7 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ PLACE ══ -->
-<section id="place" class="swiper-slide">
+<section id="place">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -916,7 +920,7 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ STUDIO ══ -->
-<section id="studio" class="swiper-slide" style="padding:0;">
+<section id="studio" style="padding:0;">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/O431B93W9UY.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -985,7 +989,7 @@ html,body{overflow:hidden!important;height:100%;}
 
 
 <!-- ══ EQUIPMENT ══ -->
-<section id="equipment" class="swiper-slide">
+<section id="equipment">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/MczOR3DstPg.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1009,7 +1013,7 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ LOCATION ══ -->
-<section id="location" class="swiper-slide">
+<section id="location">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/tWtT7cB1Tus.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1075,14 +1079,14 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ HISTORY ══ -->
-<section id="history" class="swiper-slide">
+<section id="history">
   <div class="history-embed-shell">
     <iframe class="history-embed-frame" src="/de/geschichte?embed=1&horizontal=1" title="Geschichte der Mühle" loading="eager" tabindex="-1"></iframe>
   </div>
 </section>
 
 <!-- ══ RESIDENCY ══ -->
-<section id="residency" class="swiper-slide">
+<section id="residency">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/gTqXu9xU_7k.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1167,7 +1171,7 @@ html,body{overflow:hidden!important;height:100%;}
 </section>
 
 <!-- ══ CONTACT ══ -->
-<section id="contact" class="swiper-slide">
+<section id="contact">
   <div class="bg-css"></div>
   <div class="bg-video">
     <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/7UU7KmxEE6s.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
@@ -1209,11 +1213,11 @@ html,body{overflow:hidden!important;height:100%;}
             <p class="about-lead"><span class="cs">Dveře máme otevřené všem kreativním duším. Věříme, že kombinace krásné přírody, nástrojů s příběhem a moderní technologie v pozadí, zajišťující aby se jediný nápad neztratil, vytváří tu pravou synergii pro vznik něčeho výjimečného.</span><span class="en">Our doors are open to all creative souls. We believe that the combination of beautiful nature, instruments with a story, and modern background technology that ensures no idea gets lost creates true synergy for something exceptional.</span><span class="de">Unsere Türen stehen allen kreativen Menschen offen. Wir glauben, dass die Kombination aus schöner Natur, Instrumenten mit Geschichte und moderner Technik im Hintergrund, damit kein Einfall verloren geht, die richtige Synergie für etwas Besonderes schafft.</span></p>
             <div class="founders-bio">
               <div class="founder-block">
-                <h3 class="founder-name">Jindřich Traxmandl</h3>
+                <h3 class="founder-name"><a class="founder-link" href="/jindra">Jindřich Traxmandl</a></h3>
                 <p class="founder-text"><span class="cs">Kytarista kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, nadšenec do moderních technologií, který nedá dopustit na klasické vintage nástroje a aparáty.</span><span class="en">Guitarist of the band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, enthusiastic about modern technologies and devoted to classic vintage instruments and amps.</span><span class="de">Gitarrist der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, begeistert von moderner Technik und zugleich überzeugt von klassischen Vintage-Instrumenten und Verstärkern.</span></p>
               </div>
               <div class="founder-block">
-                <h3 class="founder-name">Andrea Kohoutová</h3>
+                <h3 class="founder-name"><a class="founder-link" href="/andrea">Andrea Kohoutová</a></h3>
                 <p class="founder-text"><span class="cs">Andrea je zpěvačka, baskytaristka kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, archeoložka a aktuálně hlavní pekařka mlýna :-). Stará se o provoz a zázemí mlýna, kde peče skvělý <a class="chleba-trigger" href="/chleba">domácí chléb</a> – důležitý bonus pro naše hosty.</span><span class="en">Andrea is a singer and bassist in <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, an archaeologist, and currently the head baker at the mill :-). She takes care of mill operations and facilities, where she bakes great <a class="chleba-trigger" href="/chleba">homemade bread</a> — an important bonus for our guests.</span><span class="de">Andrea ist Sängerin und Bassistin der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, Archäologin und aktuell Hauptbäckerin der Mühle :-). Sie kümmert sich um den Betrieb und das Umfeld der Mühle, wo sie hervorragendes <a class="chleba-trigger" href="/chleba">hausgemachtes Brot</a> backt — ein wichtiger Bonus für unsere Gäste.</span></p>
               </div>
             </div>
@@ -1234,12 +1238,9 @@ html,body{overflow:hidden!important;height:100%;}
     </div>
   </div>
 <footer>
-  <span class="ft-copy"><span class="cs">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="en">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span><span class="de">© 2026 | Design & Development: Ing. Jindřich Traxmandl</span></span>
+  <span class="ft-copy"><span class="cs">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="en">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="de">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span></span>
 </footer>
 </section>
-</div>
-<div class="swiper-pagination"></div>
-</div>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script>
@@ -1263,14 +1264,37 @@ function applySectionChange(sectionId){
       hideResidencyPackageOverlay(true);
       closeInlineResidencyVideo(true);
     }
+    if(sectionId==='history'){
+      const frame=document.querySelector('.history-embed-frame');
+      if(frame&&frame.contentWindow){
+        try{frame.contentWindow.postMessage({type:'history-embed-cooldown'},window.location.origin);}catch(e){}
+      }
+    }
     syncBackgroundVideos();
   }
-  nav.classList.toggle('scrolled',sectionId!=='hero');
   dots.forEach(d=>d.classList.toggle('active',d.dataset.t===sectionId));
   links.forEach(a=>a.classList.toggle('active',a.dataset.s===sectionId));
 }
 window.__MLYN_applySectionChange=applySectionChange;
 dots.forEach((d)=>d.addEventListener('click',()=>scrollToSection(d.dataset.t,{behavior:'smooth'})));
+
+/* NATIVNÍ SCROLL — progress bar, stav navu a detekce aktivní sekce */
+let scrollRafPending=false;
+function handleNativeScroll(){
+  scrollRafPending=false;
+  const st=window.scrollY;
+  const dh=document.documentElement.scrollHeight-innerHeight;
+  if(prog)prog.style.width=(dh>0?Math.min(100,st/dh*100):0)+'%';
+  nav.classList.toggle('scrolled',st>60);
+  let cur=secs.length?secs[0].id:'';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=innerHeight*.55)cur=s.id;});
+  if(cur)applySectionChange(cur);
+}
+window.addEventListener('scroll',()=>{
+  if(scrollRafPending)return;
+  scrollRafPending=true;
+  requestAnimationFrame(handleNativeScroll);
+},{passive:true});
 
 function shouldForceHomeToTop(){
   return !window.location.hash;
@@ -1284,9 +1308,7 @@ function resetHomeViewportToHero(){
   hideResidencyPackageOverlay(true);
   closeInlineResidencyVideo(true);
   syncBackgroundVideos();
-  if(window.mainSwiper&&typeof window.mainSwiper.slideTo==='function'){
-    window.mainSwiper.slideTo(0,0);
-  }
+  window.scrollTo({top:0,behavior:'auto'});
   kickBgVideos();
   primeActiveBackgroundPlayback();
 }
@@ -1305,12 +1327,8 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
     syncBackgroundVideos();
     const nextUrl=sectionId==='hero'?window.location.pathname:`${window.location.pathname}#${sectionId}`;
     window.history.replaceState({},'',nextUrl);
-    if(window.mainSwiper&&typeof window.mainSwiper.slideTo==='function'){
-      const idx=secs.indexOf(section);
-      if(idx>=0)window.mainSwiper.slideTo(idx,behavior==='smooth'?700:0);
-    }else{
-      window.__MLYN_PENDING_SLIDE_ID=sectionId;
-    }
+    const targetTop=sectionId==='hero'?0:Math.max(0,Math.round(window.scrollY+section.getBoundingClientRect().top));
+    window.scrollTo({top:targetTop,behavior});
   };
   if(closeMenu){
     closeMobileNav();
@@ -1392,6 +1410,29 @@ const bgVideoFrames=[...document.querySelectorAll('.bg-video video')];
 const bgFrameBySectionId=new Map(
   [...document.querySelectorAll('section')].map(section=>[section.id,section.querySelector('.bg-video video')]).filter(([,frame])=>Boolean(frame))
 );
+const bgSectionByVideo=new Map([...bgFrameBySectionId].map(([id,video])=>[video,id]));
+/* Buffer: hraje aktuální sekce + sousední (nahoru i dolů), aby video běželo už při příjezdu */
+function isBgSectionAllowed(sectionId){
+  if(sectionId===currentSectionId)return true;
+  const idx=secs.findIndex(s=>s.id===currentSectionId);
+  if(idx<0)return false;
+  const prevId=idx>0?secs[idx-1].id:null;
+  const nextId=idx<secs.length-1?secs[idx+1].id:null;
+  return sectionId===prevId||sectionId===nextId;
+}
+/* Plynulá smyčka — před koncem videa jemné prolnutí do tmy, po přetočení zpět (žádné bliknutí) */
+const LOOP_FADE_SEC=0.6;
+bgFrameBySectionId.forEach((video)=>{
+  video.addEventListener('timeupdate',()=>{
+    if(!video.duration||!isFinite(video.duration))return;
+    const remaining=video.duration-video.currentTime;
+    if(remaining<=LOOP_FADE_SEC){
+      video.classList.add('loop-fading');
+    }else if(video.classList.contains('loop-fading')){
+      video.classList.remove('loop-fading');
+    }
+  });
+});
 const bgMediaBySectionId=new Map(
   [...document.querySelectorAll('section')].map(section=>{
     const wrap=section.querySelector('.bg-video')||null;
@@ -1815,9 +1856,9 @@ function playBgVideo(video){
     setBgBlocked(video,isFatal);
     if(!isFatal)scheduleBgRetry(video,isGestureNeeded?520:240);
   };
-  const activeVideo=bgFrameBySectionId.get(currentSectionId);
-  if(activeVideo!==video)return;
-  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
+  const videoSectionId=bgSectionByVideo.get(video);
+  if(!videoSectionId||!isBgSectionAllowed(videoSectionId))return;
+  applyVideoRate(video,videoSectionId==='residency'?getResidencyVideoRate():1);
   if(!video.paused&&video.readyState>=2){
     markBgVideoFrame(video);
     markBgVideoPlaying(video);
@@ -1833,7 +1874,7 @@ function playBgVideo(video){
   video.defaultMuted=true;
   video.volume=0;
   video.controls=false;
-  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
+  applyVideoRate(video,videoSectionId==='residency'?getResidencyVideoRate():1);
   if(video.__playPending)return;
   video.__playPending=true;
   const p=video.play();
@@ -2495,7 +2536,7 @@ if(placeTimeline){
 
 function syncBackgroundVideos(){
   bgFrameBySectionId.forEach((video,sectionId)=>{
-    if(pauseAllVideos||sectionId!==currentSectionId){
+    if(pauseAllVideos||!isBgSectionAllowed(sectionId)){
       pauseBgVideo(video);
       return;
     }
@@ -2847,100 +2888,107 @@ window.addEventListener('pageshow',()=>{
 });
 updateNavCompactState();
 
-/* SWIPER — vertikální slider sekcí */
-(function initMainSwiper(){
-  function boot(){
-    if(!window.Swiper)return;
-    const hashId=(window.location.hash||'').slice(1);
-    let startIndex=0;
-    if(hashId){
-      const target=document.getElementById(hashId);
-      const idx=target?secs.indexOf(target):-1;
-      if(idx>=0)startIndex=idx;
+/* NATIVNÍ SCROLL — most pro vložené iframy (historie / booking / vybavení).
+   Uvnitř vysoké sekce scroll průchozí; na kraji akumulace deltas -> plynulý skok na sousední sekci (snap). */
+(function initEmbedScrollBridge(){
+  let embedNavLockUntil=0;
+  let embedAccum=0;
+  let embedAccumTs=0;
+  function scrollToAdjacent(fromId,dir){
+    const idx=secs.findIndex(s=>s.id===fromId);
+    if(idx<0)return;
+    const next=secs[Math.min(Math.max(idx+dir,0),secs.length-1)];
+    if(next&&next.id!==fromId)scrollToSection(next.id,{behavior:'smooth'});
+  }
+  function nudgeAdjacent(fromId,dy,minDelta){
+    const now=Date.now();
+    if(now<embedNavLockUntil)return;
+    if(now-embedAccumTs>500)embedAccum=0;
+    embedAccumTs=now;
+    embedAccum+=dy;
+    if(Math.abs(embedAccum)<minDelta)return;
+    const dir=embedAccum>0?1:-1;
+    embedAccum=0;
+    embedNavLockUntil=now+900;
+    scrollToAdjacent(fromId,dir);
+  }
+  function passthroughScroll(fromId,deltaY,minDelta){
+    const el=document.getElementById(fromId);
+    if(!el)return;
+    const dy=Number(deltaY)||0;
+    if(!dy)return;
+    const rect=el.getBoundingClientRect();
+    const atTop=rect.top>=-4;
+    const atBottom=rect.bottom<=innerHeight+4;
+    const canScrollInside=(dy>0&&!atBottom)||(dy<0&&!atTop);
+    if(canScrollInside){
+      window.scrollBy({top:dy,behavior:'auto'});
+      return;
     }
-    const swiper=new window.Swiper('.main-swiper',{
-      direction:'vertical',
-      slidesPerView:1,
-      speed:700,
-      mousewheel:{
-        forceToAxis:true,
-        releaseOnEdges:false,
-        sensitivity:1,
-        thresholdDelta:50,
-        thresholdTime:500
-      },
-      keyboard:{enabled:true},
-      pagination:{el:'.swiper-pagination',clickable:true},
-      resistance:true,
-      resistanceRatio:0,
-      followFinger:false,
-      shortSwipes:false,
-      longSwipesRatio:0.15,
-      initialSlide:startIndex
-    });
-    window.mainSwiper=swiper;
-    swiper.on('progress',(s,progress)=>{
-      if(prog)prog.style.width=(Math.max(0,Math.min(1,progress))*100)+'%';
-    });
-    swiper.on('slideChange',()=>{
-      const section=secs[swiper.activeIndex];
-      if(!section)return;
-      applySectionChange(section.id);
-      const nextUrl=section.id==='hero'?window.location.pathname:`${window.location.pathname}#${section.id}`;
-      window.history.replaceState({},'',nextUrl);
-      if(section.id==='history'){
-        const frame=document.querySelector('.history-embed-frame');
-        if(frame&&frame.contentWindow){
-          try{frame.contentWindow.postMessage({type:'history-embed-cooldown'},window.location.origin);}catch(e){}
-        }
-      }
-    });
-    let bookingWheelLockUntil=0;
-    window.addEventListener('message',(event)=>{
-      if(event.origin!==window.location.origin)return;
-      const data=event.data;
-      if(!data||typeof data!=='object')return;
-      if(data.type==='history-embed-scroll'){
-        const active=secs[swiper.activeIndex];
-        if(!active||active.id!=='history')return;
-        if(data.direction==='next')swiper.slideNext(700);
-        else if(data.direction==='prev')swiper.slidePrev(700);
+    nudgeAdjacent(fromId,dy,minDelta);
+  }
+  window.addEventListener('message',(event)=>{
+    if(event.origin!==window.location.origin)return;
+    const data=event.data;
+    if(!data||typeof data!=='object')return;
+    if(data.type==='history-embed-scroll'){
+      if(currentSectionId!=='history')return;
+      const now=Date.now();
+      if(now<embedNavLockUntil)return;
+      embedNavLockUntil=now+900;
+      scrollToAdjacent('history',data.direction==='next'?1:-1);
+      return;
+    }
+    if(data.type==='equipment-embed-wheel'){
+      if(currentSectionId!=='equipment')return;
+      passthroughScroll('equipment',data.deltaY,140);
+      return;
+    }
+    if(data.type==='equipment-embed-swipe'){
+      if(currentSectionId!=='equipment')return;
+      passthroughScroll('equipment',data.deltaY,32);
+      return;
+    }
+    if(bookingEmbedFrame&&event.source===bookingEmbedFrame.contentWindow){
+      if(data.type==='booking-embed-height'){
+        setBookingEmbedHeight(data.h);
         return;
       }
-      if(bookingEmbedFrame&&event.source===bookingEmbedFrame.contentWindow){
-        if(data.type==='booking-embed-height'){
-          setBookingEmbedHeight(data.h);
-          return;
-        }
-        if(!residencyBookingOpen)return;
-        if(data.type==='booking-embed-wheel'||data.type==='booking-embed-swipe'){
-          const active=secs[swiper.activeIndex];
-          if(!active||active.id!=='residency')return;
-          const dy=Number(data.deltaY)||0;
-          const minDelta=data.type==='booking-embed-wheel'?8:32;
-          if(Math.abs(dy)<minDelta)return;
-          const now=Date.now();
-          if(now<bookingWheelLockUntil)return;
-          bookingWheelLockUntil=now+900;
-          if(dy>0)swiper.slideNext(700);
-          else swiper.slidePrev(700);
-        }
+      if(data.type==='booking-embed-wheel'){
+        if(currentSectionId!=='residency')return;
+        passthroughScroll('residency',data.deltaY,140);
+        return;
       }
-    });
-    const initialSection=secs[swiper.activeIndex];
-    if(initialSection)applySectionChange(initialSection.id);
-    if(window.__MLYN_PENDING_SLIDE_ID){
-      const pending=document.getElementById(window.__MLYN_PENDING_SLIDE_ID);
-      window.__MLYN_PENDING_SLIDE_ID=null;
-      const idx=pending?secs.indexOf(pending):-1;
-      if(idx>=0)swiper.slideTo(idx,0);
+      if(data.type==='booking-embed-swipe'){
+        if(currentSectionId!=='residency')return;
+        passthroughScroll('residency',data.deltaY,32);
+      }
     }
-  }
-  const script=document.createElement('script');
-  script.src='https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-  script.onload=boot;
-  document.head.appendChild(script);
+  });
 })();
+
+/* Eager přednačtení všech videí sekcí po startu (odstupňovaně) — žádné načítací kolečko při scrollu */
+window.addEventListener('load',()=>{
+  const queue=secs.map((s)=>s.querySelector('.bg-video video')).filter(Boolean);
+  queue.forEach((video,i)=>{
+    setTimeout(()=>{
+      if(video.preload!=='auto')video.preload='auto';
+      if(video.networkState===HTMLMediaElement.NETWORK_EMPTY){
+        try{video.load();}catch(e){}
+      }
+    },400+i*350);
+  });
+});
+
+/* Start: hash → sekce, jinak nahoru; aktivace výchozí sekce */
+window.addEventListener('load',()=>{
+  try{document.documentElement.style.scrollBehavior='';}catch(e){}
+  const hashId=(window.location.hash||'').slice(1);
+  if(hashId&&document.getElementById(hashId)){
+    requestAnimationFrame(()=>scrollToSection(hashId,{behavior:'auto'}));
+  }
+  requestAnimationFrame(handleNativeScroll);
+});
 </script>
 </body>
 </html>

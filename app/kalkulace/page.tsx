@@ -51,17 +51,22 @@ import {
   statusInfo,
   storage,
   todayIso,
+  HISTORY_PIN,
+  WALL_COLORS,
   uid,
   wallStats,
 } from "./core";
 import Room3D from "./Room3D";
 import SketchModal from "./Sketch";
+import { track } from "@/lib/analytics";
 import { BRAND, Logo } from "./Logo";
-import { defaultDesign, designStyle, DOC_STYLE, readLogoFile, SPACING_CSS, defaultRooms, flattenRooms, makeRoom, roomsFromData, TRASH_TTL_DAYS } from "./core";
+import { defaultDesign, designStyle, DOC_STYLE, readLogoFile, SPACING_CSS, defaultRooms, flattenRooms, makeRoom, roomsFromData, TRASH_TTL_DAYS, setStorageNamespace } from "./core";
 
 const emptyMeta = { id: null, number: null, name: "", validUntil: "", status: "draft" };
 
-export default function KalkulacePage() {
+export default function KalkulacePage({ presetCompany, storageNamespace }: { presetCompany?: Record<string, any>; storageNamespace?: string } = {}) {
+  // Oddělené úložiště pro brandované instance (/jindra/bac/{ico}); výchozí instance má prostor prázdný.
+  setStorageNamespace(storageNamespace);
   const [rooms, setRooms] = useState(defaultRooms);
   const [activeRoomId, setActiveRoomId] = useState(defaultRooms[0].id);
   const [trash, setTrash] = useState([]);
@@ -70,13 +75,15 @@ export default function KalkulacePage() {
   const [docsOpen, setDocsOpen] = useState(false);
   const [selectedWallId, setSelectedWallId] = useState(null);
   const selectWallTimer = useRef(null);
+  // ruční dokument: { kind: "quote" | "invoice", initial?: uložená ruční nabídka }
+  const [manualDoc, setManualDoc] = useState(null);
   const [works, setWorks] = useState(defaultWorks);
   const [globalRows, setGlobalRows] = useState(defaultGlobalRows);
   const [materials, setMaterials] = useState(defaultMaterials);
   const [settings, setSettings] = useState(defaultSettings);
   const [customer, setCustomer] = useState(defaultCustomer);
   const [meta, setMeta] = useState(emptyMeta);
-  const [company, setCompany] = useState(defaultCompany);
+  const [company, setCompany] = useState(presetCompany ? { ...defaultCompany, ...presetCompany } : defaultCompany);
   const [quotes, setQuotes] = useState([]);
   const [invoices, setInvoices] = useState([]);
   const [loaded, setLoaded] = useState(false);
@@ -124,9 +131,24 @@ export default function KalkulacePage() {
     }
     setQuotes(storage.loadQuotes());
     setInvoices(storage.loadInvoices());
-    setCompany(storage.loadCompany());
+    let savedCompany = storage.loadCompany();
+    // úklid dřívějšího demo-poluce: výchozí instance (bez presetu) nesmí ukazovat Fenchak
+    if (!presetCompany && savedCompany.ico === "21693021") {
+      savedCompany = { ...defaultCompany };
+      storage.saveCompany(savedCompany);
+    }
+    // preset doplní údaje podnikatele; rastrové logo nahrané v adminu (PNG/JPG) zachováme,
+    // ale prázdné nebo naše generované SVG logo necháme presetem aktualizovat
+    const savedIsRealUpload = /^data:image\/(png|jpe?g|webp|gif)/i.test(savedCompany.logo || "");
+    const nextCompany = presetCompany
+      ? { ...savedCompany, ...presetCompany, logo: savedIsRealUpload ? savedCompany.logo : presetCompany.logo || savedCompany.logo }
+      : savedCompany;
+    setCompany(nextCompany);
+    if (presetCompany) storage.saveCompany(nextCompany);
     setDesign(storage.loadDesign());
     setTrash(storage.loadTrash());
+    storage.bumpVisits();
+    track("visit");
     setLoaded(true);
   }, []);
 
@@ -158,6 +180,7 @@ export default function KalkulacePage() {
   };
 
   const renameRoom = (roomId, name) => setRooms((prev) => prev.map((room) => (room.id === roomId ? { ...room, name } : room)));
+  const setRoomKind = (roomId, kind) => setRooms((prev) => prev.map((room) => (room.id === roomId ? { ...room, kind } : room)));
 
   // klik na stěnu ve 3D: sjede na kartu stěny a na chvíli ji zvýrazní
   const selectWall = (wallId) => {
@@ -167,8 +190,8 @@ export default function KalkulacePage() {
     selectWallTimer.current = window.setTimeout(() => setSelectedWallId(null), 3500);
   };
 
-  // strop dává smysl, jakmile jsou aspoň 3 stěny a ještě žádný není
-  const canAddCeiling = walls.length >= 3 && !walls.some((wall) => wall.ceiling);
+  // strop dává smysl u interiéru, jakmile jsou aspoň 3 stěny a ještě žádný není (u fasády strop nemá smysl)
+  const canAddCeiling = walls.length >= 3 && !walls.some((wall) => wall.ceiling) && activeRoom?.kind !== "facade";
   const addCeiling = () => {
     let width = 400;
     let depth = 300;
@@ -261,10 +284,28 @@ export default function KalkulacePage() {
     };
     persistQuotes(existing ? quotes.map((item) => (item.id === id ? quote : item)) : [quote, ...quotes]);
     setMeta({ id, number, name, validUntil, status: quote.status });
+    storage.pushHistory({ type: "quote", label: name, number, total: quote.total });
+    // anonymní statistika: jen počty a přepínače, nic ze zákaznických údajů
+    track("quote_saved", {
+      rooms: rooms.length,
+      walls: allWalls.length,
+      openings: allWalls.reduce((sum, wall) => sum + (wall.openings?.length ?? 0), 0),
+      floorObjects: rooms.reduce((sum, room) => sum + (room.floor?.length ?? 0), 0),
+      hasSketch: rooms.some((room) => Boolean(room.plan)),
+      facade: rooms.some((room) => room.kind === "facade"),
+      ceiling: allWalls.some((wall) => wall.ceiling),
+      ...(/^\d{8}$/.test(String(company.ico ?? "").replace(/\s+/g, "")) ? { icoPrefix: String(company.ico).replace(/\s+/g, "").slice(0, 3) } : {}),
+    });
     flash(existing ? "Nabídka přepsána ✓" : "Nabídka uložena ✓");
   };
 
   const loadQuote = (quote) => {
+    // ručně psaná nabídka nemá stěny – otevře se v řádkovém editoru
+    if (quote.manual) {
+      setManualDoc({ kind: "quote", initial: quote });
+      setQuotesOpen(false);
+      return;
+    }
     const loadedRooms = roomsFromData(quote.data);
     setRooms(loadedRooms);
     setActiveRoomId(loadedRooms[0].id);
@@ -365,15 +406,18 @@ export default function KalkulacePage() {
   // ---------- faktury ----------
 
   const createInvoiceFromQuote = (quote) => {
-    const quoteCalc = buildCalculation(quote.data);
+    // ruční nabídka přenese své řádky 1:1, kalkulovaná projde výpočtem
+    const quoteCalc = quote.manual ? null : buildCalculation(quote.data);
     const invoice = {
       id: uid(),
       number: storage.nextInvoiceNumber(),
       quoteId: quote.id,
       quoteName: quote.name,
       customer: quote.customer ?? defaultCustomer,
-      items: buildInvoiceItems(quoteCalc, quote.data.settings),
-      total: quoteCalc.subtotal,
+      items: quote.manual
+        ? quote.items.map((row) => ({ name: row.name, unit: row.unit || "kpl", qty: n(row.qty), price: n(row.price), total: n(row.qty) * n(row.price) }))
+        : buildInvoiceItems(quoteCalc, quote.data.settings),
+      total: quote.manual ? quote.total : quoteCalc.subtotal,
       issueDate: todayIso(),
       supplyDate: todayIso(),
       dueDate: addDaysIso(company.dueDays),
@@ -382,6 +426,8 @@ export default function KalkulacePage() {
       createdAt: new Date().toISOString(),
     };
     persistInvoices([invoice, ...invoices]);
+    storage.pushHistory({ type: "invoice", label: invoice.number, number: invoice.number, total: invoice.total });
+    track("invoice_created", { items: invoice.items?.length ?? 0 });
     setQuoteStatus(quote, "invoiced");
     setQuotesOpen(false);
     setInvoicesOpen(false);
@@ -427,6 +473,57 @@ export default function KalkulacePage() {
       createdAt: new Date().toISOString(),
     };
     persistInvoices([invoice, ...invoices]);
+    storage.pushHistory({ type: "invoice", label: invoice.number, number: invoice.number, total: invoice.total });
+    track("invoice_created", { items: invoice.items?.length ?? 0 });
+    setInvoiceView(invoice);
+    flash("Faktura vyhotovena ✓");
+  };
+
+  // uložení ručně psané nabídky (řádkový editor)
+  const saveManualQuote = ({ customer: docCustomer, items, validUntil }) => {
+    const existing = manualDoc?.initial?.id ? quotes.find((quote) => quote.id === manualDoc.initial.id) : null;
+    const id = existing?.id ?? uid();
+    const number = existing?.number ?? storage.nextQuoteNumber();
+    const total = items.reduce((sum, row) => sum + n(row.qty) * n(row.price), 0);
+    const quote = {
+      id,
+      number,
+      name: existing?.name ?? `${number}_${docCustomer.name?.trim() || "ruční nabídka"}`,
+      customer: docCustomer,
+      status: existing?.status ?? "draft",
+      manual: true,
+      items,
+      createdAt: existing?.createdAt ?? new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      validUntil: validUntil || addDaysIso(company.validityDays),
+      total,
+    };
+    persistQuotes(existing ? quotes.map((item) => (item.id === id ? quote : item)) : [quote, ...quotes]);
+    setManualDoc(null);
+    flash(existing ? "Nabídka přepsána ✓" : "Nabídka uložena ✓");
+  };
+
+  // vystavení ručně psané faktury (bez vazby na nabídku)
+  const createManualInvoice = ({ customer: docCustomer, items, issueDate, supplyDate, dueDate }) => {
+    const invoice = {
+      id: uid(),
+      number: storage.nextInvoiceNumber(),
+      quoteId: null,
+      quoteName: "",
+      customer: docCustomer,
+      items: items.map((row) => ({ name: row.name, unit: row.unit || "kpl", qty: n(row.qty), price: n(row.price), total: n(row.qty) * n(row.price) })),
+      total: items.reduce((sum, row) => sum + n(row.qty) * n(row.price), 0),
+      issueDate,
+      supplyDate,
+      dueDate,
+      supplier: company,
+      paid: false,
+      createdAt: new Date().toISOString(),
+    };
+    persistInvoices([invoice, ...invoices]);
+    storage.pushHistory({ type: "invoice", label: invoice.number, number: invoice.number, total: invoice.total });
+    track("invoice_created", { items: invoice.items?.length ?? 0 });
+    setManualDoc(null);
     setInvoiceView(invoice);
     flash("Faktura vyhotovena ✓");
   };
@@ -453,6 +550,15 @@ export default function KalkulacePage() {
           : wall,
       ),
     );
+  const addOpening = (wallId, opening) => setWalls((prev) => prev.map((wall) => (wall.id === wallId ? { ...wall, openings: [...wall.openings, opening] } : wall)));
+  const removeOpening = (wallId, openingId) =>
+    setWalls((prev) => prev.map((wall) => (wall.id === wallId ? { ...wall, openings: wall.openings.filter((opening) => opening.id !== openingId) } : wall)));
+
+  // podlahové objekty (schodiště, kamna, komín) – patří místnosti, ne stěně
+  const updateActiveRoom = (patch) => setRooms((prev) => prev.map((room) => (room.id === activeRoomId ? { ...room, ...(typeof patch === "function" ? patch(room) : patch) } : room)));
+  const addFloorObject = (obj) => updateActiveRoom((room) => ({ floor: [...(room.floor ?? []), obj] }));
+  const updateFloorObject = (objId, patch) => updateActiveRoom((room) => ({ floor: (room.floor ?? []).map((obj) => (obj.id === objId ? { ...obj, ...patch } : obj)) }));
+  const removeFloorObject = (objId) => updateActiveRoom((room) => ({ floor: (room.floor ?? []).filter((obj) => obj.id !== objId) }));
   const toggleWork = (wallId, workId, checked) =>
     setWalls((prev) =>
       prev.map((wall) =>
@@ -692,19 +798,54 @@ export default function KalkulacePage() {
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                onClick={() => setSketchOpen(true)}
+                onClick={() => {
+                  setSketchOpen(true);
+                  track("sketch_used");
+                }}
                 title="Načrtni půdorys místnosti myší – stěny se vytvoří samy"
                 className="flex items-center gap-1.5 rounded-[var(--radius)] bg-[var(--brand)] px-3 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-[var(--brand-dark)]"
               >
                 <PenLine className="h-4 w-4" />
                 {activeRoom?.plan ? "Upravit náčrt" : "Načrtnout půdorys"}
               </button>
-              <Button variant="outline" onClick={() => setShow3D((prev) => !prev)}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShow3D((prev) => !prev);
+                  if (!show3D) track("view_3d", { walls: walls.length });
+                }}
+              >
                 <Box className="h-4 w-4" />
                 {show3D ? "Skrýt 3D náhled" : "3D náhled"}
               </Button>
+              <div className="inline-flex overflow-hidden rounded-[var(--radius)] border border-[var(--line)]" title="Typ plochy: interiér místnosti, nebo venkovní fasáda">
+                {[
+                  ["interior", "Interiér"],
+                  ["facade", "Fasáda"],
+                ].map(([kind, label]) => {
+                  const current = (activeRoom?.kind ?? "interior") === kind;
+                  // aktivní tlačítko má stejnou barvu jako stěny, které zapne (interiér i fasáda);
+                  // neaktivní stav se zapisuje explicitně, aby se inline styl spolehlivě přebil
+                  const colors = WALL_COLORS[kind];
+                  return (
+                    <button
+                      key={kind}
+                      type="button"
+                      onClick={() => setRoomKind(activeRoom.id, kind)}
+                      className="px-3 py-2 text-sm font-bold transition"
+                      style={
+                        current
+                          ? { backgroundColor: colors.fill, color: colors.stroke, boxShadow: `inset 0 0 0 2px ${colors.stroke}` }
+                          : { backgroundColor: "var(--card)", color: "var(--text-soft)", boxShadow: "none" }
+                      }
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
               <div className="ml-auto text-right text-xs text-[var(--muted)]">
-                {walls.length} stěn · <b className="text-[var(--text)]">{f2(walls.reduce((sum, wall) => sum + wallStats(wall).clean, 0))} m²</b> čisté plochy
+                {walls.length} stěn · <b className="text-[var(--text)]">{f2(walls.reduce((sum, wall) => sum + wallStats(wall).clean, 0))} m²</b> {activeRoom?.kind === "facade" ? "plochy fasády" : "čisté plochy"}
               </div>
             </div>
 
@@ -713,7 +854,16 @@ export default function KalkulacePage() {
                 <Room3D
                   walls={walls.filter((wall) => !wall.ceiling).map((wall) => ({ ...wall, openings: wall.openings.map((opening) => normalizeOpening(opening, wall)) }))}
                   works={works}
+                  plan={activeRoom?.plan}
+                  facade={activeRoom?.kind === "facade"}
+                  floorObjects={activeRoom?.floor ?? []}
                   onSelectWall={selectWall}
+                  onAddOpening={addOpening}
+                  onUpdateOpening={updateOpening}
+                  onRemoveOpening={removeOpening}
+                  onAddFloorObject={addFloorObject}
+                  onUpdateFloorObject={updateFloorObject}
+                  onRemoveFloorObject={removeFloorObject}
                 />
               </Card>
             )}
@@ -793,7 +943,7 @@ export default function KalkulacePage() {
                         <div className="space-y-1.5">
                           {wall.openings.length === 0 && <div className="px-1 text-[11px] text-[var(--muted)]">Bez odečtů.</div>}
                           {wall.openings.length > 0 && (
-                            <div className="grid gap-2 px-2 text-[10px] font-bold uppercase text-[var(--muted)] xl:grid-cols-[92px_minmax(100px,1fr)_64px_64px_52px_64px_76px_92px_36px]">
+                            <div className="grid gap-1.5 px-2 text-[9px] font-bold uppercase text-[var(--muted)] xl:grid-cols-[72px_minmax(110px,440px)_52px_52px_40px_52px_88px_minmax(74px,1fr)_28px]">
                               <span>Typ</span>
                               <span>Název</span>
                               <span className="text-right">Šířka</span>
@@ -808,9 +958,9 @@ export default function KalkulacePage() {
                           {wall.openings.map((opening) => {
                             const normalized = normalizeOpening(opening, wall);
                             return (
-                              <div key={opening.id} className="grid gap-2 rounded-[var(--radius-sm)] bg-[var(--card)] p-2 shadow-sm xl:grid-cols-[92px_minmax(100px,1fr)_64px_64px_52px_64px_76px_92px_36px]">
+                              <div key={opening.id} className="grid items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--card)] p-1.5 shadow-sm xl:grid-cols-[72px_minmax(110px,440px)_52px_52px_40px_52px_88px_minmax(74px,1fr)_28px]">
                                 <select
-                                  className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2"
+                                  className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-xs"
                                   value={openingKind(opening)}
                                   onChange={(event) =>
                                     updateOpening(wall.id, opening.id, {
@@ -825,19 +975,19 @@ export default function KalkulacePage() {
                                   <option value="other">Jiné</option>
                                 </select>
                                 <input
-                                  className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2"
+                                  className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-xs"
                                   title="Popis pro chytré vykreslení"
                                   placeholder="např. pojistky, trám, schod"
                                   value={opening.name}
                                   onChange={(event) => updateOpening(wall.id, opening.id, { name: event.target.value, type: openingKind(opening) === "other" ? "other" : opening.type })}
                                 />
-                                <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-right" title="Šířka v cm" value={opening.width} onChange={(event) => updateOpening(wall.id, opening.id, { width: event.target.value })} />
-                                <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-right" title="Výška v cm" value={opening.height} onChange={(event) => updateOpening(wall.id, opening.id, { height: event.target.value })} />
-                                <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-right" title="Počet" value={opening.count} onChange={(event) => updateOpening(wall.id, opening.id, { count: event.target.value })} />
-                                <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-right" title="Posun zleva v cm" value={normalized.x} onChange={(event) => updateOpening(wall.id, opening.id, { x: event.target.value })} />
-                                <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-right" title="Výška od podlahy v cm" value={normalized.y} onChange={(event) => updateOpening(wall.id, opening.id, { y: event.target.value })} />
-                                <div className="rounded-[var(--radius-sm)] bg-[var(--bg)] px-2 py-1 text-right text-sm font-bold">-{f2(areaCm(opening.width, opening.height, opening.count))} m²</div>
-                                <button type="button" onClick={() => updateWall(wall.id, { openings: wall.openings.filter((item) => item.id !== opening.id) })} className="grid h-9 place-items-center rounded-[var(--radius-sm)] hover:bg-[var(--bg)]">
+                                <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Šířka v cm" value={opening.width} onChange={(event) => updateOpening(wall.id, opening.id, { width: event.target.value })} />
+                                <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Výška v cm" value={opening.height} onChange={(event) => updateOpening(wall.id, opening.id, { height: event.target.value })} />
+                                <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Počet" value={opening.count} onChange={(event) => updateOpening(wall.id, opening.id, { count: event.target.value })} />
+                                <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Posun zleva v cm" value={normalized.x} onChange={(event) => updateOpening(wall.id, opening.id, { x: event.target.value })} />
+                                <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Výška od podlahy v cm" value={normalized.y} onChange={(event) => updateOpening(wall.id, opening.id, { y: event.target.value })} />
+                                <div className="rounded-[var(--radius-sm)] bg-[var(--bg)] px-1.5 py-1 text-right text-xs font-bold">-{f2(areaCm(opening.width, opening.height, opening.count))} m²</div>
+                                <button type="button" onClick={() => updateWall(wall.id, { openings: wall.openings.filter((item) => item.id !== opening.id) })} className="grid h-8 place-items-center rounded-[var(--radius-sm)] hover:bg-[var(--bg)]">
                                   <Trash2 className="h-4 w-4" />
                                 </button>
                               </div>
@@ -1007,6 +1157,13 @@ export default function KalkulacePage() {
             </Card>
           </aside>
         </div>
+
+        <footer className="mt-4 border-t border-[var(--line)] pt-3 text-center text-xs text-[var(--muted)] print:hidden">
+          © 2026{" "}
+          <a href="https://mlynnapile.cz/jindra" target="_blank" rel="noopener noreferrer" className="font-bold text-[var(--text-soft)] transition hover:text-[var(--brand)]">
+            Design &amp; Development — Ing. Jindřich Traxmandl
+          </a>
+        </footer>
       </div>
 
       {previewOpen && <PreviewModal calc={calc} settings={settings} customer={customer} meta={meta} company={company} close={() => setPreviewOpen(false)} />}
@@ -1021,11 +1178,38 @@ export default function KalkulacePage() {
           onInvoice={createInvoiceFromQuote}
           onExport={exportData}
           onImport={importData}
+          onNew={() => {
+            setQuotesOpen(false);
+            setManualDoc({ kind: "quote", initial: null });
+          }}
           close={() => setQuotesOpen(false)}
         />
       )}
       {invoicesOpen && (
-        <InvoicesModal invoices={invoices} onView={(invoice) => setInvoiceView(invoice)} onPaid={toggleInvoicePaid} onDelete={deleteInvoice} close={() => setInvoicesOpen(false)} />
+        <InvoicesModal
+          invoices={invoices}
+          onView={(invoice) => setInvoiceView(invoice)}
+          onPaid={toggleInvoicePaid}
+          onDelete={deleteInvoice}
+          onNew={() => {
+            setInvoicesOpen(false);
+            setManualDoc({ kind: "invoice", initial: null });
+          }}
+          close={() => setInvoicesOpen(false)}
+        />
+      )}
+      {manualDoc && (
+        <ManualDocModal
+          kind={manualDoc.kind}
+          initial={manualDoc.initial}
+          company={company}
+          onSubmit={(payload) => (manualDoc.kind === "quote" ? saveManualQuote(payload) : createManualInvoice(payload))}
+          onSwitchToCalculator={() => {
+            setManualDoc(null);
+            newQuote();
+          }}
+          close={() => setManualDoc(null)}
+        />
       )}
       {invoiceView && <InvoiceModal invoice={invoiceView} company={company} close={() => setInvoiceView(null)} />}
       {sketchOpen && activeRoom && (
@@ -1220,7 +1404,7 @@ function Modal({ children, close, wide = false }) {
 
 // ---------- seznam nabídek ----------
 
-function QuotesModal({ quotes, currentId, onLoad, onDuplicate, onDelete, onStatus, onInvoice, onExport, onImport, close }) {
+function QuotesModal({ quotes, currentId, onLoad, onDuplicate, onDelete, onStatus, onInvoice, onExport, onImport, onNew, close }) {
   return (
     <Modal
       wide
@@ -1241,8 +1425,18 @@ function QuotesModal({ quotes, currentId, onLoad, onDuplicate, onDelete, onStatu
         </>
       }
     >
-      <h1 className="mb-4 border-l-4 border-[var(--brand)] pl-2 text-xl font-black">Uložené nabídky</h1>
-      {quotes.length === 0 && <div className="rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] p-6 text-center text-sm text-[var(--muted)]">Zatím žádné uložené nabídky. Vyplň zákazníka a klikni na „Uložit nabídku“.</div>}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h1 className="border-l-4 border-[var(--brand)] pl-2 text-xl font-black">Uložené nabídky</h1>
+        <Button onClick={onNew}>
+          <FilePlus2 className="h-4 w-4" />
+          Nová nabídka
+        </Button>
+      </div>
+      {quotes.length === 0 && (
+        <div className="rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] p-6 text-center text-sm text-[var(--muted)]">
+          Zatím žádné uložené nabídky. Sestav ji v kalkulačce a klikni na „Uložit nabídku“, nebo ji napiš ručně přes „Nová nabídka“.
+        </div>
+      )}
       <div className="space-y-2">
         {quotes.map((quote) => {
           const status = statusInfo(quote.status);
@@ -1252,6 +1446,7 @@ function QuotesModal({ quotes, currentId, onLoad, onDuplicate, onDelete, onStatu
                 <div className="flex items-center gap-2">
                   <span className="truncate font-bold">{quote.name}</span>
                   <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${status.className}`}>{status.label}</span>
+                  {quote.manual && <span className="rounded-full border border-[var(--line)] px-2 py-0.5 text-[10px] font-bold text-[var(--muted)]">ručně</span>}
                   {quote.id === currentId && <span className="text-[10px] font-bold text-blue-600">OTEVŘENO</span>}
                 </div>
                 <div className="text-xs text-[var(--muted)]">
@@ -1269,7 +1464,7 @@ function QuotesModal({ quotes, currentId, onLoad, onDuplicate, onDelete, onStatu
               <div className="flex gap-1.5">
                 <Button variant="outline" onClick={() => onLoad(quote)}>
                   <FolderOpen className="h-4 w-4" />
-                  Načíst
+                  {quote.manual ? "Upravit" : "Načíst"}
                 </Button>
                 <Button variant="outline" onClick={() => onDuplicate(quote)} title="Duplikovat">
                   <Copy className="h-4 w-4" />
@@ -1292,7 +1487,7 @@ function QuotesModal({ quotes, currentId, onLoad, onDuplicate, onDelete, onStatu
 
 // ---------- seznam faktur ----------
 
-function InvoicesModal({ invoices, onView, onPaid, onDelete, close }) {
+function InvoicesModal({ invoices, onView, onPaid, onDelete, onNew, close }) {
   const overdue = (invoice) => !invoice.paid && invoice.dueDate < todayIso();
   return (
     <Modal
@@ -1303,8 +1498,18 @@ function InvoicesModal({ invoices, onView, onPaid, onDelete, close }) {
         </Button>
       }
     >
-      <h1 className="mb-4 border-l-4 border-[var(--brand)] pl-2 text-xl font-black">Faktury</h1>
-      {invoices.length === 0 && <div className="rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] p-6 text-center text-sm text-[var(--muted)]">Zatím žádné faktury. Vytvoříš je z uložené nabídky tlačítkem „Faktura“.</div>}
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h1 className="border-l-4 border-[var(--brand)] pl-2 text-xl font-black">Faktury</h1>
+        <Button onClick={onNew}>
+          <FilePlus2 className="h-4 w-4" />
+          Nová faktura
+        </Button>
+      </div>
+      {invoices.length === 0 && (
+        <div className="rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] p-6 text-center text-sm text-[var(--muted)]">
+          Zatím žádné faktury. Vystavíš je z uložené nabídky tlačítkem „Faktura“, nebo napíšeš ručně přes „Nová faktura“.
+        </div>
+      )}
       <div className="space-y-2">
         {invoices.map((invoice) => (
           <div key={invoice.id} className="flex flex-wrap items-center gap-3 rounded-[var(--radius-sm)] border border-[var(--line)] p-3">
@@ -1316,7 +1521,7 @@ function InvoicesModal({ invoices, onView, onPaid, onDelete, close }) {
                 </span>
               </div>
               <div className="text-xs text-[var(--muted)]">
-                {invoice.customer?.name || "Bez zákazníka"} · {invoice.quoteName} · vystaveno {dateCz(invoice.issueDate)} · splatnost {dateCz(invoice.dueDate)}
+                {invoice.customer?.name || "Bez zákazníka"} · {invoice.quoteName || "ruční faktura"} · vystaveno {dateCz(invoice.issueDate)} · splatnost {dateCz(invoice.dueDate)}
               </div>
             </div>
             <div className="text-right font-black">{czk(invoice.total)}</div>
@@ -1336,6 +1541,276 @@ function InvoicesModal({ invoices, onView, onPaid, onDelete, close }) {
         ))}
       </div>
     </Modal>
+  );
+}
+
+// ---------- ruční dokument (nabídka / faktura psaná po řádcích) ----------
+
+const emptyRow = () => ({ id: uid(), name: "", unit: "kpl", qty: 1, price: "" });
+
+function ManualDocModal({ kind, initial, company, onSubmit, onSwitchToCalculator, close }) {
+  const isQuote = kind === "quote";
+  const [customer, setCustomer] = useState(initial?.customer ?? defaultCustomer);
+  const [items, setItems] = useState(initial?.items?.length ? initial.items : [emptyRow(), emptyRow(), emptyRow()]);
+  const [validUntil, setValidUntil] = useState(initial?.validUntil ?? addDaysIso(company.validityDays));
+  const [issueDate, setIssueDate] = useState(todayIso());
+  const [supplyDate, setSupplyDate] = useState(todayIso());
+  const [dueDate, setDueDate] = useState(addDaysIso(company.dueDays));
+  const [aresBusy, setAresBusy] = useState(false);
+  const [printView, setPrintView] = useState(false);
+
+  const filled = items.filter((row) => String(row.name).trim() || n(row.price) > 0);
+  const total = filled.reduce((sum, row) => sum + n(row.qty) * n(row.price), 0);
+  const setItem = (id, patch) => setItems((prev) => prev.map((row) => (row.id === id ? { ...row, ...patch } : row)));
+
+  const loadAres = async () => {
+    setAresBusy(true);
+    try {
+      const data = await fetchAres(customer.ico);
+      setCustomer((prev) => ({ ...prev, name: data.name, address: data.address, ico: data.ico }));
+    } catch (error) {
+      window.alert(error.message);
+    } finally {
+      setAresBusy(false);
+    }
+  };
+
+  const submit = () => {
+    if (filled.length === 0) {
+      window.alert("Vyplň alespoň jeden řádek (název nebo cenu).");
+      return;
+    }
+    onSubmit({ customer, items: filled, validUntil, issueDate, supplyDate, dueDate });
+  };
+
+  return (
+    <Modal
+      wide
+      close={
+        <>
+          {isQuote && (
+            <Button variant="outline" onClick={() => setPrintView(true)}>
+              <Printer className="h-4 w-4" />
+              Náhled tisku
+            </Button>
+          )}
+          <Button variant="outline" onClick={close}>
+            <X className="h-4 w-4" />
+          </Button>
+        </>
+      }
+    >
+      <h1 className="mb-1 border-l-4 border-[var(--brand)] pl-2 text-xl font-black">
+        {initial ? "Úprava" : "Nová"} {isQuote ? "nabídka" : "faktura"} — ruční zadání
+      </h1>
+      <p className="mb-4 text-sm text-[var(--muted)]">Řádky vyplníš sám — hodí se pro práce mimo kalkulačku (hodinovka, materiál, doprava…).</p>
+
+      {isQuote && !initial && (
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--bg-soft)] p-3">
+          <div className="text-sm text-[var(--text-soft)]">
+            <b>Tip:</b> nacenění podle rozměrů místnosti spočítá kalkulačka za tebe — včetně materiálu a dopravy.
+          </div>
+          <Button variant="outline" onClick={onSwitchToCalculator}>
+            <Box className="h-4 w-4" />
+            Sestavit přes stěny a úkony
+          </Button>
+        </div>
+      )}
+
+      <div className="grid gap-2 sm:grid-cols-2">
+        <Field label="Zákazník" value={customer.name} onChange={(name) => setCustomer((prev) => ({ ...prev, name }))} placeholder="Jméno / firma" />
+        <Field label="Adresa" value={customer.address} onChange={(address) => setCustomer((prev) => ({ ...prev, address }))} placeholder="Ulice, město" />
+        <div className="flex items-end gap-1.5">
+          <div className="min-w-0 flex-1">
+            <Field label="IČO (u firem)" value={customer.ico ?? ""} onChange={(ico) => setCustomer((prev) => ({ ...prev, ico }))} placeholder="nepovinné" />
+          </div>
+          <button
+            type="button"
+            onClick={loadAres}
+            disabled={aresBusy}
+            title="Načíst jméno a adresu z ARES podle IČO"
+            className="inline-flex h-10 shrink-0 items-center gap-1 rounded-[var(--radius)] bg-[var(--brand)] px-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[var(--brand-dark)] disabled:opacity-50"
+          >
+            <Search className="h-3.5 w-3.5" />
+            {aresBusy ? "…" : "ARES"}
+          </button>
+        </div>
+        {isQuote ? (
+          <label className="block">
+            <Label>Platnost do</Label>
+            <input type="date" value={validUntil} onChange={(event) => setValidUntil(event.target.value)} className="h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-3" />
+          </label>
+        ) : (
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              ["Vystavení", issueDate, setIssueDate],
+              ["DUZP", supplyDate, setSupplyDate],
+              ["Splatnost", dueDate, setDueDate],
+            ].map(([label, value, setter]) => (
+              <label key={label} className="block">
+                <Label>{label}</Label>
+                <input type="date" value={value} onChange={(event) => setter(event.target.value)} className="h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-sm" />
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="mt-4">
+        <div className="grid grid-cols-[minmax(0,1fr)_64px_72px_100px_110px_36px] gap-2 px-1 text-[10px] font-bold uppercase text-[var(--muted)]">
+          <span>Položka</span>
+          <span>MJ</span>
+          <span className="text-right">Množství</span>
+          <span className="text-right">Cena/MJ</span>
+          <span className="text-right">Celkem</span>
+          <span />
+        </div>
+        <div className="mt-1 space-y-1.5">
+          {items.map((row) => (
+            <div key={row.id} className="grid grid-cols-[minmax(0,1fr)_64px_72px_100px_110px_36px] items-center gap-2">
+              <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-sm" placeholder="např. Oprava omítky v koupelně" value={row.name} onChange={(event) => setItem(row.id, { name: event.target.value })} />
+              <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-center text-sm" value={row.unit} onChange={(event) => setItem(row.id, { unit: event.target.value })} />
+              <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-right text-sm" value={row.qty} onChange={(event) => setItem(row.id, { qty: event.target.value })} />
+              <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-right text-sm" placeholder="0" value={row.price} onChange={(event) => setItem(row.id, { price: event.target.value })} />
+              <div className="rounded-[var(--radius-sm)] bg-[var(--bg-soft)] px-2 py-2 text-right text-sm font-bold">{czk(n(row.qty) * n(row.price))}</div>
+              <button type="button" onClick={() => setItems((prev) => (prev.length > 1 ? prev.filter((item) => item.id !== row.id) : prev))} className="grid h-9 place-items-center rounded-[var(--radius-sm)] text-[var(--muted)] hover:bg-[var(--bg)]">
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => setItems((prev) => [...prev, emptyRow()])}
+          className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] py-2 text-sm font-bold text-[var(--muted)] transition hover:border-[var(--muted)] hover:text-[var(--text)]"
+        >
+          <Plus className="h-4 w-4" />
+          Přidat řádek
+        </button>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center justify-end gap-3">
+        <div className="rounded-[var(--radius)] border px-4 py-2 text-right" style={{ borderColor: "color-mix(in srgb, var(--brand) 18%, transparent)" }}>
+          <div className="text-[10px] font-bold uppercase text-[var(--muted)]">Celkem</div>
+          <div className="text-2xl font-black" style={{ color: BRAND }}>{czk(total)}</div>
+        </div>
+        <Button onClick={submit}>
+          {isQuote ? <Save className="h-4 w-4" /> : <FilePlus2 className="h-4 w-4" />}
+          {isQuote ? (initial ? "Uložit změny" : "Uložit nabídku") : "Vystavit fakturu"}
+        </Button>
+      </div>
+
+      {printView && (
+        <Modal
+          close={
+            <>
+              <Button variant="outline" onClick={() => window.print()}>
+                <Printer className="h-4 w-4" />
+                Tisk
+              </Button>
+              <Button variant="outline" onClick={() => setPrintView(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </>
+          }
+        >
+          <div data-print-root style={DOC_STYLE}>
+            <ManualQuoteDoc number={initial?.number} customer={customer} items={filled} total={total} validUntil={validUntil} company={company} />
+          </div>
+        </Modal>
+      )}
+    </Modal>
+  );
+}
+
+// tisková podoba ručně psané nabídky
+function ManualQuoteDoc({ number, customer, items, total, validUntil, company }) {
+  return (
+    <div>
+      <header className="flex items-start justify-between gap-4">
+        <Logo logo={company.logo} name={company.name} subtitle={company.subtitle} markClass="h-16" titleClass="text-2xl" />
+        <div className="text-right">
+          <h1 className="text-3xl font-black uppercase leading-none tracking-tight" style={{ color: BRAND }}>Cenová nabídka</h1>
+          {number && <div className="mt-1 text-xl font-black tabular-nums">{number}</div>}
+        </div>
+      </header>
+      <div className="mt-3 h-1 rounded-full" style={{ backgroundColor: BRAND }} />
+
+      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+        <PartyBlock
+          label="Dodavatel"
+          name={company.name || "— vyplň v administraci"}
+          rows={[
+            [company.address, false],
+            [company.ico && ["IČO", company.ico], false],
+            [company.dic && ["DIČ", company.dic], false],
+            [company.phone && ["Tel.", company.phone], false],
+            [company.email && ["E-mail", company.email], false],
+          ]}
+          note={
+            <>
+              {company.register}
+              <br />
+              <b className="text-[var(--text-soft)]">{company.vatNote}</b>
+            </>
+          }
+        />
+        <PartyBlock
+          label="Odběratel"
+          name={customer.name || "—"}
+          rows={[
+            [customer.address, false],
+            [customer.ico && ["IČO", customer.ico], false],
+            [customer.phone && ["Tel.", customer.phone], false],
+            [customer.email && ["E-mail", customer.email], false],
+          ]}
+        />
+      </div>
+
+      <div className="mt-4 grid gap-px overflow-hidden rounded-[var(--radius)] border border-[var(--line)] bg-[var(--line)] text-sm sm:grid-cols-2">
+        <DataCell label="Datum vystavení" value={dateCz(todayIso())} />
+        <DataCell label="Platnost nabídky do" value={dateCz(validUntil)} strong />
+      </div>
+
+      <section className="mt-6">
+        <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-[var(--text-soft)]">Nabízíme Vám</h2>
+        <table className="w-full border-collapse text-xs">
+          <thead>
+            <tr className="bg-[var(--bg)]">
+              <Th>Položka</Th>
+              <Th>MJ</Th>
+              <Th right>Množství</Th>
+              <Th right>Cena/MJ</Th>
+              <Th right>Celkem</Th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((row) => (
+              <tr key={row.id}>
+                <Td>{row.name}</Td>
+                <Td center>{row.unit}</Td>
+                <Td right>{f2(row.qty)}</Td>
+                <Td right>{czk(row.price)}</Td>
+                <Td right strong>{czk(n(row.qty) * n(row.price))}</Td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="mt-5 flex items-end justify-between gap-6">
+        <div className="text-xs leading-5 text-[var(--muted)]">
+          Nabídka platí do <b className="text-[var(--text)]">{dateCz(validUntil)}</b>.
+          <br />
+          {[company.phone, company.email].filter(Boolean).join(" · ")}
+        </div>
+        <div className="rounded-[var(--radius)] p-4 text-right text-white shadow-md" style={{ backgroundColor: BRAND }}>
+          <div className="text-xs uppercase tracking-wide opacity-80">Celkem</div>
+          <div className="text-3xl font-black">{czk(total)}</div>
+          <div className="mt-1 text-[10px] opacity-80">Neplátce DPH – cena je konečná</div>
+        </div>
+      </section>
+    </div>
   );
 }
 

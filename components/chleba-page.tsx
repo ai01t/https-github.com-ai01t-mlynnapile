@@ -1,8 +1,10 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Cormorant_Garamond, Manrope } from "next/font/google"
 import Link from "next/link"
 import styles from "@/components/chleba-page.module.css"
+import { BgConfig, buildMediaFilter, buildOverlayGradients, loadBgConfig } from "@/lib/page-bg"
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -271,11 +273,38 @@ const copy = {
 
 export default function ChlebaPage({ locale }: { locale: Locale }) {
   const t = copy[locale]
+  const [bg, setBg] = useState<BgConfig | null>(null)
+
+  useEffect(() => {
+    const c = loadBgConfig("chleba")
+    setBg(c.image || c.video ? c : null)
+  }, [])
+
+  const overlay = bg ? buildOverlayGradients(bg) : ""
 
   return (
     <main className={`${styles.page} ${manrope.className}`}>
-      <img className={styles.backgroundImage} src="/images/chleba-hero.jpeg" alt="" aria-hidden="true" />
-      <div className={styles.shade} />
+      {bg?.video ? (
+        <video
+          className={styles.backgroundImage}
+          autoPlay
+          muted
+          loop
+          playsInline
+          style={{ filter: buildMediaFilter(bg) }}
+        >
+          <source src={bg.video} />
+        </video>
+      ) : (
+        <img
+          className={styles.backgroundImage}
+          src={bg?.image || "/images/chleba-hero.jpeg"}
+          alt=""
+          aria-hidden="true"
+          style={bg ? { filter: buildMediaFilter(bg) } : undefined}
+        />
+      )}
+      <div className={styles.shade} style={overlay ? { background: "none", backgroundImage: overlay } : undefined} />
 
       <header className={styles.header}>
         <Link href={t.homePath} className={`${styles.brand} ${cormorant.className}`} aria-label="Mlýn na Pile">
