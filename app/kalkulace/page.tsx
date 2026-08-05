@@ -51,12 +51,14 @@ import {
   statusInfo,
   storage,
   todayIso,
+  HISTORY_PIN,
   WALL_COLORS,
   uid,
   wallStats,
 } from "./core";
 import Room3D from "./Room3D";
 import SketchModal from "./Sketch";
+import { track } from "@/lib/analytics";
 import { BRAND, Logo } from "./Logo";
 import { defaultDesign, designStyle, DOC_STYLE, readLogoFile, SPACING_CSS, defaultRooms, flattenRooms, makeRoom, roomsFromData, TRASH_TTL_DAYS, setStorageNamespace } from "./core";
 
@@ -145,6 +147,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     if (presetCompany) storage.saveCompany(nextCompany);
     setDesign(storage.loadDesign());
     setTrash(storage.loadTrash());
+    storage.bumpVisits();
+    track("visit");
     setLoaded(true);
   }, []);
 
@@ -280,6 +284,18 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     };
     persistQuotes(existing ? quotes.map((item) => (item.id === id ? quote : item)) : [quote, ...quotes]);
     setMeta({ id, number, name, validUntil, status: quote.status });
+    storage.pushHistory({ type: "quote", label: name, number, total: quote.total });
+    // anonymní statistika: jen počty a přepínače, nic ze zákaznických údajů
+    track("quote_saved", {
+      rooms: rooms.length,
+      walls: allWalls.length,
+      openings: allWalls.reduce((sum, wall) => sum + (wall.openings?.length ?? 0), 0),
+      floorObjects: rooms.reduce((sum, room) => sum + (room.floor?.length ?? 0), 0),
+      hasSketch: rooms.some((room) => Boolean(room.plan)),
+      facade: rooms.some((room) => room.kind === "facade"),
+      ceiling: allWalls.some((wall) => wall.ceiling),
+      ...(/^\d{8}$/.test(String(company.ico ?? "").replace(/\s+/g, "")) ? { icoPrefix: String(company.ico).replace(/\s+/g, "").slice(0, 3) } : {}),
+    });
     flash(existing ? "Nabídka přepsána ✓" : "Nabídka uložena ✓");
   };
 
@@ -410,6 +426,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       createdAt: new Date().toISOString(),
     };
     persistInvoices([invoice, ...invoices]);
+    storage.pushHistory({ type: "invoice", label: invoice.number, number: invoice.number, total: invoice.total });
+    track("invoice_created", { items: invoice.items?.length ?? 0 });
     setQuoteStatus(quote, "invoiced");
     setQuotesOpen(false);
     setInvoicesOpen(false);
@@ -455,6 +473,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       createdAt: new Date().toISOString(),
     };
     persistInvoices([invoice, ...invoices]);
+    storage.pushHistory({ type: "invoice", label: invoice.number, number: invoice.number, total: invoice.total });
+    track("invoice_created", { items: invoice.items?.length ?? 0 });
     setInvoiceView(invoice);
     flash("Faktura vyhotovena ✓");
   };
@@ -501,6 +521,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       createdAt: new Date().toISOString(),
     };
     persistInvoices([invoice, ...invoices]);
+    storage.pushHistory({ type: "invoice", label: invoice.number, number: invoice.number, total: invoice.total });
+    track("invoice_created", { items: invoice.items?.length ?? 0 });
     setManualDoc(null);
     setInvoiceView(invoice);
     flash("Faktura vyhotovena ✓");
@@ -776,14 +798,23 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                onClick={() => setSketchOpen(true)}
+                onClick={() => {
+                  setSketchOpen(true);
+                  track("sketch_used");
+                }}
                 title="Načrtni půdorys místnosti myší – stěny se vytvoří samy"
                 className="flex items-center gap-1.5 rounded-[var(--radius)] bg-[var(--brand)] px-3 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-[var(--brand-dark)]"
               >
                 <PenLine className="h-4 w-4" />
                 {activeRoom?.plan ? "Upravit náčrt" : "Načrtnout půdorys"}
               </button>
-              <Button variant="outline" onClick={() => setShow3D((prev) => !prev)}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShow3D((prev) => !prev);
+                  if (!show3D) track("view_3d", { walls: walls.length });
+                }}
+              >
                 <Box className="h-4 w-4" />
                 {show3D ? "Skrýt 3D náhled" : "3D náhled"}
               </Button>
@@ -1127,11 +1158,16 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           </aside>
         </div>
 
-        <footer className="mt-4 border-t border-[var(--line)] pt-3 text-center text-xs text-[var(--muted)] print:hidden">
-          © 2026{" "}
-          <a href="https://mlynnapile.cz/jindra" target="_blank" rel="noopener noreferrer" className="font-bold text-[var(--text-soft)] transition hover:text-[var(--brand)]">
-            Design &amp; Development — Ing. Jindřich Traxmandl
-          </a>
+        <footer className="mt-4 space-y-1 border-t border-[var(--line)] pt-3 text-center text-xs text-[var(--muted)] print:hidden">
+          <div>
+            © 2026{" "}
+            <a href="https://mlynnapile.cz/jindra" target="_blank" rel="noopener noreferrer" className="font-bold text-[var(--text-soft)] transition hover:text-[var(--brand)]">
+              Design &amp; Development — Ing. Jindřich Traxmandl
+            </a>
+          </div>
+          <div className="text-[11px] opacity-80">
+            Zadané údaje zůstávají ve vašem prohlížeči. Ukládáme jen anonymní statistiku používání — bez jmen, adres a IP adres.
+          </div>
         </footer>
       </div>
 

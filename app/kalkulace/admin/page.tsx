@@ -7,7 +7,10 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Eye, Image as ImageIcon, Plus, RotateCcw, Save, Search, Trash2, Upload, X } from "lucide-react";
 import {
   czAccountToIban,
+  dateCz,
+  czk,
   defaultCompany,
+  HISTORY_PIN,
   defaultDesign,
   designStyle,
   fetchAres,
@@ -39,6 +42,13 @@ export default function AdminPage() {
   const [flash, setFlash] = useState("");
   const [aresBusy, setAresBusy] = useState(false);
   const [aresError, setAresError] = useState("");
+  // soukromý přehled využití – odemkne se PINem, do té doby není nikde vidět, že se něco ukládá
+  const [pin, setPin] = useState("");
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [history, setHistory] = useState([]);
+  const [visits, setVisits] = useState(0);
+  const [server, setServer] = useState(null); // anonymní statistika ze serveru
+  const [serverError, setServerError] = useState("");
 
   useEffect(() => {
     setCompany(storage.loadCompany());
@@ -92,6 +102,35 @@ export default function AdminPage() {
   };
 
   const setD = (key, value) => setDesign((prev) => ({ ...prev, [key]: value }));
+
+  // odemknutí soukromého přehledu – dokud PIN nesedí, o historii se nikde nemluví
+  // Odemyká dvojím způsobem: PIN v prohlížeči odkryje místní historii,
+  // serverové heslo (STATS_KEY) navíc i anonymní statistiku ze serveru.
+  // PIN v kódu prohlížeče totiž nikdy nemůže chránit serverová data.
+  const tryUnlock = async () => {
+    const code = pin.trim();
+    if (!code) return;
+    setServerError("");
+    let serverOk = false;
+    try {
+      const response = await fetch("/api/stats", { headers: { "x-stats-key": code }, cache: "no-store" });
+      const data = await response.json();
+      if (response.ok) {
+        setServer(data);
+        serverOk = true;
+      } else if (code === HISTORY_PIN) {
+        setServerError(data?.error ?? "Statistiku se nepodařilo načíst.");
+      }
+    } catch {
+      if (code === HISTORY_PIN) setServerError("Server neodpověděl.");
+    }
+    if (code === HISTORY_PIN || serverOk) {
+      setHistory(storage.loadHistory());
+      setVisits(storage.loadVisits());
+      setHistoryOpen(true);
+    }
+    setPin("");
+  };
 
   const loadFromAres = async () => {
     setAresError("");
@@ -407,6 +446,133 @@ export default function AdminPage() {
             Uložit vše
           </Button>
         </div>
+
+        {/* soukromý přehled využití – bez PINu se tváří jen jako servisní kód */}
+        {historyOpen ? (
+          <Card>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <h2 className="border-l-4 border-[var(--brand)] pl-2 text-lg font-black">Historie použití</h2>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--bg-soft)] px-3 py-1.5 text-xs font-bold">
+                  Návštěv: <span style={{ color: "var(--brand)" }}>{visits}</span>
+                </span>
+                <span className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--bg-soft)] px-3 py-1.5 text-xs font-bold">
+                  Záznamů: <span style={{ color: "var(--brand)" }}>{history.length}</span>
+                </span>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (!window.confirm("Smazat celou historii použití? Tohle nelze vrátit.")) return;
+                    storage.clearHistory();
+                    setHistory([]);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Smazat historii
+                </Button>
+                <Button variant="outline" onClick={() => setHistoryOpen(false)}>
+                  <X className="h-4 w-4" />
+                  Skrýt
+                </Button>
+              </div>
+            </div>
+            {/* anonymní statistika ze serveru – napříč všemi zařízeními */}
+            {server ? (
+              <div className="mb-3 rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--bg-soft)] p-3">
+                <div className="mb-2 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Anonymní statistika ze serveru (všechna zařízení)</div>
+                <div className="grid gap-2 sm:grid-cols-4">
+                  {[
+                    ["Návštěv celkem", server.visits],
+                    ["Odlišných uživatelů", server.uniqueUsers],
+                    ["Uložených nabídek", server.eventCounts?.quote_saved ?? 0],
+                    ["Vystavených faktur", server.eventCounts?.invoice_created ?? 0],
+                  ].map(([label, value]) => (
+                    <div key={label} className="rounded-[var(--radius-sm)] bg-[var(--card)] px-3 py-2">
+                      <div className="text-[10px] font-bold uppercase text-[var(--muted)]">{label}</div>
+                      <div className="text-xl font-black" style={{ color: "var(--brand)" }}>{value}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-[var(--muted)]">
+                  <span>Náčrt: <b className="text-[var(--text)]">{server.eventCounts?.sketch_used ?? 0}×</b></span>
+                  <span>3D náhled: <b className="text-[var(--text)]">{server.eventCounts?.view_3d ?? 0}×</b></span>
+                  <span>Posledních 14 dní: <b className="text-[var(--text)]">{(server.daily ?? []).reduce((sum, day) => sum + day.count, 0)}</b> akcí</span>
+                </div>
+                {server.events?.length > 0 && (
+                  <details className="mt-2">
+                    <summary className="cursor-pointer text-[11px] font-bold text-[var(--muted)]">Jak aplikaci používají (posledních {server.events.length} akcí)</summary>
+                    <div className="mt-1.5 max-h-52 space-y-1 overflow-auto">
+                      {server.events.map((item, index) => (
+                        <div key={index} className="flex flex-wrap items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--card)] px-2 py-1 text-[11px]">
+                          <span className="font-bold" style={{ color: "var(--brand)" }}>{item.event}</span>
+                          {item.rooms != null && <span>místností: {item.rooms}</span>}
+                          {item.walls != null && <span>stěn: {item.walls}</span>}
+                          {item.openings != null && <span>otvorů: {item.openings}</span>}
+                          {item.hasSketch && <span>náčrt</span>}
+                          {item.facade && <span>fasáda</span>}
+                          {item.icoPrefix && <span>obor {item.icoPrefix}xxxxx</span>}
+                          <span className="ml-auto text-[var(--muted)]">{dateCz(String(item.t).slice(0, 10))}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                )}
+              </div>
+            ) : serverError ? (
+              <div className="mb-3 rounded-[var(--radius-sm)] border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-900">
+                Serverová statistika: {serverError}
+              </div>
+            ) : null}
+
+            {history.length === 0 ? (
+              <div className="rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] p-6 text-center text-sm text-[var(--muted)]">
+                Zatím žádné záznamy. Ukládají se vytvořené nabídky a vystavené faktury.
+              </div>
+            ) : (
+              <div className="max-h-[420px] space-y-1.5 overflow-auto">
+                {history.map((item, index) => (
+                  <div key={index} className="flex flex-wrap items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--bg-soft)] px-3 py-2 text-sm">
+                    <span
+                      className="rounded-full px-2 py-0.5 text-[10px] font-black uppercase"
+                      style={{
+                        backgroundColor: item.type === "invoice" ? "#d1fae5" : "#e0e7ff",
+                        color: item.type === "invoice" ? "#065f46" : "#3730a3",
+                      }}
+                    >
+                      {item.type === "invoice" ? "Faktura" : "Nabídka"}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate font-semibold">{item.label}</span>
+                    {item.total != null && <span className="font-black">{czk(item.total)}</span>}
+                    <span className="text-xs text-[var(--muted)]">
+                      {dateCz(String(item.t).slice(0, 10))}{" "}
+                      {new Date(item.t).toLocaleTimeString("cs-CZ", { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card>
+        ) : (
+          <div className="flex items-center justify-end gap-1.5 pt-1">
+            <input
+              value={pin}
+              onChange={(event) => setPin(event.target.value)}
+              onKeyDown={(event) => event.key === "Enter" && tryUnlock()}
+              placeholder="Servisní kód"
+              type="password"
+              inputMode="numeric"
+              title="Servisní kód"
+              className="w-28 rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1 text-xs text-[var(--muted)]"
+            />
+            <button
+              type="button"
+              onClick={tryUnlock}
+              className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1 text-xs font-bold text-[var(--muted)] transition hover:text-[var(--text)]"
+            >
+              OK
+            </button>
+          </div>
+        )}
 
         <footer className="mt-4 border-t border-[var(--line)] pt-3 text-center text-xs text-[var(--muted)]">
           © 2026{" "}

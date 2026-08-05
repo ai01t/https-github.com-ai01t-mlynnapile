@@ -317,7 +317,12 @@ const KEYS = {
   quoteSeq: "kalk.quoteSeq",
   design: "kalk.design",
   trash: "kalk.trash",
+  visits: "kalk.visits",
+  history: "kalk.history",
 };
+
+// Heslo k soukromému přehledu využití (jen tento prohlížeč).
+export const HISTORY_PIN = "1717";
 
 // Koš na smazané místnosti; položky starší než 7 dní se při načtení automaticky mažou.
 export const TRASH_TTL_DAYS = 7;
@@ -525,6 +530,20 @@ export const storage = {
     return kept;
   },
   saveTrash: (trash: any[]) => write(KEYS.trash, trash),
+  // počítadlo návštěv a soukromá historie využití (jen tento prohlížeč, bez serveru)
+  bumpVisits: (): number => {
+    const next = read(KEYS.visits, 0) + 1;
+    write(KEYS.visits, next);
+    return next;
+  },
+  loadVisits: (): number => read(KEYS.visits, 0),
+  loadHistory: (): any[] => read(KEYS.history, []),
+  pushHistory: (entry: any) => {
+    if (typeof window === "undefined") return;
+    const next = [{ ...entry, t: new Date().toISOString() }, ...(read(KEYS.history, []) as any[])].slice(0, 800);
+    write(KEYS.history, next);
+  },
+  clearHistory: () => write(KEYS.history, []),
   clearPresets: () => {
     if (typeof window === "undefined") return;
     window.localStorage.removeItem(storageNs + KEYS.presets);

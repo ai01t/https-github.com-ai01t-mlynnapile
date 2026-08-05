@@ -40,13 +40,15 @@ const role: React.CSSProperties = {
 }
 const socials: React.CSSProperties = { display: "flex", gap: "14px", marginTop: "28px", flexWrap: "wrap" }
 const socialLink: React.CSSProperties = {
-  fontSize: ".62rem",
-  letterSpacing: ".18em",
-  textTransform: "uppercase",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "42px",
+  height: "42px",
   color: "#f0ebe2",
   textDecoration: "none",
   border: "1px solid rgba(201,185,154,.22)",
-  padding: "10px 18px",
+  borderRadius: "10px",
 }
 const rule: React.CSSProperties = { border: 0, borderTop: "1px solid rgba(201,185,154,.14)", margin: "48px 0 28px" }
 const secLabel: React.CSSProperties = {
@@ -94,11 +96,17 @@ export default function JindraProfile() {
         </p>
 
         <div style={socials}>
-          <a style={socialLink} href="https://www.facebook.com/j.traxmandl/" target="_blank" rel="noopener noreferrer">
-            Facebook
+          <a style={socialLink} href="https://www.facebook.com/j.traxmandl/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06c0 5.02 3.66 9.19 8.44 9.94v-7.03H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.9 3.78-3.9 1.09 0 2.24.2 2.24.2v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.9h-2.34V22c4.78-.75 8.44-4.92 8.44-9.94z" />
+            </svg>
           </a>
-          <a style={socialLink} href="https://www.instagram.com/jindra_traxmandl/" target="_blank" rel="noopener noreferrer">
-            Instagram
+          <a style={socialLink} href="https://www.instagram.com/jindra_traxmandl/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
           </a>
         </div>
 
