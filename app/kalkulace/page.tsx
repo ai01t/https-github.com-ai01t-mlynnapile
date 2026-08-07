@@ -1158,11 +1158,16 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           </aside>
         </div>
 
-        <footer className="mt-4 border-t border-[var(--line)] pt-3 text-center text-xs text-[var(--muted)] print:hidden">
-          © 2026{" "}
-          <a href="https://mlynnapile.cz/jindra" target="_blank" rel="noopener noreferrer" className="font-bold text-[var(--text-soft)] transition hover:text-[var(--brand)]">
-            Design &amp; Development — Ing. Jindřich Traxmandl
-          </a>
+        <footer className="mt-4 space-y-1 border-t border-[var(--line)] pt-3 text-center text-xs text-[var(--muted)] print:hidden">
+          <div>
+            © 2026{" "}
+            <a href="https://mlynnapile.cz/jindra" target="_blank" rel="noopener noreferrer" className="font-bold text-[var(--text-soft)] transition hover:text-[var(--brand)]">
+              Design &amp; Development — Ing. Jindřich Traxmandl
+            </a>
+          </div>
+          <div className="text-[11px] opacity-80">
+            Zadané údaje zůstávají ve vašem prohlížeči. Ukládáme jen anonymní statistiku používání — bez jmen, adres a IP adres.
+          </div>
         </footer>
       </div>
 
