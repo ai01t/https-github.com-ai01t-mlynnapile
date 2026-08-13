@@ -23,60 +23,62 @@ const MODE_STORAGE_KEY = "mlyn_mode"
 const LANG_STORAGE_KEY = "mlyn_lang"
 
 const EMAIL = "mlynnapile@gmail.com"
-const START_Y = 2026
-const START_M = 3
+// Kalendář se roluje: začíná vždy aktuálním měsícem a pokračuje 12 měsíců dopředu.
 const TOTAL = 12
+const CALENDAR_START = new Date()
+const START_Y = CALENDAR_START.getFullYear()
+const START_M = CALENDAR_START.getMonth()
 const BOOKING_VIDEO_PLAYBACK_RATE = 0.42
-const VIDEOS = [
-  "8ao2RN8xswo",
-  "kgqpTmzPMa4",
-  null,
-  null,
-  null,
-  "9oQ3JNjBwbo",
-  "Wnn7LyRPdyE",
-  null,
-  null,
-  "12wlur-ij3A",
-  null,
-  null,
+const VIDEOS_BY_MONTH = [
+  "12wlur-ij3A", // leden
+  null, // únor
+  null, // březen
+  "8ao2RN8xswo", // duben
+  "kgqpTmzPMa4", // květen
+  null, // červen
+  null, // červenec
+  null, // srpen
+  "9oQ3JNjBwbo", // září
+  "Wnn7LyRPdyE", // říjen
+  null, // listopad
+  null, // prosinec
 ] as const
 
-const GRADIENTS = [
-  "linear-gradient(160deg, rgba(34,31,28,0.9) 0%, rgba(98,76,45,0.84) 34%, rgba(162,129,76,0.54) 100%)",
-  "linear-gradient(155deg, rgba(20,27,34,0.92) 0%, rgba(52,76,82,0.78) 40%, rgba(138,150,130,0.56) 100%)",
-  "linear-gradient(150deg, rgba(25,19,26,0.94) 0%, rgba(88,63,84,0.76) 42%, rgba(167,128,112,0.5) 100%)",
-  "linear-gradient(150deg, rgba(24,33,26,0.94) 0%, rgba(55,82,63,0.78) 40%, rgba(149,142,101,0.48) 100%)",
-  "linear-gradient(155deg, rgba(23,27,38,0.94) 0%, rgba(61,75,112,0.76) 42%, rgba(168,146,115,0.52) 100%)",
-  "linear-gradient(150deg, rgba(26,20,19,0.95) 0%, rgba(88,55,43,0.8) 40%, rgba(177,121,78,0.5) 100%)",
-  "linear-gradient(145deg, rgba(22,24,28,0.94) 0%, rgba(72,72,82,0.74) 42%, rgba(172,144,102,0.52) 100%)",
-  "linear-gradient(150deg, rgba(17,24,31,0.95) 0%, rgba(44,62,74,0.78) 38%, rgba(118,134,119,0.48) 100%)",
-  "linear-gradient(145deg, rgba(18,16,25,0.95) 0%, rgba(50,40,72,0.78) 42%, rgba(151,125,105,0.5) 100%)",
-  "linear-gradient(150deg, rgba(15,18,24,0.95) 0%, rgba(49,57,78,0.8) 42%, rgba(140,151,187,0.46) 100%)",
-  "linear-gradient(150deg, rgba(25,21,20,0.95) 0%, rgba(75,58,52,0.82) 42%, rgba(170,144,120,0.52) 100%)",
-  "linear-gradient(150deg, rgba(20,20,18,0.95) 0%, rgba(63,60,47,0.8) 42%, rgba(161,152,108,0.5) 100%)",
+const GRADIENTS_BY_MONTH = [
+  "linear-gradient(150deg, rgba(15,18,24,0.95) 0%, rgba(49,57,78,0.8) 42%, rgba(140,151,187,0.46) 100%)", // leden
+  "linear-gradient(150deg, rgba(25,21,20,0.95) 0%, rgba(75,58,52,0.82) 42%, rgba(170,144,120,0.52) 100%)", // únor
+  "linear-gradient(150deg, rgba(20,20,18,0.95) 0%, rgba(63,60,47,0.8) 42%, rgba(161,152,108,0.5) 100%)", // březen
+  "linear-gradient(160deg, rgba(34,31,28,0.9) 0%, rgba(98,76,45,0.84) 34%, rgba(162,129,76,0.54) 100%)", // duben
+  "linear-gradient(155deg, rgba(20,27,34,0.92) 0%, rgba(52,76,82,0.78) 40%, rgba(138,150,130,0.56) 100%)", // květen
+  "linear-gradient(150deg, rgba(25,19,26,0.94) 0%, rgba(88,63,84,0.76) 42%, rgba(167,128,112,0.5) 100%)", // červen
+  "linear-gradient(150deg, rgba(24,33,26,0.94) 0%, rgba(55,82,63,0.78) 40%, rgba(149,142,101,0.48) 100%)", // červenec
+  "linear-gradient(155deg, rgba(23,27,38,0.94) 0%, rgba(61,75,112,0.76) 42%, rgba(168,146,115,0.52) 100%)", // srpen
+  "linear-gradient(150deg, rgba(26,20,19,0.95) 0%, rgba(88,55,43,0.8) 40%, rgba(177,121,78,0.5) 100%)", // září
+  "linear-gradient(145deg, rgba(22,24,28,0.94) 0%, rgba(72,72,82,0.74) 42%, rgba(172,144,102,0.52) 100%)", // říjen
+  "linear-gradient(150deg, rgba(17,24,31,0.95) 0%, rgba(44,62,74,0.78) 38%, rgba(118,134,119,0.48) 100%)", // listopad
+  "linear-gradient(145deg, rgba(18,16,25,0.95) 0%, rgba(50,40,72,0.78) 42%, rgba(151,125,105,0.5) 100%)", // prosinec
 ] as const
 
-// klíč = pořadí měsíce od START (0 = 04/2026), rozsahy jsou včetně krajních dnů
-const BOOKED_RANGES: Record<number, Array<{ start: number; end: number }>> = {
-  0: [{ start: 17, end: 20 }], // duben 2026
-  3: [{ start: 3, end: 3 }], // červenec 2026
-  4: [ // srpen 2026
+// klíč = "rok-měsíc" (měsíc 0 = leden), rozsahy jsou včetně krajních dnů
+const BOOKED_RANGES: Record<string, Array<{ start: number; end: number }>> = {
+  "2026-3": [{ start: 17, end: 20 }], // duben 2026
+  "2026-6": [{ start: 3, end: 3 }], // červenec 2026
+  "2026-7": [ // srpen 2026
     { start: 7, end: 8 },
     { start: 21, end: 21 },
   ],
-  6: [ // říjen 2026
+  "2026-9": [ // říjen 2026
     { start: 2, end: 2 },
     { start: 9, end: 9 },
     { start: 16, end: 16 },
     { start: 23, end: 23 },
     { start: 30, end: 31 },
   ],
-  7: [ // listopad 2026
+  "2026-10": [ // listopad 2026
     { start: 13, end: 13 },
     { start: 21, end: 21 },
   ],
-  8: [ // prosinec 2026
+  "2026-11": [ // prosinec 2026
     { start: 4, end: 4 },
     { start: 11, end: 11 },
   ],
@@ -139,44 +141,44 @@ type CalendarMonth = {
   weeks: Array<Array<number | null>>
 }
 
-const LOCAL_MEDIA_BY_INDEX: Partial<Record<number, { src: string; poster: string }>> = {
-  2: {
+const LOCAL_MEDIA_BY_MONTH: Partial<Record<number, { src: string; poster: string }>> = {
+  5: { // červen
     src: "/videos/bg/VDj9aKHnpcw_hq.mp4",
     poster: "/videos/bg/VDj9aKHnpcw_hq.jpg",
   },
-  3: {
+  6: { // červenec
     src: "/videos/bg/MczOR3DstPg.mp4",
     poster: "/videos/bg/MczOR3DstPg.jpg",
   },
-  4: {
+  7: { // srpen
     src: "/videos/bg/O431B93W9UY.mp4",
     poster: "/videos/bg/O431B93W9UY.jpg",
   },
-  5: {
+  8: { // září
     src: "/videos/bg/CJzYKr3JWC8.mp4",
     poster: "/videos/bg/CJzYKr3JWC8.jpg",
   },
-  6: {
+  9: { // říjen
     src: "/videos/bg/DY09nnytbjc.mp4",
     poster: "/videos/bg/DY09nnytbjc.jpg",
   },
-  7: {
+  10: { // listopad
     src: "/videos/bg/QsHqEEj4-60.mp4",
     poster: "/videos/bg/QsHqEEj4-60.jpg",
   },
-  8: {
+  11: { // prosinec
     src: "/videos/bg/M4QkWhz7CDo.mp4",
     poster: "/videos/bg/M4QkWhz7CDo.jpg",
   },
-  9: {
+  0: { // leden
     src: "/videos/bg/12wlur-ij3A.mp4",
     poster: "/videos/bg/12wlur-ij3A.jpg",
   },
-  10: {
+  1: { // únor
     src: "/videos/bg/gTqXu9xU_7k.mp4",
     poster: "/videos/bg/gTqXu9xU_7k.jpg",
   },
-  11: {
+  2: { // březen
     src: "/videos/bg/tWtT7cB1Tus.mp4",
     poster: "/videos/bg/tWtT7cB1Tus.jpg",
   },
@@ -621,11 +623,11 @@ function buildMonths(locale: Locale): CalendarMonth[] {
       title: buildMonthTitle(locale, date, "long"),
       shortTitle: buildCardLabel(date),
       ghostTitle: buildGhostTitle(locale, date),
-      gradient: GRADIENTS[offset % GRADIENTS.length],
-      youtubeId: VIDEOS[offset] ?? null,
-      localVideoSrc: LOCAL_MEDIA_BY_INDEX[offset]?.src ?? null,
-      localPosterSrc: LOCAL_MEDIA_BY_INDEX[offset]?.poster ?? null,
-      blockedRanges: BOOKED_RANGES[offset] ?? [],
+      gradient: GRADIENTS_BY_MONTH[month],
+      youtubeId: VIDEOS_BY_MONTH[month] ?? null,
+      localVideoSrc: LOCAL_MEDIA_BY_MONTH[month]?.src ?? null,
+      localPosterSrc: LOCAL_MEDIA_BY_MONTH[month]?.poster ?? null,
+      blockedRanges: BOOKED_RANGES[`${year}-${month}`] ?? [],
       weeks: buildCalendarWeeks(year, month),
     }
   })
@@ -751,6 +753,13 @@ function formatDateForMail(locale: Locale, date: Date) {
 
 function getDateAtMonthDay(months: CalendarMonth[], monthIndex: number, day: number) {
   return new Date(months[monthIndex].year, months[monthIndex].month, day)
+}
+
+// Dnešek od půlnoci — v prvním (aktuálním) měsíci se už proběhlé dny nedají vybrat.
+function getTodayStart() {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return today
 }
 
 function getNightsCount(arrival: Date, departure: Date) {
@@ -989,6 +998,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const embedded = searchParams.get("embed") === "1"
 
   const months = useMemo(() => buildMonths(locale), [locale])
+  const todayStart = useMemo(() => getTodayStart(), [])
   const activeMonth = months[currentIndex]
   const activeMonthGuide = MONTH_GUIDES_CS[activeMonth.month]
   const visibleMonths = months.slice(currentIndex, Math.min(currentIndex + 4, months.length))
@@ -1199,6 +1209,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
   const handleDayClick = (day: number) => {
     if (isBlockedDay(activeMonth, day)) return
+    if (getDateAtMonthDay(months, currentIndex, day) < todayStart) return
 
     const clickedDate = getDateAtMonthDay(months, currentIndex, day)
 
@@ -1538,6 +1549,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
                                 const isBlocked = isBlockedDay(month, day)
                                 const currentDayDate = getDateAtMonthDay(months, month.index, day)
+                                const isPast = currentDayDate < todayStart
                                 const isArrival =
                                   selection.arrivalMonthIndex === month.index && selection.arrivalDay === day
                                 const isDeparture =
@@ -1554,13 +1566,14 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                                     type="button"
                                     className={cx(
                                       styles.dayButton,
+                                      isPast && styles.dayPast,
                                       isBlocked && styles.dayBlocked,
                                       isArrival && styles.dayArrival,
                                       isDeparture && styles.dayDeparture,
                                       isBetween && styles.dayBetween,
                                       !isFront && styles.dayDisabled,
                                     )}
-                                    disabled={!isFront || isBlocked}
+                                    disabled={!isFront || isBlocked || isPast}
                                     onClick={(event) => {
                                       event.stopPropagation()
                                       if (!isFront) return

@@ -929,10 +929,23 @@
   transform: none;
 }
 
+/* Dny, které už proběhly (jen v aktuálním měsíci) */
+.dayPast {
+  opacity: 0.3;
+  cursor: default;
+}
+
 .dayBlocked {
   background: transparent;
   color: rgba(255, 214, 195, 0.72);
+}
+
+/* Číslo dne je v inline-flex spanu, kam se text-decoration z tlačítka
+   nedědí — přeškrtnutí musí sedět přímo na něm. */
+.dayBlocked span {
   text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 214, 195, 0.9);
 }
 
 .dayArrival,
