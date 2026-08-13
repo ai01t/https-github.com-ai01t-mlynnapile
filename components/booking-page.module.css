@@ -1,5 +1,5 @@
 .bookingPage {
-  --bg: #07060a;
+  --bg: #000;
   --stone: #c9b99a;
   --gold: #b08d57;
   --gold-light: #d7b47d;
@@ -14,8 +14,9 @@
   color: var(--cream);
 }
 
+/* Booking uvnitř sekce ubytování: plně černé pozadí, ne prosvítající video sekce */
 .embedded {
-  background: transparent !important;
+  background: #000 !important;
 }
 
 .embedded .pageShell {
@@ -68,10 +69,7 @@
 .bgShell {
   z-index: 0;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(176, 141, 87, 0.08), transparent 34%),
-    radial-gradient(circle at 78% 20%, rgba(82, 88, 102, 0.12), transparent 30%),
-    linear-gradient(180deg, #09080c 0%, #050506 54%, #07060a 100%);
+  background: #000;
 }
 
 .bgVideo {
@@ -627,7 +625,7 @@
 
 .cardFrame {
   position: absolute;
-  top: 46px;
+  top: 50%;
   left: 0;
   width: 295px;
   transform-origin: top left;

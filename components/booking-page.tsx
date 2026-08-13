@@ -57,8 +57,29 @@ const GRADIENTS = [
   "linear-gradient(150deg, rgba(20,20,18,0.95) 0%, rgba(63,60,47,0.8) 42%, rgba(161,152,108,0.5) 100%)",
 ] as const
 
+// klíč = pořadí měsíce od START (0 = 04/2026), rozsahy jsou včetně krajních dnů
 const BOOKED_RANGES: Record<number, Array<{ start: number; end: number }>> = {
-  0: [{ start: 17, end: 20 }],
+  0: [{ start: 17, end: 20 }], // duben 2026
+  3: [{ start: 3, end: 3 }], // červenec 2026
+  4: [ // srpen 2026
+    { start: 7, end: 8 },
+    { start: 21, end: 21 },
+  ],
+  6: [ // říjen 2026
+    { start: 2, end: 2 },
+    { start: 9, end: 9 },
+    { start: 16, end: 16 },
+    { start: 23, end: 23 },
+    { start: 30, end: 31 },
+  ],
+  7: [ // listopad 2026
+    { start: 13, end: 13 },
+    { start: 21, end: 21 },
+  ],
+  8: [ // prosinec 2026
+    { start: 4, end: 4 },
+    { start: 11, end: 11 },
+  ],
 }
 
 type Locale = "cs" | "en" | "de"
@@ -368,7 +389,7 @@ const copyByLocale: Record<Locale, Copy> = {
     previous: "Předchozí měsíc",
     next: "Další měsíc",
     selectionHint: "Vyber příjezd a odjezd přímo v kalendáři přední karty.",
-    bookedHint: "17–20. 4. 2026 je již obsazeno.",
+    bookedHint: "Šedě označené dny jsou již obsazené.",
     modalTitle: "Vybraný termín",
     openInEmail: "Otevřít v e-mailu",
     closeDialog: "Zavřít dialog",
@@ -420,7 +441,7 @@ const copyByLocale: Record<Locale, Copy> = {
     previous: "Previous month",
     next: "Next month",
     selectionHint: "Choose arrival and departure directly in the calendar of the front card.",
-    bookedHint: "17–20 Apr 2026 is already booked.",
+    bookedHint: "Days marked in grey are already booked.",
     modalTitle: "Selected stay",
     openInEmail: "Open in email",
     closeDialog: "Close dialog",
@@ -472,7 +493,7 @@ const copyByLocale: Record<Locale, Copy> = {
     previous: "Vorheriger Monat",
     next: "Nächster Monat",
     selectionHint: "Wähle An- und Abreise direkt im Kalender der vorderen Karte.",
-    bookedHint: "17.–20. Apr. 2026 ist bereits belegt.",
+    bookedHint: "Grau markierte Tage sind bereits belegt.",
     modalTitle: "Gewählter Aufenthalt",
     openInEmail: "Im E-Mail-Programm öffnen",
     closeDialog: "Dialog schließen",
@@ -610,11 +631,13 @@ function buildMonths(locale: Locale): CalendarMonth[] {
   })
 }
 
+// Karty jsou kotvené na svislý střed stage (.cardFrame top:50%); závěrečné
+// translateY(-50%) běží až po scale, takže se na střed zarovná i zmenšená karta.
 function getCardTransform(offset: number) {
-  if (offset === 0) return "translate3d(0, 0, 0) scale(1)"
-  if (offset === 1) return "translate3d(208px, 10px, 0) scale(0.86)"
-  if (offset === 2) return "translate3d(348px, 22px, 0) scale(0.72)"
-  return "translate3d(456px, 34px, 0) scale(0.6)"
+  if (offset === 0) return "translate3d(0, 0, 0) scale(1) translateY(-50%)"
+  if (offset === 1) return "translate3d(208px, 10px, 0) scale(0.86) translateY(-50%)"
+  if (offset === 2) return "translate3d(348px, 22px, 0) scale(0.72) translateY(-50%)"
+  return "translate3d(456px, 34px, 0) scale(0.6) translateY(-50%)"
 }
 
 function getCardOpacity(offset: number) {
@@ -972,7 +995,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.body.style.background = embedded ? "transparent" : "#07060a"
+    document.body.style.background = "#000"
 
     try {
       window.localStorage.setItem(LANG_STORAGE_KEY, locale)

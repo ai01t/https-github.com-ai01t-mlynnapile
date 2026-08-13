@@ -631,8 +631,8 @@ footer{
   pointer-events:auto;
 }
 .ft-copy{font-size:.6rem;letter-spacing:.12em;color:var(--muted);}
-.ft-link{color:inherit;text-decoration:none;border-bottom:1px solid rgba(201,185,154,.35);transition:color .2s,border-color .2s;}
-.ft-link:hover{color:var(--gold-light);border-color:rgba(176,141,87,.6);}
+.ft-link{color:inherit;text-decoration:none;transition:color .2s;}
+.ft-link:hover{color:var(--gold-light);}
 .ft-mark{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:rgba(176,141,87,.3);letter-spacing:.08em;}
 
 /* REVEAL */
@@ -744,7 +744,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
 #contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:56px;padding:12px 60px;}
 #contact .content{position:relative;z-index:10;}
 .residency-booking-trigger{background:rgba(7,6,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
-.bg-video video.loop-fading{opacity:0!important;}
+.bg-video video.bg-loop-clone{z-index:1;}
 </style>
 </head>
 <body class="video-booting">
@@ -1130,7 +1130,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             </button>
           </div>
           <div class="pkg-grid rev rev-d2">
-      <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Into the Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
+      <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Main Studio / In To The Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
       <div class="pkg-card" data-pkg="underwater"><div class="pkg-num">02</div><div class="pkg-name">Underwater</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Sauna</span><span class="en">#Main studio #Sauna</span><span class="de">#Hauptstudio #Sauna</span></span><p class="pkg-text cs">Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka. Skromné ale stylové a útulné přespání přímo v prostorách bývalé mlýnice.</p><p class="pkg-text en">Closest to the music, sleeping literally beneath the studio floor and below the pond level. Modest but stylish accommodation in the former mill.</p><p class="pkg-text de">Ganz nah an der Musik: Schlafen direkt unter dem Studioboden und unter der Teichoberfläche. Schlicht, aber stilvoll und gemütlich in der ehemaligen Mühle.</p></div>
       <div class="pkg-card" data-pkg="otherside"><div class="pkg-num">03</div><div class="pkg-name">Otherside</div><span class="pkg-tags"><span class="cs">#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV</span><span class="en">#Control room #Traditional Czech room #Two rooms #TV</span><span class="de">#Regieraum #Traditionelle Stube #Zwei Zimmer #TV</span></span><p class="pkg-text cs">Pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple + ubytování ve staročeské světnici. Vhodné i pro nehudební kreativní aktivity.</p><p class="pkg-text en">For post-production: 6K Apple Pro XDR with full Apple peripherals + accommodation in a traditional Czech room. Suitable for non-musical creative activities too.</p><p class="pkg-text de">Für Postproduktion: 6K Apple Pro XDR inkl. kompletter Apple-Peripherie + Unterkunft in einer traditionellen tschechischen Stube. Auch für nicht-musikalische Kreativarbeit geeignet.</p></div>
       <div class="pkg-card" data-pkg="fuel"><div class="pkg-num">04</div><div class="pkg-name">Fuel</div><span class="pkg-tags"><span class="cs">#VIP balíček</span><span class="en">#VIP package</span><span class="de">#VIP-Paket</span></span><p class="pkg-text cs">VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady a zapůjčení Tesla Model X. Profi catering, roztopení velké pece, pizza i <a class="chleba-trigger" href="/chleba">chleba</a> z pece.</p><p class="pkg-text en">VIP rental of the entire property with full service, including the winter garden and Tesla Model X. Professional catering, pizza and <a class="chleba-trigger" href="/chleba">bread</a> from the stone oven.</p><p class="pkg-text de">VIP-Miete der gesamten Anlage mit Full-Service inklusive Wintergarten und Tesla Model X. Professionelles Catering, Pizza und <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Steinofen.</p></div>
@@ -1420,17 +1420,59 @@ function isBgSectionAllowed(sectionId){
   const nextId=idx<secs.length-1?secs[idx+1].id:null;
   return sectionId===prevId||sectionId===nextId;
 }
-/* Plynulá smyčka — před koncem videa jemné prolnutí do tmy, po přetočení zpět (žádné bliknutí) */
-const LOOP_FADE_SEC=0.6;
+/* Plynulá smyčka — konec videa se prolne do jeho začátku (crossfade, ne ztmavení).
+   Hlavní video hraje pořád (nechává beze změny ostatní logiku), druhá vrstva se
+   použije jen na ~2 s kolem přetočení: prolne se na ni a hned zpět. */
+const LOOP_FADE_SEC=1.0;
 bgFrameBySectionId.forEach((video)=>{
+  const wrap=video.parentElement;
+  if(!wrap||video.dataset.loopXfade)return;
+  video.dataset.loopXfade='1';
+
+  const clone=video.cloneNode(true);
+  clone.className='bg-loop-clone';
+  clone.removeAttribute('id');
+  clone.muted=true;clone.defaultMuted=true;clone.volume=0;
+  clone.loop=false;clone.autoplay=false;clone.controls=false;
+  clone.playsInline=true;clone.preload='auto';
+  clone.style.opacity='0';
+  wrap.insertBefore(clone,video.nextSibling);
+
+  const fade=(el,to)=>{
+    el.style.transition=`opacity ${LOOP_FADE_SEC}s linear`;
+    el.style.opacity=String(to);
+  };
+  let busy=false;
+
   video.addEventListener('timeupdate',()=>{
-    if(!video.duration||!isFinite(video.duration))return;
-    const remaining=video.duration-video.currentTime;
-    if(remaining<=LOOP_FADE_SEC){
-      video.classList.add('loop-fading');
-    }else if(video.classList.contains('loop-fading')){
-      video.classList.remove('loop-fading');
-    }
+    const d=video.duration;
+    if(busy||!d||!isFinite(d)||video.paused)return;
+    if(d-video.currentTime>LOOP_FADE_SEC)return;
+    busy=true;
+    // 1) prolnutí na druhou vrstvu, která začíná od začátku
+    try{clone.currentTime=0;}catch(e){}
+    const p=clone.play();
+    if(p&&p.catch)p.catch(()=>{});
+    fade(clone,1);fade(video,0);
+    // 2) po přetočení srovnat hlavní video na stejné místo a prolnout zpět
+    setTimeout(()=>{
+      try{video.currentTime=clone.currentTime;}catch(e){}
+      setTimeout(()=>{
+        fade(video,1);fade(clone,0);
+        setTimeout(()=>{
+          try{clone.pause();}catch(e){}
+          busy=false;
+        },LOOP_FADE_SEC*1000+120);
+      },140);
+    },LOOP_FADE_SEC*1000+120);
+  });
+
+  // když se sekce uspí, schovej i druhou vrstvu a vrať řízení CSS
+  video.addEventListener('pause',()=>{
+    if(busy)return;
+    try{clone.pause();}catch(e){}
+    clone.style.opacity='0';
+    video.style.opacity='';
   });
 });
 const bgMediaBySectionId=new Map(
