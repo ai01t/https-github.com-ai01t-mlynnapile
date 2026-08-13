@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Cormorant_Garamond, Manrope } from "next/font/google"
 import Link from "next/link"
+import BreadProcessTimeline from "@/components/bread-process-timeline"
 import styles from "@/components/chleba-page.module.css"
 import { BgConfig, buildMediaFilter, buildOverlayGradients, loadBgConfig } from "@/lib/page-bg"
 
@@ -34,6 +35,10 @@ const copy = {
       "Bez dochucovadel, bez éček, bez zlepšovadel, bez konzervantů a bez zbytečných přísad. Jen základní suroviny, pec a čas.",
     ],
     craftTitle: "Řemeslný kváskový chleba z naší pece",
+    processEyebrow: "Postup",
+    processTitle: "Jak pečeme chleba",
+    processLead:
+      "Od rozkvašení kvásku po vychladnutí bochníku uběhne zhruba dva dny. Časová osa ukazuje hlavní úkony — většinu času pracuje kvásek sám, ale trefit ho ve správnou chvíli je celé to řemeslo.",
     benefitsTitle: "Co dává kvásek chlebu",
     ingredientsTitle: "Čisté složení",
     purityTitle: "Bez zkratek",
@@ -110,6 +115,10 @@ const copy = {
       "When time and mood allow, guests can join the baking too. Heating the oven, working with the dough and waiting for the first slice are part of the atmosphere of Mlýn na Pile.",
     ],
     craftTitle: "Craft sourdough bread from our oven",
+    processEyebrow: "The process",
+    processTitle: "How we bake our bread",
+    processLead:
+      "From refreshing the starter to the cooled loaf it takes about two days. The timeline shows the main steps — most of the time the starter works on its own, but catching it at the right moment is the whole craft.",
     benefitsTitle: "Why sourdough",
     ingredientsTitle: "Clean ingredients",
     purityTitle: "No shortcuts",
@@ -186,6 +195,10 @@ const copy = {
       "Wenn Zeit und Stimmung passen, können Gäste auch beim Backen mitmachen. Den Ofen anheizen, mit dem Teig arbeiten und auf die erste Scheibe warten: Das gehört zur Atmosphäre von Mlýn na Pile.",
     ],
     craftTitle: "Handwerkliches Sauerteigbrot aus unserem Ofen",
+    processEyebrow: "Der Ablauf",
+    processTitle: "Wie wir unser Brot backen",
+    processLead:
+      "Vom Auffrischen des Sauerteigs bis zum ausgekühlten Laib vergehen etwa zwei Tage. Die Zeitachse zeigt die wichtigsten Schritte — die meiste Zeit arbeitet der Sauerteig allein, ihn im richtigen Moment zu erwischen ist das ganze Handwerk.",
     benefitsTitle: "Vorteile von Sauerteig",
     ingredientsTitle: "Klare Zutaten",
     purityTitle: "Ohne Abkürzungen",
@@ -257,6 +270,9 @@ const copy = {
   lead: string
   paragraphs: string[]
   craftTitle: string
+  processEyebrow: string
+  processTitle: string
+  processLead: string
   benefitsTitle: string
   ingredientsTitle: string
   purityTitle: string
@@ -349,6 +365,15 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
             <h2 className={cormorant.className}>{t.ingredientsTitle}</h2>
             <p className={styles.infoText}>{t.ingredientsText}</p>
           </article>
+        </section>
+
+        <section className={styles.processBlock} aria-label={t.processTitle}>
+          <p className={styles.cardEyebrow}>{t.processEyebrow}</p>
+          <h2 className={cormorant.className}>{t.processTitle}</h2>
+          <p className={styles.processLead}>{t.processLead}</p>
+          <div className={styles.processFrame}>
+            <BreadProcessTimeline />
+          </div>
         </section>
 
         <section className={styles.detailsBlock} aria-label={t.detailsTitle}>

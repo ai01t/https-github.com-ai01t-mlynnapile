@@ -346,3 +346,45 @@
     gap: 24px;
   }
 }
+
+/* Časová osa pečení (vestavěná z /chleba-postup.html) */
+.processBlock {
+  max-width: 960px;
+  margin-top: 36px;
+  padding-top: 44px;
+  border-top: 1px solid rgba(238, 224, 196, 0.18);
+}
+
+.processBlock h2 {
+  margin: 10px 0 0;
+  color: #fff9ee;
+  font-size: clamp(30px, 3.4vw, 48px);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.processLead {
+  max-width: 640px;
+  margin: 18px 0 0;
+  color: rgba(240, 235, 226, 0.66);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.75;
+}
+
+.processFrame {
+  margin-top: 28px;
+  padding: 18px clamp(8px, 2vw, 22px);
+  border: 1px solid rgba(238, 224, 196, 0.16);
+  border-radius: 6px;
+  background: rgba(12, 10, 12, 0.42);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+}
+
+@media (max-width: 720px) {
+  .processFrame {
+    padding: 12px 6px;
+  }
+}
