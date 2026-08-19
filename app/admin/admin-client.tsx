@@ -7,13 +7,11 @@ import {
   PAGE_KEYS,
   PRESETS,
   Side,
-  buildBlurMask,
-  buildMediaFilter,
-  buildOverlayGradients,
   clearBgConfig,
   defaultBgConfig,
   loadBgConfig,
   saveBgConfig,
+  PREVIEW_MESSAGE,
 } from "@/lib/page-bg"
 
 const PASSWORD = "1717"
@@ -130,6 +128,8 @@ export default function AdminClient({
   const [tab, setTab] = useState<"bg" | "text" | "seo">("bg")
   const previewRef = useRef<HTMLDivElement | null>(null)
   const editorRef = useRef<HTMLDivElement | null>(null)
+  const frameRef = useRef<HTMLIFrameElement | null>(null)
+  const [device, setDevice] = useState<"desktop" | "mobile">("desktop")
 
   useEffect(() => {
     if (!allowPasswordFallback) return
@@ -142,6 +142,28 @@ export default function AdminClient({
     setCfg(loaded)
     if (editorRef.current) editorRef.current.innerHTML = loaded.text || ""
   }, [pageId, ok])
+
+  // Každá změna se hned promítne do stránky v náhledu — ještě před uložením.
+  useEffect(() => {
+    frameRef.current?.contentWindow?.postMessage(
+      { type: PREVIEW_MESSAGE, pageId, cfg },
+      window.location.origin,
+    )
+  }, [cfg, pageId])
+
+  // Stránka se po načtení ozve, že je připravená přijímat nastavení.
+  useEffect(() => {
+    function onReady(event: MessageEvent) {
+      const data = event.data as { type?: string; ready?: boolean } | null
+      if (data?.type !== PREVIEW_MESSAGE || !data.ready) return
+      frameRef.current?.contentWindow?.postMessage(
+        { type: PREVIEW_MESSAGE, pageId, cfg },
+        window.location.origin,
+      )
+    }
+    window.addEventListener("message", onReady)
+    return () => window.removeEventListener("message", onReady)
+  }, [cfg, pageId])
 
   const set = (patch: Partial<BgConfig>) => setCfg((c) => ({ ...c, ...patch }))
   const setEdge = (side: Side, v: number) =>
@@ -200,8 +222,6 @@ export default function AdminClient({
 
   if (!ok && allowPasswordFallback) return <Gate onOk={() => setOk(true)} />
 
-  const overlay = buildOverlayGradients(cfg)
-  const mask = buildBlurMask(cfg)
   const current = PAGE_KEYS.find((p) => p.id === pageId)
 
   const handle = (side: Side): React.CSSProperties => {
@@ -267,12 +287,34 @@ export default function AdminClient({
         <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1.65fr) minmax(300px,1fr)", gap: "18px", alignItems: "start" }}>
           {/* LEVÁ STRANA — náhled + redakční editor */}
           <div>
-            <span style={label}>Náhled stránky — táhni kolečka od kraje dovnitř (kde skončí, tam gradient přechází do fotky)</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px", flexWrap: "wrap" }}>
+              <span style={{ ...label, marginBottom: 0 }}>
+                Živý náhled stránky — táhni kolečka od kraje dovnitř (kde skončí, tam gradient přechází do fotky)
+              </span>
+              <div style={{ marginLeft: "auto", display: "flex", gap: "6px" }}>
+                {([["desktop", "Počítač"], ["mobile", "Mobil"]] as const).map(([id, l]) => (
+                  <button
+                    key={id}
+                    style={{ ...(device === id ? btnActive : btn), padding: "5px 11px" }}
+                    onClick={() => setDevice(id)}
+                  >
+                    {l}
+                  </button>
+                ))}
+                <button
+                  style={{ ...btn, padding: "5px 11px" }}
+                  onClick={() => { if (frameRef.current) frameRef.current.src = frameRef.current.src }}
+                  title="Načíst stránku v náhledu znovu"
+                >
+                  Obnovit
+                </button>
+              </div>
+            </div>
             <div
               ref={previewRef}
               style={{
                 position: "relative",
-                minHeight: "440px",
+                height: "620px",
                 borderRadius: "10px",
                 overflow: "hidden",
                 border: "1px solid rgba(201,185,154,.2)",
@@ -280,30 +322,25 @@ export default function AdminClient({
                 userSelect: drag ? "none" : "auto",
               }}
             >
-              {cfg.video ? (
-                <video key={cfg.video} autoPlay muted loop playsInline style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: buildMediaFilter(cfg) }}>
-                  <source src={cfg.video} />
-                </video>
-              ) : cfg.image ? (
-                <div style={{ position: "absolute", inset: 0, backgroundImage: `url("${cfg.image}")`, backgroundSize: "cover", backgroundPosition: "center", filter: buildMediaFilter(cfg) }} />
-              ) : null}
-
-              {cfg.blur > 0 && mask && (
-                <div style={{ position: "absolute", inset: 0, backdropFilter: `blur(${cfg.blur}px)`, WebkitBackdropFilter: `blur(${cfg.blur}px)`, WebkitMaskImage: mask, maskImage: mask }} />
-              )}
-              {overlay && <div style={{ position: "absolute", inset: 0, backgroundImage: overlay, pointerEvents: "none" }} />}
-
-              {/* redakční plocha přímo v náhledu — vypadá jako výsledná stránka */}
-              <div style={{ position: "relative", zIndex: 3, padding: "clamp(28px,5vw,56px)" }}>
-                <div
-                  ref={editorRef}
-                  className="mlyn-editor"
-                  contentEditable
-                  suppressContentEditableWarning
-                  onInput={(e) => set({ text: (e.target as HTMLDivElement).innerHTML })}
-                  style={{ minHeight: "300px", overflowX: "auto" }}
-                />
-              </div>
+              {/* skutečná stránka — nastavení se do ní posílá živě, ještě před uložením */}
+              <iframe
+                ref={frameRef}
+                key={`${pageId}-${device}`}
+                src={`${current?.path || "/"}?preview=1`}
+                title={`Náhled ${current?.label || ""}`}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: device === "mobile" ? "390px" : "100%",
+                  height: "100%",
+                  border: 0,
+                  background: "#07060a",
+                  // při tažení koleček nesmí rámeček ukrást ukazatel
+                  pointerEvents: drag ? "none" : "auto",
+                }}
+              />
 
               {(["top", "right", "bottom", "left"] as Side[]).map((s) => (
                 <div key={s} style={handle(s)} onPointerDown={(e) => { e.preventDefault(); setDrag(s) }} title={`${s}: ${cfg.edges[s]}%`} />

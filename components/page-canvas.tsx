@@ -7,8 +7,8 @@ import {
   buildMediaFilter,
   buildOverlayGradients,
   defaultBgConfig,
-  loadBgConfig,
 } from "@/lib/page-bg"
+import { useLiveBgConfig } from "@/lib/use-live-bg"
 import { RENDERED_TEXT_CSS, useAdminSeo } from "@/components/page-bg-layer"
 
 /**
@@ -28,10 +28,12 @@ export default function PageCanvas({
   const [ready, setReady] = useState(false)
   useAdminSeo(pageId)
 
+  const live = useLiveBgConfig(pageId)
   useEffect(() => {
-    setCfg(loadBgConfig(pageId))
+    if (!live) return
+    setCfg(live)
     setReady(true)
-  }, [pageId])
+  }, [live])
 
   const overlay = buildOverlayGradients(cfg)
   const mask = buildBlurMask(cfg)

@@ -3,9 +3,12 @@
 import { useEffect, useState } from "react"
 import {
   BgConfig,
+  PREVIEW_MESSAGE,
+  PreviewMessage,
   buildBlurMask,
   buildMediaFilter,
   buildOverlayGradients,
+  isPreviewFrame,
   loadBgConfig,
 } from "@/lib/page-bg"
 
@@ -67,6 +70,21 @@ export default function PageBgLayer({ pageId }: { pageId: string }) {
   useEffect(() => {
     const loaded = loadBgConfig(pageId)
     setCfg(loaded.image || loaded.video ? loaded : null)
+  }, [pageId])
+
+  // V náhledu administrace posloucháme živé nastavení, aby bylo vidět i to,
+  // co ještě není uložené.
+  useEffect(() => {
+    if (!isPreviewFrame()) return
+    function onMessage(event: MessageEvent) {
+      if (event.source !== window.parent) return
+      const data = event.data as PreviewMessage | null
+      if (data?.type !== PREVIEW_MESSAGE || data.pageId !== pageId) return
+      setCfg(data.cfg.image || data.cfg.video ? data.cfg : null)
+    }
+    window.addEventListener("message", onMessage)
+    window.parent.postMessage({ type: PREVIEW_MESSAGE, ready: true, pageId }, window.location.origin)
+    return () => window.removeEventListener("message", onMessage)
   }, [pageId])
 
   if (!cfg) return null

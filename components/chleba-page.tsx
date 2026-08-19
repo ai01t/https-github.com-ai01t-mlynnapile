@@ -5,7 +5,8 @@ import { Cormorant_Garamond, Manrope } from "next/font/google"
 import Link from "next/link"
 import BreadProcessTimeline from "@/components/bread-process-timeline"
 import styles from "@/components/chleba-page.module.css"
-import { BgConfig, buildMediaFilter, buildOverlayGradients, loadBgConfig } from "@/lib/page-bg"
+import { buildMediaFilter, buildOverlayGradients } from "@/lib/page-bg"
+import { useLiveBgConfig } from "@/lib/use-live-bg"
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -289,12 +290,8 @@ const copy = {
 
 export default function ChlebaPage({ locale }: { locale: Locale }) {
   const t = copy[locale]
-  const [bg, setBg] = useState<BgConfig | null>(null)
-
-  useEffect(() => {
-    const c = loadBgConfig("chleba")
-    setBg(c.image || c.video ? c : null)
-  }, [])
+  const live = useLiveBgConfig("chleba")
+  const bg = live && (live.image || live.video) ? live : null
 
   const overlay = bg ? buildOverlayGradients(bg) : ""
 

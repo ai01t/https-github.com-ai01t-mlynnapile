@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import PageBgLayer, { RENDERED_TEXT_CSS } from "@/components/page-bg-layer"
-import { loadBgConfig } from "@/lib/page-bg"
+import { useLiveBgConfig } from "@/lib/use-live-bg"
 
 type Lang = "cs" | "en"
 
@@ -158,13 +158,9 @@ const langBtn = (active: boolean): React.CSSProperties => ({
 export default function JindraProfileClient() {
   const [lang, setLang] = useState<Lang>("cs")
   const [keyfOpen, setKeyfOpen] = useState(false)
-  const [hasBg, setHasBg] = useState(false)
+  const liveBg = useLiveBgConfig("jindra")
+  const hasBg = Boolean(liveBg?.image || liveBg?.video)
   const t = T[lang]
-
-  useEffect(() => {
-    const c = loadBgConfig("jindra")
-    setHasBg(Boolean(c.image || c.video))
-  }, [])
 
   return (
     <main style={{ ...wrap, background: hasBg ? "transparent" : wrap.background }}>

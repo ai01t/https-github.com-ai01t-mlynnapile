@@ -176,3 +176,25 @@ export function clearBgConfig(pageId: string) {
   if (typeof window === "undefined") return
   window.localStorage.removeItem(STORAGE_PREFIX + pageId)
 }
+
+/**
+ * Živý náhled v /admin: administrace drží stránku v rámečku a při každé změně
+ * jí pošle aktuální nastavení, aby se překreslila ještě před uložením.
+ */
+export const PREVIEW_MESSAGE = "mlyn.admin.preview"
+
+export type PreviewMessage = {
+  type: typeof PREVIEW_MESSAGE
+  pageId: string
+  cfg: BgConfig
+}
+
+/** Stránka běží uvnitř náhledu v administraci (rámeček s ?preview=1). */
+export function isPreviewFrame() {
+  if (typeof window === "undefined") return false
+  try {
+    return window.parent !== window && new URLSearchParams(window.location.search).has("preview")
+  } catch {
+    return false
+  }
+}
