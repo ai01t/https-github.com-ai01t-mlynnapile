@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { signOut } from "next-auth/react"
 import {
   BgConfig,
   PAGE_KEYS,
@@ -113,8 +114,15 @@ function Gate({ onOk }: { onOk: () => void }) {
   )
 }
 
-export default function AdminClient() {
-  const [ok, setOk] = useState(false)
+export default function AdminClient({
+  allowPasswordFallback = false,
+  signedInAs,
+}: {
+  /** jen dokud není nastavené přihlášení přes Google */
+  allowPasswordFallback?: boolean
+  signedInAs?: string
+}) {
+  const [ok, setOk] = useState(!allowPasswordFallback)
   const [pageId, setPageId] = useState<string>(PAGE_KEYS[0].id)
   const [cfg, setCfg] = useState<BgConfig>(defaultBgConfig)
   const [flash, setFlash] = useState("")
@@ -124,8 +132,9 @@ export default function AdminClient() {
   const editorRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
+    if (!allowPasswordFallback) return
     try { if (sessionStorage.getItem(SESSION_KEY) === "1") setOk(true) } catch {}
-  }, [])
+  }, [allowPasswordFallback])
 
   useEffect(() => {
     if (!ok) return
@@ -189,7 +198,7 @@ export default function AdminClient() {
     }
   }
 
-  if (!ok) return <Gate onOk={() => setOk(true)} />
+  if (!ok && allowPasswordFallback) return <Gate onOk={() => setOk(true)} />
 
   const overlay = buildOverlayGradients(cfg)
   const mask = buildBlurMask(cfg)
@@ -236,7 +245,13 @@ export default function AdminClient() {
           <h1 style={h1}>Administrace</h1>
           <span style={{ fontSize: ".76rem", color: "#8a8177" }}>Pozadí, text a SEO stránek</span>
           {flash && <strong style={{ color: "#7fd18c", fontSize: ".8rem" }}>{flash}</strong>}
-          <div style={{ marginLeft: "auto", display: "flex", gap: "8px" }}>
+          <div style={{ marginLeft: "auto", display: "flex", gap: "8px", alignItems: "center" }}>
+            {signedInAs ? (
+              <>
+                <span style={{ fontSize: ".74rem", color: "#8a8177" }}>{signedInAs}</span>
+                <button style={btn} onClick={() => signOut({ callbackUrl: "/" })}>Odhlásit</button>
+              </>
+            ) : null}
             <a href={current?.path || "/"} target="_blank" rel="noopener noreferrer" style={{ ...btn, textDecoration: "none" }}>Otevřít stránku</a>
             <button style={btn} onClick={() => { clearBgConfig(pageId); setCfg(defaultBgConfig); if (editorRef.current) editorRef.current.innerHTML = "" }}>Reset</button>
             <button style={btnPrimary} onClick={doSave}>Uložit</button>
