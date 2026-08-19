@@ -14,6 +14,11 @@ const T = {
     projects: "Projekty",
     bacTitle: "Budget & Area Configurator",
     bacDesc: "Kalkulace oprav omítek a zednických prací — plochy místností, rozpočet, materiál, nabídka a fakturace včetně QR platby.",
+    cvTitle: "CV Editor",
+    cvDesc:
+      "Editor životopisů — jedna sada dat, pět vizuálně odlišných šablon, dvě jazykové mutace, export do PDF i JSON a import existujícího CV. Data zůstávají v prohlížeči, bez účtu a bez databáze.",
+    cvMine: "Můj životopis",
+    cvSample: "Ukázkové CV — možno editovat, zdarma k použití ;)",
     keyfDesc: "Bookmark manager — cloudová aplikace pro ukládání a sdílení dat.",
     keyfMore:
       "Aplikaci jsem dělal v roce 2009 — předcházela Linktree (2016) a rozhraní připomíná SAP Fiori zveřejněné v roce 2013. Projekt dodnes funguje zdarma a jako funkční prototyp předcházel těmto službám o několik let :-)",
@@ -31,6 +36,11 @@ const T = {
     projects: "Projects",
     bacTitle: "Budget & Area Configurator",
     bacDesc: "Plaster-repair and masonry cost calculator — room areas, budget, materials, quotes and invoicing incl. QR payment.",
+    cvTitle: "CV Editor",
+    cvDesc:
+      "CV editor — one set of data, five visually distinct templates, two language versions, export to PDF and JSON, and import of an existing CV. Data stays in the browser: no account, no database.",
+    cvMine: "My CV",
+    cvSample: "Sample CV — editable, free to use ;)",
     keyfDesc: "Bookmark manager — a cloud app for saving and sharing data.",
     keyfMore:
       "I built this app in 2009 — it predates Linktree (2016), and its interface resembles SAP Fiori, released in 2013. The project still runs free of charge to this day, and as a working prototype it preceded these services by several years :-)",
@@ -203,6 +213,18 @@ export default function JindraProfileClient() {
           <h2 style={cardTitle}>{t.bacTitle}</h2>
           <p style={cardDesc}>{t.bacDesc}</p>
         </Link>
+
+        <div style={{ ...card, marginTop: "12px" }}>
+          <h2 style={cardTitle}>{t.cvTitle}</h2>
+          <p style={cardDesc}>{t.cvDesc}</p>
+          <ul style={{ listStyle: "none", margin: "10px 0 0", padding: 0 }}>
+            <li style={webItem}>
+              <Link style={webLink} href="/cv">
+                {t.cvMine}
+              </Link>
+            </li>
+          </ul>
+        </div>
 
         <div style={{ ...card, marginTop: "12px" }}>
           <h2 style={cardTitle}>
