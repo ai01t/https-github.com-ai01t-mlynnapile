@@ -19,6 +19,7 @@ const T = {
       "Editor životopisů — jedna sada dat, pět vizuálně odlišných šablon, dvě jazykové mutace, export do PDF i JSON a import existujícího CV. Data zůstávají v prohlížeči, bez účtu a bez databáze.",
     cvMine: "Můj životopis",
     cvSample: "Ukázkové CV — možno editovat, zdarma k použití ;)",
+    cvPrint: "Verze k tisku",
     keyfDesc: "Bookmark manager — cloudová aplikace pro ukládání a sdílení dat.",
     keyfMore:
       "Aplikaci jsem dělal v roce 2009 — předcházela Linktree (2016) a rozhraní připomíná SAP Fiori zveřejněné v roce 2013. Projekt dodnes funguje zdarma a jako funkční prototyp předcházel těmto službám o několik let :-)",
@@ -41,6 +42,7 @@ const T = {
       "CV editor — one set of data, five visually distinct templates, two language versions, export to PDF and JSON, and import of an existing CV. Data stays in the browser: no account, no database.",
     cvMine: "My CV",
     cvSample: "Sample CV — editable, free to use ;)",
+    cvPrint: "Print version",
     keyfDesc: "Bookmark manager — a cloud app for saving and sharing data.",
     keyfMore:
       "I built this app in 2009 — it predates Linktree (2016), and its interface resembles SAP Fiori, released in 2013. The project still runs free of charge to this day, and as a working prototype it preceded these services by several years :-)",
@@ -219,9 +221,17 @@ export default function JindraProfileClient() {
           <p style={cardDesc}>{t.cvDesc}</p>
           <ul style={{ listStyle: "none", margin: "10px 0 0", padding: 0 }}>
             <li style={webItem}>
-              <Link style={webLink} href="/cv">
+              <a style={webLink} href="/jindra/cvapp/traxmandl">
                 {t.cvMine}
-              </Link>
+              </a>{" "}
+              <span style={webDesc}>
+                (<Link style={{ ...webLink, fontSize: "inherit" }} href="/cv">{t.cvPrint}</Link>)
+              </span>
+            </li>
+            <li style={webItem}>
+              <a style={webLink} href="/jindra/cvapp">
+                {t.cvSample}
+              </a>
             </li>
           </ul>
         </div>

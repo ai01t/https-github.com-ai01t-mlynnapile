@@ -26,6 +26,19 @@ const nextConfig = {
           destination: "/de/index.html",
         },
       ],
+      // CV Studio je staticky vyexportovaná aplikace v public/jindra/cvapp.
+      // afterFiles: skutečné soubory (JS, CSS, fonty) se servírují napřímo,
+      // sem spadnou jen adresy stránek, které si musí najít svůj index.html.
+      afterFiles: [
+        {
+          source: "/jindra/cvapp",
+          destination: "/jindra/cvapp/index.html",
+        },
+        {
+          source: "/jindra/cvapp/:path*",
+          destination: "/jindra/cvapp/:path*/index.html",
+        },
+      ],
     }
   },
 }
