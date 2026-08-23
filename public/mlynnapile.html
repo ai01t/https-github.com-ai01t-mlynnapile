@@ -219,6 +219,7 @@ body.pause-active nav,
 body.pause-preview section .content,
 body.pause-active section .content{filter:brightness(1.14);}
 .chleba-trigger{color:var(--gold-light);text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:rgba(212,170,114,.55);text-underline-offset:2px;cursor:pointer;}
+.section-jump{color:var(--gold-light);text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:rgba(212,170,114,.55);text-underline-offset:2px;cursor:pointer;white-space:nowrap;}
 .pkg-card[data-pkg]{cursor:pointer;}
 
 /* Keep gradient layer static (no ambient motion under video). */
@@ -902,7 +903,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
       <div class="values-block rev rev-d3">
         <span class="val-label cs">Co zde najdete</span><span class="val-label en">What you'll find here</span><span class="val-label de">Was Sie hier finden</span>
         <ul class="val-list">
-          <li><span class="cs">Vintage nástroje — 60s–80s Fender, Gibson, VOX.</span><span class="en">Vintage instruments — 60s–80s Fender, Gibson, VOX.</span><span class="de">Vintage-Instrumente — 60er–80er Fender, Gibson, VOX.</span></li>
+          <li><span class="cs">Vintage nástroje — 60s–80s Fender, Gibson, VOX. <a class="section-jump" href="#equipment">(Kompletní seznam)</a></span><span class="en">Vintage instruments — 60s–80s Fender, Gibson, VOX. <a class="section-jump" href="#equipment">(Full list)</a></span><span class="de">Vintage-Instrumente — 60er–80er Fender, Gibson, VOX. <a class="section-jump" href="#equipment">(Komplette Liste)</a></span></li>
           <li><span class="cs">Stylové ubytování — 4 pokoje, zimní zahrada 63 m², finská sauna.</span><span class="en">Stylish accommodation — 4 rooms, winter garden 63 m², Finnish sauna.</span><span class="de">Stilvolle Unterkunft — 4 Zimmer, Wintergarten 63 m², finnische Sauna.</span></li>
           <li><span class="cs">Moderní technologie — Universal Audio Apollo x8p Studio+, 76 UAD pluginů, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="en">Modern technology — Universal Audio Apollo x8p Studio+, 76 UAD plugins, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="de">Moderne Technologie — Universal Audio Apollo x8p Studio+, 76 UAD-Plugins, Logic Pro X, Apple Pro Display XDR 6K.</span></li>
           <li><span class="cs">Vlastní zdroj elektrické energie pro zajištění provozu studia.</span><span class="en">Own power source ensuring uninterrupted studio operation.</span><span class="de">Eigene Stromquelle für einen unterbrechungsfreien Studiobetrieb.</span></li>
@@ -2915,7 +2916,7 @@ residencyBookingCloseTriggers.forEach((trigger)=>{
     setResidencyBooking(false);
   });
 });
-document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .nav-logo[href^="#"]').forEach((anchor)=>{
+document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .nav-logo[href^="#"], a.section-jump[href^="#"]').forEach((anchor)=>{
   anchor.addEventListener('click',(event)=>{
     const href=anchor.getAttribute('href')||'';
     const sectionId=href.slice(1);
