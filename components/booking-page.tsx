@@ -1410,44 +1410,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            {activeMonthGuide ? (
-              <section className={styles.monthGuide}>
-                <div className={styles.monthGuideBlock}>
-                  <h3>V tomto měsíci se konají:</h3>
-                  <ul className={styles.monthGuideList}>
-                    {activeMonthGuide.events.map((item) => {
-                      const isActive = eventMatchesSelection(months, item, selection, currentIndex)
-                      const { lead, rest } = splitEventLead(item.text)
-
-                      return (
-                        <li key={`${activeMonthGuide.monthTitle}-event-${item.text}`}>
-                          {lead ? (
-                            <span className={cx(isActive && styles.monthGuideEventLeadActive)}>
-                              {lead}
-                            </span>
-                          ) : null}
-                          {lead ? " · " : ""}
-                          {renderGuideText(rest)}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-
-                {activeMonthGuide.note ? <p className={styles.monthGuideNote}>{activeMonthGuide.note}</p> : null}
-
-                <div className={styles.monthGuideBlock}>
-                  <h3>Tipy do okolí:</h3>
-                  <ul className={styles.monthGuideList}>
-                    {activeMonthGuide.tips.map((item) => (
-                      <li key={`${activeMonthGuide.monthTitle}-tip-${item}`}>{renderGuideText(item)}</li>
-                    ))}
-                  </ul>
-                </div>
-              </section>
-            ) : null}
-          </div>
-
           <div className={styles.stackColumn}>
             <div className={styles.stackStage} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
               {visibleMonths.map((month, visibleIndex) => {
@@ -1591,6 +1553,44 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               })}
             </div>
 
+          </div>
+
+            {activeMonthGuide ? (
+              <section className={styles.monthGuide}>
+                <div className={styles.monthGuideBlock}>
+                  <h3>V tomto měsíci se konají:</h3>
+                  <ul className={styles.monthGuideList}>
+                    {activeMonthGuide.events.map((item) => {
+                      const isActive = eventMatchesSelection(months, item, selection, currentIndex)
+                      const { lead, rest } = splitEventLead(item.text)
+
+                      return (
+                        <li key={`${activeMonthGuide.monthTitle}-event-${item.text}`}>
+                          {lead ? (
+                            <span className={cx(isActive && styles.monthGuideEventLeadActive)}>
+                              {lead}
+                            </span>
+                          ) : null}
+                          {lead ? " · " : ""}
+                          {renderGuideText(rest)}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+
+                {activeMonthGuide.note ? <p className={styles.monthGuideNote}>{activeMonthGuide.note}</p> : null}
+
+                <div className={styles.monthGuideBlock}>
+                  <h3>Tipy do okolí:</h3>
+                  <ul className={styles.monthGuideList}>
+                    {activeMonthGuide.tips.map((item) => (
+                      <li key={`${activeMonthGuide.monthTitle}-tip-${item}`}>{renderGuideText(item)}</li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            ) : null}
           </div>
         </section>
 

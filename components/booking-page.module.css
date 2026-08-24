@@ -27,8 +27,6 @@
 
 .embedded .experience {
   min-height: 0 !important;
-  gap: 32px;
-  align-items: start;
 }
 
 .embedded .infoColumn {
@@ -38,11 +36,6 @@
 
 .embedded .stackStage {
   min-height: 520px;
-  padding-right: 44px;
-}
-
-.embedded .stackColumn {
-  padding-right: 72px;
 }
 
 .embedded .monthGuide {
@@ -367,10 +360,7 @@
 }
 
 .experience {
-  display: grid;
-  grid-template-columns: minmax(360px, 0.9fr) minmax(520px, 1.1fr);
-  gap: 64px;
-  align-items: stretch;
+  display: block;
   min-height: calc(100vh - 188px);
 }
 
@@ -380,7 +370,6 @@
   flex-direction: column;
   justify-content: flex-start;
   padding: 0 0 44px;
-  min-height: 640px;
 }
 
 .eyebrow {
@@ -599,23 +588,26 @@
   white-space: nowrap;
 }
 
+/* Karty leží pod názvem měsíce a jsou vodorovně vycentrované vůči textu. */
 .stackColumn {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  min-height: 640px;
+  min-height: 620px;
   overflow: visible;
-  padding-right: 220px;
+  margin: 26px 0 40px;
 }
 
+/* Šířka = přední karta (295) + odsazení posledního náhledu, aby šel vějíř
+   vycentrovat jako celek. */
 .stackStage {
   position: relative;
-  width: 100%;
+  width: 633px;
+  max-width: 100%;
   min-height: 560px;
   padding-top: 8px;
-  padding-right: 0;
   overflow: visible;
 }
 
