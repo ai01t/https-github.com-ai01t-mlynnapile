@@ -1499,7 +1499,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               <span className={styles.calendarYear}>{month.shortTitle}</span>
                             </div>
 
-                            <div className={cx(styles.weekdays, !isFront && styles.weekdaysHidden)}>
+                            <div className={styles.weekdays}>
                               {copy.weekdays.map((weekday) => (
                                 <span key={`${month.title}-${weekday}`} className={styles.weekday}>
                                   {weekday}
@@ -1507,7 +1507,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               ))}
                             </div>
 
-                            <div className={cx(styles.calendarGrid, !isFront && styles.calendarGridHidden)}>
+                            <div className={styles.calendarGrid}>
                               {month.weeks.flat().map((day, cellIndex) => {
                                 if (day === null) {
                                   return <span key={`${month.title}-empty-${cellIndex}`} className={styles.dayEmpty} />
