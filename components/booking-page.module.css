@@ -35,7 +35,7 @@
 }
 
 .embedded .stackStage {
-  min-height: 520px;
+  min-height: inherit;
 }
 
 .embedded .monthGuide {
@@ -589,11 +589,12 @@
 }
 
 /* Karty leží pod názvem měsíce a jsou vodorovně vycentrované vůči textu. */
+/* Karty leží pod názvem měsíce, zarovnané zleva ke stejné ose jako text. */
 .stackColumn {
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   min-height: 620px;
   overflow: visible;
@@ -604,8 +605,7 @@
    vycentrovat jako celek. */
 .stackStage {
   position: relative;
-  width: 633px;
-  max-width: 100%;
+  width: 100%;
   min-height: 560px;
   padding-top: 8px;
   overflow: visible;
@@ -619,7 +619,7 @@
   position: absolute;
   top: 50%;
   left: 0;
-  width: 295px;
+  width: 330px;
   transform-origin: top left;
   transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.45s ease;
 }
@@ -654,7 +654,7 @@
 
 .card {
   position: relative;
-  width: min(100%, 295px);
+  width: min(100%, 330px);
   aspect-ratio: 9 / 16;
   height: auto;
   max-height: min(74vh, 524px);
@@ -734,6 +734,17 @@
   z-index: 0;
   filter: saturate(1.06) contrast(1.05) brightness(0.98);
   transition: filter 0.28s ease, transform 0.28s ease;
+}
+
+/* Náhledové karty nepřehrávají video, jen jeho první snímek — jinak by se
+   dekódovalo osm videí naráz a přehrávání sekalo. */
+.cardLocalPoster {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center center;
+  filter: saturate(1.06) contrast(1.05) brightness(0.98);
 }
 
 .seamlessVideo {
@@ -1081,27 +1092,27 @@
     width: min(100%, calc(100% - 56px));
   }
 
-  .experience {
-    grid-template-columns: minmax(300px, 0.92fr) minmax(420px, 1.08fr);
-    gap: 32px;
-  }
-
+  /* Řada karet se zmenší jako celek, aby se vešla i na užší displej.
+     Výška plochy se zmenší se stejným poměrem, aby nezbývalo prázdno. */
   .stackStage {
-    padding-right: 0;
+    transform: scale(0.84);
+    transform-origin: left center;
+    min-height: 500px;
   }
 
   .stackColumn {
-    padding-right: 120px;
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .stackStage {
+    transform: scale(0.68);
+    min-height: 410px;
   }
 
-  .cardFrame {
-    left: 8px;
-    width: 255px;
-  }
-
-  .card {
-    width: min(100%, 255px);
-    max-height: min(66vh, 454px);
+  .stackColumn {
+    min-height: 410px;
   }
 }
 
@@ -1152,27 +1163,11 @@
 
   .stackColumn,
   .stackStage {
-    min-height: 560px;
-  }
-
-  .stackColumn {
-    padding-right: 0;
+    min-height: 340px;
   }
 
   .stackStage {
-    padding-top: 24px;
-    padding-right: 0;
-  }
-
-  .cardFrame {
-    top: 40px;
-    left: 8px;
-    width: 238px;
-  }
-
-  .card {
-    width: min(100%, 238px);
-    max-height: min(62vh, 422px);
+    transform: scale(0.56);
   }
 }
 
@@ -1211,30 +1206,14 @@
     max-width: 100%;
   }
 
+  /* Na mobilu se vejde jen přední karta — řadu zmenšíme nejvíc. */
   .stackColumn,
   .stackStage {
-    min-height: 490px;
-  }
-
-  .stackColumn {
-    padding-right: 0;
+    min-height: 250px;
   }
 
   .stackStage {
-    padding-top: 20px;
-    padding-right: 0;
-  }
-
-  .cardFrame {
-    top: 34px;
-    left: 0;
-    width: min(100%, 252px);
-  }
-
-  .card {
-    width: min(100%, 252px);
-    max-height: 448px;
-    border-radius: 10px;
+    transform: scale(0.42);
   }
 
   .cardLabel {

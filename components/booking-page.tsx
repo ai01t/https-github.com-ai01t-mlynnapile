@@ -633,20 +633,21 @@ function buildMonths(locale: Locale): CalendarMonth[] {
   })
 }
 
-// Karty jsou kotvené na svislý střed stage (.cardFrame top:50%); závěrečné
+// Karty stojí vedle sebe zleva doprava, ne v překrývajícím se vějíři.
+// Kotví se na svislý střed stage (.cardFrame top:50%); závěrečné
 // translateY(-50%) běží až po scale, takže se na střed zarovná i zmenšená karta.
 function getCardTransform(offset: number) {
   if (offset === 0) return "translate3d(0, 0, 0) scale(1) translateY(-50%)"
-  if (offset === 1) return "translate3d(208px, 10px, 0) scale(0.86) translateY(-50%)"
-  if (offset === 2) return "translate3d(348px, 22px, 0) scale(0.72) translateY(-50%)"
-  return "translate3d(456px, 34px, 0) scale(0.6) translateY(-50%)"
+  if (offset === 1) return "translate3d(352px, 0, 0) scale(0.92) translateY(-50%)"
+  if (offset === 2) return "translate3d(682px, 0, 0) scale(0.84) translateY(-50%)"
+  return "translate3d(982px, 0, 0) scale(0.76) translateY(-50%)"
 }
 
 function getCardOpacity(offset: number) {
   if (offset === 0) return 1
-  if (offset === 1) return 0.98
-  if (offset === 2) return 0.96
-  return 0.94
+  if (offset === 1) return 0.9
+  if (offset === 2) return 0.78
+  return 0.66
 }
 
 function buildYoutubeUrl(videoId: string) {
@@ -1451,7 +1452,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                     <article className={cx(styles.card, !isFront && styles.cardInactive)}>
                       <div className={cx(styles.cardClip, isFront && styles.cardClipFront)}>
                         <div className={styles.cardMedia} aria-hidden="true">
-                          {!paused && month.localVideoSrc ? (
+                          {!paused && isFront && month.localVideoSrc ? (
                             <SeamlessLoopVideo
                               key={`${month.localVideoSrc}-${paused ? "paused" : "playing"}`}
                               className={styles.cardLocalVideo}
@@ -1460,7 +1461,13 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               playbackRate={BOOKING_VIDEO_PLAYBACK_RATE}
                             />
                           ) : null}
-                          {!paused && !month.localVideoSrc && month.youtubeId ? (
+                          {(paused || !isFront) && month.localPosterSrc ? (
+                            <div
+                              className={styles.cardLocalPoster}
+                              style={{ backgroundImage: `url("${month.localPosterSrc}")` }}
+                            />
+                          ) : null}
+                          {!paused && isFront && !month.localVideoSrc && month.youtubeId ? (
                             <iframe
                               key={`${month.youtubeId}-${paused ? "paused" : "playing"}`}
                               className={styles.cardVideo}

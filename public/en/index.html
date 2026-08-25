@@ -360,8 +360,8 @@ body.pause-active section .content{filter:brightness(1.14);}
   background:#000;
 }
 /* Přechod na booking: pozadí sekce se pomalu zatmaví, ne skokem. */
-#residency .residency-dim{position:absolute;inset:0;z-index:2;background:#07060a;opacity:0;transition:opacity 1.1s ease;pointer-events:none;}
-#residency.booking-open .residency-dim{opacity:.92;}
+#residency .residency-dim{position:absolute;inset:0;z-index:2;background:#000;opacity:0;transition:opacity 1.1s ease;pointer-events:none;}
+#residency.booking-open .residency-dim{opacity:1;}
 #residency.booking-open .residency-main-panel{pointer-events:none;}
 #residency:not(.booking-open) .residency-booking-panel{pointer-events:none;}
 .residency-actions{
