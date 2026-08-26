@@ -4,15 +4,15 @@ import { useEffect, useRef, useState } from "react"
 
 // Časová osa pečení z projektu BREAD.SK — vložená jako samostatná stránka
 // v public/chleba-postup.html, aby fungovala i v produkci (ne z localhost).
-// Osa si sama hlásí svou výšku přes postMessage, takže v rámečku nikdy
-// nevznikne posuvník.
+// Vodorovná varianta je interaktivní: kliknutím na čas se otevře kruhový
+// výběr a všechny ostatní kroky se přepočítají.
 const TIMELINE_SRC = "/chleba-postup.html"
 
 export default function BreadProcessTimeline() {
   const wrapRef = useRef<HTMLDivElement>(null)
   const frameRef = useRef<HTMLIFrameElement>(null)
   const [src, setSrc] = useState<string | null>(null)
-  const [height, setHeight] = useState(720)
+  const [height, setHeight] = useState(460)
 
   useEffect(() => {
     // Font i barvu textu čteme z obalu na stránce (ne z body — to má vlastní
@@ -20,11 +20,11 @@ export default function BreadProcessTimeline() {
     const host = wrapRef.current ? getComputedStyle(wrapRef.current) : null
     const params = new URLSearchParams({
       embed: "1",
-      // svislý seznam: na rozdíl od vodorovné osy ukazuje i názvy jednotlivých
-      // úkonů, ne jen časy — a sám si hlásí výšku, takže nikde nechybí obsah
-      layout: "v",
+      // vodorovná osa: kroky vedle sebe na časové přímce, interaktivní
+      layout: "h",
       outline: "1",
-      brand: "0",
+      // "Powered by BREAD.SK" s prokliken na zdrojovou aplikaci
+      brand: "1",
       theme: "dark",
     })
     if (host?.fontFamily) params.set("font", host.fontFamily)
@@ -32,15 +32,20 @@ export default function BreadProcessTimeline() {
     setSrc(`${TIMELINE_SRC}?${params.toString()}`)
   }, [])
 
+  // Ve vodorovném režimu osa vyplní zadanou výšku a hlásí zpět tutéž
+  // hodnotu, takže si ji řídíme sami podle šířky — na užším displeji
+  // potřebuje víc místa, aby se popisky kroků nepřekrývaly.
   useEffect(() => {
-    function onMessage(event: MessageEvent) {
-      if (event.source !== frameRef.current?.contentWindow) return
-      const next = Number((event.data as { breadskHeight?: number } | null)?.breadskHeight)
-      if (Number.isFinite(next) && next > 0) setHeight(Math.min(2400, Math.ceil(next)))
+    const fit = () => {
+      const width = wrapRef.current?.clientWidth ?? window.innerWidth
+      if (width < 640) return setHeight(560)
+      if (width < 980) return setHeight(500)
+      setHeight(460)
     }
 
-    window.addEventListener("message", onMessage)
-    return () => window.removeEventListener("message", onMessage)
+    fit()
+    window.addEventListener("resize", fit)
+    return () => window.removeEventListener("resize", fit)
   }, [])
 
   return (
