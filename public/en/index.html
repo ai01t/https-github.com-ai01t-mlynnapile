@@ -357,13 +357,13 @@ body.pause-active section .content{filter:brightness(1.14);}
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
-  background:#fff;
+  background:#e2e0dc;
 }
 /* Booking má vlastní denní/noční režim — panel i zatmavení sekce ho
    musí následovat, jinak kolem něj zůstane rám v opačné barvě. */
 body.night-mode .residency-booking-panel{background:#000;}
 /* Přechod na booking: pozadí sekce se pomalu zatmaví, ne skokem. */
-#residency .residency-dim{position:absolute;inset:0;z-index:2;background:#fff;opacity:0;transition:opacity 1.1s ease;pointer-events:none;}
+#residency .residency-dim{position:absolute;inset:0;z-index:2;background:#e2e0dc;opacity:0;transition:opacity 1.1s ease;pointer-events:none;}
 body.night-mode #residency .residency-dim{background:#000;}
 #residency.booking-open .residency-dim{opacity:1;}
 #residency.booking-open .residency-main-panel{pointer-events:none;}

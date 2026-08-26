@@ -1041,7 +1041,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   // Tělo stránky drží barvu podle režimu, jinak by kolem obsahu zůstal
   // černý pruh i v denním režimu.
   useEffect(() => {
-    document.body.style.background = nightMode ? "#000" : "#fff"
+    document.body.style.background = nightMode ? "#000" : "#e2e0dc"
     return () => {
       document.body.style.background = ""
     }

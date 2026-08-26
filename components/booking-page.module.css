@@ -24,10 +24,10 @@
    rozvržení zůstává stejné. */
 .dayMode {
   --ink-rgb: 24, 21, 18;
-  --surface-rgb: 255, 255, 255;
+  --surface-rgb: 226, 224, 220;
   --edge-rgb: 120, 105, 80;
-  --card-rgb: 250, 248, 244;
-  --bg: #fff;
+  --card-rgb: 236, 234, 230;
+  --bg: #e2e0dc;
   --stone: #6b5c40;
   --gold: #8a6a34;
   --gold-light: #6d5327;
@@ -42,7 +42,7 @@
 }
 
 .dayMode .bgShell {
-  background: #fff;
+  background: #e2e0dc;
 }
 
 /* Nad světlým podkladem by bílý stín text spolykal. */
@@ -53,16 +53,27 @@
 }
 
 /* Karty zůstávají tmavé i ve dne — jsou to fotky/videa, text na nich
-   musí zůstat světlý, jinak by na snímku zanikl. */
+   musí zůstat světlý, jinak by na snímku zanikl. Platí i pro závoj přes
+   video: ten musí ztmavovat, ne přelít snímek světlou barvou. */
 .dayMode .cardClip,
+.dayMode .cardShade,
+.dayMode .cardGradient,
 .dayMode .calendarPanel,
 .dayMode .dayButton,
 .dayMode .weekday,
 .dayMode .calendarYear,
 .dayMode .cardLabel {
   --ink-rgb: 240, 235, 226;
+  --surface-rgb: 7, 6, 10;
   --card-rgb: 16, 14, 18;
   --edge-rgb: 201, 185, 154;
+}
+
+.dayMode .cardClip,
+.dayMode .dayButton,
+.dayMode .weekday,
+.dayMode .calendarYear,
+.dayMode .cardLabel {
   color: rgba(240, 235, 226, 0.95);
 }
 
