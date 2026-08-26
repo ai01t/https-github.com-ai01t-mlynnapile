@@ -1,11 +1,17 @@
+/* Noční režim je výchozí: černé pozadí, světlý text. Denní režim níž
+   překlápí tytéž proměnné na bílé pozadí s tmavým textem. */
 .bookingPage {
+  --ink-rgb: 240, 235, 226;
+  --surface-rgb: 7, 6, 10;
+  --edge-rgb: 201, 185, 154;
+  --card-rgb: 16, 14, 18;
   --bg: #000;
   --stone: #c9b99a;
   --gold: #b08d57;
   --gold-light: #d7b47d;
   --cream: #f0ebe2;
   --muted: #8b8178;
-  --border: rgba(201, 185, 154, 0.14);
+  --border: rgba(var(--edge-rgb), 0.14);
   --footer-reveal-gap: 120px;
   position: relative;
   min-height: 100vh;
@@ -14,9 +20,50 @@
   color: var(--cream);
 }
 
-/* Booking uvnitř sekce ubytování: plně černé pozadí, ne prosvítající video sekce */
+/* Denní režim — bílé pozadí, tmavý text. Překlápí jen barevné proměnné,
+   rozvržení zůstává stejné. */
+.dayMode {
+  --ink-rgb: 24, 21, 18;
+  --surface-rgb: 255, 255, 255;
+  --edge-rgb: 120, 105, 80;
+  --card-rgb: 250, 248, 244;
+  --bg: #fff;
+  --stone: #6b5c40;
+  --gold: #8a6a34;
+  --gold-light: #6d5327;
+  --cream: #16130f;
+  --muted: #5f574c;
+  --border: rgba(var(--edge-rgb), 0.26);
+}
+
+/* Booking uvnitř sekce ubytování: pozadí se řídí režimem, ne videem sekce */
 .embedded {
-  background: #000 !important;
+  background: var(--bg) !important;
+}
+
+.dayMode .bgShell {
+  background: #fff;
+}
+
+/* Nad světlým podkladem by bílý stín text spolykal. */
+.dayMode .navLinks a,
+.dayMode .title,
+.dayMode .monthGuide h3 {
+  text-shadow: none;
+}
+
+/* Karty zůstávají tmavé i ve dne — jsou to fotky/videa, text na nich
+   musí zůstat světlý, jinak by na snímku zanikl. */
+.dayMode .cardClip,
+.dayMode .calendarPanel,
+.dayMode .dayButton,
+.dayMode .weekday,
+.dayMode .calendarYear,
+.dayMode .cardLabel {
+  --ink-rgb: 240, 235, 226;
+  --card-rgb: 16, 14, 18;
+  --edge-rgb: 201, 185, 154;
+  color: rgba(240, 235, 226, 0.95);
 }
 
 .embedded .pageShell {
@@ -87,14 +134,14 @@
 .bgOverlay {
   z-index: 1;
   background:
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.42) 0%, rgba(7, 6, 10, 0.18) 34%, rgba(7, 6, 10, 0.72) 100%);
+    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.42) 0%, rgba(var(--surface-rgb), 0.18) 34%, rgba(var(--surface-rgb), 0.72) 100%);
 }
 
 .nightMode .bgOverlay {
   background:
     radial-gradient(circle at 18% 12%, rgba(186, 148, 97, 0.08), transparent 34%),
     radial-gradient(circle at 82% 22%, rgba(98, 113, 140, 0.12), transparent 28%),
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.82) 0%, rgba(7, 6, 10, 0.56) 34%, rgba(7, 6, 10, 0.94) 100%);
+    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.82) 0%, rgba(var(--surface-rgb), 0.56) 34%, rgba(var(--surface-rgb), 0.94) 100%);
 }
 
 .nav {
@@ -108,16 +155,16 @@
   justify-content: space-between;
   padding: 22px 52px;
   transition: padding 0.4s, background 0.4s, border-color 0.4s;
-  border-bottom: 1px solid rgba(201, 185, 154, 0.16);
-  background: linear-gradient(to bottom, rgba(7, 6, 10, 0.72) 0%, rgba(7, 6, 10, 0.44) 70%, rgba(7, 6, 10, 0.18) 100%);
+  border-bottom: 1px solid rgba(var(--edge-rgb), 0.16);
+  background: linear-gradient(to bottom, rgba(var(--surface-rgb), 0.72) 0%, rgba(var(--surface-rgb), 0.44) 70%, rgba(var(--surface-rgb), 0.18) 100%);
   backdrop-filter: blur(10px);
 }
 
 .navScrolled {
-  background: rgba(7, 6, 10, 0.92);
+  background: rgba(var(--surface-rgb), 0.92);
   backdrop-filter: blur(16px);
   padding: 14px 52px;
-  border-color: rgba(201, 185, 154, 0.22);
+  border-color: rgba(var(--edge-rgb), 0.22);
 }
 
 .navLogo {
@@ -143,7 +190,7 @@
   font-size: 0.62rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.76);
+  color: rgba(var(--ink-rgb), 0.76);
   font-weight: 400;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
   text-decoration: none;
@@ -249,7 +296,7 @@
   right: 0;
   min-width: 124px;
   border: 1px solid var(--border);
-  background: rgba(7, 6, 10, 0.92);
+  background: rgba(var(--surface-rgb), 0.92);
   backdrop-filter: blur(12px);
   display: none;
   flex-direction: column;
@@ -265,7 +312,7 @@
   background: none;
   border: 0;
   border-bottom: 1px solid var(--border);
-  color: rgba(240, 235, 226, 0.82);
+  color: rgba(var(--ink-rgb), 0.82);
   font-size: 0.62rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -290,8 +337,8 @@
   justify-content: center;
   min-width: 64px;
   height: 34px;
-  background: rgba(7, 6, 10, 0.34);
-  border: 1px solid rgba(201, 185, 154, 0.26);
+  background: rgba(var(--surface-rgb), 0.34);
+  border: 1px solid rgba(var(--edge-rgb), 0.26);
   cursor: pointer;
   padding: 0 12px;
 }
@@ -300,7 +347,7 @@
   display: block;
   font-size: 0.54rem;
   letter-spacing: 0.2em;
-  color: rgba(240, 235, 226, 0.78);
+  color: rgba(var(--ink-rgb), 0.78);
   line-height: 1;
 }
 
@@ -309,7 +356,7 @@
   position: fixed;
   inset: 0;
   z-index: 99;
-  background: rgba(7, 6, 10, 0.97);
+  background: rgba(var(--surface-rgb), 0.97);
   backdrop-filter: blur(20px);
   flex-direction: column;
   align-items: center;
@@ -378,7 +425,7 @@
   font-size: 0.66rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.62);
+  color: rgba(var(--ink-rgb), 0.62);
 }
 
 .title {
@@ -415,7 +462,7 @@
   margin: 0;
   font-size: 0.78rem;
   line-height: 1.72;
-  color: rgba(240, 235, 226, 0.72);
+  color: rgba(var(--ink-rgb), 0.72);
 }
 
 .noticeDock {
@@ -453,14 +500,14 @@
   flex: 1;
   font-size: 0.7rem;
   line-height: 1.56;
-  color: rgba(240, 235, 226, 0.76);
+  color: rgba(var(--ink-rgb), 0.76);
 }
 
 .bookingNoticeClose {
   appearance: none;
   border: 0;
   background: none;
-  color: rgba(240, 235, 226, 0.44);
+  color: rgba(var(--ink-rgb), 0.44);
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
@@ -469,7 +516,7 @@
 }
 
 .bookingNoticeClose:hover {
-  color: rgba(240, 235, 226, 0.9);
+  color: rgba(var(--ink-rgb), 0.9);
 }
 
 .monthGuide {
@@ -508,7 +555,7 @@
   padding-left: 14px;
   font-size: 0.77rem;
   line-height: 1.72;
-  color: rgba(240, 235, 226, 0.74);
+  color: rgba(var(--ink-rgb), 0.74);
 }
 
 .monthGuideList li::before {
@@ -528,7 +575,7 @@
 }
 
 .monthGuideLink:hover {
-  color: rgba(240, 235, 226, 0.96);
+  color: rgba(var(--ink-rgb), 0.96);
   text-decoration-color: rgba(212, 170, 114, 0.82);
 }
 
@@ -540,7 +587,7 @@
   margin: 16px 0 0;
   font-size: 0.74rem;
   line-height: 1.64;
-  color: rgba(240, 235, 226, 0.68);
+  color: rgba(var(--ink-rgb), 0.68);
 }
 
 .monthGuideNav {
@@ -558,9 +605,9 @@
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  border: 1px solid rgba(201, 185, 154, 0.16);
-  background: rgba(7, 6, 10, 0.18);
-  color: rgba(240, 235, 226, 0.7);
+  border: 1px solid rgba(var(--edge-rgb), 0.16);
+  background: rgba(var(--surface-rgb), 0.18);
+  color: rgba(var(--ink-rgb), 0.7);
   font-size: 0.84rem;
   cursor: pointer;
   transition: transform 0.22s ease, border-color 0.22s ease, color 0.22s ease, opacity 0.22s ease;
@@ -582,7 +629,7 @@
   margin-top: 8px;
   font-size: clamp(2.15rem, 3.8vw, 3.1rem);
   line-height: 0.92;
-  color: rgba(240, 235, 226, 0.92);
+  color: rgba(var(--ink-rgb), 0.92);
   text-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
   pointer-events: none;
   white-space: nowrap;
@@ -641,13 +688,13 @@
   min-width: 110px;
   padding: 0 14px;
   border-radius: 10px;
-  border: 1px solid rgba(201, 185, 154, 0.2);
+  border: 1px solid rgba(var(--edge-rgb), 0.2);
   background: linear-gradient(180deg, rgba(26, 22, 20, 0.94) 0%, rgba(12, 11, 15, 0.9) 100%);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
   font-size: 0.52rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.8);
+  color: rgba(var(--ink-rgb), 0.8);
   text-align: center;
   pointer-events: none;
 }
@@ -676,8 +723,8 @@
   height: 100%;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid rgba(201, 185, 154, 0.18);
-  background: rgba(16, 14, 18, 0.88);
+  border: 1px solid rgba(var(--edge-rgb), 0.18);
+  background: rgba(var(--card-rgb), 0.88);
   box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
   /* vlastní vrstva pro kompozitor — video se pak nepřekresluje s okolím */
   transform: translateZ(0);
@@ -685,7 +732,7 @@
 }
 
 .cardClipFront {
-  background: rgba(16, 14, 18, 0.68);
+  background: rgba(var(--card-rgb), 0.68);
 }
 
 .cardMedia,
@@ -697,7 +744,7 @@
 
 .cardMedia {
   overflow: hidden;
-  background: rgba(7, 6, 10, 0.16);
+  background: rgba(var(--surface-rgb), 0.16);
 }
 
 .cardGradient {
@@ -758,13 +805,13 @@
 .cardShade {
   z-index: 2;
   background:
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.08) 0%, rgba(7, 6, 10, 0.12) 22%, rgba(7, 6, 10, 0.44) 100%),
+    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.08) 0%, rgba(var(--surface-rgb), 0.12) 22%, rgba(var(--surface-rgb), 0.44) 100%),
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.06), transparent 28%);
 }
 
 .cardClipFront .cardShade {
   background:
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.01) 0%, rgba(7, 6, 10, 0.05) 22%, rgba(7, 6, 10, 0.18) 100%),
+    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.01) 0%, rgba(var(--surface-rgb), 0.05) 22%, rgba(var(--surface-rgb), 0.18) 100%),
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.08), transparent 28%);
 }
 
@@ -789,8 +836,8 @@
 
 .calendarPanel {
   padding: 18px 16px 12px;
-  background: linear-gradient(180deg, rgba(12, 12, 16, 0.62) 0%, rgba(12, 12, 16, 0.74) 100%);
-  border: 1px solid rgba(240, 235, 226, 0.08);
+  background: linear-gradient(180deg, rgba(var(--card-rgb), 0.62) 0%, rgba(var(--card-rgb), 0.74) 100%);
+  border: 1px solid rgba(var(--ink-rgb), 0.08);
   box-shadow: 0 18px 34px rgba(0, 0, 0, 0.16);
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, max-height 0.32s ease;
 }
@@ -802,14 +849,14 @@
   overflow: hidden;
   padding: 8px 8px 7px;
   border-radius: 10px;
-  background: linear-gradient(180deg, rgba(10, 10, 14, 0.16) 0%, rgba(10, 10, 14, 0.24) 100%);
+  background: linear-gradient(180deg, rgba(var(--card-rgb), 0.16) 0%, rgba(var(--card-rgb), 0.24) 100%);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
 }
 
 .cardClipFront:hover .calendarPanelFront {
   transform: translateY(-2px);
-  background: linear-gradient(180deg, rgba(10, 10, 14, 0.22) 0%, rgba(10, 10, 14, 0.3) 100%);
-  border-color: rgba(240, 235, 226, 0.12);
+  background: linear-gradient(180deg, rgba(var(--card-rgb), 0.22) 0%, rgba(var(--card-rgb), 0.3) 100%);
+  border-color: rgba(var(--ink-rgb), 0.12);
   box-shadow: 0 18px 34px rgba(0, 0, 0, 0.2);
 }
 
@@ -830,7 +877,7 @@
   font-size: 0.44rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.64);
+  color: rgba(var(--ink-rgb), 0.64);
   text-align: right;
 }
 
@@ -852,7 +899,7 @@
   font-size: 0.46rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.56);
+  color: rgba(var(--ink-rgb), 0.56);
 }
 
 .calendarYear::before,
@@ -862,7 +909,7 @@
   position: absolute;
   inset: -2px -4px;
   border-radius: 4px;
-  background: rgba(8, 8, 12, 0.52);
+  background: rgba(var(--card-rgb), 0.52);
   opacity: 0;
   transition: opacity 0.22s ease;
   z-index: -1;
@@ -893,7 +940,7 @@
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: rgba(240, 235, 226, 0.95);
+  color: rgba(var(--ink-rgb), 0.95);
   font-size: 0.58rem;
   font-weight: 400;
   cursor: pointer;
@@ -961,7 +1008,7 @@
   margin-left: 0;
   width: 100%;
   background: #000;
-  border-top: 1px solid rgba(201, 185, 154, 0.14);
+  border-top: 1px solid rgba(var(--edge-rgb), 0.14);
   padding: 24px 60px 26px;
   min-height: 96px;
   display: flex;
@@ -985,7 +1032,7 @@
   align-items: center;
   justify-content: center;
   padding: 26px;
-  background: rgba(7, 6, 10, 0.72);
+  background: rgba(var(--surface-rgb), 0.72);
   backdrop-filter: blur(18px);
 }
 
@@ -994,7 +1041,7 @@
   width: min(720px, 100%);
   padding: 34px 32px 30px;
   border-radius: 10px;
-  border: 1px solid rgba(201, 185, 154, 0.18);
+  border: 1px solid rgba(var(--edge-rgb), 0.18);
   background: rgba(12, 11, 15, 0.92);
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46);
 }
@@ -1007,7 +1054,7 @@
   height: 40px;
   border: 0;
   background: none;
-  color: rgba(240, 235, 226, 0.68);
+  color: rgba(var(--ink-rgb), 0.68);
   font-size: 1.7rem;
   cursor: pointer;
 }
@@ -1018,7 +1065,7 @@
   font-size: 0.66rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.58);
+  color: rgba(var(--ink-rgb), 0.58);
 }
 
 .modalTitle {
@@ -1038,20 +1085,20 @@
   margin: 16px 0 0;
   font-size: 0.86rem;
   line-height: 1.7;
-  color: rgba(240, 235, 226, 0.7);
+  color: rgba(var(--ink-rgb), 0.7);
 }
 
 .emailDraft {
   margin: 24px 0 0;
   padding: 22px;
   border-radius: 8px;
-  border: 1px solid rgba(201, 185, 154, 0.16);
+  border: 1px solid rgba(var(--edge-rgb), 0.16);
   background: rgba(255, 255, 255, 0.03);
   white-space: pre-wrap;
   font-family: "Manrope", sans-serif;
   font-size: 0.9rem;
   line-height: 1.8;
-  color: rgba(240, 235, 226, 0.78);
+  color: rgba(var(--ink-rgb), 0.78);
 }
 
 .modalCta {

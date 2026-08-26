@@ -981,7 +981,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const lastPostedHeightRef = useRef(0)
   const [navScrolled, setNavScrolled] = useState(false)
   const [paused, setPaused] = useState(false)
-  const [nightMode] = useState(false)
+  const [nightMode, setNightMode] = useState(true)
   const [langOpen, setLangOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -995,6 +995,35 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const [modalOpen, setModalOpen] = useState(false)
   const embedded = searchParams.get("embed") === "1"
 
+  // Režim sdílíme s hlavní stránkou přes stejný klíč v localStorage,
+  // aby booking (i vložený v sekci Ubytování) vypadal stejně jako web.
+  useEffect(() => {
+    const read = () => {
+      try {
+        return window.localStorage.getItem(MODE_STORAGE_KEY) !== "day"
+      } catch {
+        return true
+      }
+    }
+    setNightMode(read())
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === MODE_STORAGE_KEY) setNightMode(read())
+    }
+    window.addEventListener("storage", onStorage)
+    return () => window.removeEventListener("storage", onStorage)
+  }, [])
+
+  const toggleMode = () => {
+    setNightMode((current) => {
+      const next = !current
+      try {
+        window.localStorage.setItem(MODE_STORAGE_KEY, next ? "night" : "day")
+      } catch {}
+      return next
+    })
+  }
+
   const months = useMemo(() => buildMonths(locale), [locale])
   const todayStart = useMemo(() => getTodayStart(), [])
   const activeMonth = months[currentIndex]
@@ -1003,16 +1032,20 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.body.style.background = "#000"
 
     try {
       window.localStorage.setItem(LANG_STORAGE_KEY, locale)
     } catch {}
+  }, [locale, embedded])
 
+  // Tělo stránky drží barvu podle režimu, jinak by kolem obsahu zůstal
+  // černý pruh i v denním režimu.
+  useEffect(() => {
+    document.body.style.background = nightMode ? "#000" : "#fff"
     return () => {
       document.body.style.background = ""
     }
-  }, [locale, embedded])
+  }, [nightMode])
 
   useEffect(() => {
     if (embedded) {
@@ -1273,7 +1306,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className={cx(styles.bookingPage, embedded && styles.embedded, manrope.className, nightMode && styles.nightMode)}>
+    <div className={cx(styles.bookingPage, embedded && styles.embedded, manrope.className, nightMode ? styles.nightMode : styles.dayMode)}>
       {!embedded && !adminBg ? (
         <div className={styles.bgShell} aria-hidden="true">
           <div className={styles.bgOverlay} />
@@ -1308,6 +1341,27 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                 onClick={() => setPaused((current) => !current)}
               >
                 <span className={styles.pauseIcon}>{paused ? "▶" : "II"}</span>
+              </button>
+              <button
+                type="button"
+                className={cx(styles.btnMode, !nightMode && styles.btnModeOn)}
+                aria-pressed={!nightMode}
+                aria-label={nightMode ? copy.switchToDay : copy.switchToNight}
+                title={nightMode ? copy.switchToDay : copy.switchToNight}
+                onClick={toggleMode}
+              >
+                <span className={styles.modeIcon} aria-hidden="true">
+                  {nightMode ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <circle cx="12" cy="12" r="4.2" />
+                      <path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6" strokeLinecap="round" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <path d="M20 14.2A8.2 8.2 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2z" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </span>
               </button>
               <div ref={langSwitchRef} className={cx(styles.langSwitch, langOpen && styles.langSwitchOpen)}>
                 <button
