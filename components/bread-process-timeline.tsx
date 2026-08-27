@@ -4,9 +4,12 @@ import { useEffect, useRef, useState } from "react"
 
 // Časová osa pečení z projektu BREAD.SK — vložená jako samostatná stránka
 // v public/chleba-postup.html, aby fungovala i v produkci (ne z localhost).
-// Vodorovná varianta je interaktivní: kliknutím na čas se otevře kruhový
-// výběr a všechny ostatní kroky se přepočítají.
+// Osa je interaktivní: kliknutím na čas se otevře výběr a ostatní kroky
+// se dopočítají. O svou výšku si sama řekne přes postMessage.
 const TIMELINE_SRC = "/chleba-postup.html"
+
+// Zlatá ze sekce /chleba, aby akcenty osy seděly s okolním textem.
+const PAGE_GOLD = "#c29b61"
 
 export default function BreadProcessTimeline() {
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -15,37 +18,35 @@ export default function BreadProcessTimeline() {
   const [height, setHeight] = useState(460)
 
   useEffect(() => {
-    // Font i barvu textu čteme z obalu na stránce (ne z body — to má vlastní
+    // Písmo i barvu textu čteme z obalu na stránce (ne z body — to má vlastní
     // globální barvu), aby osa splynula s okolním textem.
     const host = wrapRef.current ? getComputedStyle(wrapRef.current) : null
     const params = new URLSearchParams({
       embed: "1",
-      // vodorovná osa: kroky vedle sebe na časové přímce, interaktivní
-      layout: "h",
-      outline: "1",
-      // "Powered by BREAD.SK" s prokliken na zdrojovou aplikaci
+      layout: "auto",
+      // vyprávěcí podoba osy — drží se textu stránky líp než technická mřížka
+      style: "story",
+      // obloha jen v náznaku; souhvězdí a planety by osu přebily
+      sky: "hint",
       brand: "1",
-      theme: "dark",
+      logo: "1",
+      gold: PAGE_GOLD,
     })
     if (host?.fontFamily) params.set("font", host.fontFamily)
     if (host?.color) params.set("ink", host.color)
     setSrc(`${TIMELINE_SRC}?${params.toString()}`)
   }, [])
 
-  // Ve vodorovném režimu osa vyplní zadanou výšku a hlásí zpět tutéž
-  // hodnotu, takže si ji řídíme sami podle šířky — na užším displeji
-  // potřebuje víc místa, aby se popisky kroků nepřekrývaly.
+  // Rámeček nemá posuvníky — o potřebnou výšku si osa řekne sama.
   useEffect(() => {
-    const fit = () => {
-      const width = wrapRef.current?.clientWidth ?? window.innerWidth
-      if (width < 640) return setHeight(560)
-      if (width < 980) return setHeight(500)
-      setHeight(460)
+    function onMessage(event: MessageEvent) {
+      if (event.source !== frameRef.current?.contentWindow) return
+      const next = Number((event.data as { breadskHeight?: number } | null)?.breadskHeight)
+      if (Number.isFinite(next) && next > 0) setHeight(Math.min(2400, Math.ceil(next)))
     }
 
-    fit()
-    window.addEventListener("resize", fit)
-    return () => window.removeEventListener("resize", fit)
+    window.addEventListener("message", onMessage)
+    return () => window.removeEventListener("message", onMessage)
   }, [])
 
   return (
@@ -54,7 +55,8 @@ export default function BreadProcessTimeline() {
         <iframe
           ref={frameRef}
           src={src}
-          title="Jak pečeme chleba"
+          title="Jak pečeme chleba — BREAD.SK"
+          loading="lazy"
           scrolling="no"
           style={{ width: "100%", height, border: 0, background: "transparent", display: "block" }}
         />

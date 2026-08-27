@@ -47,7 +47,7 @@
       --chip: #faf8f2;
       --ink: #241d13;
       --muted: #6e6353;
-      --faint: #a29585;
+      --faint: #9c8f7d;
       --line: #e3dccb;
       --line-2: #ede8da;
       --accent: #b96a1d;
@@ -63,23 +63,23 @@
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg: #17130c;
-        --panel: #201a11;
-        --panel-2: #2b2416;
-        --chip: #262013;
-        --ink: #f0e9dc;
-        --muted: #ab9d88;
-        --faint: #7c7161;
-        --line: #3b3325;
-        --line-2: #322b1f;
-        --accent: #e09a44;
-        --water: #86b1d4;
-        --danger: #d76a4a;
+        --bg: #14120f;
+        --panel: #1c1a16;
+        --panel-2: #24211b;
+        --chip: #201d18;
+        --ink: #f3eee5;
+        --muted: #a49a8a;
+        --faint: #756c60;
+        --line: #332e27;
+        --line-2: #29251f;
+        --accent: #e5a54e;
+        --water: #6fb0da;
+        --danger: #e2705a;
         --warn-ink: #eccd8d;
-        --warn-bg: #33290f;
-        --warn-line: #57431c;
-        --shadow-pop: 0 14px 40px rgba(0, 0, 0, .6);
-        --wknd: rgba(224, 154, 68, .06);
+        --warn-bg: #2b2415;
+        --warn-line: #4a3d22;
+        --shadow-pop: 0 18px 48px rgba(0, 0, 0, .55);
+        --wknd: rgba(229, 165, 78, .045);
         color-scheme: dark;
       }
     }
@@ -92,11 +92,11 @@
       color-scheme: light;
     }
     :root[data-theme="dark"] {
-      --bg: #17130c; --panel: #201a11; --panel-2: #2b2416; --chip: #262013;
-      --ink: #f0e9dc; --muted: #ab9d88; --faint: #7c7161; --line: #3b3325; --line-2: #322b1f;
-      --accent: #e09a44; --water: #86b1d4; --danger: #d76a4a;
-      --warn-ink: #eccd8d; --warn-bg: #33290f; --warn-line: #57431c;
-      --shadow-pop: 0 14px 40px rgba(0, 0, 0, .6); --wknd: rgba(224, 154, 68, .06);
+      --bg: #14120f; --panel: #1c1a16; --panel-2: #24211b; --chip: #201d18;
+      --ink: #f3eee5; --muted: #a49a8a; --faint: #756c60; --line: #332e27; --line-2: #29251f;
+      --accent: #e5a54e; --water: #6fb0da; --danger: #e2705a;
+      --warn-ink: #eccd8d; --warn-bg: #2b2415; --warn-line: #4a3d22;
+      --shadow-pop: 0 18px 48px rgba(0, 0, 0, .55); --wknd: rgba(229, 165, 78, .045);
       color-scheme: dark;
     }
     :root {
@@ -256,10 +256,25 @@
     .acc-url b { padding: 0 2px 0 10px; color: var(--muted); font-weight: 700; font-size: calc(12.5px * var(--fs)); }
     .acc-url input { flex: 1; min-width: 0; border: 0; background: none; padding: 9px 10px 9px 2px; font: inherit; font-size: calc(12.5px * var(--fs)); font-weight: 800; color: var(--ink); }
     .acc-url input:focus { outline: none; }
+    .acc-local { display: grid; gap: 5px; }
+    .acc-local label { color: var(--muted); font-size: max(12px, calc(11px * var(--fs))); font-weight: 700; }
+    .acc-local .acc-url { padding-right: 4px; }
+    .acc-local .acc-url input { padding-left: 10px; }
+    .acc-local .btn { flex: 0 0 auto; margin: 4px; }
+    .acc-local small { color: var(--faint); font-size: max(12px, calc(10.5px * var(--fs))); line-height: 1.4; }
     .acc-msg { font-size: calc(11px * var(--fs)); min-height: 15px; }
     .acc-msg.ok { color: #2f8a4d; }
     .acc-msg.bad { color: #b4462f; }
     .acc-row { display: flex; gap: 8px; justify-content: flex-end; }
+    .acc-admin {
+      display: flex; align-items: center; gap: 7px;
+      border: var(--bw) solid color-mix(in srgb, var(--accent) 45%, var(--line));
+      background: color-mix(in srgb, var(--accent) 10%, var(--panel));
+      color: color-mix(in srgb, var(--accent) 70%, var(--ink));
+      border-radius: 9px; padding: 7px 10px;
+      font-size: max(12px, calc(11px * var(--fs))); font-weight: 700; line-height: 1.35;
+    }
+    .acc-admin::before { content: "🔑"; font-size: 13px; }
     .acc-plan { display: inline-flex; align-items: center; gap: 5px; font-size: calc(10px * var(--fs)); font-weight: 900; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; color: var(--muted); }
     .acc-plan.prem { border-color: var(--accent); color: var(--accent); }
 
@@ -312,15 +327,18 @@
     .sect-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin: calc(4px * var(--sp)) 0 calc(10px * var(--sp)); }
     .sect-head h2 { margin: 0; font-family: var(--display); font-size: calc(11.5px * var(--fs)); font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
     .tl-recipe {
-      display: inline-flex; align-items: center; gap: 7px;
-      border: var(--bw) solid var(--line); background: var(--chip);
-      border-radius: 999px; padding: calc(3px * var(--btnPad)) calc(12px * var(--btnPad)) calc(3px * var(--btnPad)) 4px;
-      font-weight: 700; font-size: calc(12px * var(--fs)); letter-spacing: var(--ls);
+      display: inline-flex; align-items: center; gap: 6px;
+      border: var(--bw) solid transparent; background: none;
+      border-radius: 999px; padding: 3px 10px 3px 8px;
+      color: var(--muted); font-weight: 700; font-size: max(12px, calc(11.5px * var(--fs))); letter-spacing: var(--ls);
+      transition: color .15s ease, border-color .15s ease;
     }
-    .tl-recipe:hover { border-color: var(--accent); }
+    .tl-recipe:hover { color: var(--ink); border-color: var(--line); }
     .tl-recipe .thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--panel-2); display: grid; place-items: center; overflow: hidden; font-size: 11px; }
     .tl-recipe .thumb img { width: 100%; height: 100%; object-fit: cover; }
-    #locChip, #tlRecipe { display: none !important; }
+    #tlRecipe { display: none !important; }
+    #locChip[hidden] { display: none !important; }
+    /* posuvník rozestupu sedí v ploše osy, vlevo dole */
     .axis-rec { position: absolute; right: 10px; bottom: calc(var(--barGap) + var(--barH) + var(--gripH) + var(--barBelow) + 2px); z-index: 6; color: var(--muted); font-size: max(12px, calc(10.5px * var(--fs))); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; background: color-mix(in srgb, var(--panel) 80%, transparent); backdrop-filter: blur(4px); border-radius: 999px; padding: 3px 10px; pointer-events: none; }
     .axis-rec b { color: var(--accent); }
     @keyframes dmcFire { 0%,100% { opacity: .95; transform: scaleX(1); } 50% { opacity: .6; transform: scaleX(1.25); } }
@@ -337,15 +355,18 @@
       --barT: 3px;                          /* tloušťka stopy */
       --barW: 9px;                          /* výška výřezu */
       --barC: var(--accent);
-      --barGap: 14px;                       /* odstup lišty od osy */
-      --barBelow: 10px;                     /* odstup od obsahu pod osou */
-      --gripH: 14px;
+      --barGap: 6px;                        /* odstup lišty od osy */
+      --barBelow: 6px;                      /* odstup od obsahu pod osou */
+      --gripH: 0px;        /* úchopy jsou schované, osa se chytá přímo za plochu */
       padding-bottom: calc(var(--barGap) + var(--barH) + var(--gripH) + var(--barBelow));
       --tlSky: 0;                           /* krytí vrstvy oblohy (0…1) */
       --tlFocus: 30%;
     }
     .tl-stage[data-bar="off"] { padding-bottom: calc(var(--gripH) + var(--barBelow)); }
-    .tl-stage.dragging { user-select: none; }
+    .tl-stage.dragging { user-select: none; cursor: ns-resize; }
+    .tl-stage.panning { user-select: none; cursor: grabbing; }
+    .tl-view { cursor: grab; }
+    .tl-view .tl-step, .tl-view .tl-gap, .tl-view .tl-phase { cursor: default; }
     .tl-view { position: relative; height: 100%; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: none; }
     .tl-view::-webkit-scrollbar { height: 0; }
     .tl-rows { position: relative; display: flex; flex-direction: column; height: 100%; min-width: 100%; }
@@ -369,6 +390,18 @@
     .ly-sun { z-index: var(--z-sun, 5); }
     .ly-axis { z-index: var(--z-axis, 6); }
     .tl-row > .tl-line { z-index: 2; }
+    /* svislá značka „teď" — tenká linka s časem u osy */
+    .tl-now { position: absolute; top: 0; height: var(--nowY, 50%); width: 0; z-index: 11; pointer-events: none;
+      border-left: 1.5px dashed color-mix(in srgb, var(--danger) 70%, transparent); }
+    .tl-now::after { content: ""; position: absolute; left: -3.5px; bottom: -3.5px; width: 7px; height: 7px; border-radius: 50%; background: var(--danger); }
+    .tl-now.flip b { left: auto; right: 5px; }
+    .tl-now b {
+      position: absolute; left: 5px; bottom: 2px; padding: 1px 6px; border-radius: 999px;
+      background: var(--danger); color: #fff; font-size: max(12px, calc(10px * var(--fs)));
+      font-weight: 800; letter-spacing: .04em; white-space: nowrap; font-variant-numeric: tabular-nums;
+    }
+    body.emb-outline .tl-now { border-color: currentColor; opacity: .5; }
+    body.emb-outline .tl-now::after, body.emb-outline .tl-now b { background: currentColor; color: transparent; }
     .tl-line { position: absolute; border-radius: 99px; background: var(--line-2, #e8d8b2); }
 
     /* zaostřovací bod: pevná svislá poloha, krok pod ní je aktivní */
@@ -421,10 +454,14 @@
     .tl-grip i { display: block; background: var(--line); border-radius: 99px; }
     .tl-grip:hover i, .tl-grip:focus-visible i { background: var(--accent); }
     .tl-grip:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-    .tl-grip-h { left: 0; right: 0; bottom: var(--barBelow); height: var(--gripH); cursor: ns-resize; }
+    /* Úchopy nejsou vidět — výška i posun se berou přímo za plochu osy.
+       Z klávesnice ale zůstávají dostupné, takže se při zaostření ukážou. */
+    .tl-grip-h { left: 0; right: 0; bottom: var(--barBelow); height: var(--gripH); cursor: ns-resize; overflow: hidden; }
     .tl-grip-h i { width: 54px; height: 4px; }
-    .tl-grip-w { top: 0; bottom: calc(var(--barGap) + var(--barH) + var(--gripH) + var(--barBelow)); right: 0; width: 12px; cursor: ew-resize; }
+    .tl-grip-h:focus-visible { height: 14px; }
+    .tl-grip-w { top: 0; bottom: calc(var(--barGap) + var(--barH) + var(--gripH) + var(--barBelow)); right: 0; width: 0; cursor: ew-resize; overflow: hidden; }
     .tl-grip-w i { width: 4px; height: 46px; }
+    .tl-grip-w:focus-visible { width: 12px; }
     @media (pointer: coarse) { .tl-grip-w { display: none; } }   /* na dotyku se šířka nemění */
 
     /* fullscreen: stage přes celý viewport, lišta adresářů zůstává dole */
@@ -435,7 +472,8 @@
     body.tl-full .topbar { display: none; }
     /* lišta adresářů u spodní hrany viewportu, nad úchopem — úchop zůstává vždy vidět */
     body.tl-full .fold-bar { position: fixed; left: 0; right: 0; bottom: 17px; z-index: 61; margin: 0; padding: 6px 12px; background: var(--panel); border-top: var(--bw) solid var(--line); }
-    body.tl-full .tl-grip-h { position: fixed; left: 0; right: 0; bottom: 0; height: 17px; z-index: 62; background: var(--panel); border-top: var(--bw) solid var(--line); }
+    /* přes celou obrazovku úchop vidět zůstane — bez něj by z ní nebyla vidět cesta ven */
+    body.tl-full .tl-grip-h { position: fixed; left: 0; right: 0; bottom: 0; height: 17px; z-index: 62; background: var(--panel); border-top: var(--bw) solid var(--line); overflow: visible; }
     .w-note {
       position: absolute; transform: translate(-50%, 0); pointer-events: auto; cursor: pointer;
       border: var(--bw) solid var(--accent); background: color-mix(in srgb, var(--panel) 84%, transparent);
@@ -451,12 +489,6 @@
     .w-wx em { display: block; font-style: normal; font-size: max(12px, calc(11px * var(--fs))); font-weight: 800; }
     .w-wx small { display: block; color: #cdd8ee; font-size: max(12px, calc(9px * var(--fs))); font-weight: 700; letter-spacing: .06em; }
     .w-sun { position: absolute; border-radius: 50%; pointer-events: none; }
-    .w-ov { position: absolute; left: 0; right: 0; pointer-events: none; }
-    .w-ov-t { text-align: center; color: #dfe7fb; font-size: calc(9.5px * var(--fs)); font-weight: 800; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 7px; text-shadow: 0 1px 6px rgba(0,0,0,.7); }
-    .w-ov-line { position: relative; height: 3px; border-radius: 99px; margin: 0 4%; }
-    .w-ov-dot { position: absolute; width: 7px; height: 7px; border-radius: 50%; top: 50%; transform: translate(-50%, -50%); background: #ffd79a; box-shadow: 0 0 0 1.5px rgba(0,0,0,.35); }
-    .w-ov-lb { position: absolute; top: 12px; transform: translateX(-50%); color: #cfd9f0; font-size: max(12px, calc(8.5px * var(--fs))); font-weight: 700; white-space: nowrap; text-shadow: 0 1px 5px rgba(0,0,0,.75); }
-    .w-ov-day { position: absolute; top: -22px; transform: translateX(-50%); color: #fff; font-size: calc(9px * var(--fs)); font-weight: 900; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; text-shadow: 0 1px 6px rgba(0,0,0,.8); }
     .w-dmc { position: absolute; transform: translate(-50%, -100%); text-align: center; z-index: 6; }
     /* hláška stojí vedle auta a naskočí, teprve až auto přistane */
     .w-dmc .t { position: absolute; left: 100%; top: 50%; transform: translateY(-50%); margin-left: 14px;
@@ -503,13 +535,10 @@
     .w-dmc .dmc-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
     @media (prefers-reduced-motion: reduce) { .w-dmc.spark .bolts { animation: none; opacity: .6; } }
     .w-daywx { position: absolute; transform: translate(-50%, -100%); text-align: center; color: #f6f9ff; text-shadow: 0 1px 7px rgba(6,12,32,.85); pointer-events: none; }
+    .w-daywx, .w-wx { white-space: nowrap; }
     .w-daywx b { display: block; font-size: max(12px, calc(17px * var(--fs))); line-height: 1.05; }
     .w-daywx em { display: block; font-style: normal; font-weight: 800; font-size: max(12px, calc(12px * var(--fs))); }
     .w-daywx small { display: block; color: #c6d2ea; font-size: max(12px, calc(9px * var(--fs))); font-weight: 700; letter-spacing: .05em; }
-    .w-star { position: absolute; border-radius: 50%; background: #fff; pointer-events: none; }
-    .w-planet { position: absolute; border-radius: 50%; pointer-events: none; }
-    .tl-legend { display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 8px 14px; border-top: 1px solid var(--line-2); color: var(--faint); font-size: calc(10.5px * var(--fs)); }
-    .tl-legend b { color: var(--accent); font-weight: 900; }
 
     /* obloha na lince: vrstvy (fotka · obloha · hvězdy · měsíc · slunce · osa), pořadí řídí Studio */
     .ly { position: absolute; inset: 0; pointer-events: none; }
@@ -548,6 +577,19 @@
       96% { opacity: var(--twbase, .8); }
     }
     body.tl-sky-on .tl-stage { background: color-mix(in srgb, #0b1020 calc(var(--tlDark, 0) * 100%), var(--panel)); }
+
+    /* ---------- vlastní logo na ose (a stejně tak ve vloženém rámečku) ---------- */
+    #panelPlan .blk[data-sec="osa"] { position: relative; }
+    .tl-logo { position: absolute; z-index: 12; display: block; line-height: 0; opacity: var(--logoOp, 1); }
+    .tl-logo img { display: block; width: var(--logoW, 90px); height: auto; }
+    .tl-logo[href]:hover { opacity: 1; filter: brightness(1.06); }
+    .tl-logo[data-pos="tl"] { left: var(--logoPad, 10px); top: var(--logoPad, 10px); }
+    .tl-logo[data-pos="tr"] { right: var(--logoPad, 10px); top: var(--logoPad, 10px); }
+    .tl-logo[data-pos="bl"] { left: var(--logoPad, 10px); bottom: var(--logoPad, 10px); }
+    .tl-logo[data-pos="br"] { right: var(--logoPad, 10px); bottom: var(--logoPad, 10px); }
+    /* v rámečku se logo drží viditelného rohu, ať je seznam jakkoli dlouhý */
+    body.embed .tl-logo { position: fixed; }
+    body.embed .tl-logo[data-pos="br"], body.embed .tl-logo[data-pos="bl"] { bottom: calc(var(--logoPad, 10px) + 18px); }
 
     /* ---------- generátor kódu k vložení ---------- */
     .embed-box { max-width: 640px; width: min(92vw, 640px); }
@@ -604,10 +646,214 @@
       color: inherit !important; opacity: .72; box-shadow: none !important;
     }
     body.emb-outline .emb-list .eb-gap i { background: currentColor; opacity: .3; }
+
+    /* ---------- obrysový vzhled s prvky: obloha zůstane, jen se odbarví do linek ----------
+       Všechno kreslí barvou textu hostitelské stránky, pozadí žádné. Vejde se tak
+       na světlý i tmavý web, aniž by si s sebou nesl vlastní paletu. */
+    body.emb-line { background: transparent !important; }
+    body.emb-line .tl-row-sky { opacity: 1 !important; }
+    /* pruh oblohy je jen tenká linka, ne barevná plocha */
+    body.emb-line .ly-sky, body.emb-line .ly-photo { display: none !important; }
+    /* vrstvy si nesou barevné závoje na pozadí — prvky uvnitř zůstanou, závoj ne */
+    body.emb-line .tl-row-sky .ly { background: none !important; }
+    /* hvězdné nebe, planety a souhvězdí kreslí jedno velké SVG — převede se na linky */
+    body.emb-line .tl-row-sky svg [fill^="url("] { display: none !important; }   /* mlhoviny */
+    body.emb-line .tl-row-sky svg * {
+      fill: none !important; stroke: currentColor !important;
+      stroke-width: .9 !important; opacity: .5;
+    }
+    body.emb-line .tl-row-sky .ly > img,
+    body.emb-line .sky-sun.photo img, body.emb-line .sky-moon img, body.emb-line .sky-star.photo {
+      filter: grayscale(1) contrast(.4) brightness(1.6); opacity: .35;
+    }
+    body.emb-line .tl-line { background: currentColor !important; opacity: .32; height: 1.5px !important; }
+    body.emb-line .tl-dot {
+      background: none !important; border: 1.6px solid currentColor !important;
+      box-shadow: none !important; opacity: .8;
+    }
+    body.emb-line .tl-step.anchor .tl-dot, body.emb-line .tl-step.focus .tl-dot,
+    body.emb-line .tl-step.next .tl-dot { background: currentColor !important; opacity: 1; }
+    /* slunce: kroužek s paprsky místo zářící koule */
+    body.emb-line .sky-sun {
+      background: none !important; box-shadow: none !important;
+      border: 1.6px solid currentColor; border-radius: 50%;
+      opacity: .5; -webkit-mask-image: none !important; mask-image: none !important;
+    }
+    body.emb-line .sky-sun::before { display: none !important; }
+    body.emb-line .sky-sun::after {
+      content: ""; position: absolute; inset: -34%;
+      background: conic-gradient(currentColor 0 1.6deg, transparent 1.6deg 45deg);
+      border-radius: 50%;
+      -webkit-mask: radial-gradient(circle, transparent 56%, #000 58% 100%);
+      mask: radial-gradient(circle, transparent 56%, #000 58% 100%);
+      opacity: .85;
+    }
+    body.emb-line .sun-haze, body.emb-line .sun-reflect { display: none !important; }
+    /* měsíc: obrys srpku */
+    body.emb-line .sky-moon { opacity: .55; filter: none !important; }
+    body.emb-line .sky-moon.real {
+      background: none !important; box-shadow: none !important;
+      border: 1.6px solid currentColor;
+    }
+    body.emb-line .sky-moon::after { display: none !important; }
+    body.emb-line .sky-moon svg { fill: none; stroke: currentColor; stroke-width: 1.6; }
+    body.emb-line .sky-moon.glyph { color: inherit; text-shadow: none; }
+    /* hvězdy: drobné kroužky, ne svítící body */
+    body.emb-line .sky-star {
+      background: none !important; box-shadow: none !important;
+      border: 1px solid currentColor; border-radius: 50%; opacity: .38;
+      -webkit-mask: none !important; mask: none !important;
+    }
+    body.emb-line .sky-star::before, body.emb-line .sky-star::after { background: currentColor !important; opacity: .5; }
+    /* pilulky, odznaky dnů a počasí — všechno obrysem */
+    body.emb-line .tl-gap button, body.emb-line .tl-gap span, body.emb-line .tl-phase,
+    body.emb-line .tl-day-badge, body.emb-line .w-wx, body.emb-line .w-daywx {
+      background: none !important; border: 1px solid currentColor !important; border-style: solid !important;
+      color: inherit !important; opacity: .72; box-shadow: none !important;
+      backdrop-filter: none !important; text-shadow: none !important;
+    }
+    body.emb-line .w-wx small, body.emb-line .w-wx em, body.emb-line .w-wx b { color: inherit !important; }
+    /* Popisky se barví podle toho, jestli pod nimi leží noc. Bez oblohy nemá noc
+       co barvit a světlý text by na světlém webu zmizel — všechno bere barvu hostitele. */
+    body.emb-line .tl-step .tl-name, body.emb-line .tl-step .tl-time,
+    body.emb-line .tl-step .tl-date, body.emb-line .tl-step .tl-desc,
+    body.emb-line .tl-day-date, body.emb-line .tl-up, body.emb-line .tl-dn {
+      color: inherit !important; text-shadow: none !important;
+    }
+    body.emb-line .tl-step .tl-desc, body.emb-line .tl-day-date { opacity: .62; }
+    body.emb-line .tl-mini-track { background: currentColor !important; opacity: .18; }
+    body.emb-line .tl-mini-win { background: none !important; border: 1.5px solid currentColor !important; opacity: .75; }
+    body.emb-line .w-dmc svg, body.emb-line .w-dmc img { filter: none !important; opacity: .8; }
+    body.emb-line .tl-now b { background: none !important; border: 1px solid currentColor; color: inherit !important; }
+    /* ---------- vyprávěcí podoba pro cizí web ----------
+       Tmavá, patková, klidná. Neplánuje pečení — ukazuje, kolik za ním je práce
+       a čekání. Nic se nedá přenastavit, dny se počítají od začátku postupu. */
+    body.emb-story {
+      background: transparent !important;
+      --storyInk: var(--embInk, #ece5d6);
+      --storyGold: var(--embGold, #c9a55f);
+      color: var(--storyInk);
+    }
+    body.emb-story .tl-row-fx, body.emb-story .tl-row-dmc,
+    body.emb-story .tl-mini, body.emb-story .axis-rec, body.emb-story .tl-now,
+    body.emb-story .tl-focus, body.emb-story .tl-logo { display: none !important; }
+    body.emb-story .tl-view { cursor: default; }
+    body.emb-story .tl-stage { padding-bottom: 8px; }
+    /* linka je vlásek, ne pruh */
+    body.emb-story .tl-line {
+      background: color-mix(in srgb, var(--storyInk) 26%, transparent) !important;
+      height: 1px !important; opacity: 1;
+    }
+    body.emb-story .tl-dot {
+      background: color-mix(in srgb, var(--storyGold) 85%, transparent) !important;
+      border: 0 !important; box-shadow: none !important;
+      width: 7px !important; height: 7px !important; cursor: default;
+      transition: transform .28s cubic-bezier(.22,.9,.3,1), background .28s ease;
+    }
+    body.emb-story .tl-step:hover .tl-dot { transform: translate(-50%, -50%) scale(2.1); }
+    /* popisky: patkový název, verzálkový čas, vysvětlivka až na najetí */
+    body.emb-story .tl-name {
+      font-family: var(--display); font-weight: 500; letter-spacing: .005em;
+      font-size: max(13px, calc(15px * var(--fs))); color: var(--storyInk);
+      white-space: nowrap;
+    }
+    body.emb-story .tl-time {
+      font-family: var(--sans); font-weight: 600; letter-spacing: .14em;
+      font-size: max(11px, calc(10.5px * var(--fs))); text-transform: uppercase;
+      color: color-mix(in srgb, var(--storyInk) 52%, transparent) !important;
+      border: 0 !important; cursor: default; pointer-events: none;
+    }
+    body.emb-story .tl-date { display: none !important; }
+    body.emb-story .tl-desc {
+      font-size: max(11px, calc(10.5px * var(--fs)));
+      color: color-mix(in srgb, var(--storyInk) 45%, transparent);
+      font-weight: 400; letter-spacing: .02em;
+    }
+    /* odznak dne — jen "1. DEN", vlasová linka nad ním */
+    body.emb-story .tl-day-badge {
+      background: none !important; border: 0 !important;
+      border-top: 1px solid color-mix(in srgb, var(--storyGold) 55%, transparent) !important;
+      border-radius: 0 !important; padding: 7px 0 0 !important;
+      color: var(--storyGold) !important;
+      font-family: var(--sans); font-size: max(10px, calc(9px * var(--fs)));
+      font-weight: 600; letter-spacing: .22em; text-transform: uppercase;
+      backdrop-filter: none !important;
+    }
+    body.emb-story .tl-day-date { display: none !important; }
+    /* pilulky prodlev: jen text s vlasovou linkou, žádné bubliny */
+    body.emb-story .tl-gap button, body.emb-story .tl-gap span,
+    body.emb-story .tl-phase {
+      background: none !important; border: 0 !important;
+      border-radius: 0 !important; box-shadow: none !important;
+      backdrop-filter: none !important; padding: 0 8px !important;
+      color: color-mix(in srgb, var(--storyInk) 62%, transparent) !important;
+      font-family: var(--sans); font-weight: 500; letter-spacing: .16em;
+      font-size: max(10px, calc(9px * var(--fs))); text-transform: uppercase;
+      cursor: default !important;
+    }
+    body.emb-story .tl-phase b { color: var(--storyGold); }
+    /* vysvětlivka: schovaná, rozbalí se pod krokem při najetí */
+    /* Vysvětlivka visí pod krokem jako překryv — v toku by roztlačila osu
+       a v rámu s pevnou výškou by se stejně neměla kam vejít. */
+    body.emb-story .tl-view { overflow: visible; }
+    body.emb-story .tl-dn { position: absolute; }
+    body.emb-story .tl-story {
+      position: absolute; left: 50%; top: calc(100% + 9px);
+      width: 250px; max-width: none; min-width: 250px; display: block;
+      font-family: var(--sans); font-size: max(12px, calc(11.5px * var(--fs)));
+      line-height: 1.55; font-weight: 400; text-align: center;
+      color: color-mix(in srgb, var(--storyInk) 72%, transparent);
+      opacity: 0; transform: translateX(-50%) translateY(-6px);
+      pointer-events: none; overflow: visible; text-overflow: clip; white-space: normal;
+      transition: opacity .3s ease, transform .3s ease;
+    }
+    body.emb-story .tl-step:hover { z-index: 20; }
+    body.emb-story .tl-step:hover .tl-story,
+    body.emb-story .tl-step:focus-within .tl-story {
+      opacity: 1; transform: translateX(-50%);
+    }
+    body.emb-story .tl-step:hover .tl-name { color: var(--storyGold); }
+    body.emb-story .tl-step { transition: opacity .3s ease; }
+    body.emb-story .tl-row:hover .tl-step:not(:hover) { opacity: .42; }
+    body.emb-story .tl-dn { width: max(150px, var(--stepLbl, 120px)); }
+    body.emb-story .tl-view { padding: 0 18px; }
+    @media (prefers-reduced-motion: reduce) {
+      body.emb-story .tl-story, body.emb-story .tl-dot, body.emb-story .tl-step { transition: none; }
+    }
+    body.emb-story .emb-brand { color: color-mix(in srgb, var(--storyInk) 38%, transparent); }
+    body.emb-story .emb-title {
+      font-family: var(--display); color: var(--storyInk);
+      font-size: max(15px, calc(17px * var(--fs))); font-weight: 500; letter-spacing: .01em;
+    }
+    /* obloha ve vloženém rámu: pryč / náznak / celá */
+    body.emb-sky-off .tl-row-sky { display: none !important; }
+    body.emb-sky-hint .tl-row-sky { opacity: 1 !important; }
+    body.emb-sky-hint .ly-sky, body.emb-sky-hint .ly-stars, body.emb-sky-hint .ly-photo,
+    body.emb-sky-hint .sun-haze, body.emb-sky-hint .sun-reflect,
+    body.emb-sky-hint .w-wx, body.emb-sky-hint .w-daywx { display: none !important; }
+    body.emb-sky-hint .tl-row-sky .ly { background: none !important; }
+    /* Zbude tichý náznak slunce a měsíce. Bez téhle úpravy zůstane po měsíci
+       jen rozmazaná šeď — záře a svatozář jsou stavěné na tmavou oblohu. */
+    body.emb-sky-hint .sky-moon::after { display: none !important; }
+    body.emb-sky-hint .sky-sun {
+      opacity: .34; animation: none;
+      -webkit-mask-image: none !important; mask-image: none !important;
+      background: radial-gradient(circle, currentColor 0 42%, transparent 62%) !important;
+      box-shadow: none !important;
+    }
+    body.emb-sky-hint .sky-moon { opacity: .34; filter: none !important; }
+    body.emb-sky-hint .sky-moon.real {
+      background: none !important; box-shadow: none !important;
+      border: 1.4px solid currentColor;
+    }
+    body.emb-sky-hint .sky-moon svg { fill: none; stroke: currentColor; stroke-width: 1.4; }
+    body.emb-story.emb-sky-hint .sky-sun, body.emb-story.emb-sky-hint .sky-moon {
+      opacity: .3; color: var(--storyGold);
+    }
     /* proklik na bread.sk */
     .emb-brand {
       position: fixed; right: 10px; bottom: 6px; z-index: 20;
-      font-size: max(11px, calc(10.5px * var(--fs))); font-weight: 700; letter-spacing: .04em;
+      font-size: max(12px, calc(10.5px * var(--fs))); font-weight: 700; letter-spacing: .04em;
       color: var(--muted); text-decoration: none; opacity: .75;
     }
     .emb-brand:hover { opacity: 1; color: var(--accent); }
@@ -621,6 +867,20 @@
     .tl-step.n-dn .tl-desc { color: #c3d0ea; text-shadow: 0 1px 6px rgba(6, 12, 32, .75); }
     .sky-moon { position: absolute; display: block; transform: translate(-50%, -50%); pointer-events: none; }
     .sky-moon.glyph { color: #e6edfb; text-shadow: 0 0 6px rgba(190, 210, 255, .8); background: none !important; }
+    /* Svit dýchá kolem měsíce ve zvláštní vrstvě — na .sky-moon samotný sahat nejde,
+       filter i transform tam patří uměleckým stylům. */
+    .sky-moon::after {
+      content: ""; position: absolute; left: 50%; top: 50%; width: 240%; height: 240%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%; pointer-events: none; mix-blend-mode: screen;
+      background: radial-gradient(circle, rgba(206, 224, 255, .40) 0 22%, rgba(190, 212, 255, .16) 42%, transparent 68%);
+      animation: moonHalo calc(12s / max(.15, var(--animAmp, .5))) ease-in-out infinite;
+    }
+    .sky-moon.noanim::after { animation: none; }
+    @keyframes moonHalo {
+      0%, 100% { opacity: calc(.45 + .1 * var(--animAmp, .5)); transform: translate(-50%, -50%) scale(.94); }
+      50% { opacity: 1; transform: translate(-50%, -50%) scale(calc(1 + .12 * var(--animAmp, .5))); }
+    }
     /* nahrané fotky místo kresby */
     .sky-sun.photo { background: none !important; box-shadow: none !important; }
     .sky-sun.photo::before, .sky-sun.photo::after { display: none !important; }
@@ -636,7 +896,6 @@
         radial-gradient(circle at 38% 38%, #f4f7fd, #d8e0f0 60%, #aeb9d2);
       box-shadow: 0 0 10px 2px rgba(200, 215, 255, .45);
     }
-    .sky-cloud { position: absolute; display: block; transform: translate(-50%, -50%); opacity: .85; pointer-events: auto; }
     .sky-sun {
       transform: translate(-50%, -50%);
       border-radius: 50%;
@@ -652,12 +911,14 @@
         transparent 100%);
       -webkit-mask-image: linear-gradient(to bottom, #000 calc(var(--cut, 140%) - 2%), transparent var(--cut, 140%));
       mask-image: linear-gradient(to bottom, #000 calc(var(--cut, 140%) - 2%), transparent var(--cut, 140%));
-      animation: sunpulse calc(9s / max(.15, var(--animAmp, .5))) ease-in-out infinite;
+      animation: sunpulse calc(13s / max(.15, var(--animAmp, .5))) ease-in-out infinite;
     }
     .sky-sun.noanim { animation: none; }
+    /* Kotouč stojí. Dýchá jen barva a teplo kolem něj — skok jasu o 14 %
+       vypadal jako blikání, ne jako slunce. */
     @keyframes sunpulse {
-      0%, 100% { filter: brightness(1); }
-      50% { filter: brightness(calc(1 + .14 * var(--animAmp, .5))); }
+      0%, 100% { filter: brightness(1) saturate(1); }
+      50% { filter: brightness(calc(1 + .045 * var(--animAmp, .5))) saturate(calc(1 + .07 * var(--animAmp, .5))); }
     }
     .sky-sun:hover { filter: brightness(1.15) !important; }
     .sun-reflect {
@@ -672,9 +933,11 @@
       animation: reflectShimmer calc(5s / max(.2, var(--animAmp, .5))) ease-in-out infinite;
     }
     .sun-reflect.still { animation: none; }
+    /* odlesk se po hladině roztřese, nenafukuje se do stran */
     @keyframes reflectShimmer {
-      0%, 100% { transform: translate(-50%, 0) scaleX(1); opacity: .88; }
-      50% { transform: translate(-50%, 0) scaleX(calc(1 + .12 * var(--animAmp, .5))); opacity: 1; }
+      0%, 100% { transform: translate(-50%, 0) scaleY(1) skewX(0deg); opacity: .8; }
+      35% { transform: translate(-50%, 0) scaleY(calc(1 + .09 * var(--animAmp, .5))) skewX(calc(.8deg * var(--animAmp, .5))); opacity: 1; }
+      70% { transform: translate(-50%, 0) scaleY(calc(1 - .05 * var(--animAmp, .5))) skewX(calc(-.8deg * var(--animAmp, .5))); opacity: .9; }
     }
     .sun-haze {
       position: absolute; border-radius: 50%; pointer-events: none; z-index: 9;
@@ -686,25 +949,28 @@
       -webkit-mask-image: radial-gradient(circle, #000 10%, rgba(0, 0, 0, .6) 42%, transparent 72%);
       mask-image: radial-gradient(circle, #000 10%, rgba(0, 0, 0, .6) 42%, transparent 72%);
       backdrop-filter: blur(calc(var(--hz, .5) * 1.1px)) saturate(calc(1 + var(--hz, .5) * .3)) brightness(calc(1 + var(--hz, .5) * .05));
-      animation: hazePulse calc(6.5s / max(.18, var(--animAmp, .5))) ease-in-out infinite;
+      animation: hazeRise calc(7s / max(.18, var(--animAmp, .5))) ease-in-out infinite;
     }
+    /* dvě vlny, každá se rozbíhá ven a cestou hasne — proto to sálá a nepulzuje */
     .sun-haze::before, .sun-haze::after {
       content: ""; position: absolute; inset: 0; border-radius: 50%;
       background: repeating-radial-gradient(circle,
-        hsl(var(--sunh, 38) 96% 78% / calc(.10 * var(--hz, .5))) 0 3px,
-        transparent 3px 11px);
-      animation: hazeRing calc(9s / max(.18, var(--animAmp, .5))) linear infinite;
+        hsl(var(--sunh, 38) 96% 78% / calc(.14 * var(--hz, .5))) 0 3px,
+        transparent 3px 12px);
+      animation: hazeWave calc(6.5s / max(.18, var(--animAmp, .5))) ease-out infinite;
     }
-    .sun-haze::after { animation-duration: calc(13s / max(.18, var(--animAmp, .5))); animation-direction: reverse; opacity: .7; }
+    .sun-haze::after { animation-delay: calc(-3.25s / max(.18, var(--animAmp, .5))); }
     .sun-haze.still, .sun-haze.still::before, .sun-haze.still::after { animation: none; }
-    @keyframes hazePulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); }
-      50% { transform: translate(-50%, -50%) scale(calc(1 + .07 * var(--animAmp, .5))); }
+    /* horký vzduch se nad sluncem převaluje: sotva znatelný střih do stran, žádné skoky */
+    @keyframes hazeRise {
+      0%, 100% { transform: translate(-50%, -50%) skewX(0deg) scaleY(1); }
+      25% { transform: translate(-50%, -51%) skewX(calc(1.1deg * var(--animAmp, .5))) scaleY(calc(1 + .035 * var(--animAmp, .5))); }
+      75% { transform: translate(-50%, -51%) skewX(calc(-1.1deg * var(--animAmp, .5))) scaleY(calc(1 + .035 * var(--animAmp, .5))); }
     }
-    @keyframes hazeRing {
-      0% { transform: scale(.86) rotate(0deg); }
-      50% { transform: scale(1.08) rotate(180deg); }
-      100% { transform: scale(.86) rotate(360deg); }
+    @keyframes hazeWave {
+      0% { transform: scale(.9) rotate(0deg); opacity: 0; }
+      22% { opacity: 1; }
+      100% { transform: scale(calc(1 + .55 * var(--animAmp, .5))) rotate(24deg); opacity: 0; }
     }
     .sky-sun.kids::after {
       content: ""; position: absolute; inset: 0;
@@ -713,9 +979,6 @@
       -webkit-mask: radial-gradient(circle, transparent 43%, #000 46% 60%, transparent 63%);
       mask: radial-gradient(circle, transparent 43%, #000 46% 60%, transparent 63%);
     }
-    .gap-break { transform: translate(-50%, -50%); pointer-events: none; line-height: 0; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .35)); }
-    .cut-ico { display: inline-block; vertical-align: -3px; margin-right: 5px; line-height: 0; }
-    .tl-gap button:has(.cut-ico) { border-style: solid; border-color: #b1793a; }
     /* umělecké nálady (Studio) */
     .tl-stage[data-art="gogh"] .ly-band::after, .tl-stage[data-art="gogh"] .tl-line::after {
       content: ""; position: absolute; inset: 0; border-radius: inherit; opacity: calc(var(--artAmt, .5) * .55);
@@ -735,7 +998,6 @@
     body.art-rytina { --bg: #f6efe0; --panel: #fbf6ea; --panel-2: #efe6d2; --chip: #f8f2e4; --ink: #4a3726; --muted: #8a7358; --faint: #a8927a; --line: #ddd0b6; --accent: #8a5a2b; }
     body.art-rytina .tl-wrap { background: #fbf6ea; box-shadow: inset 0 0 60px rgba(138, 90, 43, .07); }
     body.art-rytina .tl-line, body.art-rytina .ly-band { filter: sepia(.5) contrast(1.05); }
-    body.art-rytina .world, body.art-rytina .world-l { filter: sepia(.75) saturate(.7) contrast(1.05) brightness(1.06); }
     body.art-rytina .tl-dot { background: #8a5a2b; border-color: #fbf6ea; }
     body.art-rytina .tl-gap button, body.art-rytina .tl-gap span { border-style: dashed; border-color: #c9b795; color: #7a6242; background: #fbf6ea; }
     body.art-rytina .tl-name, body.art-rytina .tl-time { font-family: var(--serif); letter-spacing: .01em; }
@@ -754,11 +1016,6 @@
       filter: drop-shadow(0 0 14px rgba(198, 216, 255, .45)) contrast(1.14) saturate(.85) brightness(1.04);
     }
     .tl-stage[data-art="foto"] .sky-sun { filter: contrast(1.1) saturate(1.25) brightness(1.05); }
-    body.art-foto .w-planet {
-      box-shadow: inset -14px -10px 26px rgba(0, 0, 0, .72), inset 8px 6px 18px rgba(255, 255, 255, .1), 0 0 22px rgba(120, 160, 255, .22);
-      filter: contrast(1.12) saturate(1.2);
-    }
-    body.art-foto .w-star { box-shadow: 0 0 5px rgba(200, 224, 255, .6); }
     body.art-foto #wCos { filter: contrast(1.08) saturate(1.15); }
     .tl-stage[data-art="dreamworks"] .sky-moon { transform: translate(-50%, -50%) scale(1.75); filter: drop-shadow(0 0 9px rgba(215, 232, 255, .85)); }
     .tl-stage[data-art="disney"] .sky-moon { filter: drop-shadow(0 0 7px rgba(255, 225, 250, .8)); }
@@ -831,16 +1088,14 @@
     .tl-stage[data-art="clay"] .sky-star.tw,
     .tl-stage[data-art="clay"] .sun-haze,
     .tl-stage[data-art="clay"] .sun-reflect { animation-timing-function: steps(6, end) !important; }
-    .tl-stage[data-art="clay"] .sky-moon { animation: clayHold calc(1.2s / max(.3, var(--animAmp, .5))) steps(1, end) infinite; }
-    .tl-stage[data-art="clay"] .sky-sun { animation-name: sunpulse, clayHold; animation-duration: calc(9s / max(.15, var(--animAmp, .5))), calc(1s / max(.3, var(--animAmp, .5))); }
-    @keyframes clayHold {
-      0%, 32% { translate: 0 0; rotate: 0deg; }
-      33%, 65% { translate: .6px -1px; rotate: .8deg; }
-      66%, 100% { translate: -.5px .6px; rotate: -.6deg; }
+    /* Plastelína si drží trhaný rytmus stop-motion, ale slunce ani měsíc už
+       nepodskakují na místě — cukání polohy vypadalo jako chyba, ne jako styl. */
+    .tl-stage[data-art="clay"] .sky-moon::after { animation-timing-function: steps(7, end) !important; }
     }
     .tl-stage[data-art="clay"] .w-dmc .dmc-fly { animation-timing-function: steps(5, end); }
     @media (prefers-reduced-motion: reduce) {
       .tl-stage[data-art="clay"] .sky-moon, .tl-stage[data-art="clay"] .sky-sun { animation: none; }
+      .sky-moon::after, .sun-haze, .sun-haze::before, .sun-haze::after { animation: none; }
     }
     /* ---------- krok na ose ----------
        linka prochází ve výšce --lineY, popisky nad ní a pod ní se od ní odvíjejí */
@@ -856,14 +1111,28 @@
     .tl-dn { position: absolute; left: 0; right: 0; top: calc(var(--lineY) + 12px); display: grid; justify-items: center; gap: 1px; }
     /* min-width: 0 — bez něj by mřížka nechala popisek přetéct přes svoje místo */
     .tl-up > *, .tl-dn > * { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
-    .tl-time .tl-date { display: block; font-size: max(12px, calc(9.5px * var(--fs))); font-weight: 700; color: var(--faint); letter-spacing: .03em; line-height: 1.25; font-variant-numeric: tabular-nums; }
-    .tl-step.anchor .tl-time .tl-date { color: var(--accent); opacity: .8; }
+    /* datum se drží sbalené a vyroste, teprve když krok najedeš — roste nahoru, čas zůstane na místě */
+    .tl-time .tl-date {
+      display: block; font-size: max(12px, calc(9.5px * var(--fs))); font-weight: 700; color: var(--faint);
+      letter-spacing: .03em; line-height: 1.25; font-variant-numeric: tabular-nums;
+      max-height: 0; opacity: 0; transform: translateY(4px) scale(.92); transform-origin: bottom center;
+      pointer-events: none;
+      transition: max-height .18s ease, opacity .18s ease, transform .18s ease;
+    }
+    .tl-step:hover .tl-time .tl-date,
+    .tl-step:focus-within .tl-time .tl-date,
+    .tl-step.focus .tl-time .tl-date { max-height: 1.5em; opacity: 1; transform: none; }
+    .tl-step.anchor .tl-time .tl-date { color: var(--accent); opacity: 0; }
+    .tl-step.anchor:hover .tl-time .tl-date,
+    .tl-step.anchor.focus .tl-time .tl-date { opacity: .8; }
+    @media (prefers-reduced-motion: reduce) { .tl-time .tl-date { transition: none; } }
     .tl-day { display: grid; justify-items: center; gap: 2px; }
     .tl-day-badge {
       border: 1px solid var(--line); background: var(--panel-2);
       color: var(--muted);
       border-radius: 5px; padding: 0 7px;
       font-size: max(12px, calc(9.5px * var(--fs))); font-weight: 900; letter-spacing: .1em; text-transform: uppercase;
+      white-space: nowrap;
     }
     .tl-day-date { color: var(--faint); font-size: max(12px, calc(10.5px * var(--fs))); font-weight: 700; font-variant-numeric: tabular-nums; }
     .tl-time {
@@ -872,21 +1141,25 @@
       font-variant-numeric: tabular-nums;
       border-bottom: 2px solid transparent;
       border-radius: 2px;
-      cursor: ns-resize; white-space: nowrap;
+      cursor: pointer; white-space: nowrap;
     }
     .tl-time:hover { color: var(--accent); border-bottom-color: var(--accent-soft); }
     .tl-step.anchor .tl-time { color: var(--accent); border-bottom-color: var(--accent); }
     .tl-dot {
-      position: absolute; left: 50%; top: var(--lineY); transform: translate(-50%, -50%);
-      width: var(--tlDot, 16px); height: var(--tlDot, 16px);
-      border-radius: 50%;
+      position: absolute; left: 50%; top: var(--lineY);
+      transform: translate(-50%, -50%) rotate(var(--dotRot, 0deg));
+      width: calc(var(--tlDot, 16px) * var(--dotK, 1));
+      height: calc(var(--tlDot, 16px) * var(--dotK, 1) * var(--dotSquash, 1));
+      border-radius: var(--dotRad, 50%);
       background: var(--faint);
-      border: 3px solid var(--panel);
-      box-shadow: 0 0 0 1.5px var(--line);
-      cursor: ns-resize;
+      border: var(--dotEdge, 3px) solid var(--panel);
+      box-shadow: 0 0 0 var(--dotRing, 1.5px) var(--line), 0 0 var(--dotHalo, 0px) calc(var(--dotHalo, 0px) * .35) var(--dotGlow, transparent);
+      cursor: grab; touch-action: none;
       z-index: 1;
     }
-    .tl-step.anchor .tl-dot { box-shadow: 0 0 0 2px var(--accent); }
+    /* prstenec: barva kroku jde do obrysu, střed zůstane papírový */
+    .tl-dot.hollow { background: var(--panel) !important; border-color: var(--dotOwn, var(--faint)); }
+    .tl-step.anchor .tl-dot { box-shadow: 0 0 0 max(2px, var(--dotRing, 1.5px)) var(--accent); }
     .tl-step.done { opacity: .45; }
     .tl-step.focus { z-index: 12; }
     /* zmenšená osa: krok pod kurzorem (a jeho tečka) se zvětší jako v doku */
@@ -955,16 +1228,52 @@
     .cc-day.drop { background: var(--accent-soft); border-color: var(--accent); box-shadow: inset 0 0 0 1.5px var(--accent); }
     .clock-face { width: 264px; height: 264px; margin: 0 auto; touch-action: none; cursor: crosshair; }
     .clock-face svg { width: 100%; height: 100%; display: block; }
+    /* ---------- rolovací výběr času (jako budík na telefonu) ---------- */
+    .clock-roll { width: 264px; margin: 0 auto; padding: 4px 0 2px; }
+    .roll-date { text-align: center; color: var(--faint); font-size: max(12px, calc(11px * var(--fs))); font-weight: 800; margin-bottom: 6px; }
+    .roll-cols { position: relative; display: flex; align-items: stretch; justify-content: center; gap: 4px; }
+    .roll-sep { align-self: center; font-size: calc(21px * var(--fs)); font-weight: 900; color: var(--ink); opacity: .5; }
+    /* pruh, na kterém se čte vybraná hodnota */
+    .roll-line {
+      position: absolute; left: 4px; right: 4px; top: 50%; height: var(--rollItem, 38px);
+      transform: translateY(-50%); border-radius: 10px;
+      background: var(--accent-soft); border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      pointer-events: none;
+    }
+    .roll-col {
+      --rollItem: 38px;
+      position: relative; z-index: 1;
+      height: calc(var(--rollItem) * 5); width: 86px;
+      overflow-y: scroll; overscroll-behavior: contain;
+      scroll-snap-type: y mandatory;
+      scrollbar-width: none; -ms-overflow-style: none;
+      padding: calc(var(--rollItem) * 2) 0;
+      cursor: grab; touch-action: pan-y;
+      -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+      mask-image: linear-gradient(180deg, transparent, #000 22%, #000 78%, transparent);
+    }
+    .roll-col::-webkit-scrollbar { display: none; }
+    .roll-col:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 10px; }
+    .roll-col.grabbing { cursor: grabbing; scroll-snap-type: none; }
+    .roll-col b {
+      display: grid; place-items: center; height: var(--rollItem);
+      scroll-snap-align: center;
+      font-size: calc(20px * var(--fs)); font-weight: 800; font-variant-numeric: tabular-nums;
+      color: var(--ink); line-height: 1;
+      /* čím dál od pruhu, tím světlejší — počítá se při rolování */
+      opacity: var(--o, 1); transform: scale(var(--sc, 1));
+    }
+    @media (prefers-reduced-motion: reduce) { .roll-col { scroll-behavior: auto; } }
     .clock-hint { text-align: center; color: var(--faint); font-size: calc(8.5px * var(--fs)); font-weight: 700; letter-spacing: .07em; text-transform: uppercase; margin-top: 6px; }
 
     /* ---------- termín ---------- */
-    .term { margin-top: calc(18px * var(--sp)); }
+    .term { margin-top: calc(18px * var(--sp)); container-type: inline-size; }
     .seg { display: inline-flex; border: var(--bw) solid var(--line); border-radius: 999px; background: var(--panel-2); padding: 3px; gap: 2px; }
     .seg button { border: 0; background: none; border-radius: 999px; padding: calc(5px * var(--btnPad)) calc(13px * var(--btnPad)); font-size: calc(11.5px * var(--fs)); font-weight: var(--fw); color: var(--muted); letter-spacing: var(--ls); }
     .seg button.active { background: var(--accent); color: var(--panel); }
     .mode-hint { color: var(--muted); font-size: calc(12px * var(--fs)); margin: 8px 0 12px; }
     .cal-wrap { display: grid; grid-template-columns: 288px minmax(0, 1fr); gap: calc(22px * var(--sp)); align-items: start; }
-    @container (max-width: 620px) { .cal-wrap { grid-template-columns: 1fr; } }
+    @container (max-width: 620px) { .cal-wrap { grid-template-columns: minmax(0, 1fr); } }
     .cal { user-select: none; width: 288px; max-width: 100%; }
     .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
     .cal-head b { font-family: var(--display); font-size: calc(13.5px * var(--fs)); font-weight: 800; }
@@ -1002,11 +1311,12 @@
       box-shadow: var(--shadow-pop);
     }
     .days-list { display: grid; gap: 7px; align-content: start; }
-    .days-row { display: grid; grid-template-columns: 52px 70px 1fr; gap: 10px; align-items: baseline; border-bottom: 1px dotted var(--line); padding-bottom: 7px; }
+    .days-row { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 4px 10px; align-items: baseline; border-bottom: 1px solid var(--line-2); padding-bottom: 8px; }
+    @container (max-width: 520px) { .days-row { grid-template-columns: auto minmax(0, 1fr); } .days-row .s { grid-column: 1 / -1; } }
     .days-row:last-child { border-bottom: 0; }
-    .days-row .b { font-size: calc(9.5px * var(--fs)); font-weight: 900; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line); background: var(--panel-2); color: var(--muted); border-radius: 5px; padding: 0 5px; justify-self: start; }
-    .days-row .d { font-weight: 800; font-variant-numeric: tabular-nums; }
-    .days-row .s { color: var(--muted); font-size: calc(12px * var(--fs)); font-variant-numeric: tabular-nums; }
+    .days-row .b { font-size: max(12px, calc(9.5px * var(--fs))); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; border: 0; background: none; color: var(--faint); padding: 0; justify-self: start; white-space: nowrap; }
+    .days-row .d { font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .days-row .s { color: var(--muted); font-size: max(12px, calc(12px * var(--fs))); font-variant-numeric: tabular-nums; min-width: 0; }
     .days-row .s b { color: var(--ink); font-weight: 800; }
     .days-more { border: 0; background: none; padding: 0; font: inherit; color: var(--muted); opacity: .75; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
     .days-more:hover { opacity: 1; color: var(--accent); }
@@ -1074,35 +1384,68 @@
     .foot-note { color: var(--faint); font-size: calc(10.5px * var(--fs)); margin-top: calc(16px * var(--sp)); line-height: 1.55; }
 
     /* ---------- recepty ---------- */
-    .rec-bar { zoom: var(--recZ, .78); display: flex; flex-wrap: wrap; gap: 7px; padding: 2px 2px 12px; }
+    .rec-bar { zoom: var(--recZ, .78); display: flex; flex-wrap: wrap; gap: 8px; padding: 0 2px 14px; }
     .rec-pill {
-      display: flex; align-items: center; gap: 7px;
-      border: var(--bw) solid var(--line); background: var(--chip);
-      border-radius: 999px; padding: calc(4px * var(--btnPad)) calc(13px * var(--btnPad)) calc(4px * var(--btnPad)) 5px;
-      font-weight: 700; font-size: calc(12.5px * var(--fs)); white-space: nowrap;
+      display: flex; align-items: center; gap: 8px;
+      border: var(--bw) solid var(--line); background: var(--panel);
+      border-radius: 999px; padding: 4px 14px 4px 5px;
+      font-weight: 700; font-size: max(12px, calc(12.5px * var(--fs))); white-space: nowrap;
+      color: var(--muted);
+      transition: border-color .15s ease, color .15s ease, box-shadow .15s ease;
     }
-    .rec-pill.active { border-color: var(--accent); background: var(--accent-soft); color: color-mix(in srgb, var(--accent) 60%, var(--ink)); }
-    .rec-pill .thumb { width: 26px; height: 26px; border-radius: 50%; background: var(--panel-2); display: grid; place-items: center; overflow: hidden; font-size: 13px; }
+    .rec-pill:hover { color: var(--ink); border-color: color-mix(in srgb, var(--fc) 45%, var(--line)); }
+    .rec-pill.active {
+      color: var(--ink); border-color: color-mix(in srgb, var(--fc) 60%, var(--line));
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--fc) 16%, transparent);
+    }
+    .rec-pill .thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--panel-2); display: grid; place-items: center; overflow: hidden; font-size: 13px; box-shadow: inset 0 0 0 1px var(--line); }
     .rec-pill .thumb img { width: 100%; height: 100%; object-fit: cover; }
-    .rec-pill.add { padding: 4px 13px; color: var(--muted); border-style: dashed; }
+    .rec-pill.add { padding: 4px 14px; color: var(--faint); border-style: dashed; }
     /* adresáře a barevné skupiny receptů */
-    .fold-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 7px; align-items: center; }
+    /* ---------- kartotéka: záložky sedí na lince, aktivní ji prořízne ---------- */
+    .fold-bar {
+      display: flex; flex-wrap: wrap; gap: 3px; align-items: flex-end;
+      margin-bottom: calc(12px * var(--sp));
+      padding-bottom: 0; border-bottom: var(--bw) solid var(--line);
+    }
     .fold-chip {
       --fc: var(--accent);
-      display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
-      border: var(--bw) solid color-mix(in srgb, var(--fc) 55%, var(--line));
-      background: color-mix(in srgb, var(--fc) 12%, var(--panel));
-      color: color-mix(in srgb, var(--fc) 65%, var(--ink));
-      border-radius: 9px 9px 0 0; padding: 4px 11px; font-size: calc(11.5px * var(--fs)); font-weight: 800;
+      position: relative; display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
+      margin-bottom: calc(-1 * var(--bw));
+      border: var(--bw) solid transparent; border-bottom: 0;
+      background: none; color: var(--muted);
+      border-radius: calc(var(--radius) * .6) calc(var(--radius) * .6) 0 0;
+      padding: 6px 13px 7px; font-size: max(12px, calc(11.5px * var(--fs))); font-weight: 700;
+      letter-spacing: var(--ls); line-height: 1.2;
+      transition: color .15s ease, background .15s ease;
     }
-    .fold-chip.active { background: color-mix(in srgb, var(--fc) 24%, var(--panel)); box-shadow: inset 0 -3px 0 var(--fc); }
-    .fold-chip.drop { outline: 2px dashed var(--fc); outline-offset: 2px; }
-    .fold-chip .tab { width: 13px; height: 10px; border-radius: 2px 3px 0 0; background: var(--fc); opacity: .85; }
-    .fold-chip.add { border-style: dashed; background: none; padding: 4px 12px; font-size: calc(13px * var(--fs)); font-weight: 900; line-height: 1; }
+    .fold-chip:hover { color: var(--ink); background: color-mix(in srgb, var(--fc) 7%, transparent); }
+    .fold-chip.active {
+      background: var(--panel); border-color: var(--line); color: var(--ink);
+      font-weight: 800; padding-bottom: calc(7px + var(--bw));
+    }
+    /* barevná hrana nahoře prozradí adresář; aktivní ji má plnou */
+    .fold-chip::before {
+      content: ""; position: absolute; left: 8px; right: 8px; top: 0; height: 2px;
+      border-radius: 2px; background: var(--fc); opacity: 0; transition: opacity .15s ease;
+    }
+    .fold-chip:hover::before { opacity: .45; }
+    .fold-chip.active::before { opacity: 1; left: -1px; right: -1px; height: 2.5px; border-radius: 2px 2px 0 0; }
+    .fold-chip.drop { background: color-mix(in srgb, var(--fc) 16%, transparent); color: var(--ink); }
+    .fold-chip.drop::before { opacity: 1; }
+    .fold-chip .tab { width: 8px; height: 8px; border-radius: 50%; background: var(--fc); flex: 0 0 auto; }
+    .fold-chip.active .tab { box-shadow: 0 0 0 3px color-mix(in srgb, var(--fc) 22%, transparent); }
+    /* přidat adresář: tichý čtvereček, ne blikající rámeček */
+    .fold-chip.add {
+      color: var(--faint); padding: 6px 10px 7px; font-size: max(12px, calc(14px * var(--fs)));
+      font-weight: 400; line-height: 1;
+    }
+    .fold-chip.add::before { display: none; }
+    .fold-chip.add:hover { color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
     /* nepojmenovaná složka = jen barevný jazýček, žádné „Adresář 2" */
-    .fold-chip.unnamed { padding: 4px 9px; }
+    .fold-chip.unnamed { padding-inline: 11px; }
     .fold-chip.unnamed .fn { display: none; }
-    .fold-chip.unnamed .tab { width: 17px; }
+    .fold-chip.unnamed .tab { width: 10px; height: 10px; }
     /* nový recept = prázdná čárkovaná karta v mřížce, ne tlačítko */
     .rec-new {
       position: absolute; zoom: var(--recZ, .78); width: 288px; min-height: 148px;
@@ -1113,6 +1456,12 @@
     .rec-new::after { content: "+"; font-size: 26px; font-weight: 300; line-height: 1; }
     .rec-new:hover { border-color: var(--accent); color: var(--accent); }
     .fold-chip input { border: 0; background: none; font: inherit; color: inherit; width: 8ch; padding: 0; }
+    .rec-tidy {
+      border: 1.5px dashed var(--line); background: none; color: var(--faint);
+      border-radius: 999px; padding: 4px 12px; cursor: pointer;
+      font: inherit; font-size: max(12px, calc(11px * var(--fs))); font-weight: 700;
+    }
+    .rec-tidy:hover { border-color: var(--accent); color: var(--accent); }
     .rec-pill { --fc: var(--accent); }
     .rec-pill.folded { border-color: color-mix(in srgb, var(--fc) 45%, var(--line)); background: color-mix(in srgb, var(--fc) 10%, var(--panel)); }
     .rec-pill.folded.active { border-color: var(--fc); background: color-mix(in srgb, var(--fc) 22%, var(--panel)); color: color-mix(in srgb, var(--fc) 62%, var(--ink)); }
@@ -1317,7 +1666,9 @@
     .rec-note { width: 100%; margin-top: 12px; border: 1px solid var(--line-2); background: var(--chip); border-radius: 9px; padding: 10px 12px; min-height: 58px; resize: vertical; color: var(--ink); }
     .rec-note::placeholder { color: var(--faint); }
     .rec-foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; margin-top: 12px; }
-    .rec-foot .grp { display: flex; gap: 8px; flex-wrap: wrap; }
+    .rec-foot .grp { display: flex; gap: 8px; flex-wrap: wrap; min-width: 0; }
+    .rec-foot { padding-right: 46px; }      /* místo pro ohnutý roh */
+    .rec-foot .btn { min-width: 0; white-space: nowrap; padding-inline: calc(9px * var(--btnPad)); }
 
     /* ---------- popover, lightbox ---------- */
     .pop {
@@ -1423,13 +1774,28 @@
     .st-ctls { display: flex; flex-wrap: wrap; gap: 6px 14px; }
     .st-c { display: grid; gap: 1px; min-width: 86px; }
     .st-c label { color: var(--faint); font-size: calc(9px * var(--fs)); font-weight: 800; letter-spacing: .07em; text-transform: uppercase; }
+    .st-in { display: flex; align-items: center; gap: 5px; }
     .st-c input[type="range"] { width: 92px; accent-color: var(--accent); }
+    .st-num {
+      width: 46px; flex: 0 0 auto; border: 1px solid transparent; background: none;
+      border-radius: 5px; padding: 1px 3px; text-align: right;
+      font: inherit; font-size: max(12px, calc(10.5px * var(--fs))); font-weight: 800;
+      font-variant-numeric: tabular-nums; color: var(--ink);
+      -moz-appearance: textfield;
+    }
+    .st-num::-webkit-outer-spin-button, .st-num::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .st-num:hover { border-color: var(--line); }
+    .st-num:focus { border-color: var(--accent); background: var(--panel); outline: none; }
     .st-c .mk { position: relative; height: 9px; width: 92px; margin-top: -2px; }
+    .st-c { min-width: 148px; }
     .st-c .mk i { position: absolute; top: 0; width: 1.5px; height: 6px; background: var(--faint); border-radius: 1px; }
     .st-c .mk i::after { content: "okraj"; position: absolute; left: 50%; top: 5px; transform: translateX(-50%); color: var(--faint); font-size: 7.5px; font-weight: 800; letter-spacing: .04em; }
     .st-c .mk.over i { background: var(--accent); }
     .st-c .mk.over i::after { content: "přes okraj →"; color: var(--accent); left: 0; transform: none; }
-    .st-c select, .st-c input[type="number"] { border: 1px solid var(--line); background: var(--chip); border-radius: 6px; padding: 3px 6px; font-size: calc(11.5px * var(--fs)); font-weight: 700; }
+    .st-c select, .st-c input[type="number"], .st-c input[type="url"] { border: 1px solid var(--line); background: var(--chip); border-radius: 6px; padding: 3px 6px; font-size: calc(11.5px * var(--fs)); font-weight: 700; }
+    .st-c input[type="url"] { min-width: 0; font-weight: 500; color: var(--ink); }
+    .save-state { font-size: calc(11px * var(--fs)); font-weight: 800; color: var(--ok, #4b7f3a); }
+    .save-state.bad { color: var(--danger); }
     .st-c input[type="color"] { width: 40px; height: 24px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--chip); cursor: pointer; }
     .ord-list { display: grid; gap: 3px; }
     .ord-row {
@@ -1514,6 +1880,7 @@
           <div class="tl-grip tl-grip-w" id="tlGripW" role="slider" tabindex="0" aria-orientation="horizontal"
                aria-label="Šířka osy" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" aria-valuetext="100 %"><i></i></div>
         </div>
+        <a class="tl-logo" id="tlLogo" hidden></a>
         <div class="emb-list" id="embList" hidden></div>
         <a class="emb-brand" id="embBrand" href="https://bread.sk" target="_blank" rel="noopener" hidden>
           Powered by <b>BREAD<i>.SK</i></b>
@@ -1598,7 +1965,16 @@
         <div class="cc-grid" id="ccGrid"></div>
       </div>
       <div class="clock-face" id="clockFace"></div>
-      <div class="clock-hint">den uvnitř · noc okolo · za 2 s se potvrdí ✓</div>
+      <div class="clock-roll" id="clockRoll" hidden>
+        <div class="roll-date" id="rollDate"></div>
+        <div class="roll-cols">
+          <div class="roll-col" id="rollH" tabindex="0" role="listbox" aria-label="Hodina"></div>
+          <b class="roll-sep">:</b>
+          <div class="roll-col" id="rollM" tabindex="0" role="listbox" aria-label="Minuta"></div>
+          <div class="roll-line" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="clock-hint" id="clockHint">den uvnitř · noc okolo · za 2 s se potvrdí ✓</div>
     </div>
   </div>
 
@@ -1666,6 +2042,13 @@
       </div>
     </div>
     <div class="grp">
+      <span class="microlabel">Výběr času (výchozí)</span>
+      <div class="opts" id="adminClock">
+        <button type="button" data-clock="dial">Kruh</button>
+        <button type="button" data-clock="roll">Rolovací</button>
+      </div>
+    </div>
+    <div class="grp">
       <span class="microlabel">Velikost písma</span>
       <div class="slider-row">
         <input type="range" id="adminFs" min="85" max="125" step="5" aria-label="Velikost písma">
@@ -1705,10 +2088,19 @@
           <svg width="17" height="17" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M45.1 24.5c0-1.6-.1-2.8-.4-4H24v7.3h12.1c-.2 2-1.6 5-4.5 7l6.9 5.3c4.1-3.8 6.6-9.4 6.6-15.6z"/><path fill="#34A853" d="M24 46c5.9 0 10.9-2 14.5-5.3l-6.9-5.3c-1.8 1.3-4.3 2.2-7.6 2.2-5.8 0-10.7-3.8-12.5-9.1l-7.1 5.5C8.1 41.1 15.4 46 24 46z"/><path fill="#FBBC05" d="M11.5 28.5c-.5-1.4-.8-2.9-.8-4.5s.3-3.1.7-4.5l-7.1-5.5C2.9 17 2 20.4 2 24s.9 7 2.4 10z"/><path fill="#EA4335" d="M24 10.3c4.1 0 6.9 1.8 8.5 3.3l6.2-6C34.9 4.1 29.9 2 24 2 15.4 2 8.1 6.9 4.4 14l7.1 5.5c1.8-5.3 6.7-9.2 12.5-9.2z"/></svg>
           Přihlásit se přes Google
         </button>
+        <div class="acc-local" id="accLocal" hidden>
+          <label for="accLocalMail">Zkušební přihlášení bez Googlu</label>
+          <div class="acc-url">
+            <input id="accLocalMail" type="email" inputmode="email" autocomplete="email" placeholder="tvuj@email.cz" spellcheck="false">
+            <button type="button" class="btn primary" id="accLocalGo">Přihlásit</button>
+          </div>
+          <small>Data zůstanou jen v tomhle prohlížeči. Správcovský režim se odemkne, když adresa sedí.</small>
+        </div>
         <p style="margin-top:8px">Registrace = první přihlášení. Používáme jen e-mail, jméno a avatar z Google účtu.</p>
       </div>
       <div id="accSignedIn" hidden>
         <p id="accWho" style="color:var(--ink);font-weight:700"></p>
+        <p class="acc-admin" id="accAdminTag" hidden>Správce — Studio, design a vkládání na web jsou odemčené.</p>
         <p style="margin:8px 0 4px">Tvoje veřejná adresa</p>
         <div class="acc-url"><b>bread.sk/</b><input id="accHandle" maxlength="20" autocomplete="off" spellcheck="false" placeholder="eva31"></div>
         <div class="acc-msg" id="accMsg"></div>
@@ -1755,8 +2147,17 @@
         </label>
         <label>Vzhled
           <select id="embStyle">
-            <option value="1">jednoduchý obrys</option>
-            <option value="0">plný (obloha, barvy)</option>
+            <option value="story">vyprávěcí (pevná osa, jen dny)</option>
+            <option value="line">obrysový s prvky (bez pozadí)</option>
+            <option value="outline">jednoduchý obrys</option>
+            <option value="full">plný (obloha, barvy)</option>
+          </select>
+        </label>
+        <label>Obloha
+          <select id="embSky">
+            <option value="hint">jen náznak (slunce, měsíc)</option>
+            <option value="off">žádná</option>
+            <option value="full">celá (hvězdy, planety, počasí)</option>
           </select>
         </label>
         <label>Šířka
@@ -1769,6 +2170,7 @@
           <input type="text" id="embHead" placeholder="Jak pečeme chleba">
         </label>
         <label class="emb-chk"><input type="checkbox" id="embBrandChk" checked> Ukázat „Powered by BREAD.SK“</label>
+        <label class="emb-chk"><input type="checkbox" id="embLogoChk" checked> Ukázat nahrané logo</label>
         <label class="emb-chk"><input type="checkbox" id="embInherit" checked> Převzít písmo a barvu z webu</label>
       </div>
       <div class="emb-preview"><iframe id="embFrame" title="Náhled vložené osy"></iframe></div>
@@ -1812,8 +2214,58 @@
       { id: "predani", name: "Předání", desc: "2 h po dopečení" }
     ];
     const BAKE = 61, HANDOFF = 120;
+    /* Vyprávěcí režim pro cizí web: u každého kroku pár vět o tom, co se děje
+       a proč to trvá. Cíl není naplánovat pečení, ale ukázat, kolik za tím je. */
+    const STORY = {
+      kvas: "Kvásek se rozkrmí moukou a vodou a nechá se rozjet. Pár minut práce — a pak devět hodin, kdy pracuje sám.",
+      autolyza: "Mouka se smíchá jen s vodou a odpočívá. Lepek se propojí bez hnětení a těsto se samo připraví na kvásek.",
+      fermentolyza: "Do odpočaté mouky přijde kvásek. Odsud začíná těsto opravdu žít.",
+      sul: "Sůl a kmín se vmíchají až teď — dřív by kvásku brzdily rozjezd.",
+      preklad1: "Těsto se místo hnětení jemně přeloží. Nabere sílu, ale neztratí vzduch, který v něm mezitím vznikl.",
+      preklad2: "Druhý překlad, zhruba po tři čtvrtě hodině. Těsto je pokaždé pružnější než předtím.",
+      preklad3: "Třetí překlad. Mezi nimi se nedělá nic — jen se čeká, až kvásek odvede svoje.",
+      preklad4: "Poslední překlad. Těsto už drží tvar a je cítit, že je hotové.",
+      stoceni: "Bochník se stočí do napětí a uloží do ošatky. Tady se rozhoduje, jestli bude držet tvar.",
+      osatka: "Krátké kynutí v ošatce, než přijde chlad.",
+      lednice: "Čtrnáct hodin v lednici. Chlad kvašení zpomalí a chuť se za tu dobu prohloubí — tohle se uspěchat nedá.",
+      predehrati: "Trouba se rozpaluje naprázdno, bochník zatím čeká v chladu. Do rozpálené pece jde rovnou ze studena.",
+      peceni: "Pečení pod poklicí a pak dopečení dokřupava. Kůrka vznikne až v posledních minutách.",
+      predani: "Chleba musí vychladnout, jinak se uvnitř mázne. Teprve dvě hodiny po pečení je opravdu hotový."
+    };
     /* barva zastávky: od syrového těsta po vypečenou kůrku */
     const DOUGH = ["#ead9b5", "#e6d0a1", "#e2c78d", "#ddbb76", "#d7ae5f", "#d0a049", "#c79038", "#bc7f2b", "#ae6d21", "#9e5c1a", "#8d4c15", "#7b3e11", "#6a330e", "#552a0d"];
+
+    /* vzhled bodů na ose — čte se ze Studia, přepočítá se, jen když se nastavení změní */
+    let dotSkinC = null, dotSkinKey = "";
+    function dotSkin() {
+      const d = state.sky.dot || {};
+      const key = JSON.stringify(d);
+      if (dotSkinKey === key && dotSkinC) return dotSkinC;
+      const shape = d.shape || "circle";
+      const own = (i) => d.color === "accent" ? "var(--accent)"
+        : d.color === "ink" ? "var(--ink)"
+        : d.color === "custom" ? (d.tint || "var(--accent)")
+        : DOUGH[Math.min(i, DOUGH.length - 1)];
+      dotSkinC = {
+        hollow: shape === "hollow",
+        /* prázdný bod má barvu v obrysu, plný v ploše */
+        css: (i) => shape === "hollow" ? "--dotOwn:" + own(i) : "background:" + own(i),
+        vars: {
+          "--dotK": (Math.max(20, +d.size || 100) / 100).toFixed(3),
+          "--dotEdge": (+d.edge >= 0 ? +d.edge : 3) + "px",
+          "--dotRing": (+d.ring >= 0 ? +d.ring : 1.5) + "px",
+          "--dotHalo": (+d.halo || 0) + "px",
+          "--dotGlow": (+d.halo || 0) > 0 ? "var(--accent-soft)" : "transparent",
+          "--dotRad": shape === "square" ? "3px" : shape === "soft" ? "32%" : "50%",
+          "--dotRot": shape === "diamond" ? "45deg" : "0deg",
+          "--dotSquash": shape === "loaf" ? "0.72" : "1"
+        }
+      };
+      if (shape === "diamond") dotSkinC.vars["--dotRad"] = "3px";
+      if (shape === "loaf") dotSkinC.vars["--dotRad"] = "46% / 60%";
+      dotSkinKey = key;
+      return dotSkinC;
+    }
     const GAP_EDIT = [
       { label: "Zrání kvasu",          min: 360, max: 840,  step: 30, def: 540, hint: "podle postupu ~9 h (23:00 → 8:00)" },
       { label: "Autolýza",             min: 20,  max: 240,  step: 5,  def: 60,  hint: "odpočinek mouky s vodou" },
@@ -1897,7 +2349,7 @@
 
     /* ---------- stav + ukládání ---------- */
     const KEY = "mnp-chleba-planovac-v1";
-    const defaultDesign = () => ({ admin: false, preset: "cisty", theme: "auto", axis: "auto", fs: 100, sp: 100, accent: null });
+    const defaultDesign = () => ({ admin: false, preset: "cisty", theme: "light", axis: "auto", fs: 115, sp: 110, accent: null, clock: "dial" });
     const defaultLoc = () => ({ name: "Praha", lat: 50.08, lon: 14.43, tz: "Europe/Prague", auto: true });
     const defaultSky = () => ({
       dayL: 100, nightD: 100, band: 26, bandUp: 12, spreadX: 0,
@@ -1906,7 +2358,8 @@
       moon: { size: 100, style: 60, op: 90, lift: 55, img: null },
       stars: { density: 100, size: 100, twinkle: 45, style: 70, op: 90, img: null },
       planets: [],
-      axis: { thick: 4, op: 100, timeScale: 100 },
+      axis: { thick: 4, op: 100, timeScale: 100, lineY: 74 },
+      dot: { size: 100, shape: "circle", edge: 3, ring: 1.5, halo: 0, color: "dough", tint: null },
       master: { style: 60, artist: "none", amt: 60, anim: 50 },
       font: "sans",
       photo: { data: null, from: 9, to: 12, pos: "above", h: 72, op: 80 },
@@ -1916,21 +2369,23 @@
       tl: {
         w: null, h: 280, zx: 1, brush: "both",
         hMin: 150, hMaxPct: 100, minSpan: 180,          /* meze výšky a nejtěsnějšího přiblížení */
-        bar: { style: "line", track: 3, win: 9, band: 16, gap: 14, below: 10, op: 85, color: null, ticks: true }
+        mix: null,                                      /* rozestup: null = podle výšky, jinak 0–100 */
+        bar: { style: "line", track: 3, win: 9, band: 16, gap: 6, below: 6, op: 85, color: null, ticks: true }
       },
       mag: 45, recScale: 78,
       dmc: { img: null, size: 125, y: 62, flip: true },
       planet: { img: null, size: 100, x: 12, y: 20, op: 100, ring: 100 },
+      logo: { img: null, size: 100, pos: "br", op: 100, link: "https://bread.sk", pad: 10 },
       worldMax: (typeof screen !== "undefined" && screen.height ? Math.round(Math.max(560, Math.min(2200, screen.height * 0.78))) : 1150),
       wide: { axis: false, all: false, edge: 14 },
-      globe: { img: null, pin: null, size: 300, pinSize: 100, sat: 100, pinSat: 100, x: 52, y: 34 }
+      globe: { show: false, img: null, pin: null, size: 300, pinSize: 100, sat: 100, pinSat: 100, x: 52, y: 34 }
     });
     /* Vestavěné profily vzhledu. Vlastní profily si uživatel ukládá vedle nich
        (jen v admin režimu) a objeví se pod nimi ve výběru stylů. */
     const BUILTIN = [{
       id: "obloha",
       name: "Obloha",
-      design: { preset: "cisty", fs: 115, sp: 100 },
+      design: { preset: "cisty", theme: "light", axis: "auto", fs: 115, sp: 110 },
       sky: {
         dayL: 95, nightD: 125, mag: 45,
         chips: { size: 100, op: 70 },
@@ -1949,7 +2404,8 @@
     }];
 
     /* vestavěná osa pro cizí web — ovládá se jen parametry v adrese */
-    const EMB = { on: false, layout: "auto", outline: false, brand: true, font: null, ink: null, title: null };
+    let adminByUrl = false, adminMuted = false;
+    const EMB = { on: false, layout: "auto", style: "full", sky: null, outline: false, brand: true, logo: true, font: null, ink: null, gold: null, title: null };
 
     let state = {
       plan: { anchorId: defaultAnchor().id, anchorMs: defaultAnchor().ms },
@@ -1993,12 +2449,14 @@
             moon: { ...dS.moon, ...(oS.moon || {}) },
             stars: { ...dS.stars, ...(oS.stars || {}) },
             axis: { ...dS.axis, ...(oS.axis || {}) },
+            dot: { ...dS.dot, ...(oS.dot || {}) },
             master: { ...dS.master, ...(oS.master || {}) },
             photo: { ...dS.photo, ...(oS.photo || {}) },
             chips: { ...dS.chips, ...(oS.chips || {}) },
             ui: { ...dS.ui, ...(oS.ui || {}) },
             dmc: { ...dS.dmc, ...(oS.dmc || {}) },
             planet: { ...dS.planet, ...(oS.planet || {}) },
+            logo: { ...dS.logo, ...(oS.logo || {}) },
             planets: Array.isArray(oS.planets) ? oS.planets : [],
             wide: { ...dS.wide, ...(oS.wide || {}) },
             globe: { ...dS.globe, ...(oS.globe || {}) },
@@ -2011,7 +2469,7 @@
           /* migrace designu z dřívějších verzí */
           const od = state.design || {};
           const presetMap = { pekarsky: "cisty", moderni: "cisty", rustikalni: "rustik" };
-          state.design = { ...defaultDesign(), admin: !!od.admin, fs: od.fs || 100, sp: od.sp || 100, preset: presetMap[od.preset] || (["cisty", "rustik", "kontrast"].includes(od.preset) ? od.preset : "cisty"), theme: ["light", "dark"].includes(od.theme) ? od.theme : "auto", axis: ["h", "v"].includes(od.axis) ? od.axis : "auto", accent: od.accent || null };
+          state.design = { ...defaultDesign(), admin: false, fs: od.fs || 100, sp: od.sp || 100, preset: presetMap[od.preset] || (["cisty", "rustik", "kontrast"].includes(od.preset) ? od.preset : "cisty"), theme: ["light", "dark"].includes(od.theme) ? od.theme : "auto", axis: ["h", "v"].includes(od.axis) ? od.axis : "auto", accent: od.accent || null, clock: od.clock === "roll" ? "roll" : "dial" };
           /* migrace: intervaly se přesunuly z plánu do receptů */
           const legacy = state.plan.durs;
           state.recipes.forEach((r) => {
@@ -2040,7 +2498,7 @@
     /* parametry pro vestavění (iframe) */
     try {
       const q = new URLSearchParams(location.search);
-      if (q.has("admin") || location.hash === "#admin") state.design.admin = true;
+      if (q.has("admin") || location.hash === "#admin") adminByUrl = true;
       const th = q.get("theme");
       if (th === "light" || th === "dark") state.design.theme = th;
       if (q.get("tab") === "recepty") state.tab = "recepty";
@@ -2048,10 +2506,27 @@
       if (q.has("embed")) {
         EMB.on = true;
         EMB.layout = ["h", "v", "auto"].includes(q.get("layout")) ? q.get("layout") : "auto";
-        EMB.outline = q.get("outline") === "1";
+        /* "outline" je stará podoba parametru, drží se kvůli už vloženým kódům */
+        const sty = q.get("style") || (q.get("outline") === "1" ? "outline" : "full");
+        EMB.style = ["full", "outline", "line", "story"].includes(sty) ? sty : "full";
+        EMB.outline = EMB.style === "outline";
         EMB.brand = q.get("brand") !== "0";
+        EMB.logo = q.get("logo") !== "0";
         EMB.font = q.get("font") || null;
         EMB.ink = q.get("ink") || null;
+        EMB.gold = q.get("gold") || null;
+        /* obloha: pryč, náznak (slunce a měsíc), nebo celá. Vyprávěcí osa má
+           ve výchozím stavu jen náznak — souhvězdí a planety by ji přebily. */
+        const sky = q.get("sky");
+        EMB.sky = ["off", "hint", "full"].includes(sky) ? sky : (EMB.style === "story" ? "hint" : "full");
+        /* Vyprávěcí osa startuje v 11:00, aby celý postup padl do rozumné denní
+           doby. Uložený stav hostitele se tu neuplatní — rám je vždy stejný. */
+        if (EMB.style === "story") {
+          const tp = tzParts(Date.now());
+          state.plan = { anchorId: "kvas", anchorMs: fromWall(tp.y, tp.m, tp.d, 11, 0) };
+          /* linka sedí výš, aby se pod ni vešlo rozbalené vysvětlení kroku */
+          state.sky.axis.lineY = 52;
+        }
         EMB.title = q.get("title") || null;
         state.design.admin = false;
       }
@@ -2062,8 +2537,10 @@
       const q = new URLSearchParams();
       q.set("embed", "1");
       q.set("layout", $("embLayout").value);
-      q.set("outline", $("embStyle").value);
+      q.set("style", $("embStyle").value);
+      q.set("sky", $("embSky").value);
       q.set("brand", $("embBrandChk").checked ? "1" : "0");
+      q.set("logo", $("embLogoChk").checked ? "1" : "0");
       const head = $("embHead").value.trim();
       if (head) q.set("title", head);
       return location.origin + location.pathname + "?" + q.toString();
@@ -2116,6 +2593,27 @@
       });
     })();
 
+    /* Logo se kreslí stejně v aplikaci i ve vloženém rámečku — rámeček čte tentýž
+       uložený stav, takže nahrané logo se do něj propíše samo. */
+    function renderLogo() {
+      const el = $("tlLogo");
+      if (!el) return;
+      const L = state.sky.logo || {};
+      const show = !!L.img && (!EMB.on || EMB.logo !== false);
+      el.hidden = !show;
+      if (!show) return;
+      el.innerHTML = '<img src="' + L.img + '" alt="Logo">';
+      el.dataset.pos = L.pos || "br";
+      el.style.setProperty("--logoW", Math.round(90 * (L.size || 100) / 100) + "px");
+      el.style.setProperty("--logoOp", ((L.op != null ? L.op : 100) / 100).toFixed(2));
+      el.style.setProperty("--logoPad", (L.pad != null ? L.pad : 10) + "px");
+      if (L.link) {
+        el.setAttribute("href", L.link);
+        el.setAttribute("target", "_blank");
+        el.setAttribute("rel", "noopener");
+      } else el.removeAttribute("href");
+    }
+
     /* ---------- vestavěná osa (iframe do cizího webu) ---------- */
     function embMode() {
       if (!EMB.on) return null;
@@ -2126,10 +2624,15 @@
       if (!EMB.on) return;
       const b = document.body, r = document.documentElement;
       b.classList.add("embed");
-      b.classList.toggle("emb-outline", EMB.outline);
+      b.classList.toggle("emb-outline", EMB.style === "outline");
+      b.classList.toggle("emb-line", EMB.style === "line");
+      b.classList.toggle("emb-story", EMB.style === "story");
+      b.classList.toggle("emb-sky-off", EMB.sky === "off");
+      b.classList.toggle("emb-sky-hint", EMB.sky === "hint");
       /* písmo a barva textu se přebírají z hostitelské stránky, ať to zapadne */
       if (EMB.font) { r.style.setProperty("--sans", EMB.font); r.style.setProperty("--display", EMB.font); }
-      if (EMB.ink) { r.style.setProperty("--ink", EMB.ink); r.style.setProperty("--muted", "color-mix(in srgb, " + EMB.ink + " 62%, transparent)"); }
+      if (EMB.ink) { r.style.setProperty("--ink", EMB.ink); r.style.setProperty("--muted", "color-mix(in srgb, " + EMB.ink + " 62%, transparent)"); r.style.setProperty("--embInk", EMB.ink); }
+      if (EMB.gold) r.style.setProperty("--embGold", EMB.gold);
       const mode = embMode();
       b.dataset.emb = mode;
       /* osa vyplní iframe a nedá se s ní hýbat — žádné posuvníky, žádné úchopy */
@@ -2141,6 +2644,7 @@
         state.sky.tl.hMaxPct = 100;
       }
       renderEmbedList();
+      renderLogo();
       postEmbedHeight();
       const br = $("embBrand");
       if (br) br.hidden = !EMB.brand;
@@ -2229,23 +2733,59 @@
       save(false);
     }
 
-    let saveT, saveWarned = false;
+    /* Nahrané obrázky se ukládají do prohlížeče jako text, takže na velikosti záleží.
+       WebP je proti PNG několikanásobně menší a průhlednost zvládne taky. */
+    function imgData(cv) {
+      const w = cv.toDataURL("image/webp", 0.85);
+      const p = cv.toDataURL("image/png");
+      return w.startsWith("data:image/webp") && w.length < p.length ? w : p;
+    }
+    /* kolik místa zabírá uložený stav a co je v něm největší */
+    function storageInfo() {
+      const total = JSON.stringify(state).length;
+      const part = (o) => JSON.stringify(o || null).length;
+      const imgs = part(state.sky.logo && state.sky.logo.img) + part(state.sky.dmc && state.sky.dmc.img) +
+        part(state.sky.planet && state.sky.planet.img) + part(state.sky.photo && state.sky.photo.data) +
+        part(state.sky.sun && state.sky.sun.img) + part(state.sky.moon && state.sky.moon.img) +
+        part(state.sky.stars && state.sky.stars.img) + part(state.sky.globe);
+      return { total, profiles: part(state.profiles), imgs, recipes: part(state.recipes) };
+    }
+
+    let saveT, saveWarned = false, saveOk = true;
+    /* jediné místo, kudy stav teče do prohlížeče — vrací, jestli se to povedlo */
+    function saveNow(flash) {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(state));
+        saveOk = true;
+        markSaved(true);
+        if (flash) {
+          const f = $("saveFlag");
+          f.classList.add("on"); setTimeout(() => f.classList.remove("on"), 60); setTimeout(() => f.classList.remove("on"), 1400);
+        }
+        return true;
+      } catch (e) {
+        saveOk = false;
+        markSaved(false);
+        if (!saveWarned) {
+          saveWarned = true;
+          const i = storageInfo();
+          alert("Nepodařilo se uložit — úložiště prohlížeče je plné.\n\n" +
+            "Uložený stav má " + Math.round(i.total / 1024) + " kB, z toho obrázky " + Math.round(i.imgs / 1024) +
+            " kB a profily " + Math.round(i.profiles / 1024) + " kB.\n" +
+            "Ve Studiu → Uložení jde obrázky z profilů uvolnit.");
+        }
+        return false;
+      }
+    }
+    function markSaved(ok) {
+      const b = $("saveState");
+      if (!b) return;
+      b.textContent = ok ? "Uloženo ✓" : "Neuloženo — úložiště je plné";
+      b.classList.toggle("bad", !ok);
+    }
     function save(flash = true) {
       clearTimeout(saveT);
-      saveT = setTimeout(() => {
-        try {
-          localStorage.setItem(KEY, JSON.stringify(state));
-          if (flash) {
-            const f = $("saveFlag");
-            f.classList.add("on"); setTimeout(() => f.classList.remove("on"), 60); setTimeout(() => f.classList.remove("on"), 1400);
-          }
-        } catch (e) {
-          if (!saveWarned) {
-            saveWarned = true;
-            alert("Nepodařilo se uložit — úložiště prohlížeče je plné nebo nedostupné. Zkus odebrat fotky receptů.");
-          }
-        }
-      }, 250);
+      saveT = setTimeout(() => saveNow(flash), 250);
     }
 
     const isNote = (r) => r && r.kind === "note";
@@ -2298,14 +2838,25 @@
       : i === 7 ? "kynutí " + fmtDur(g[7])
       : i === 10 ? "lednice " + fmtDur(g[10])
       : fmtDur(g[i]);
-    function gapChip(i, g, cut) {
+    function gapChip(i, g) {
       const el = document.createElement("div");
       el.className = "tl-gap";
       if (i < GAP_EDIT.length) {
-        const label = gapLabel(i, g);
-        const cutMark = cut ? '<span class="cut-ico">' + breadCutSvg(15) + "</span>" : "";
-        el.innerHTML = '<button type="button" title="' + GAP_EDIT[i].label + (cut ? " — úsek je kvůli měřítku zkrácený (řez)" : "") + ' — klikni, nebo táhni pro změnu">' + cutMark + label + "</button>";
-        el.querySelector("button").addEventListener("pointerdown", (ev) => startGapDrag(ev, i));
+        el.innerHTML = '<button type="button" title="' + GAP_EDIT[i].label + ' — klikni pro nastavení, táhni pro změnu">' + gapLabel(i, g) + "</button>";
+        const b = el.querySelector("button");
+      b.addEventListener("pointerdown", (ev) => startGapDrag(ev, i));
+      /* dvojklik vrátí prodlevu na výchozí hodnotu receptu */
+      b.addEventListener("dblclick", (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        const r = activeRecipe();
+        r.gaps[i] = GAP_EDIT[i].def;
+        closeGapPop();
+        save();
+        renderPlan(true);
+        updateDerived(r);
+        toast("Vráceno na výchozí: " + fmtDur(GAP_EDIT[i].def));
+      });
       } else {
         el.innerHTML = "<span>dopečeno + 2 h</span>";
       }
@@ -2446,6 +2997,13 @@
         return need;
       }
       /* Kolik místa popisek kroku doopravdy potřebuje (nejširší řádek jeho bloku). */
+      /* text podpopisku kroku — tentýž, jaký se pak vykreslí */
+      function stepDesc(i) {
+        const t = times();
+        const now = Date.now();
+        const running = +t[0] < now && now < +t[t.length - 1] + 3 * HOUR;
+        return stepMeta(i, t.map(Number), now, running, t.findIndex((d) => +d >= now)).desc || "";
+      }
       function labelW(i, lv, F) {
         if (lv <= LV_DOT) return 14;
         const t = times().map(Number);
@@ -2453,7 +3011,11 @@
         if (lv === LV_TIME) return tw + 8;
         const dw = textW(fmtDate(t[i]), F.date);
         const nm = lv >= LV_FULL ? STEPS[i].name : (SHORT[STEPS[i].id] || STEPS[i].name);
-        return Math.max(tw, dw, textW(nm, F.name)) + 10;
+        let w = Math.max(tw, dw, textW(nm, F.name));
+        /* Podpopisek se do rozestupu nezapočítává: je to druhotná informace, vejde se
+           do šířky kroku a láme se nejvýš do dvou řádků. Kdyby si říkal o místo,
+           roztlačil by osu tak, že by z ní zmizely i názvy. */
+        return w + 10;
       }
       /* Když jsou popisky na sobě, ubereme z dlouhých úseků a přidáme těsným.
          Měřítko tím přestává být doslovné — čitelnost je přednější než věrnost. */
@@ -2512,7 +3074,9 @@
         const spanH = total;
         const visible = Math.max(Math.min(SPAN_MIN(), total), Math.min(total, spanH * (cfg().zx || 1)));
         const ratio = cl01(visible / total);
-        const mix = smooth((t - SPACE_LO) / (SPACE_HI - SPACE_LO));   /* 0 = rovnoměrně, 1 = přesně podle času */
+        /* rozestup: buď se odvodí z výšky, nebo ho drží posuvník rovnoměrně ↔ přesně */
+        const mixAuto = smooth((t - SPACE_LO) / (SPACE_HI - SPACE_LO));
+        const mix = cfg().mix == null ? mixAuto : cl01(cfg().mix / 100);
         const innerW = Math.max(160, W - 2 * PAD);
         const uniN = (n - 1) * ratio + 1;
         const propN = densest(T, visible);
@@ -2537,11 +3101,16 @@
         while (lv < LV_FULL && totalNeed(lv + 1) * 1.12 <= fitSpan) lv++;
         while (lv > LV_DOT && totalNeed(lv) > fitSpan) lv--;
         const gapMin = widths(lv);
+        /* Krajní kroky potřebují půlku svého popisku, jinak se ořežou o hranu osy. */
+        const padL = Math.max(PAD, Math.ceil(gapMin[0] / 2) + 4);
+        const padR = Math.max(PAD, Math.ceil(gapMin[n - 1] / 2) + 4);
+        /* šířka obsahu zůstává daná měřítkem — okraje se ukrojí zevnitř, aby při
+           plném oddálení pořád platilo, že se celý postup vejde bez posouvání */
         const contentW = Math.round(innerW / Math.max(1e-4, ratio)) + 2 * PAD;
-        const span = contentW - 2 * PAD;
+        const span = contentW - padL - padR;
         const xs = T.map((ms, i) => {
-          const u = PAD + span * (n === 1 ? 0.5 : i / (n - 1));
-          const p = PAD + span * (ms - T[0]) / total;
+          const u = padL + span * (n === 1 ? 0.5 : i / (n - 1));
+          const p = padL + span * (ms - T[0]) / total;
           return u + (p - u) * mix;
         });
         squeeze(xs, T, lv, span, gapMin);
@@ -2562,7 +3131,7 @@
         document.body.classList.toggle("tl-full", full);
         el.stage.style.width = Math.round(W) + "px";
         el.stage.style.height = Math.round(H) + "px";
-        el.stage.style.setProperty("--tlSky", (0.7 + 0.3 * smooth(t)).toFixed(3));
+        el.stage.style.setProperty("--tlSky", (0.92 + 0.08 * smooth(t)).toFixed(3));
         el.stage.style.setProperty("--tlDark", smooth((t - SKY_DARK) / (1 - SKY_DARK)).toFixed(3));
         el.stage.dataset.art = state.sky.master.artist;
         const B = cfg().bar || {};
@@ -2570,8 +3139,8 @@
         el.stage.style.setProperty("--barT", (B.track != null ? B.track : 3) + "px");
         el.stage.style.setProperty("--barW", (B.win != null ? B.win : 9) + "px");
         el.stage.style.setProperty("--barH", (B.band != null ? B.band : 16) + "px");
-        el.stage.style.setProperty("--barGap", (B.gap != null ? B.gap : 14) + "px");
-        el.stage.style.setProperty("--barBelow", (B.below != null ? B.below : 10) + "px");
+        el.stage.style.setProperty("--barGap", (B.gap != null ? B.gap : 6) + "px");
+        el.stage.style.setProperty("--barBelow", (B.below != null ? B.below : 6) + "px");
         el.stage.style.setProperty("--barOp", ((B.op != null ? B.op : 85) / 100).toFixed(2));
         if (B.color) el.stage.style.setProperty("--barC", B.color); else el.stage.style.removeProperty("--barC");
         el.stage.classList.toggle("tight", lvl <= LV_TIME);   /* stlačená osa → krok pod kurzorem se zvětší */
@@ -2613,7 +3182,6 @@
         const base = day0(T[0]);
         const gaps = activeRecipe().gaps;
 
-        dmc.shown = false;
         el.rows.style.width = g.contentW + "px";
         if (pinLeft != null) {
           el.view.scrollLeft = Math.max(0, Math.min(g.contentW - W, pinLeft * g.contentW));
@@ -2651,11 +3219,16 @@
         const skyStrong = smooth((g.t - SKY_DARK) / (1 - SKY_DARK)) > 0.5;
         skyStrongNow = skyStrong;
         /* krytí pásu oblohy nad linkou — podle něj se pozná, jestli je za textem tma */
-        const bandA = (0.7 + 0.3 * smooth(g.t)) * (0.5 + 0.5 * smooth(g.t));
+        const bandA = (0.92 + 0.08 * smooth(g.t)) * (0.88 + 0.12 * smooth(g.t));
         bandANow = bandA;
         const F = fonts();
         /* linka sedí níž, jak osa roste — nad ní je místo pro oblohu už od začátku */
-        const lineY = Math.max(46, Math.min(rowH - 40, rowH * (0.58 + 0.14 * smooth(g.t))));
+        /* pod linkou musí zbýt na název i podpopisek, jinak je osa stísněná */
+        /* Poloha linky určuje, kolik prázdna zbude pod popisky — čím níž, tím
+           blíž je lišta přehledu obsahu. null = odvodit z výšky jako dosud. */
+        const lp = state.sky.axis.lineY;
+        const lineFrac = lp == null ? (0.52 + 0.16 * smooth(g.t)) : lp / 100;
+        const lineY = Math.max(46, Math.min(rowH - 64, rowH * lineFrac));
 
         /* překreslení nesmí sebrat fokus stroji času */
         if (document.activeElement && document.activeElement.classList.contains("w-dmc")) dmc.keep = true;
@@ -2665,10 +3238,24 @@
           if (!rEl) {
             rEl = document.createElement("div");
             rEl.className = "tl-row";
-            rEl.innerHTML = '<div class="tl-row-sky"></div><span class="tl-line"></span><div class="tl-row-fx"></div><div class="tl-row-dmc"></div>';
+            rEl.innerHTML = '<div class="tl-row-sky"></div><span class="tl-line"></span><span class="tl-now" hidden><b></b></span>' +
+              '<div class="tl-row-fx"></div><div class="tl-row-dmc"></div>';
             el.rows.appendChild(rEl);
           }
           rEl.style.width = row.w + "px";
+          /* kde na ose je právě teď — u rozpečeného plánu to je ta nejdůležitější informace */
+          const nowEl = rEl.querySelector(":scope > .tl-now");
+          const inRow = now >= row.map.ts[0] && now <= row.map.ts[row.map.ts.length - 1];
+          nowEl.hidden = !inRow;
+          if (inRow) {
+            const nx = row.map.t2x(now);
+            nowEl.style.left = nx.toFixed(1) + "px";
+            nowEl.classList.toggle("flip", nx > el.view.scrollLeft + W - 78);
+            nowEl.style.setProperty("--nowY", lineY.toFixed(0) + "px");
+            nowEl.firstChild.textContent = fmtTime(now);
+          }
+          const DOT = dotSkin();
+          for (const k in DOT.vars) rEl.style.setProperty(k, DOT.vars[k]);
           const ln = rEl.querySelector(":scope > .tl-line");
           ln.style.cssText = "left:0;right:0;height:" + state.sky.axis.thick + "px;top:" +
             (lineY - state.sky.axis.thick / 2).toFixed(0) + "px;opacity:" + (state.sky.axis.op / 100);
@@ -2699,13 +3286,15 @@
 
           /* zaostřený krok má přednost: dostane plný popisek, sousedům zbyde, co zbyde */
           const fw = focusJ >= 0 ? Math.min(190, Math.max(loc[focusJ] - 8, 148)) : 0;
+          /* místo ke kraji osy — popisek je vystředěný, takže se počítá půlka na každou stranu */
+          const edgeRoom = (j) => Math.min(row.xs[j], row.w - row.xs[j]) * 2 - 8;
           const roomFor = (j) => {
             let a = loc[j] - 8;
             if (focusJ >= 0 && j !== focusJ) {
               const d = Math.abs(row.xs[j] - row.xs[focusJ]);
               a = Math.min(a, Math.max(0, 2 * (d - fw / 2 - 4)));
             }
-            return a;
+            return Math.min(a, edgeRoom(j));
           };
           row.idx.forEach((i, j) => {
             const s = STEPS[i];
@@ -2724,29 +3313,36 @@
             const se = document.createElement("div");
             se.className = meta.cls + (j === focusJ ? " focus" : "") + (night ? " n-up" : "") + (dark ? " n-dn" : "");
             se.dataset.step = s.id;
-            se.title = s.name + " · " + fmtDate(T[i]) + " " + fmtTime(T[i]);
+            se.title = readOnly() ? "" : s.name + " · " + fmtDate(T[i]) + " " + fmtTime(T[i]);
             se.style.left = row.xs[j].toFixed(1) + "px";
             se.style.setProperty("--lineY", lineY.toFixed(0) + "px");
-            se.style.setProperty("--stepLbl", (j === focusJ ? fw : Math.max(20, Math.min(190, roomFor(j)))).toFixed(0) + "px");
+            se.style.setProperty("--stepLbl", (j === focusJ ? Math.min(fw, edgeRoom(j)) : Math.max(20, Math.min(190, roomFor(j)))).toFixed(0) + "px");
             se.style.setProperty("--tlDot", (lv >= LV_NAME ? 15 : lv === LV_TIME ? 12 : 9) + "px");
             let up = "";
             if (lv >= LV_TIME) {
-              if (dayNew) up += '<span class="tl-day"><span class="tl-day-badge">' + dn + ". den</span></span>";
+              /* datum patří ke dni, ne ke každému času — u prvního kroku dne pod odznak */
+              /* vyprávěcí osa mluví o dnech postupu, ne o konkrétním datu */
+              if (dayNew) up += '<span class="tl-day"><span class="tl-day-badge">' + dn + ". den</span>" +
+                (readOnly() ? "" : '<span class="tl-day-date">' + fmtDate(T[i]) + "</span>") + "</span>";
               up += '<button type="button" class="tl-time" title="Vybrat čas kroku">' +
-                (lv >= LV_NAME ? '<span class="tl-date">' + fmtDate(T[i]) + "</span>" : "") + fmtTime(T[i]) + "</button>";
+                (dayNew ? "" : '<span class="tl-date">' + fmtDate(T[i]) + "</span>") + fmtTime(T[i]) + "</button>";
             }
             let low = "";
             const sNote = (activeRecipe().stepNotes || {})[s.id];
             if (lv >= LV_NAME) low += '<span class="tl-name' + (sNote ? " noted" : "") + '"' +
               (sNote ? ' title="' + sNote.replace(/"/g, "&quot;") + '"' : "") + ">" + (lv >= LV_FULL ? s.name : (SHORT[s.id] || s.name)) + "</span>";
             /* podpopisek nese informaci jen u zaostřeného kroku */
-            if (j === focusJ && meta.desc) low += '<span class="tl-desc">' + meta.desc + "</span>";
+            if (meta.desc && (lv >= LV_NAME || j === focusJ)) low += '<span class="tl-desc">' + meta.desc + "</span>";
+            if (readOnly() && STORY[s.id]) low += '<span class="tl-story">' + STORY[s.id] + "</span>";
             se.innerHTML = (up ? '<div class="tl-up">' + up + "</div>" : "") +
-              '<span class="tl-dot" style="background:' + DOUGH[i] + '"></span>' +
+              '<span class="tl-dot' + (DOT.hollow ? " hollow" : "") + '" style="' + DOT.css(i) + '"></span>' +
               (low ? '<div class="tl-dn">' + low + "</div>" : "");
+            /* čas otevírá výběr času a data, tečka se přetahuje do kalendáře */
             const tb = se.querySelector(".tl-time");
             if (tb) tb.addEventListener("pointerdown", (ev) => openClock(se, i, ev));
-            se.querySelector(".tl-dot").addEventListener("pointerdown", (ev) => openClock(se, i, ev));
+            const dt = se.querySelector(".tl-dot");
+            dt.title = "Přetáhni do kalendáře nebo do mřížky dat";
+            dt.addEventListener("pointerdown", (ev) => startStepDrag(ev, i));
             const nm = se.querySelector(".tl-name");
             if (nm) { nm.style.cursor = "grab"; nm.addEventListener("pointerdown", (ev) => startStepDrag(ev, i)); }
             rEl.appendChild(se);
@@ -2758,6 +3354,10 @@
 
           /* co se do svého místa nevejde, spadne o úroveň níž — písmo se nikde nezmenšuje */
           const busy = [];
+          let lifted = false;               /* leží aspoň jedna pilulka mezery nad linkou? */
+          /* tečku má na lince každý krok — pilulka mezery nesmí zakrýt žádnou z nich */
+          const dotXs = row.idx.map((i, j) => row.xs[j]);
+          const dnBusy = [];               /* co zabírá místo pod linkou */
           const order = row.idx.map((i, j) => j);
           if (focusJ >= 0) order.sort((a, b) => (a === focusJ ? -1 : b === focusJ ? 1 : a - b));
           order.forEach((j) => {
@@ -2777,18 +3377,41 @@
             const dn = se.querySelector(".tl-dn");
             if (dn && !dn.childElementCount) dn.remove();
             if (se.querySelector(".tl-up") || se.querySelector(".tl-dn")) busy.push([row.xs[j] - box / 2, row.xs[j] + box / 2]);
+            if (se.querySelector(".tl-dn")) dnBusy.push([row.xs[j] - box / 2, row.xs[j] + box / 2]);
           });
 
           /* pilulky s intervalem: v plné úrovni všude, jinak u zaostřeného kroku */
           row.idx.forEach((i, j) => {
             if (j >= row.idx.length - 1 || i >= GAP_EDIT.length) return;
             const room = Math.min(loc[j], loc[j + 1]);
-            if (!(lvl >= LV_FULL && room >= LABEL_FULL) && j !== focusJ) return;
+            /* štítek se ukáže všude, kde se do mezery vejde — ne až v plné úrovni */
+            const dist = row.xs[j + 1] - row.xs[j];
+            const chipW = textW(gapLabel(i, gaps), F.chip) + 26;
+            if (chipW + 10 > dist && j !== focusJ) return;
             const ch = gapChip(i, gaps);
             ch.dataset.gap = i;
-            ch.style.left = ((row.xs[j] + row.xs[j + 1]) / 2).toFixed(1) + "px";
-            ch.style.top = lineY.toFixed(0) + "px";
+            const cx = (row.xs[j] + row.xs[j + 1]) / 2;
+            ch.style.left = cx.toFixed(1) + "px";
+            /* Mezi holými tečkami nemá pilulka co ležet na lince — spolkla by je.
+               Tam, kde kroky mají popisky, zůstává na lince jako dosud. */
+            /* Rozhoduje, jestli pilulka někde přejede tečku — ne to, jak vypadají
+               její dva nejbližší sousedé. Široká pilulka dosáhne i za ně. */
+            const bare = dotXs.some((dx) => dx > cx - chipW / 2 - 5 && dx < cx + chipW / 2 + 5);
+            /* Nad linkou už může sedět popisek zaostřeného kroku — tam pilulka nepatří
+               a radši se vůbec nekreslí, než aby se překryly. */
+            let side = bare ? -17 : 0;
+            /* Nad linkou už může sedět popisek kroku. Pak to pilulka zkusí pod linkou
+               a teprve když ani tam není místo, radši se nekreslí vůbec. */
+            if (bare && busy.some((q) => cx - chipW / 2 < q[1] + 4 && cx + chipW / 2 > q[0] - 4)) {
+              const dnFree = !dnBusy.some((q) => cx - chipW / 2 < q[1] + 4 && cx + chipW / 2 > q[0] - 4);
+              if (!dnFree) return;
+              side = 17;
+            }
+            ch.style.top = (lineY + side).toFixed(0) + "px";
+            if (bare) { ch.dataset.lift = "1"; lifted = true; }
             rEl.appendChild(ch);
+            /* pilulka mezery zabírá místo i pro pilulky fází */
+            busy.push([cx - chipW / 2, cx + chipW / 2]);
           });
 
           /* stlačené kroky se slučují do fází */
@@ -2801,8 +3424,9 @@
               if (last && last.name === name) last.to = k; else groups.push({ name, from: k, to: k });
             }
             groups.forEach((gr) => {
-              const cx = (row.xs[gr.from] + row.xs[gr.to]) / 2;
               const guess = gr.name.length * 7.5 + 34;
+              /* pilulku fáze zarazíme o kraj osy, jinak z ní vyčuhuje */
+              const cx = Math.max(guess / 2 + 4, Math.min(row.w - guess / 2 - 4, (row.xs[gr.from] + row.xs[gr.to]) / 2));
               /* pilulka fáze si nesmí lehnout na popisek sousedního kroku ani na jinou fázi */
               if (busy.some((q) => cx - guess / 2 < q[1] + 4 && cx + guess / 2 > q[0] - 4)) return;
               busy.push([cx - guess / 2, cx + guess / 2]);
@@ -2810,7 +3434,7 @@
               const p = document.createElement("span");
               p.className = "tl-phase";
               p.style.left = cx.toFixed(1) + "px";
-              p.style.top = (lineY - 24).toFixed(0) + "px";
+              p.style.top = (lineY - (lifted ? 45 : 24)).toFixed(0) + "px";
               p.innerHTML = gr.name + (cnt > 1 ? " <b>" + cnt + "</b>" : "");
               p.title = gr.name + " · " + fmtTime(T[row.idx[gr.from]]) + " – " + fmtTime(T[row.idx[gr.to]]);
               rEl.appendChild(p);
@@ -2829,8 +3453,11 @@
         if (!rebuild && performance.now() - skyAt > 120) {
           g.rows.forEach((row, ri) => paintRow(el.rows.children[ri], row, T, g, lineY, rowH, ri));
         }
-        /* termín se vrátil z minulosti → auto odletí a příště přilétá znovu */
-        if (!dmc.shown) { dmc.landed = false; dmc.fx = 0; dmc.fy = 0; dmc.vx = 0; dmc.vy = 0; }
+        /* Znovu přilétá, teprve když se termín vrátí z minulosti. Dřív se to vázalo na
+           to, jestli se auto zrovna vykreslilo — jenže při tažení výšky se překresluje
+           zaškrceně a na nízké ose se nevejde vůbec, takže si to auto vykládalo jako
+           „jsem pryč" a slétávalo pořád dokola. */
+        if (T[T.length - 1] >= now) { dmc.landed = false; dmc.fx = 0; dmc.fy = 0; dmc.vx = 0; dmc.vy = 0; }
         drawMini(g);
         const ar = $("axisRec");
         if (ar) { ar.innerHTML = "osa · <b></b>"; ar.querySelector("b").textContent = activeRecipe().name; }
@@ -2944,9 +3571,11 @@
           stops.push(skyCol(map.x2t(x)) + " " + x.toFixed(0) + "px");
         }
         const grad = "linear-gradient(90deg," + stops.join(",") + ")";
-        const fade = "linear-gradient(0deg,#000 0%,rgba(0,0,0,.92) 22%,rgba(0,0,0,.5) 58%,rgba(0,0,0,.14) 82%,transparent 96%)";
+        /* Pás drží plnou sytost až nad pásmo popisků a teprve pak se ztrácí do stránky —
+           prolnutí přes popisky dělalo z nebe šeď a text na ní plaval. */
+        const fade = "linear-gradient(0deg,#000 0%,#000 58%,rgba(0,0,0,.72) 74%,rgba(0,0,0,.28) 89%,transparent 100%)";
         let h = '<div class="ly ly-sky" style="left:0;right:0;top:0;height:' + lineY.toFixed(0) + "px;background:" + grad +
-          ";-webkit-mask-image:" + fade + ";mask-image:" + fade + ";opacity:" + (0.5 + 0.5 * p).toFixed(2) + '"></div>';
+          ";-webkit-mask-image:" + fade + ";mask-image:" + fade + ";opacity:" + (0.88 + 0.12 * p).toFixed(2) + '"></div>';
         if (deep > 0.02) {
           h += '<div class="ly" style="left:0;right:0;top:0;height:' + lineY.toFixed(0) +
             'px;background:linear-gradient(180deg,rgba(3,5,12,' + (0.55 * deep).toFixed(2) + ') 0%,transparent 72%)"></div>';
@@ -3158,8 +3787,9 @@
           const inDay = row.idx.filter((i) => day0(T[i]) === dk).map((i) => T[i]);
           const e = sunEventsFor(dk + 12 * HOUR);
           const noon = Math.max(Math.min(...inDay), Math.min(Math.max(...inDay), (e.rise + e.set) / 2));
-          const x = map.t2x(noon);
+          let x = map.t2x(noon);
           if (x < -80 || x > rw + 80) return;
+          x = Math.max(56, Math.min(rw - 56, x));      /* u kraje se přisune dovnitř */
           const w = wxAt(noon), tmps = inDay.map((ms) => wxAt(ms).t);
           const y = Math.max(2, arcY(noon) - 56);   /* denní souhrn o řádek výš než hodinové chipy */
           if (!free(x, y, 108)) return;
@@ -3215,7 +3845,9 @@
         /* auto patří k řádku, ve kterém „teď" leží; mimo rozsah osy na kraj plánu */
         const here = (nowMs >= t0 && nowMs <= t1) ||
           (nRows == null ? true : (nowMs > t1 && ri === nRows - 1) || (nowMs < t0 && ri === 0));
-        if (!(T[0] < nowMs && here)) return null;
+        /* hláška mluví o termínu — auto tedy přilétá, teprve když je v minulosti
+           předání, ne hned jak plán začne */
+        if (!(T[T.length - 1] < nowMs && here)) return null;
         if (!((S.dmc && S.dmc.img) || DMC_IMG)) return null;
         /* auto visí spodní hranou nad blokem popisků — jeho výšku změříme z řádku */
         let upH = 0;
@@ -3252,7 +3884,6 @@
         d.className = "w-dmc" + ((back ? !base : base) ? " flip" : "") + (dmc.spark ? " spark" : "") +
           (land ? " landing" : "") + (bright ? " day" : "");
         dmc.landed = true;
-        dmc.shown = true;
         d.tabIndex = 0;
         d.setAttribute("role", "button");
         d.setAttribute("aria-label", "Stroj času — šipkami s ním leť nad osou");
@@ -3305,7 +3936,7 @@
         const fs = parseFloat(r.getPropertyValue("--fs")) || 1;
         return textW(DMC_SAY, "800 " + Math.max(12, 12.5 * fs).toFixed(1) + "px " + (r.getPropertyValue("--sans") || "sans-serif").trim()) + 24;
       }
-      const dmc = { spark: 0, dir: 1, keep: false, t: 0, fx: 0, fy: 0, vx: 0, vy: 0, keys: new Set(), raf: 0, landed: false, shown: false, quiet: false };
+      const dmc = { spark: 0, dir: 1, keep: false, t: 0, fx: 0, fy: 0, vx: 0, vy: 0, keys: new Set(), raf: 0, landed: false, quiet: false };
       function boltSvg(w) {
         if (!dmc.spark) return "";
         /* při startu jsou oblouky husté, ať je vidět, že to naskakuje */
@@ -3521,6 +4152,8 @@
         };
         drag(el.gripH, "y");
         drag(el.gripW, "x");
+
+        /* rozestup kroků se nastavuje ve Studiu (Osa), z plochy osy je pryč */
         el.gripH.addEventListener("dblclick", () => animTo(isFull() ? backH() : hMax()));
 
         /* minimapa: uvnitř okna posun, za jeho okraj skok, za úchopy změna šířky výřezu */
@@ -3591,8 +4224,21 @@
         edge(el.miniL, "l");
         edge(el.miniR, "r");
 
-        /* kolečko myši nad osou posouvá vodorovně */
+        /* Kolečko nad osou posouvá vodorovně; s Ctrl (a pinchem na trackpadu,
+           který prohlížeč hlásí jako ctrl+wheel) přibližuje kolem kurzoru. */
         el.view.addEventListener("wheel", (e) => {
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            if (!geo) return;
+            const q = (el.view.scrollLeft + (e.clientX - el.view.getBoundingClientRect().left)) / Math.max(1, geo.contentW);
+            const f = cl01(W / Math.max(1, geo.contentW));
+            const nf = Math.max(cl01(SPAN_MIN() / Math.max(1, geo.total)), Math.min(1, f * Math.exp(e.deltaY * 0.0022)));
+            /* bod pod kurzorem zůstává pod kurzorem */
+            const kx = (e.clientX - el.view.getBoundingClientRect().left) / Math.max(1, W);
+            setWindow(Math.max(0, q - nf * kx), Math.max(0, q - nf * kx) + nf, "l");
+            save(false);
+            return;
+          }
           if (Math.abs(e.deltaY) > Math.abs(e.deltaX) && el.view.scrollWidth > el.view.clientWidth + 2) {
             e.preventDefault();
             el.view.scrollLeft += e.deltaY;
@@ -3617,6 +4263,42 @@
         el.view.addEventListener("scroll", () => {
           cancelAnimationFrame(sRaf);
           sRaf = requestAnimationFrame(() => render(true));
+        });
+
+        /* Myší jde osa chytit i přímo za plochu: svisle mění výšku, vodorovně
+           posouvá výřez. Prvky, které mají vlastní tažení (kroky, štítky, slunce,
+           auto), se nechají být. */
+        const NO_DRAG = ".tl-step, .tl-gap, .tl-phase, .sky-sun, .w-dmc, .w-note, .tl-mini, .tl-grip, .tl-logo";
+        el.view.addEventListener("pointerdown", (e) => {
+          if (e.pointerType === "touch" || e.button !== 0) return;
+          if (e.target.closest && e.target.closest(NO_DRAG)) return;
+          const x0 = e.clientX, y0 = e.clientY, h0 = H, s0 = el.view.scrollLeft;
+          let mode = null;
+          const move = (pe) => {
+            const dx = pe.clientX - x0, dy = pe.clientY - y0;
+            if (!mode) {
+              if (Math.max(Math.abs(dx), Math.abs(dy)) < 5) return;
+              mode = Math.abs(dy) > Math.abs(dx) ? "y" : "x";
+              el.stage.classList.add(mode === "y" ? "dragging" : "panning");
+              try { el.view.setPointerCapture(pe.pointerId); } catch (err) { /* ok */ }
+            }
+            if (mode === "y") {
+              setH(h0 + dy, false);
+              cancelAnimationFrame(dragRaf);
+              dragRaf = requestAnimationFrame(() => render(true));
+            } else {
+              el.view.scrollLeft = s0 - dx;
+            }
+          };
+          const up = () => {
+            window.removeEventListener("pointermove", move);
+            el.stage.classList.remove("dragging", "panning");
+            if (mode === "y") { save(false); render(); }
+            mode = null;
+          };
+          window.addEventListener("pointermove", move);
+          window.addEventListener("pointerup", up, { once: true });
+          window.addEventListener("pointercancel", up, { once: true });
         });
 
         /* dotyk: svislý úchop = tažení přímo za osu, měřítko dvěma prsty */
@@ -3793,15 +4475,6 @@
         return clampC(base + (SKY_TWI[i] - base) * twi * 0.85);
       }).join(",") + ")";
     }
-    /* řez jako na bochníku — označuje zkrácený úsek */
-    function breadCutSvg(w) {
-      const h = w * 0.64;
-      return '<svg viewBox="-16 -10 32 20" width="' + w.toFixed(0) + '" height="' + h.toFixed(0) + '">' +
-        '<g transform="rotate(-24)">' +
-        '<path d="M-13,0 C-7.5,-6.6 7.5,-6.6 13,0 C7.5,6.6 -7.5,6.6 -13,0 Z" fill="#f6e7c8" stroke="#8a5a24" stroke-width="1.7" stroke-linejoin="round"/>' +
-        '<path d="M-9,-0.6 C-4.5,-3.6 4.5,-3.6 9,-0.6" fill="none" stroke="#d3a86a" stroke-width="1.1" opacity=".85"/>' +
-        "</g></svg>";
-    }
 
     /* přetažení východu/západu slunce — kamkoli po ose, celý plán se posune */
     let sunGhostEl = null;
@@ -3867,7 +4540,9 @@
 
     const clockXY = (c, r) => { const a = (c / 12) * 2 * Math.PI - Math.PI / 2; return [Math.cos(a) * r, Math.sin(a) * r]; };
 
+    const readOnly = () => EMB.on && EMB.style === "story";
     function openClock(stepEl, idx, ev) {
+      if (readOnly()) return;                 /* vyprávěcí osa se needituje */
       if (ev) ev.preventDefault();
       closeGapPop();
       clkIdx = idx;
@@ -3890,7 +4565,100 @@
       clkIdx = -1; clkCommitted = false; clkPress = false;
     }
 
+    /* ---------- rolovací varianta ---------- */
+    const ROLL_ITEM = 38, ROLL_MIN_STEP = 5;
+    let rollBuilt = false, rollT = 0, rollQuiet = false;
+    const clockMode = () => (state.design.clock === "roll" ? "roll" : "dial");
+    function rollFill(col, count, fmt) {
+      col.innerHTML = "";
+      for (let i = 0; i < count; i++) {
+        const b = document.createElement("b");
+        b.textContent = fmt(i);
+        b.dataset.v = i;
+        b.addEventListener("click", () => rollTo(col, i, true));
+        col.appendChild(b);
+      }
+    }
+    const rollIndex = (col) => Math.round(col.scrollTop / ROLL_ITEM);
+    function rollTo(col, i, smooth) {
+      rollQuiet = true;
+      col.scrollTo({ top: i * ROLL_ITEM, behavior: smooth && !matchMedia("(prefers-reduced-motion: reduce)").matches ? "smooth" : "auto" });
+      setTimeout(() => { rollQuiet = false; rollPaint(col); }, smooth ? 260 : 0);
+      rollPaint(col);
+    }
+    /* vzdálenost od pruhu řídí světlost — blízké hodnoty jsou čitelné, vzdálené ustupují */
+    function rollPaint(col) {
+      const mid = col.scrollTop;
+      [...col.children].forEach((b, i) => {
+        const dist = Math.abs(i * ROLL_ITEM - mid) / ROLL_ITEM;
+        b.style.setProperty("--o", Math.max(0.12, 1 - dist * 0.42).toFixed(2));
+        b.style.setProperty("--sc", Math.max(0.72, 1 - dist * 0.11).toFixed(2));
+      });
+    }
+    function rollRead() {
+      const h = rollIndex($("rollH"));
+      const m = rollIndex($("rollM")) * ROLL_MIN_STEP;
+      const tp = tzParts(clkPending);
+      setClkPending(fromWall(tp.y, tp.m, tp.d, Math.min(23, Math.max(0, h)), Math.min(55, Math.max(0, m))));
+    }
+    function rollBind(col) {
+      col.addEventListener("scroll", () => {
+        rollPaint(col);
+        if (rollQuiet) return;
+        clearTimeout(rollT);
+        rollT = setTimeout(rollRead, 130);
+      });
+      /* myší se tažení čeká taky — samotné scroll-snap řeší jen kolečko a dotyk */
+      let on = false, y0 = 0, top0 = 0;
+      col.addEventListener("pointerdown", (e) => {
+        if (e.pointerType === "touch") return;
+        on = true; y0 = e.clientY; top0 = col.scrollTop;
+        col.classList.add("grabbing");
+        col.setPointerCapture(e.pointerId);
+      });
+      col.addEventListener("pointermove", (e) => { if (on) col.scrollTop = top0 - (e.clientY - y0); });
+      const stop = () => {
+        if (!on) return;
+        on = false;
+        col.classList.remove("grabbing");
+        rollTo(col, Math.max(0, Math.min(col.children.length - 1, rollIndex(col))), true);
+        clearTimeout(rollT);
+        rollT = setTimeout(rollRead, 200);
+      };
+      col.addEventListener("pointerup", stop);
+      col.addEventListener("pointercancel", stop);
+      col.addEventListener("keydown", (e) => {
+        const d = e.key === "ArrowUp" ? -1 : e.key === "ArrowDown" ? 1 : 0;
+        if (!d) return;
+        e.preventDefault();
+        rollTo(col, Math.max(0, Math.min(col.children.length - 1, rollIndex(col) + d)), true);
+        clearTimeout(rollT);
+        rollT = setTimeout(rollRead, 160);
+      });
+    }
+    function drawRoll() {
+      const H = $("rollH"), M = $("rollM");
+      if (!rollBuilt) {
+        rollFill(H, 24, (i) => String(i).padStart(2, "0"));
+        rollFill(M, 60 / ROLL_MIN_STEP, (i) => String(i * ROLL_MIN_STEP).padStart(2, "0"));
+        rollBind(H); rollBind(M);
+        rollBuilt = true;
+      }
+      const tp = tzParts(clkPending);
+      $("rollDate").textContent = fmtDate(clkPending) + (clkCommitted ? " ✓" : "");
+      const hi = tp.H, mi = Math.round(tp.M / ROLL_MIN_STEP) % (60 / ROLL_MIN_STEP);
+      if (rollIndex(H) !== hi) rollTo(H, hi, false);
+      if (rollIndex(M) !== mi) rollTo(M, mi, false);
+      rollPaint(H); rollPaint(M);
+    }
     function drawClock() {
+      const roll = clockMode() === "roll";
+      $("clockFace").hidden = roll;
+      $("clockRoll").hidden = !roll;
+      $("clockHint").textContent = roll
+        ? "narolovat hodinu a minutu · za 2 s se potvrdí ✓"
+        : "den uvnitř · noc okolo · za 2 s se potvrdí ✓";
+      if (roll) return drawRoll();
       const d = new Date(clkPending);
       const sun = sunEventsFor(clkPending);
       const dp = tzParts(clkPending);
@@ -3934,6 +4702,7 @@
       return { x, y, d: Math.hypot(x, y) };
     }
     function clkSelect(e) {
+      if (clockMode() === "roll") return;
       const p = clkPoint(e);
       if (p.d < 12 || p.d > CLK.R + 26) return;
       const c = ((Math.atan2(p.y, p.x) * 180 / Math.PI + 90 + 360) % 360) / 30;
@@ -4106,6 +4875,7 @@
     /* tažení štítku: doprava/dolů = delší prodleva, doleva/nahoru = kratší */
     let gapDragIdx = -1, gapDragStart = 0, gapDragVal = 0, gapMoved = false, gapRAF2 = 0;
     function startGapDrag(e, idx) {
+      if (readOnly()) return;
       e.preventDefault();
       gapDragIdx = idx;
       gapMoved = false;
@@ -4145,11 +4915,18 @@
       }
     }
     document.addEventListener("pointerdown", (e) => {
+      /* Cíl, který už není v dokumentu (překreslil se pod rukou), o žádném „mimo"
+         nevypovídá — closest() by na něm vrátilo null a zavřelo, co bylo otevřené. */
+      if (!(e.target instanceof Element) || !e.target.isConnected) return;
       if (!e.target.closest("#popGap") && !e.target.closest(".tl-gap button")) closeGapPop();
       if (!e.target.closest("#popLoc") && !e.target.closest("#locChip")) $("popLoc").classList.remove("show");
-      if (!e.target.closest("#clock") && !e.target.closest(".tl-time") && !e.target.closest(".tl-dot")) closeClock();
-      if (!e.target.closest("#adminPanel") && !e.target.closest("#adminBtn")) $("adminPanel").classList.remove("show");
-      if (!e.target.closest("#skyPanel") && !e.target.closest("#skyBtn")) $("skyPanel").classList.remove("show");
+      if (!e.target.closest("#clock") && !e.target.closest(".tl-time")) closeClock();
+      /* Nastavení je jeden celek — Studio i panel designu. Klik do kteréhokoli z nich
+         (nebo do dialogu, který z nich vyšel) nesmí zavřít ten druhý. */
+      if (!e.target.closest("#adminPanel, #skyPanel, #embedBox, #adminBtn, #skyBtn")) {
+        $("adminPanel").classList.remove("show");
+        $("skyPanel").classList.remove("show");
+      }
       document.querySelectorAll(".ing-menu[open]").forEach((d) => { if (!d.contains(e.target)) d.removeAttribute("open"); });
     });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeGapPop(); closeClock(); $("lightbox").classList.remove("show"); $("adminPanel").classList.remove("show"); $("skyPanel").classList.remove("show"); $("previewBox").classList.remove("show"); } });
@@ -4301,6 +5078,7 @@
 
     /* přetažení kroku na den v kalendáři */
     function startStepDrag(e, idx) {
+      if (readOnly()) return;
       e.preventDefault();
       e.stopPropagation();
       const isBread = STEPS[idx].id === "predani";
@@ -4524,9 +5302,7 @@
       add.textContent = "+";
       add.title = "Nový adresář";
       const nc = foldColor(state.folders.length);
-      add.style.setProperty("--fc", nc);
-      add.style.color = nc;
-      add.style.borderColor = "color-mix(in srgb, " + nc + " 60%, var(--line))";
+      add.style.setProperty("--fc", nc);      /* barvu příštího adresáře napoví až hover */
       add.addEventListener("click", () => {
         const f = { id: "f" + (Date.now() % 1e7), name: "" };   /* nepojmenovaný = jen barevný jazýček */
         state.folders.push(f);
@@ -4690,6 +5466,21 @@
         b.addEventListener("pointerdown", (e) => startItemDrag(e, "recipe", r.id, b));
         bar.appendChild(b);
       });
+      /* rozházené karty jde jedním klikem naskládat zpátky */
+      if (list.some((r) => r.pos)) {
+        const t = document.createElement("button");
+        t.type = "button";
+        t.className = "rec-tidy";
+        t.textContent = "Srovnat do mřížky";
+        t.title = "Naskládá karty zpátky vedle sebe";
+        t.addEventListener("click", () => {
+          state.recipes.forEach((r) => { delete r.pos; });
+          save();
+          renderRecipe();
+          renderRecBar();               /* s poslední rozházenou kartou zmizí i tohle tlačítko */
+        });
+        bar.appendChild(t);
+      }
       renderFolders();
     }
 
@@ -4779,6 +5570,12 @@
       const perRow = Math.max(1, Math.floor((w + CARD_GAP) / (CARD_W + CARD_GAP)));
       return { x: (i % perRow) * (CARD_W + CARD_GAP), y: Math.floor(i / perRow) * 330 };
     }
+    /* Karta se pouští do mřížky, ne na desetiny pixelu — jinak visí šejdrem
+       a vedle čárkovaného místa pro nový recept to bije do očí. */
+    const snapPos = (p) => ({
+      x: Math.max(0, Math.round(p.x / (CARD_W + CARD_GAP)) * (CARD_W + CARD_GAP)),
+      y: Math.max(0, Math.round(p.y / 330) * 330)
+    });
     function placeCard(el, r, i) {
       const p = r.pos || defaultPos(i);
       el.style.left = p.x + "px";
@@ -4815,7 +5612,12 @@
         el.classList.remove("moving");
         trashOn(false);
         if (moved && overTrash) return deleteRecipe(r.id);
-        if (moved) { save(); sizeBoard(); }
+        if (moved) {
+          r.pos = snapPos(r.pos);
+          el.style.left = r.pos.x + "px";
+          el.style.top = r.pos.y + "px";
+          save(); sizeBoard(); renderRecBar();
+        }
         else if (r.id !== state.activeId) { state.activeId = r.id; save(false); renderRecBar(); renderRecipe(); renderPlan(true); }
       };
       window.addEventListener("pointermove", move);
@@ -5273,8 +6075,10 @@
 
 
     /* ---------- admin: design & layout ---------- */
+    let adminWas = null;               /* předchozí stav oprávnění, kvůli zavírání panelů */
     function applyDesign() {
       const d = state.design;
+      if (typeof adminAllowed === "function") d.admin = adminAllowed();
       const root = document.documentElement;
       if (d.preset && d.preset !== "cisty") root.dataset.design = d.preset; else delete root.dataset.design;
       if (d.theme === "light" || d.theme === "dark") root.dataset.theme = d.theme; else delete root.dataset.theme;
@@ -5283,10 +6087,14 @@
       if (d.accent) root.style.setProperty("--accent", d.accent); else root.style.removeProperty("--accent");
       $("adminBtn").hidden = !d.admin;
       $("skyBtn").hidden = !d.admin;
-      if (!d.admin) { $("adminPanel").classList.remove("show"); $("skyPanel").classList.remove("show"); }
+      /* Zavřít panely smí jen skutečná ztráta oprávnění. Tuhle funkci volá každá
+         změna parametru, takže bezpodmínečné zavírání panel sundalo pod rukama. */
+      if (!d.admin && adminWas !== false) { $("adminPanel").classList.remove("show"); $("skyPanel").classList.remove("show"); }
+      adminWas = d.admin;
       const mark = (wrap, attr, val) => document.querySelectorAll(wrap + " button").forEach((b) => b.classList.toggle("active", b.dataset[attr] === val));
       mark("#adminPresets", "preset", d.preset || "cisty");
       mark("#adminThemes", "theme", d.theme || "auto");
+      mark("#adminClock", "clock", d.clock || "dial");
       $("adminFs").value = d.fs; $("adminFsOut").textContent = d.fs + " %";
       $("adminSp").value = d.sp; $("adminSpOut").textContent = d.sp + " %";
       $("adminAccent").value = d.accent || toHex(getComputedStyle(root).getPropertyValue("--accent"));
@@ -5300,7 +6108,11 @@
     }
     $("adminBtn").addEventListener("click", () => $("adminPanel").classList.toggle("show"));
     $("adminClose").addEventListener("click", () => $("adminPanel").classList.remove("show"));
-    $("adminHide").addEventListener("click", () => { state.design.admin = false; save(false); applyDesign(); });
+    $("adminHide").addEventListener("click", () => {
+      adminMuted = true;                 /* jen do znovunačtení stránky */
+      applyDesign();
+      toast("Správcovské nástroje schované — vrátí se po obnovení stránky");
+    });
     document.querySelectorAll("#adminPresets button").forEach((b) => b.addEventListener("click", () => { state.design.preset = b.dataset.preset; state.profileId = null; save(false); applyDesign(); renderProfiles(); }));
     /* profily sedí pod styly a chovají se stejně jako ony */
     function renderProfiles() {
@@ -5343,8 +6155,13 @@
       }
     }
     document.querySelectorAll("#adminThemes button").forEach((b) => b.addEventListener("click", () => { state.design.theme = b.dataset.theme; save(false); applyDesign(); }));
-    $("adminFs").addEventListener("input", () => { state.design.fs = +$("adminFs").value; save(false); applyDesign(); });
-    $("adminSp").addEventListener("input", () => { state.design.sp = +$("adminSp").value; save(false); applyDesign(); });
+    document.querySelectorAll("#adminClock button").forEach((b) => b.addEventListener("click", () => { state.design.clock = b.dataset.clock; save(false); applyDesign(); if (typeof buildStudio === "function") buildStudio(); }));
+    $("adminFs").addEventListener("input", () => keepInPlace($("adminFs"), () => {
+      state.design.fs = +$("adminFs").value; save(false); applyDesign();
+    }));
+    $("adminSp").addEventListener("input", () => keepInPlace($("adminSp"), () => {
+      state.design.sp = +$("adminSp").value; save(false); applyDesign();
+    }));
     $("adminAccent").addEventListener("input", () => { state.design.accent = $("adminAccent").value; save(false); applyDesign(); });
     $("adminColorsReset").addEventListener("click", () => { state.design.accent = null; save(false); applyDesign(); });
     $("adminDefaults").addEventListener("click", () => { state.design = { ...defaultDesign(), admin: state.design.admin }; save(false); applyDesign(); renderTimeline(); });
@@ -5403,6 +6220,19 @@
         if (el) el.style.setProperty("--ord", i + 1);
       });
     }
+    /* Změna velikosti písma nebo hustoty přeskládá celý panel nastavení, takže
+       posuvník, který zrovna držíš, ujede pryč a vypadá to, že menu zmizelo.
+       Tohle po přepočtu srovná odrolování tak, aby prvek zůstal, kde byl. */
+    function keepInPlace(el, fn) {
+      const panel = el && el.closest && el.closest(".studio, .admin");
+      if (!panel) return fn();
+      const before = el.getBoundingClientRect().top - panel.getBoundingClientRect().top;
+      fn();
+      const after = el.getBoundingClientRect().top - panel.getBoundingClientRect().top;
+      const d = after - before;
+      if (Math.abs(d) > 0.5) panel.scrollTop += d;
+    }
+
     let skyT = 0;
     function skyChanged() {
       clearTimeout(skyT);
@@ -5427,10 +6257,25 @@
         const c = document.createElement("div");
         c.className = "st-c";
         c.innerHTML = "<label>" + label + "</label>";
+        let mk = null;
         const i = document.createElement("input");
         i.type = "range"; i.min = min; i.max = max; i.step = step || 1; i.value = get();
-        c.appendChild(i);
-        let mk = null;
+        /* hodnota se dá i vypsat — u jemného ladění je klikání posuvníkem trápení */
+        const num = document.createElement("input");
+        num.type = "number"; num.className = "st-num";
+        /* posuvník skáče po krocích, do políčka se dá napsat i hodnota mezi nimi */
+        num.min = min; num.max = max; num.step = "any"; num.value = get();
+        const rowEl = document.createElement("div");
+        rowEl.className = "st-in";
+        rowEl.appendChild(i);
+        rowEl.appendChild(num);
+        c.appendChild(rowEl);
+        num.addEventListener("input", () => {
+          const v = Math.max(min, Math.min(max, +num.value));
+          if (!isFinite(v)) return;
+          i.value = v;
+          keepInPlace(num, () => { set(v); if (mk) mk.classList.toggle("over", v > markVal); skyChanged(); });
+        });
         if (markVal != null) {
           mk = document.createElement("div");
           mk.className = "mk";
@@ -5440,11 +6285,12 @@
           c.appendChild(mk);
           mk.classList.toggle("over", get() > markVal);
         }
-        i.addEventListener("input", () => {
+        i.addEventListener("input", () => keepInPlace(i, () => {
+          num.value = i.value;
           set(+i.value);
           if (mk) mk.classList.toggle("over", +i.value > markVal);
           skyChanged();
-        });
+        }));
         wrap.appendChild(c);
       };
       const note = (wrap, text) => {
@@ -5460,7 +6306,7 @@
         c.innerHTML = "<label>" + label + "</label>";
         const s = document.createElement("select");
         s.innerHTML = opts.map(([v, t]) => '<option value="' + v + '"' + (get() === v ? " selected" : "") + ">" + t + "</option>").join("");
-        s.addEventListener("change", () => { set(s.value); skyChanged(); });
+        s.addEventListener("change", () => keepInPlace(s, () => { set(s.value); skyChanged(); }));
         c.appendChild(s);
         wrap.appendChild(c);
       };
@@ -5511,9 +6357,76 @@
       slider(c, "nejtmavší noc", () => S.nightD, (v) => S.nightD = v, 40, 160);
       note(c, "Výška oblohy se řídí výškou osy — táhni za spodní hranu.");
 
+      c = row("Výběr času");
+      select(c, "podoba", [["dial", "kruhové hodiny"], ["roll", "rolovací (jako budík)"]],
+        () => (state.design.clock === "roll" ? "roll" : "dial"),
+        (v) => { state.design.clock = v; save(false); applyDesign(); });   /* ať to sedne i v adminu */
+      note(c, "Kruh ukazuje den uvnitř a noc okolo. Rolovací se natáčí nahoru a dolů na konkrétní hodinu.");
+
       c = row("Osa");
       slider(c, "tloušťka", () => S.axis.thick, (v) => S.axis.thick = v, 2, 14);
       slider(c, "viditelnost", () => S.axis.op, (v) => S.axis.op = v, 10, 100);
+      /* čím níž linka sedí, tím míň prázdna zbude mezi popisky a lištou přehledu */
+      slider(c, "poloha linky", () => (S.axis.lineY == null ? 60 : S.axis.lineY),
+        (v) => { S.axis.lineY = v; TL.render(); }, 30, 88);
+      btn2(c, "↺ podle výšky", () => { S.axis.lineY = null; skyChanged(); buildStudio(); });
+      /* rozestup kroků — dřív seděl přímo v ploše osy, kde překážel */
+      slider(c, "rovnoměrně ↔ přesně", () => (S.tl && S.tl.mix != null ? S.tl.mix : 50),
+        (v) => { if (S.tl) S.tl.mix = v; }, 0, 100, 5);
+      btn2(c, "↺ podle výšky", () => { if (S.tl) S.tl.mix = null; skyChanged(); buildStudio(); });
+      note(c, "Vlevo stejné mezery, vpravo přesně podle času. „Podle výšky“ nechá rozestup vyjít z toho, jak je osa vysoká.");
+
+      c = row("Body na ose");
+      slider(c, "velikost", () => S.dot.size, (v) => S.dot.size = v, 20, 260);
+      select(c, "tvar", [["circle", "kolečko"], ["soft", "zaoblený čtverec"], ["square", "čtvereček"], ["diamond", "kosočtverec"], ["loaf", "bochánek"], ["hollow", "prstenec"]], () => S.dot.shape, (v) => S.dot.shape = v);
+      select(c, "barva", [["dough", "podle propečení"], ["accent", "akcent"], ["ink", "text"], ["custom", "vlastní"]], () => S.dot.color, (v) => S.dot.color = v);
+      color2(c, "vlastní barva", () => S.dot.tint || "#b96a1d", (v) => S.dot.tint = v);
+      slider(c, "lem (px)", () => S.dot.edge, (v) => S.dot.edge = v, 0, 8, 0.5);
+      slider(c, "obrys (px)", () => S.dot.ring, (v) => S.dot.ring = v, 0, 5, 0.5);
+      slider(c, "záře (px)", () => S.dot.halo, (v) => S.dot.halo = v, 0, 16);
+
+      c = row("Logo");
+      btn2(c, S.logo.img ? "Vyměnit logo" : "Nahrát logo", () => pickSkyImg((d) => S.logo.img = d));
+      if (S.logo.img) {
+        btn2(c, "Odebrat logo", () => { S.logo.img = null; syncProfile(); renderLogo(); skyChanged(); buildStudio(); });
+        select(c, "umístění", [["tl", "vlevo nahoře"], ["tr", "vpravo nahoře"], ["bl", "vlevo dole"], ["br", "vpravo dole"]],
+          () => S.logo.pos, (v) => { S.logo.pos = v; renderLogo(); });
+        slider(c, "velikost", () => S.logo.size, (v) => { S.logo.size = v; renderLogo(); }, 30, 300);
+        slider(c, "odstup od okraje", () => S.logo.pad, (v) => { S.logo.pad = v; renderLogo(); }, 0, 60);
+        slider(c, "viditelnost", () => S.logo.op, (v) => { S.logo.op = v; renderLogo(); }, 10, 100);
+        text2(c, "odkaz z loga", () => S.logo.link || "", (v) => { S.logo.link = v.trim(); renderLogo(); });
+      }
+      note(c, "Logo se ukáže i ve vložené ose na cizím webu.");
+
+      c = row("Uložení");
+      (() => {
+        const i = storageInfo();
+        const st = document.createElement("div");
+        st.className = "st-c";
+        st.innerHTML = '<label>stav</label><b class="save-state' + (saveOk ? "" : " bad") + '" id="saveState">' +
+          (saveOk ? "Uloženo ✓" : "Neuloženo — úložiště je plné") + "</b>";
+        c.appendChild(st);
+        note(c, "Zabráno " + Math.round(i.total / 1024) + " kB · obrázky " + Math.round(i.imgs / 1024) +
+          " kB · profily " + Math.round(i.profiles / 1024) + " kB");
+        btn2(c, "Uložit nastavení", () => {
+          syncProfile();
+          if (saveNow(true)) toast("Nastavení uloženo");
+          buildStudio();
+        });
+        if (state.profiles.length) {
+          btn2(c, "Uvolnit místo — obrázky jen v aktuálním vzhledu", () => {
+            /* profily si nechají nastavení, obrázky zůstanou jen v tom, co je zrovna na ose */
+            state.profiles.forEach((pr) => {
+              if (!pr.sky) return;
+              ["dmc", "planet", "logo", "sun", "moon", "stars"].forEach((k) => { if (pr.sky[k]) pr.sky[k].img = null; });
+              if (pr.sky.photo) pr.sky.photo.data = null;
+              if (pr.sky.globe) { pr.sky.globe.img = null; pr.sky.globe.pin = null; }
+            });
+            if (saveNow(true)) toast("Místo uvolněno");
+            buildStudio();
+          });
+        }
+      })();
 
       c = row("Vložení na web");
       btn2(c, "Vytvořit iframe…", () => openEmbed());
@@ -5525,8 +6438,8 @@
       slider(c, "tloušťka stopy", () => S.tl.bar.track, (v) => { S.tl.bar.track = v; TL.render(); }, 1, 14);
       slider(c, "výška výřezu", () => S.tl.bar.win, (v) => { S.tl.bar.win = v; TL.render(); }, 3, 26);
       slider(c, "výška pruhu", () => S.tl.bar.band, (v) => { S.tl.bar.band = v; TL.render(); }, 8, 40);
-      slider(c, "odstup od osy", () => S.tl.bar.gap, (v) => { S.tl.bar.gap = v; TL.render(); }, 0, 60);
-      slider(c, "odstup od obsahu pod ní", () => S.tl.bar.below, (v) => { S.tl.bar.below = v; TL.render(); }, 0, 60);
+      slider(c, "odstup lišty od osy", () => S.tl.bar.gap, (v) => { S.tl.bar.gap = v; TL.render(); }, 0, 80);
+      slider(c, "odstup od obsahu pod ní", () => S.tl.bar.below, (v) => { S.tl.bar.below = v; TL.render(); }, 0, 80);
       slider(c, "viditelnost", () => S.tl.bar.op, (v) => { S.tl.bar.op = v; TL.render(); }, 10, 100);
       tgl2(c, "značky kroků", () => S.tl.bar.ticks !== false, (v) => { S.tl.bar.ticks = v; TL.render(); });
       color2(c, "barva lišty", () => S.tl.bar.color, (v) => { S.tl.bar.color = v; TL.render(); });
@@ -5584,6 +6497,18 @@
         c2.appendChild(b);
         wrap.appendChild(c2);
       }
+      function text2(wrap, label, get, set) {
+        const c2 = document.createElement("div");
+        c2.className = "st-c";
+        c2.innerHTML = "<label>" + label + "</label>";
+        const i = document.createElement("input");
+        i.type = "url";
+        i.placeholder = "https://…";
+        i.value = get();
+        i.addEventListener("change", () => { set(i.value); skyChanged(); });
+        c2.appendChild(i);
+        wrap.appendChild(c2);
+      }
       function color2(wrap, label, get, set) {
         const c2 = document.createElement("div");
         c2.className = "st-c";
@@ -5614,6 +6539,7 @@
       slider(c, "okraje stránky", () => S.wide.edge, (v) => { S.wide.edge = v; applyUi(); }, 0, 80);
 
       c = row("Zeměkoule");
+      tgl2(c, "ukázat na stránce", () => !!S.globe.show, (v) => { S.globe.show = v; renderGlobe(); });
       btn2(c, S.globe.img ? "Vyměnit zeměkouli" : "Nahrát zeměkouli", () => { gTarget = "img"; $("globeFile").click(); });
       btn2(c, S.globe.pin ? "Vyměnit ukazatel" : "Nahrát ukazatel", () => { gTarget = "pin"; $("globeFile").click(); });
       slider(c, "velikost zeměkoule", () => S.globe.size, (v) => { S.globe.size = v; renderGlobe(); }, 140, 900, 10);
@@ -5759,7 +6685,7 @@
         cv.height = Math.round(img.height * k);
         cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
         URL.revokeObjectURL(url);
-        state.sky.photo.data = cv.toDataURL("image/jpeg", 0.8);
+        state.sky.photo.data = imgData(cv);
         save();
         TL.render();
         buildStudio();
@@ -5779,7 +6705,7 @@
         cv.width = Math.round(im.width * k); cv.height = Math.round(im.height * k);
         cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
         URL.revokeObjectURL(url);
-        state.sky.globe[gTarget] = cv.toDataURL("image/png");
+        state.sky.globe[gTarget] = imgData(cv);
         save(); renderGlobe(); buildStudio();
       };
       im.src = url;
@@ -5799,7 +6725,7 @@
         cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
         URL.revokeObjectURL(url);
         ownProfile();                     /* vlastní obrázek patří do vlastního profilu */
-        skyImgTarget(cv.toDataURL("image/png"));
+        skyImgTarget(imgData(cv));
         skyImgTarget = null;
         syncProfile();
         save(); TL.render(); buildStudio(); renderProfiles();
@@ -5819,7 +6745,7 @@
         cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
         URL.revokeObjectURL(url);
         ownProfile();                       /* vlastní obrázek patří do vlastního profilu */
-        state.sky.planet.img = cv.toDataURL("image/png");
+        state.sky.planet.img = imgData(cv);
         syncProfile();
         save(); TL.render(); buildStudio(); renderProfiles();
       };
@@ -5838,7 +6764,7 @@
         cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
         URL.revokeObjectURL(url);
         ownProfile();
-        state.sky.dmc.img = cv.toDataURL("image/png");
+        state.sky.dmc.img = imgData(cv);
         syncProfile();
         save(); TL.render(); buildStudio(); renderProfiles();
       };
@@ -5866,8 +6792,7 @@
     const TZ_LIST = ["Europe/Prague", "Europe/Berlin", "Europe/Vienna", "Europe/London", "UTC", "America/New_York", "America/Chicago", "America/Los_Angeles", "Asia/Tokyo", "Asia/Dubai", "Australia/Sydney"];
     function renderLocChip() {
       const tzS = (state.loc.tz || "").split("/").pop().replace(/_/g, " ");
-      $("locChipName").textContent = TL.t > 0.2 ? tzS : state.loc.name;
-      $("locChip").style.display = TL.t > 0.2 ? "" : "none";
+      $("locChipName").textContent = state.loc.name + (TL.t > 0.4 ? " · " + tzS : "");
       $("locChip").title = "Místo: " + state.loc.name + " · pásmo: " + state.loc.tz + " — klikni pro změnu";
     }
     function applyTz(tz) {
@@ -6007,6 +6932,11 @@
       { x: 53, y: 35, tz: "Europe/Prague", lang: "cs", name: "Česko · čeština" }
     ];
     function renderGlobe() {
+      const blk = document.querySelector('.blk[data-sec="globe"]');
+      if (blk) blk.hidden = !(state.sky.globe && state.sky.globe.show);
+      /* bez zeměkoule musí být místo dostupné odjinud — drobným štítkem u osy */
+      const lc = $("locChip");
+      if (lc) lc.hidden = !!(state.sky.globe && state.sky.globe.show);
       const g = state.sky.globe || {};
       if (Array.isArray(g.spots)) g.spots.forEach((sp, i) => { if (GLOBE_SPOTS[i]) { GLOBE_SPOTS[i].x = sp.x; GLOBE_SPOTS[i].y = sp.y; } });
       const wrap = $("globeWrap"), img = $("globeImg"), pin = $("globePin");
@@ -6053,6 +6983,39 @@
     })();
 
     /* ---------- účet: registrace Googlem + vlastní adresa bread.sk/jmeno ---------- */
+    /* ---------- správcovský účet ----------
+       Admin režim (Studio, design, profily, generátor iframe) se odemyká přihlášením
+       Googlem na některou z těchhle adres. Je to zámek na rozhraní, ne bezpečnost:
+       dokud nestojí backend (POST /api/auth/google), nikdo tu podpis tokenu
+       neověřuje. Skutečnou bránou musí být server — tohle jen schová nástroje,
+       které běžnému pekaři nic neříkají. */
+    const ADMIN_EMAILS = ["j.traxmandl@gmail.com"];
+    const isAdminAccount = (a) => !!(a && a.email && ADMIN_EMAILS.includes(String(a.email).trim().toLowerCase()));
+    /* Do správcovského režimu se vchází adresou /admin — na běžné stránce po něm
+       není ani stopa. ?admin a #admin zůstávají pro práci s místním souborem,
+       kde se cesta přepsat nedá. */
+    const LOCAL_HOST = ["localhost", "127.0.0.1", "0.0.0.0", ""].includes(location.hostname) || location.protocol === "file:";
+    const adminRoute = () => /\/admin\/?$/.test(location.pathname) || location.hash === "#admin" || adminByUrl;
+    /* Správcovská adresa je správcem vždycky — příznak se nikde neukládá, pokaždé
+       se dopočítá z přihlášeného účtu. Dřív ho mohl přepsat profil vzhledu nebo
+       tlačítko „Skrýt admin režim" a nástroje zmizely i přihlášenému správci. */
+    function adminAllowed() {
+      if (adminMuted || !adminRoute()) return false;
+      return isAdminAccount(account) || (LOCAL_HOST && adminByUrl);
+    }
+    function applyAdmin() {
+      const was = state.design.admin;
+      state.design.admin = adminAllowed();
+      if (was !== state.design.admin) {
+        applyDesign();
+        if (typeof renderProfiles === "function") renderProfiles();
+        if (typeof buildStudio === "function") buildStudio();
+        save(false);
+      }
+      const tag = $("accAdminTag");
+      if (tag) tag.hidden = !isAdminAccount(account);
+    }
+
     const ACC_KEY = "mnp-bread-account-v1";
     const ACC_Q = new URLSearchParams(location.search);
     /* backend (rezervace adres, ověření Google tokenu). Bez něj běží účet jen lokálně v prohlížeči. */
@@ -6103,17 +7066,26 @@
     function accSignIn(profile) {
       account = Object.assign({ plan: "free", handle: "" }, account, profile);
       accSave();
+      applyAdmin();
       renderAcc();
       accMsg("", "");
+      if (isAdminAccount(account)) toast("Přihlášen správce — Studio a design jsou odemčené");
     }
     /* Google Identity Services — načte se až při kliknutí (a jen když je nastavené client ID) */
+    /* Náhradní přihlášení pro běh bez client ID. Dřív se ptalo přes prompt(),
+       jenže ten je v řadě prohlížečů a vestavěných oken zakázaný — kliknutí pak
+       jen spadlo a nešlo se dostat dovnitř. Teď je na to pole přímo v dialogu. */
+    function localSignIn() {
+      const mail = ($("accLocalMail").value || "").trim().toLowerCase();
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail)) return accMsg("Zadej platnou e-mailovou adresu.", "bad");
+      accSignIn({ sub: "local:" + mail, email: mail, name: mail.split("@")[0], picture: "" });
+      accMsg(isAdminAccount(account) ? "Přihlášen správce." : "Přihlášeno zkušebně — data zůstanou v tomhle prohlížeči.", "ok");
+    }
     function googleLogin() {
       if (!G_CLIENT_ID) {
-        accMsg("", "");
-        alert("Přihlášení Googlem potřebuje client ID.\n\nNasaď stránku na bread.sk a spusť ji s ?gcid=<TVOJE_CLIENT_ID>,\nnebo přidej data-gcid na <html>.\n\nZatím se přihlásíš v testovacím režimu (data zůstanou jen v tomto prohlížeči).");
-        const mail = prompt("Testovací přihlášení — zadej svůj gmail:", "");
-        if (mail && /@gmail\.com$/i.test(mail.trim())) accSignIn({ sub: "local:" + mail.trim().toLowerCase(), email: mail.trim().toLowerCase(), name: mail.trim().split("@")[0], picture: "" });
-        else if (mail) alert("Zadej adresu na @gmail.com.");
+        $("accLocal").hidden = false;
+        $("accLocalMail").focus();
+        accMsg("Přihlášení Googlem potřebuje client ID (?gcid=… nebo data-gcid). Zatím se přihlas zkušebně adresou níž.", "");
         return;
       }
       const start = () => {
@@ -6138,14 +7110,28 @@
       s.src = "https://accounts.google.com/gsi/client";
       s.async = true;
       s.onload = start;
-      s.onerror = () => alert("Google skript se nepodařilo načíst (blokuje ho CSP náhledu). Funguje po nasazení na bread.sk.");
+      s.onerror = () => {
+        $("accLocal").hidden = false;
+        accMsg("Google skript se nepodařilo načíst (blokuje ho CSP náhledu). Přihlas se zatím adresou níž.", "bad");
+      };
       document.head.appendChild(s);
     }
     $("accBtn").addEventListener("click", () => { $("accModal").classList.add("show"); renderAcc(); });
     $("accClose").addEventListener("click", () => $("accModal").classList.remove("show"));
     $("accModal").addEventListener("click", (e) => { if (e.target === $("accModal")) $("accModal").classList.remove("show"); });
     $("accGoogle").addEventListener("click", googleLogin);
-    $("accOut").addEventListener("click", () => { account = null; localStorage.removeItem(ACC_KEY); renderAcc(); });
+    $("accLocalGo").addEventListener("click", localSignIn);
+    $("accLocalMail").addEventListener("keydown", (e) => { if (e.key === "Enter") localSignIn(); });
+    /* bez client ID nemá smysl náhradní pole schovávat */
+    if (!G_CLIENT_ID) $("accLocal").hidden = false;
+    $("accOut").addEventListener("click", () => {
+      account = null;
+      localStorage.removeItem(ACC_KEY);
+      applyAdmin();                    /* s odhlášením mizí i správcovské nástroje */
+      $("adminPanel").classList.remove("show");
+      $("skyPanel").classList.remove("show");
+      renderAcc();
+    });
     $("accHandle").addEventListener("input", () => {
       const h = $("accHandle").value.trim().toLowerCase();
       $("accHandle").value = h;
@@ -6174,11 +7160,19 @@
     applySkyFont();
     applyUi();
     /* zadaný návrh vzhledu se nasadí jednou; pak už si ho drží uložený stav */
-    if (!state.sky.designV) {
-      state.sky.designV = 1;
+    if (state.sky.designV !== 2) {
+      state.sky.designV = 2;
       applyProfile("obloha");
     }
+    applyAdmin();
+    /* kdo přijde na /admin a není přihlášený, ať rovnou vidí, kudy dovnitř */
+    if (adminRoute() && !isAdminAccount(account) && !(LOCAL_HOST && adminByUrl)) {
+      $("accModal").classList.add("show");
+      renderAcc();
+      accMsg("Správcovský režim — přihlas se adresou, která na něj má právo.", "");
+    }
     renderProfiles();
+    renderLogo();
     applyEmbed();
     TL.init();
     renderMode();
