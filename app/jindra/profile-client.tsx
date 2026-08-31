@@ -17,8 +17,6 @@ const T = {
     kampanelaTitle: "Keramika Kampanela",
     kampanelaDesc:
       "Web pro keramickou dílnu — ručně točená a malovaná keramika. Statická stránka bez závislostí, obsah i vzhled se spravují ve vestavěném editoru; na výběr je šest hotových stylů, které mění paletu, typografii i rozvržení.",
-    kampanelaDemo: "Ukázka webu",
-    kampanelaStyles: "Přehled stylů",
     cvTitle: "CV Editor",
     cvDesc:
       "Editor životopisů — jedna sada dat, pět vizuálně odlišných šablon, dvě jazykové mutace, export do PDF i JSON a import existujícího CV. Data zůstávají v prohlížeči, bez účtu a bez databáze.",
@@ -45,8 +43,6 @@ const T = {
     kampanelaTitle: "Kampanela Ceramics",
     kampanelaDesc:
       "Website for a ceramics workshop — hand-thrown and hand-painted pottery. A static site with no dependencies; content and design are managed in a built-in editor, with six ready-made styles that change palette, typography and layout.",
-    kampanelaDemo: "View the site",
-    kampanelaStyles: "Style overview",
     cvTitle: "CV Editor",
     cvDesc:
       "CV editor — one set of data, five visually distinct templates, two language versions, export to PDF and JSON, and import of an existing CV. Data stays in the browser: no account, no database.",
@@ -226,20 +222,10 @@ export default function JindraProfileClient() {
           <p style={cardDesc}>{t.bacDesc}</p>
         </Link>
 
-        <div style={{ ...card, marginTop: "12px" }}>
+        <a href="/jindra/kampanela" style={{ ...card, marginTop: "12px" }}>
           <h2 style={cardTitle}>{t.kampanelaTitle}</h2>
           <p style={cardDesc}>{t.kampanelaDesc}</p>
-          <ul style={{ listStyle: "none", margin: "10px 0 0", padding: 0 }}>
-            <li style={webItem}>
-              <a style={webLink} href="/jindra/kampanela">
-                {t.kampanelaDemo}
-              </a>{" "}
-              <span style={webDesc}>
-                (<a style={{ ...webLink, fontSize: "inherit" }} href="/jindra/kampanela/styly.html">{t.kampanelaStyles}</a>)
-              </span>
-            </li>
-          </ul>
-        </div>
+        </a>
 
         <div style={{ ...card, marginTop: "12px" }}>
           <h2 style={cardTitle}>{t.cvTitle}</h2>
