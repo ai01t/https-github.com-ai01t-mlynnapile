@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------
    Keramika Kampanela — obsah a nastavení webu
-   Naposledy uloženo z editoru: 31.08.2026 13:08
+   Naposledy uloženo z editoru: 31.08.2026 17:06
 ----------------------------------------------------------------*/
 
 const DEFAULT_DATA = {
@@ -439,28 +439,15 @@ const DEFAULT_DATA = {
       },
       {
         "title": "Keramické struhadlo",
-        "text": "Malé struhadlo do ruky — vlnky vyryté přímo do hlíny, po obvodu měkce vytažený okraj. Vejde se do dlaně a na kraji má otvor, takže může viset po ruce u linky.",
+        "text": "Malé struhadlo na česnek",
         "bullets": [],
-        "stepsTitle": "K čemu se hodí",
-        "steps": [
-          {
-            "title": "Tvrdé sýry",
-            "text": "Parmezán nebo pecorino nastrouháte přímo nad talíř — keramika nechutná po kovu."
-          },
-          {
-            "title": "Ořechy, čokoláda, zázvor",
-            "text": "Jemné vlnky si poradí i s tvrdší surovinou a nic se v nich nezachytává."
-          },
-          {
-            "title": "Na skobku",
-            "text": "Otvor v držadle je vytažený z jednoho kusu hlíny, takže se nemá co uvolnit."
-          }
-        ],
-        "stepsNote": "Po použití stačí opláchnout, snese i myčku. Každý kus je tvarovaný v ruce.",
-        "ctaLabel": "Servírování v kolekci",
+        "stepsTitle": "",
+        "steps": [],
+        "stepsNote": "",
+        "ctaLabel": "",
         "ctaTarget": "kolekce",
         "image": {
-          "src": "images/struhadlo.jpg",
+          "src": "images/keramicke--struhadlo-kampanela.jpg",
           "alt": "Keramické struhadlo s otvorem na zavěšení",
           "opacity": 1,
           "brightness": 1,
@@ -680,7 +667,7 @@ const DEFAULT_DATA = {
   "contact": {
     "eyebrow": "Kontakt",
     "title": "Napište nám",
-    "text": "Zakázky, sady na míru i dotazy k dostupnosti — ozveme se obvykle do dvou dnů.",
+    "text": "Zakázky, sady na míru i dotazy k dostupnosti — ozveme se zpět",
     "rows": [
       {
         "label": "E-MAIL",
