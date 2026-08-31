@@ -47,11 +47,9 @@ function loadLocalIfNoServer() {
     });
   }).catch(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) { setSaveState("local"); return; }
-      DATA = mergeDefaults(JSON.parse(raw), DEFAULT_DATA);
+      /* Ukazka na webu: obsah vzdy z data.js, kopii v prohlizeci uklidime. */
+      localStorage.removeItem(STORAGE_KEY);
       setSaveState("local");
-      render();
     } catch (e) { console.warn("Kopii v prohlížeči se nepodařilo načíst:", e); }
   });
 }

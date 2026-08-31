@@ -439,7 +439,7 @@ const DEFAULT_DATA = {
       },
       {
         "title": "Keramické struhadlo",
-        "text": "Malé struhadlo na česnek",
+        "text": "Keramické struhadlo na česnek",
         "bullets": [],
         "stepsTitle": "",
         "steps": [],
