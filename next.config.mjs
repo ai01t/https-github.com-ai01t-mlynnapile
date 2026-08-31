@@ -38,6 +38,11 @@ const nextConfig = {
           source: "/jindra/cvapp/:path*",
           destination: "/jindra/cvapp/:path*/index.html",
         },
+        // Keramika Kampanela — statická ukázka v public/jindra/kampanela
+        {
+          source: "/jindra/kampanela",
+          destination: "/jindra/kampanela/index.html",
+        },
       ],
     }
   },
