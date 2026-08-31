@@ -1,0 +1,22 @@
+<!doctype html><html lang="cs"><head><meta charset="utf-8">
+  <base href="/jindra/kampanela/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="styles.css"></head>
+<body><main id="app"></main>
+<script src="presets.js"></script><script src="data.js"></script><script src="app.js"></script>
+<script>
+const id=new URLSearchParams(location.search).get('s')||'klasik';
+localStorage.removeItem('kampanela.site.v1');
+applyPreset(id, DATA);
+const fh=new URLSearchParams(location.search).get('fh'); if(fh) DATA.footer.bg.height=+fh;
+const mode=new URLSearchParams(location.search).get('mode');
+if(mode) localStorage.setItem('kampanela.mode',mode); else localStorage.removeItem('kampanela.mode');
+if(id==='studio'){ DATA.hero.media='image'; }   // bez videa použije poster/fotku
+if(new URLSearchParams(location.search).get('flat')){
+  const st=document.createElement('style');
+  st.textContent='.hero-overlay{min-height:720px !important}';
+  document.head.appendChild(st);
+}
+render();
+setTimeout(()=>document.querySelectorAll('.reveal').forEach(e=>e.classList.add('in')),50);
+</script></body></html>

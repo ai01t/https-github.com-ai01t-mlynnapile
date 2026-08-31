@@ -106,6 +106,13 @@ export const defaultMaterials = [
 export const defaultSettings = { materialReservePercent: 15, laborReservePercent: 15, kmOneWay: 25, visits: 2, kmPrice: 18 };
 export const defaultCustomer = { name: "", address: "", ico: "", phone: "", email: "" };
 
+// Barvy stěn ve 3D náhledu – sdílené s přepínačem Interiér / Fasáda,
+// aby tlačítko mělo stejnou barvu jako stěny, které zapne.
+export const WALL_COLORS = {
+  interior: { fill: "#e2e8f0", stroke: "#334155" },
+  facade: { fill: "#fef3c7", stroke: "#92400e" },
+};
+
 export const QUOTE_STATUSES = [
   { id: "draft", label: "Koncept", className: "bg-neutral-200 text-neutral-700" },
   { id: "sent", label: "Odesláno", className: "bg-sky-100 text-sky-800" },
@@ -199,8 +206,21 @@ export function inferOtherOpening(opening: any) {
   if (text.includes("trám") || text.includes("tram") || text.includes("nosník") || text.includes("nosnik")) {
     return { label: "Trám", mark: "▰", className: "border-yellow-800 bg-yellow-100 text-yellow-950" };
   }
-  if (text.includes("schod") || text.includes("sokl") || text.includes("parapet")) {
-    return { label: "Schod", mark: "▟", className: "border-stone-700 bg-stone-200 text-stone-950" };
+  if (text.includes("schod")) {
+    const down = text.includes("dol") || text.includes("níž") || text.includes("niz") || text.includes("↓");
+    return { label: down ? "Schody ↓" : "Schody ↑", mark: down ? "⬇" : "⬆", className: "border-orange-700 bg-orange-100 text-orange-950" };
+  }
+  if (text.includes("sokl") || text.includes("parapet")) {
+    return { label: "Parapet", mark: "▟", className: "border-stone-700 bg-stone-200 text-stone-950" };
+  }
+  if (text.includes("komín") || text.includes("komin")) {
+    return { label: "Komín", mark: "▮", className: "border-red-800 bg-red-100 text-red-950" };
+  }
+  if (text.includes("kamna") || text.includes("krb") || text.includes("kotel")) {
+    return { label: "Kamna", mark: "♨", className: "border-amber-800 bg-amber-200 text-amber-950" };
+  }
+  if (text.includes("topen") || text.includes("radiát") || text.includes("radiat")) {
+    return { label: "Topení", mark: "≋", className: "border-rose-700 bg-rose-100 text-rose-950" };
   }
   if (text.includes("trub") || text.includes("potrub") || text.includes("odpad") || text.includes("voda")) {
     return { label: "Potrubí", mark: "○", className: "border-emerald-700 bg-emerald-100 text-emerald-950" };
@@ -297,10 +317,21 @@ const KEYS = {
   quoteSeq: "kalk.quoteSeq",
   design: "kalk.design",
   trash: "kalk.trash",
+  visits: "kalk.visits",
+  history: "kalk.history",
 };
+
+// Heslo k soukromému přehledu využití (jen tento prohlížeč).
+export const HISTORY_PIN = "1717";
 
 // Koš na smazané místnosti; položky starší než 7 dní se při načtení automaticky mažou.
 export const TRASH_TTL_DAYS = 7;
+
+// Jmenný prostor úložiště — oddělené instance kalkulačky (např. /jindra/bac/{ico} má vlastní data).
+let storageNs = "";
+export function setStorageNamespace(ns?: string | null) {
+  storageNs = ns ? `${String(ns)}:` : "";
+}
 
 // ---------- vzhled aplikace ----------
 
@@ -359,21 +390,41 @@ export const THEMES: Record<string, any> = {
   },
 };
 
+// Nabídka písem – jen systémově dostupné rodiny (bez externího načítání).
+export const FONT_OPTIONS = [
+  { id: "system", label: "Systémové", stack: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif' },
+  { id: "grotesk", label: "Moderní grotesk", stack: '"Segoe UI", "Helvetica Neue", Arial, system-ui, sans-serif' },
+  { id: "serif", label: "Serif (Georgia)", stack: 'Georgia, "Times New Roman", serif' },
+  { id: "rounded", label: "Zaoblené", stack: '"Trebuchet MS", "Segoe UI", system-ui, sans-serif' },
+  { id: "mono", label: "Mono", stack: 'ui-monospace, "SF Mono", Menlo, Consolas, monospace' },
+];
+
 export const defaultDesign = {
   theme: "bordo",
+  brand: "", // nepovinný override akcentní barvy (jinak dle motivu)
+  fontFamily: "system", // rodina písma (viz FONT_OPTIONS)
   fontScale: 100, // % velikost písma (přes root font-size)
   lineHeight: 1.5, // řádkování
   letterSpacing: 0, // prostrkání v px
   space: 1, // násobek mezer mezi bloky
   zoom: 100, // % měřítko celého rozhraní
+  radius: 10, // px zaoblení rohů (tlačítka, buňky)
+  controlScale: 100, // % velikost buněk / vstupních polí
 };
 
 // Styl (CSS proměnné + typografie) pro kořenový prvek aplikace.
 export function designStyle(design: any) {
   const theme = THEMES[design.theme] ?? THEMES.bordo;
+  const font = FONT_OPTIONS.find((f) => f.id === design.fontFamily)?.stack ?? FONT_OPTIONS[0].stack;
+  const brand = design.brand ? { "--brand": design.brand, "--brand-dark": design.brand } : {};
+  const radius = design.radius ? { "--radius": `${design.radius}px`, "--radius-sm": `${Math.round(design.radius * 0.75)}px` } : {};
   return {
     ...theme.vars,
+    ...brand,
+    ...radius,
     "--space": design.space,
+    "--control": (design.controlScale ?? 100) / 100,
+    fontFamily: font,
     lineHeight: design.lineHeight,
     letterSpacing: `${design.letterSpacing}px`,
     zoom: (design.zoom ?? 100) / 100,
@@ -402,6 +453,8 @@ export const SPACING_CSS = `
   [data-kalk] .space-y-2 > :not([hidden]) ~ :not([hidden]) { margin-top: calc(.5rem * var(--space, 1)); }
   [data-kalk] .mb-3 { margin-bottom: calc(.75rem * var(--space, 1)); }
   [data-kalk] .mt-4 { margin-top: calc(1rem * var(--space, 1)); }
+  [data-kalk] .h-10 { height: calc(2.5rem * var(--control, 1)); }
+  [data-kalk] .h-9 { height: calc(2.25rem * var(--control, 1)); }
 `;
 
 // Načte obrázek loga, zmenší na max. 512 px a vrátí data-URL (PNG).
@@ -433,7 +486,7 @@ export function readLogoFile(file: File): Promise<string> {
 const read = (key: string, fallback: any) => {
   if (typeof window === "undefined") return fallback;
   try {
-    const raw = window.localStorage.getItem(key);
+    const raw = window.localStorage.getItem(storageNs + key);
     return raw ? JSON.parse(raw) : fallback;
   } catch {
     return fallback;
@@ -443,7 +496,7 @@ const read = (key: string, fallback: any) => {
 const write = (key: string, value: any) => {
   if (typeof window === "undefined") return;
   try {
-    window.localStorage.setItem(key, JSON.stringify(value));
+    window.localStorage.setItem(storageNs + key, JSON.stringify(value));
   } catch {
     // plné úložiště – ignorujeme, uživatel má export
   }
@@ -477,11 +530,25 @@ export const storage = {
     return kept;
   },
   saveTrash: (trash: any[]) => write(KEYS.trash, trash),
+  // počítadlo návštěv a soukromá historie využití (jen tento prohlížeč, bez serveru)
+  bumpVisits: (): number => {
+    const next = read(KEYS.visits, 0) + 1;
+    write(KEYS.visits, next);
+    return next;
+  },
+  loadVisits: (): number => read(KEYS.visits, 0),
+  loadHistory: (): any[] => read(KEYS.history, []),
+  pushHistory: (entry: any) => {
+    if (typeof window === "undefined") return;
+    const next = [{ ...entry, t: new Date().toISOString() }, ...(read(KEYS.history, []) as any[])].slice(0, 800);
+    write(KEYS.history, next);
+  },
+  clearHistory: () => write(KEYS.history, []),
   clearPresets: () => {
     if (typeof window === "undefined") return;
-    window.localStorage.removeItem(KEYS.presets);
-    window.localStorage.removeItem(KEYS.companySettings);
-    window.localStorage.removeItem(KEYS.design);
+    window.localStorage.removeItem(storageNs + KEYS.presets);
+    window.localStorage.removeItem(storageNs + KEYS.companySettings);
+    window.localStorage.removeItem(storageNs + KEYS.design);
   },
   nextInvoiceNumber: () => {
     const year = new Date().getFullYear();

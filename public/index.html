@@ -219,6 +219,7 @@ body.pause-active nav,
 body.pause-preview section .content,
 body.pause-active section .content{filter:brightness(1.14);}
 .chleba-trigger{color:var(--gold-light);text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:rgba(212,170,114,.55);text-underline-offset:2px;cursor:pointer;}
+.section-jump{color:var(--gold-light);text-decoration:underline;text-decoration-thickness:1px;text-decoration-color:rgba(212,170,114,.55);text-underline-offset:2px;cursor:pointer;white-space:nowrap;}
 .pkg-card[data-pkg]{cursor:pointer;}
 
 /* Keep gradient layer static (no ambient motion under video). */
@@ -356,7 +357,15 @@ body.pause-active section .content{filter:brightness(1.14);}
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
+  background:#e2e0dc;
 }
+/* Booking má vlastní denní/noční režim — panel i zatmavení sekce ho
+   musí následovat, jinak kolem něj zůstane rám v opačné barvě. */
+body.night-mode .residency-booking-panel{background:#000;}
+/* Přechod na booking: pozadí sekce se pomalu zatmaví, ne skokem. */
+#residency .residency-dim{position:absolute;inset:0;z-index:2;background:#e2e0dc;opacity:0;transition:opacity 1.1s ease;pointer-events:none;}
+body.night-mode #residency .residency-dim{background:#000;}
+#residency.booking-open .residency-dim{opacity:1;}
 #residency.booking-open .residency-main-panel{pointer-events:none;}
 #residency:not(.booking-open) .residency-booking-panel{pointer-events:none;}
 .residency-actions{
@@ -607,6 +616,8 @@ body.pause-active section .content{filter:brightness(1.14);}
 .founder-block{border-top:1px solid rgba(201,185,154,.22);padding-top:12px;margin-top:12px;}
 .founder-block:first-of-type{border-top:none;padding-top:0;margin-top:0;}
 .founder-name{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;color:var(--cream);margin-bottom:6px;}
+.founder-link{color:inherit;text-decoration:none;border-bottom:1px solid rgba(201,185,154,.32);transition:color .2s,border-color .2s;}
+.founder-link:hover{color:var(--gold-light);border-color:rgba(176,141,87,.65);}
 .founder-text{font-size:.78rem;line-height:1.58;color:rgba(240,235,226,.86);}
 .anteater-link{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(176,141,87,.45);}
 .anteater-link:hover{color:var(--gold-light);border-bottom-color:rgba(212,170,114,.7);}
@@ -629,8 +640,8 @@ footer{
   pointer-events:auto;
 }
 .ft-copy{font-size:.6rem;letter-spacing:.12em;color:var(--muted);}
-.ft-link{color:inherit;text-decoration:none;border-bottom:1px solid rgba(201,185,154,.35);transition:color .2s,border-color .2s;}
-.ft-link:hover{color:var(--gold-light);border-color:rgba(176,141,87,.6);}
+.ft-link{color:inherit;text-decoration:none;transition:color .2s;}
+.ft-link:hover{color:var(--gold-light);}
 .ft-mark{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:rgba(176,141,87,.3);letter-spacing:.08em;}
 
 /* REVEAL */
@@ -742,6 +753,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
 #contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:56px;padding:12px 60px;}
 #contact .content{position:relative;z-index:10;}
 .residency-booking-trigger{background:rgba(7,6,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
+.bg-video video.loop-fading{opacity:0!important;}
 </style>
 </head>
 <body class="video-booting">
@@ -896,7 +908,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
       <div class="values-block rev rev-d3">
         <span class="val-label cs">Co zde najdete</span><span class="val-label en">What you'll find here</span><span class="val-label de">Was Sie hier finden</span>
         <ul class="val-list">
-          <li><span class="cs">Vintage nástroje — 60s–80s Fender, Gibson, VOX.</span><span class="en">Vintage instruments — 60s–80s Fender, Gibson, VOX.</span><span class="de">Vintage-Instrumente — 60er–80er Fender, Gibson, VOX.</span></li>
+          <li><span class="cs">Vintage nástroje — 60s–80s Fender, Gibson, VOX. <a class="section-jump" href="#equipment">(Kompletní seznam)</a></span><span class="en">Vintage instruments — 60s–80s Fender, Gibson, VOX. <a class="section-jump" href="#equipment">(Full list)</a></span><span class="de">Vintage-Instrumente — 60er–80er Fender, Gibson, VOX. <a class="section-jump" href="#equipment">(Komplette Liste)</a></span></li>
           <li><span class="cs">Stylové ubytování — 4 pokoje, zimní zahrada 63 m², finská sauna.</span><span class="en">Stylish accommodation — 4 rooms, winter garden 63 m², Finnish sauna.</span><span class="de">Stilvolle Unterkunft — 4 Zimmer, Wintergarten 63 m², finnische Sauna.</span></li>
           <li><span class="cs">Moderní technologie — Universal Audio Apollo x8p Studio+, 76 UAD pluginů, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="en">Modern technology — Universal Audio Apollo x8p Studio+, 76 UAD plugins, Logic Pro X, Apple Pro Display XDR 6K.</span><span class="de">Moderne Technologie — Universal Audio Apollo x8p Studio+, 76 UAD-Plugins, Logic Pro X, Apple Pro Display XDR 6K.</span></li>
           <li><span class="cs">Vlastní zdroj elektrické energie pro zajištění provozu studia.</span><span class="en">Own power source ensuring uninterrupted studio operation.</span><span class="de">Eigene Stromquelle für einen unterbrechungsfreien Studiobetrieb.</span></li>
@@ -1111,6 +1123,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
     </video>
     <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-fuel" src="/videos/bg/5INpfHr0lu4.gif?v=20260224a" alt="" aria-hidden="true">
   </div>
+  <div class="residency-dim" aria-hidden="true"></div>
   <div class="content">
     <div class="residency-stage" id="residencyStage">
       <div class="residency-track">
@@ -1127,7 +1140,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             </button>
           </div>
           <div class="pkg-grid rev rev-d2">
-      <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Into the Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
+      <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Main Studio / In To The Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
       <div class="pkg-card" data-pkg="underwater"><div class="pkg-num">02</div><div class="pkg-name">Underwater</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Sauna</span><span class="en">#Main studio #Sauna</span><span class="de">#Hauptstudio #Sauna</span></span><p class="pkg-text cs">Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka. Skromné ale stylové a útulné přespání přímo v prostorách bývalé mlýnice.</p><p class="pkg-text en">Closest to the music, sleeping literally beneath the studio floor and below the pond level. Modest but stylish accommodation in the former mill.</p><p class="pkg-text de">Ganz nah an der Musik: Schlafen direkt unter dem Studioboden und unter der Teichoberfläche. Schlicht, aber stilvoll und gemütlich in der ehemaligen Mühle.</p></div>
       <div class="pkg-card" data-pkg="otherside"><div class="pkg-num">03</div><div class="pkg-name">Otherside</div><span class="pkg-tags"><span class="cs">#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV</span><span class="en">#Control room #Traditional Czech room #Two rooms #TV</span><span class="de">#Regieraum #Traditionelle Stube #Zwei Zimmer #TV</span></span><p class="pkg-text cs">Pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple + ubytování ve staročeské světnici. Vhodné i pro nehudební kreativní aktivity.</p><p class="pkg-text en">For post-production: 6K Apple Pro XDR with full Apple peripherals + accommodation in a traditional Czech room. Suitable for non-musical creative activities too.</p><p class="pkg-text de">Für Postproduktion: 6K Apple Pro XDR inkl. kompletter Apple-Peripherie + Unterkunft in einer traditionellen tschechischen Stube. Auch für nicht-musikalische Kreativarbeit geeignet.</p></div>
       <div class="pkg-card" data-pkg="fuel"><div class="pkg-num">04</div><div class="pkg-name">Fuel</div><span class="pkg-tags"><span class="cs">#VIP balíček</span><span class="en">#VIP package</span><span class="de">#VIP-Paket</span></span><p class="pkg-text cs">VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady a zapůjčení Tesla Model X. Profi catering, roztopení velké pece, pizza i <a class="chleba-trigger" href="/chleba">chleba</a> z pece.</p><p class="pkg-text en">VIP rental of the entire property with full service, including the winter garden and Tesla Model X. Professional catering, pizza and <a class="chleba-trigger" href="/chleba">bread</a> from the stone oven.</p><p class="pkg-text de">VIP-Miete der gesamten Anlage mit Full-Service inklusive Wintergarten und Tesla Model X. Professionelles Catering, Pizza und <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Steinofen.</p></div>
@@ -1210,11 +1223,11 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <p class="about-lead"><span class="cs">Dveře máme otevřené všem kreativním duším. Věříme, že kombinace krásné přírody, nástrojů s příběhem a moderní technologie v pozadí, zajišťující aby se jediný nápad neztratil, vytváří tu pravou synergii pro vznik něčeho výjimečného.</span><span class="en">Our doors are open to all creative souls. We believe that the combination of beautiful nature, instruments with a story, and modern background technology that ensures no idea gets lost creates true synergy for something exceptional.</span><span class="de">Unsere Türen stehen allen kreativen Menschen offen. Wir glauben, dass die Kombination aus schöner Natur, Instrumenten mit Geschichte und moderner Technik im Hintergrund, damit kein Einfall verloren geht, die richtige Synergie für etwas Besonderes schafft.</span></p>
             <div class="founders-bio">
               <div class="founder-block">
-                <h3 class="founder-name">Jindřich Traxmandl</h3>
+                <h3 class="founder-name"><a class="founder-link" href="/jindra">Jindřich Traxmandl</a></h3>
                 <p class="founder-text"><span class="cs">Kytarista kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, nadšenec do moderních technologií, který nedá dopustit na klasické vintage nástroje a aparáty.</span><span class="en">Guitarist of the band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, enthusiastic about modern technologies and devoted to classic vintage instruments and amps.</span><span class="de">Gitarrist der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, begeistert von moderner Technik und zugleich überzeugt von klassischen Vintage-Instrumenten und Verstärkern.</span></p>
               </div>
               <div class="founder-block">
-                <h3 class="founder-name">Andrea Kohoutová</h3>
+                <h3 class="founder-name"><a class="founder-link" href="/andrea">Andrea Kohoutová</a></h3>
                 <p class="founder-text"><span class="cs">Andrea je zpěvačka, baskytaristka kapely <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, archeoložka a aktuálně hlavní pekařka mlýna :-). Stará se o provoz a zázemí mlýna, kde peče skvělý <a class="chleba-trigger" href="/chleba">domácí chléb</a> – důležitý bonus pro naše hosty.</span><span class="en">Andrea is a singer and bassist in <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, an archaeologist, and currently the head baker at the mill :-). She takes care of mill operations and facilities, where she bakes great <a class="chleba-trigger" href="/chleba">homemade bread</a> — an important bonus for our guests.</span><span class="de">Andrea ist Sängerin und Bassistin der Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>, Archäologin und aktuell Hauptbäckerin der Mühle :-). Sie kümmert sich um den Betrieb und das Umfeld der Mühle, wo sie hervorragendes <a class="chleba-trigger" href="/chleba">hausgemachtes Brot</a> backt — ein wichtiger Bonus für unsere Gäste.</span></p>
               </div>
             </div>
@@ -1407,6 +1420,29 @@ const bgVideoFrames=[...document.querySelectorAll('.bg-video video')];
 const bgFrameBySectionId=new Map(
   [...document.querySelectorAll('section')].map(section=>[section.id,section.querySelector('.bg-video video')]).filter(([,frame])=>Boolean(frame))
 );
+const bgSectionByVideo=new Map([...bgFrameBySectionId].map(([id,video])=>[video,id]));
+/* Buffer: hraje aktuální sekce + sousední (nahoru i dolů), aby video běželo už při příjezdu */
+function isBgSectionAllowed(sectionId){
+  if(sectionId===currentSectionId)return true;
+  const idx=secs.findIndex(s=>s.id===currentSectionId);
+  if(idx<0)return false;
+  const prevId=idx>0?secs[idx-1].id:null;
+  const nextId=idx<secs.length-1?secs[idx+1].id:null;
+  return sectionId===prevId||sectionId===nextId;
+}
+/* Plynulá smyčka — před koncem videa jemné prolnutí do tmy, po přetočení zpět (žádné bliknutí) */
+const LOOP_FADE_SEC=0.6;
+bgFrameBySectionId.forEach((video)=>{
+  video.addEventListener('timeupdate',()=>{
+    if(!video.duration||!isFinite(video.duration))return;
+    const remaining=video.duration-video.currentTime;
+    if(remaining<=LOOP_FADE_SEC){
+      video.classList.add('loop-fading');
+    }else if(video.classList.contains('loop-fading')){
+      video.classList.remove('loop-fading');
+    }
+  });
+});
 const bgMediaBySectionId=new Map(
   [...document.querySelectorAll('section')].map(section=>{
     const wrap=section.querySelector('.bg-video')||null;
@@ -1830,9 +1866,9 @@ function playBgVideo(video){
     setBgBlocked(video,isFatal);
     if(!isFatal)scheduleBgRetry(video,isGestureNeeded?520:240);
   };
-  const activeVideo=bgFrameBySectionId.get(currentSectionId);
-  if(activeVideo!==video)return;
-  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
+  const videoSectionId=bgSectionByVideo.get(video);
+  if(!videoSectionId||!isBgSectionAllowed(videoSectionId))return;
+  applyVideoRate(video,videoSectionId==='residency'?getResidencyVideoRate():1);
   if(!video.paused&&video.readyState>=2){
     markBgVideoFrame(video);
     markBgVideoPlaying(video);
@@ -1848,7 +1884,7 @@ function playBgVideo(video){
   video.defaultMuted=true;
   video.volume=0;
   video.controls=false;
-  applyVideoRate(video,currentSectionId==='residency'?getResidencyVideoRate():1);
+  applyVideoRate(video,videoSectionId==='residency'?getResidencyVideoRate():1);
   if(video.__playPending)return;
   video.__playPending=true;
   const p=video.play();
@@ -2510,7 +2546,7 @@ if(placeTimeline){
 
 function syncBackgroundVideos(){
   bgFrameBySectionId.forEach((video,sectionId)=>{
-    if(pauseAllVideos||sectionId!==currentSectionId){
+    if(pauseAllVideos||!isBgSectionAllowed(sectionId)){
       pauseBgVideo(video);
       return;
     }
@@ -2843,7 +2879,7 @@ residencyBookingCloseTriggers.forEach((trigger)=>{
     setResidencyBooking(false);
   });
 });
-document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .nav-logo[href^="#"]').forEach((anchor)=>{
+document.querySelectorAll('.nav-links a[href^="#"], .mobile-nav a[href^="#"], .nav-logo[href^="#"], a.section-jump[href^="#"]').forEach((anchor)=>{
   anchor.addEventListener('click',(event)=>{
     const href=anchor.getAttribute('href')||'';
     const sectionId=href.slice(1);

@@ -1,11 +1,17 @@
+/* Noční režim je výchozí: černé pozadí, světlý text. Denní režim níž
+   překlápí tytéž proměnné na bílé pozadí s tmavým textem. */
 .bookingPage {
-  --bg: #07060a;
+  --ink-rgb: 240, 235, 226;
+  --surface-rgb: 7, 6, 10;
+  --edge-rgb: 201, 185, 154;
+  --card-rgb: 16, 14, 18;
+  --bg: #000;
   --stone: #c9b99a;
   --gold: #b08d57;
   --gold-light: #d7b47d;
   --cream: #f0ebe2;
   --muted: #8b8178;
-  --border: rgba(201, 185, 154, 0.14);
+  --border: rgba(var(--edge-rgb), 0.14);
   --footer-reveal-gap: 120px;
   position: relative;
   min-height: 100vh;
@@ -14,8 +20,61 @@
   color: var(--cream);
 }
 
+/* Denní režim — bílé pozadí, tmavý text. Překlápí jen barevné proměnné,
+   rozvržení zůstává stejné. */
+.dayMode {
+  --ink-rgb: 24, 21, 18;
+  --surface-rgb: 226, 224, 220;
+  --edge-rgb: 120, 105, 80;
+  --card-rgb: 236, 234, 230;
+  --bg: #e2e0dc;
+  --stone: #6b5c40;
+  --gold: #8a6a34;
+  --gold-light: #6d5327;
+  --cream: #16130f;
+  --muted: #5f574c;
+  --border: rgba(var(--edge-rgb), 0.26);
+}
+
+/* Booking uvnitř sekce ubytování: pozadí se řídí režimem, ne videem sekce */
 .embedded {
-  background: transparent !important;
+  background: var(--bg) !important;
+}
+
+.dayMode .bgShell {
+  background: #e2e0dc;
+}
+
+/* Nad světlým podkladem by bílý stín text spolykal. */
+.dayMode .navLinks a,
+.dayMode .title,
+.dayMode .monthGuide h3 {
+  text-shadow: none;
+}
+
+/* Karty zůstávají tmavé i ve dne — jsou to fotky/videa, text na nich
+   musí zůstat světlý, jinak by na snímku zanikl. Platí i pro závoj přes
+   video: ten musí ztmavovat, ne přelít snímek světlou barvou. */
+.dayMode .cardClip,
+.dayMode .cardShade,
+.dayMode .cardGradient,
+.dayMode .calendarPanel,
+.dayMode .dayButton,
+.dayMode .weekday,
+.dayMode .calendarYear,
+.dayMode .cardLabel {
+  --ink-rgb: 240, 235, 226;
+  --surface-rgb: 7, 6, 10;
+  --card-rgb: 16, 14, 18;
+  --edge-rgb: 201, 185, 154;
+}
+
+.dayMode .cardClip,
+.dayMode .dayButton,
+.dayMode .weekday,
+.dayMode .calendarYear,
+.dayMode .cardLabel {
+  color: rgba(240, 235, 226, 0.95);
 }
 
 .embedded .pageShell {
@@ -26,8 +85,6 @@
 
 .embedded .experience {
   min-height: 0 !important;
-  gap: 32px;
-  align-items: start;
 }
 
 .embedded .infoColumn {
@@ -36,12 +93,7 @@
 }
 
 .embedded .stackStage {
-  min-height: 520px;
-  padding-right: 44px;
-}
-
-.embedded .stackColumn {
-  padding-right: 72px;
+  min-height: inherit;
 }
 
 .embedded .monthGuide {
@@ -68,10 +120,7 @@
 .bgShell {
   z-index: 0;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(176, 141, 87, 0.08), transparent 34%),
-    radial-gradient(circle at 78% 20%, rgba(82, 88, 102, 0.12), transparent 30%),
-    linear-gradient(180deg, #09080c 0%, #050506 54%, #07060a 100%);
+  background: #000;
 }
 
 .bgVideo {
@@ -96,14 +145,14 @@
 .bgOverlay {
   z-index: 1;
   background:
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.42) 0%, rgba(7, 6, 10, 0.18) 34%, rgba(7, 6, 10, 0.72) 100%);
+    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.42) 0%, rgba(var(--surface-rgb), 0.18) 34%, rgba(var(--surface-rgb), 0.72) 100%);
 }
 
 .nightMode .bgOverlay {
   background:
     radial-gradient(circle at 18% 12%, rgba(186, 148, 97, 0.08), transparent 34%),
     radial-gradient(circle at 82% 22%, rgba(98, 113, 140, 0.12), transparent 28%),
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.82) 0%, rgba(7, 6, 10, 0.56) 34%, rgba(7, 6, 10, 0.94) 100%);
+    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.82) 0%, rgba(var(--surface-rgb), 0.56) 34%, rgba(var(--surface-rgb), 0.94) 100%);
 }
 
 .nav {
@@ -117,16 +166,16 @@
   justify-content: space-between;
   padding: 22px 52px;
   transition: padding 0.4s, background 0.4s, border-color 0.4s;
-  border-bottom: 1px solid rgba(201, 185, 154, 0.16);
-  background: linear-gradient(to bottom, rgba(7, 6, 10, 0.72) 0%, rgba(7, 6, 10, 0.44) 70%, rgba(7, 6, 10, 0.18) 100%);
+  border-bottom: 1px solid rgba(var(--edge-rgb), 0.16);
+  background: linear-gradient(to bottom, rgba(var(--surface-rgb), 0.72) 0%, rgba(var(--surface-rgb), 0.44) 70%, rgba(var(--surface-rgb), 0.18) 100%);
   backdrop-filter: blur(10px);
 }
 
 .navScrolled {
-  background: rgba(7, 6, 10, 0.92);
+  background: rgba(var(--surface-rgb), 0.92);
   backdrop-filter: blur(16px);
   padding: 14px 52px;
-  border-color: rgba(201, 185, 154, 0.22);
+  border-color: rgba(var(--edge-rgb), 0.22);
 }
 
 .navLogo {
@@ -152,7 +201,7 @@
   font-size: 0.62rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.76);
+  color: rgba(var(--ink-rgb), 0.76);
   font-weight: 400;
   text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35);
   text-decoration: none;
@@ -258,7 +307,7 @@
   right: 0;
   min-width: 124px;
   border: 1px solid var(--border);
-  background: rgba(7, 6, 10, 0.92);
+  background: rgba(var(--surface-rgb), 0.92);
   backdrop-filter: blur(12px);
   display: none;
   flex-direction: column;
@@ -274,7 +323,7 @@
   background: none;
   border: 0;
   border-bottom: 1px solid var(--border);
-  color: rgba(240, 235, 226, 0.82);
+  color: rgba(var(--ink-rgb), 0.82);
   font-size: 0.62rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -299,8 +348,8 @@
   justify-content: center;
   min-width: 64px;
   height: 34px;
-  background: rgba(7, 6, 10, 0.34);
-  border: 1px solid rgba(201, 185, 154, 0.26);
+  background: rgba(var(--surface-rgb), 0.34);
+  border: 1px solid rgba(var(--edge-rgb), 0.26);
   cursor: pointer;
   padding: 0 12px;
 }
@@ -309,7 +358,7 @@
   display: block;
   font-size: 0.54rem;
   letter-spacing: 0.2em;
-  color: rgba(240, 235, 226, 0.78);
+  color: rgba(var(--ink-rgb), 0.78);
   line-height: 1;
 }
 
@@ -318,7 +367,7 @@
   position: fixed;
   inset: 0;
   z-index: 99;
-  background: rgba(7, 6, 10, 0.97);
+  background: rgba(var(--surface-rgb), 0.97);
   backdrop-filter: blur(20px);
   flex-direction: column;
   align-items: center;
@@ -369,10 +418,7 @@
 }
 
 .experience {
-  display: grid;
-  grid-template-columns: minmax(360px, 0.9fr) minmax(520px, 1.1fr);
-  gap: 64px;
-  align-items: stretch;
+  display: block;
   min-height: calc(100vh - 188px);
 }
 
@@ -382,7 +428,6 @@
   flex-direction: column;
   justify-content: flex-start;
   padding: 0 0 44px;
-  min-height: 640px;
 }
 
 .eyebrow {
@@ -391,7 +436,7 @@
   font-size: 0.66rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.62);
+  color: rgba(var(--ink-rgb), 0.62);
 }
 
 .title {
@@ -428,7 +473,7 @@
   margin: 0;
   font-size: 0.78rem;
   line-height: 1.72;
-  color: rgba(240, 235, 226, 0.72);
+  color: rgba(var(--ink-rgb), 0.72);
 }
 
 .noticeDock {
@@ -466,14 +511,14 @@
   flex: 1;
   font-size: 0.7rem;
   line-height: 1.56;
-  color: rgba(240, 235, 226, 0.76);
+  color: rgba(var(--ink-rgb), 0.76);
 }
 
 .bookingNoticeClose {
   appearance: none;
   border: 0;
   background: none;
-  color: rgba(240, 235, 226, 0.44);
+  color: rgba(var(--ink-rgb), 0.44);
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
@@ -482,7 +527,7 @@
 }
 
 .bookingNoticeClose:hover {
-  color: rgba(240, 235, 226, 0.9);
+  color: rgba(var(--ink-rgb), 0.9);
 }
 
 .monthGuide {
@@ -521,7 +566,7 @@
   padding-left: 14px;
   font-size: 0.77rem;
   line-height: 1.72;
-  color: rgba(240, 235, 226, 0.74);
+  color: rgba(var(--ink-rgb), 0.74);
 }
 
 .monthGuideList li::before {
@@ -541,7 +586,7 @@
 }
 
 .monthGuideLink:hover {
-  color: rgba(240, 235, 226, 0.96);
+  color: rgba(var(--ink-rgb), 0.96);
   text-decoration-color: rgba(212, 170, 114, 0.82);
 }
 
@@ -553,7 +598,7 @@
   margin: 16px 0 0;
   font-size: 0.74rem;
   line-height: 1.64;
-  color: rgba(240, 235, 226, 0.68);
+  color: rgba(var(--ink-rgb), 0.68);
 }
 
 .monthGuideNav {
@@ -571,9 +616,9 @@
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  border: 1px solid rgba(201, 185, 154, 0.16);
-  background: rgba(7, 6, 10, 0.18);
-  color: rgba(240, 235, 226, 0.7);
+  border: 1px solid rgba(var(--edge-rgb), 0.16);
+  background: rgba(var(--surface-rgb), 0.18);
+  color: rgba(var(--ink-rgb), 0.7);
   font-size: 0.84rem;
   cursor: pointer;
   transition: transform 0.22s ease, border-color 0.22s ease, color 0.22s ease, opacity 0.22s ease;
@@ -595,29 +640,32 @@
   margin-top: 8px;
   font-size: clamp(2.15rem, 3.8vw, 3.1rem);
   line-height: 0.92;
-  color: rgba(240, 235, 226, 0.92);
+  color: rgba(var(--ink-rgb), 0.92);
   text-shadow: 0 8px 30px rgba(0, 0, 0, 0.18);
   pointer-events: none;
   white-space: nowrap;
 }
 
+/* Karty leží pod názvem měsíce a jsou vodorovně vycentrované vůči textu. */
+/* Karty leží pod názvem měsíce, zarovnané zleva ke stejné ose jako text. */
 .stackColumn {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  min-height: 640px;
+  min-height: 620px;
   overflow: visible;
-  padding-right: 220px;
+  margin: 26px 0 40px;
 }
 
+/* Šířka = přední karta (295) + odsazení posledního náhledu, aby šel vějíř
+   vycentrovat jako celek. */
 .stackStage {
   position: relative;
   width: 100%;
   min-height: 560px;
   padding-top: 8px;
-  padding-right: 0;
   overflow: visible;
 }
 
@@ -627,9 +675,9 @@
 
 .cardFrame {
   position: absolute;
-  top: 46px;
+  top: 50%;
   left: 0;
-  width: 295px;
+  width: 330px;
   transform-origin: top left;
   transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.45s ease;
 }
@@ -651,20 +699,20 @@
   min-width: 110px;
   padding: 0 14px;
   border-radius: 10px;
-  border: 1px solid rgba(201, 185, 154, 0.2);
+  border: 1px solid rgba(var(--edge-rgb), 0.2);
   background: linear-gradient(180deg, rgba(26, 22, 20, 0.94) 0%, rgba(12, 11, 15, 0.9) 100%);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
   font-size: 0.52rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.8);
+  color: rgba(var(--ink-rgb), 0.8);
   text-align: center;
   pointer-events: none;
 }
 
 .card {
   position: relative;
-  width: min(100%, 295px);
+  width: min(100%, 330px);
   aspect-ratio: 9 / 16;
   height: auto;
   max-height: min(74vh, 524px);
@@ -686,15 +734,16 @@
   height: 100%;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid rgba(201, 185, 154, 0.18);
-  background: rgba(16, 14, 18, 0.88);
-  backdrop-filter: blur(10px) saturate(0.98);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(var(--edge-rgb), 0.18);
+  background: rgba(var(--card-rgb), 0.88);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+  /* vlastní vrstva pro kompozitor — video se pak nepřekresluje s okolím */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .cardClipFront {
-  background: rgba(16, 14, 18, 0.68);
-  backdrop-filter: blur(8px) saturate(1);
+  background: rgba(var(--card-rgb), 0.68);
 }
 
 .cardMedia,
@@ -706,7 +755,7 @@
 
 .cardMedia {
   overflow: hidden;
-  background: rgba(7, 6, 10, 0.16);
+  background: rgba(var(--surface-rgb), 0.16);
 }
 
 .cardGradient {
@@ -742,8 +791,17 @@
   height: 100%;
   object-fit: cover;
   z-index: 0;
+}
+
+/* Náhledové karty nepřehrávají video, jen jeho první snímek — jinak by se
+   dekódovalo osm videí naráz a přehrávání sekalo. */
+.cardLocalPoster {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center center;
   filter: saturate(1.06) contrast(1.05) brightness(0.98);
-  transition: filter 0.28s ease, transform 0.28s ease;
 }
 
 .seamlessVideo {
@@ -758,13 +816,13 @@
 .cardShade {
   z-index: 2;
   background:
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.08) 0%, rgba(7, 6, 10, 0.12) 22%, rgba(7, 6, 10, 0.44) 100%),
+    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.08) 0%, rgba(var(--surface-rgb), 0.12) 22%, rgba(var(--surface-rgb), 0.44) 100%),
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.06), transparent 28%);
 }
 
 .cardClipFront .cardShade {
   background:
-    linear-gradient(to bottom, rgba(7, 6, 10, 0.01) 0%, rgba(7, 6, 10, 0.05) 22%, rgba(7, 6, 10, 0.18) 100%),
+    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.01) 0%, rgba(var(--surface-rgb), 0.05) 22%, rgba(var(--surface-rgb), 0.18) 100%),
     radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.08), transparent 28%);
 }
 
@@ -789,9 +847,8 @@
 
 .calendarPanel {
   padding: 18px 16px 12px;
-  background: linear-gradient(180deg, rgba(10, 10, 14, 0.18) 0%, rgba(10, 10, 14, 0.28) 100%);
-  border: 1px solid rgba(240, 235, 226, 0.08);
-  backdrop-filter: blur(14px);
+  background: linear-gradient(180deg, rgba(var(--card-rgb), 0.62) 0%, rgba(var(--card-rgb), 0.74) 100%);
+  border: 1px solid rgba(var(--ink-rgb), 0.08);
   box-shadow: 0 18px 34px rgba(0, 0, 0, 0.16);
   transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, max-height 0.32s ease;
 }
@@ -803,22 +860,20 @@
   overflow: hidden;
   padding: 8px 8px 7px;
   border-radius: 10px;
-  background: linear-gradient(180deg, rgba(10, 10, 14, 0.16) 0%, rgba(10, 10, 14, 0.24) 100%);
+  background: linear-gradient(180deg, rgba(var(--card-rgb), 0.16) 0%, rgba(var(--card-rgb), 0.24) 100%);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
 }
 
 .cardClipFront:hover .calendarPanelFront {
   transform: translateY(-2px);
-  background: linear-gradient(180deg, rgba(10, 10, 14, 0.22) 0%, rgba(10, 10, 14, 0.3) 100%);
-  border-color: rgba(240, 235, 226, 0.12);
+  background: linear-gradient(180deg, rgba(var(--card-rgb), 0.22) 0%, rgba(var(--card-rgb), 0.3) 100%);
+  border-color: rgba(var(--ink-rgb), 0.12);
   box-shadow: 0 18px 34px rgba(0, 0, 0, 0.2);
 }
 
+/* Náhledové karty ukazují celý kalendář, jen decentněji než přední. */
 .calendarPanelPreview {
-  padding: 10px 12px 8px;
-  min-height: 42px;
-  max-height: 42px;
-  overflow: hidden;
+  padding: 14px 14px 10px;
 }
 
 .calendarHead {
@@ -833,7 +888,7 @@
   font-size: 0.44rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.64);
+  color: rgba(var(--ink-rgb), 0.64);
   text-align: right;
 }
 
@@ -855,7 +910,7 @@
   font-size: 0.46rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.56);
+  color: rgba(var(--ink-rgb), 0.56);
 }
 
 .calendarYear::before,
@@ -865,8 +920,7 @@
   position: absolute;
   inset: -2px -4px;
   border-radius: 4px;
-  background: rgba(8, 8, 12, 0.28);
-  backdrop-filter: blur(8px) saturate(1.02);
+  background: rgba(var(--card-rgb), 0.52);
   opacity: 0;
   transition: opacity 0.22s ease;
   z-index: -1;
@@ -885,11 +939,6 @@
   align-content: start;
 }
 
-.weekdaysHidden,
-.calendarGridHidden {
-  display: none;
-}
-
 .dayEmpty {
   width: 26px;
   height: 26px;
@@ -902,7 +951,7 @@
   border: 0;
   border-radius: 6px;
   background: transparent;
-  color: rgba(240, 235, 226, 0.95);
+  color: rgba(var(--ink-rgb), 0.95);
   font-size: 0.58rem;
   font-weight: 400;
   cursor: pointer;
@@ -931,10 +980,23 @@
   transform: none;
 }
 
+/* Dny, které už proběhly (jen v aktuálním měsíci) */
+.dayPast {
+  opacity: 0.3;
+  cursor: default;
+}
+
 .dayBlocked {
   background: transparent;
   color: rgba(255, 214, 195, 0.72);
+}
+
+/* Číslo dne je v inline-flex spanu, kam se text-decoration z tlačítka
+   nedědí — přeškrtnutí musí sedět přímo na něm. */
+.dayBlocked span {
   text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(255, 214, 195, 0.9);
 }
 
 .dayArrival,
@@ -957,7 +1019,7 @@
   margin-left: 0;
   width: 100%;
   background: #000;
-  border-top: 1px solid rgba(201, 185, 154, 0.14);
+  border-top: 1px solid rgba(var(--edge-rgb), 0.14);
   padding: 24px 60px 26px;
   min-height: 96px;
   display: flex;
@@ -981,7 +1043,7 @@
   align-items: center;
   justify-content: center;
   padding: 26px;
-  background: rgba(7, 6, 10, 0.72);
+  background: rgba(var(--surface-rgb), 0.72);
   backdrop-filter: blur(18px);
 }
 
@@ -990,7 +1052,7 @@
   width: min(720px, 100%);
   padding: 34px 32px 30px;
   border-radius: 10px;
-  border: 1px solid rgba(201, 185, 154, 0.18);
+  border: 1px solid rgba(var(--edge-rgb), 0.18);
   background: rgba(12, 11, 15, 0.92);
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46);
 }
@@ -1003,7 +1065,7 @@
   height: 40px;
   border: 0;
   background: none;
-  color: rgba(240, 235, 226, 0.68);
+  color: rgba(var(--ink-rgb), 0.68);
   font-size: 1.7rem;
   cursor: pointer;
 }
@@ -1014,7 +1076,7 @@
   font-size: 0.66rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(240, 235, 226, 0.58);
+  color: rgba(var(--ink-rgb), 0.58);
 }
 
 .modalTitle {
@@ -1034,20 +1096,20 @@
   margin: 16px 0 0;
   font-size: 0.86rem;
   line-height: 1.7;
-  color: rgba(240, 235, 226, 0.7);
+  color: rgba(var(--ink-rgb), 0.7);
 }
 
 .emailDraft {
   margin: 24px 0 0;
   padding: 22px;
   border-radius: 8px;
-  border: 1px solid rgba(201, 185, 154, 0.16);
+  border: 1px solid rgba(var(--edge-rgb), 0.16);
   background: rgba(255, 255, 255, 0.03);
   white-space: pre-wrap;
   font-family: "Manrope", sans-serif;
   font-size: 0.9rem;
   line-height: 1.8;
-  color: rgba(240, 235, 226, 0.78);
+  color: rgba(var(--ink-rgb), 0.78);
 }
 
 .modalCta {
@@ -1078,27 +1140,27 @@
     width: min(100%, calc(100% - 56px));
   }
 
-  .experience {
-    grid-template-columns: minmax(300px, 0.92fr) minmax(420px, 1.08fr);
-    gap: 32px;
-  }
-
+  /* Řada karet se zmenší jako celek, aby se vešla i na užší displej.
+     Výška plochy se zmenší se stejným poměrem, aby nezbývalo prázdno. */
   .stackStage {
-    padding-right: 0;
+    transform: scale(0.84);
+    transform-origin: left center;
+    min-height: 500px;
   }
 
   .stackColumn {
-    padding-right: 120px;
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .stackStage {
+    transform: scale(0.68);
+    min-height: 410px;
   }
 
-  .cardFrame {
-    left: 8px;
-    width: 255px;
-  }
-
-  .card {
-    width: min(100%, 255px);
-    max-height: min(66vh, 454px);
+  .stackColumn {
+    min-height: 410px;
   }
 }
 
@@ -1149,27 +1211,11 @@
 
   .stackColumn,
   .stackStage {
-    min-height: 560px;
-  }
-
-  .stackColumn {
-    padding-right: 0;
+    min-height: 340px;
   }
 
   .stackStage {
-    padding-top: 24px;
-    padding-right: 0;
-  }
-
-  .cardFrame {
-    top: 40px;
-    left: 8px;
-    width: 238px;
-  }
-
-  .card {
-    width: min(100%, 238px);
-    max-height: min(62vh, 422px);
+    transform: scale(0.56);
   }
 }
 
@@ -1208,30 +1254,14 @@
     max-width: 100%;
   }
 
+  /* Na mobilu se vejde jen přední karta — řadu zmenšíme nejvíc. */
   .stackColumn,
   .stackStage {
-    min-height: 490px;
-  }
-
-  .stackColumn {
-    padding-right: 0;
+    min-height: 250px;
   }
 
   .stackStage {
-    padding-top: 20px;
-    padding-right: 0;
-  }
-
-  .cardFrame {
-    top: 34px;
-    left: 0;
-    width: min(100%, 252px);
-  }
-
-  .card {
-    width: min(100%, 252px);
-    max-height: 448px;
-    border-radius: 10px;
+    transform: scale(0.42);
   }
 
   .cardLabel {

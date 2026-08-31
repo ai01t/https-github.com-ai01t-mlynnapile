@@ -5,6 +5,8 @@ import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import styles from "@/components/booking-page.module.css"
+import PageBgLayer from "@/components/page-bg-layer"
+import { useLiveBgConfig } from "@/lib/use-live-bg"
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -21,42 +23,65 @@ const MODE_STORAGE_KEY = "mlyn_mode"
 const LANG_STORAGE_KEY = "mlyn_lang"
 
 const EMAIL = "mlynnapile@gmail.com"
-const START_Y = 2026
-const START_M = 3
+// Kalendář se roluje: začíná vždy aktuálním měsícem a pokračuje 12 měsíců dopředu.
 const TOTAL = 12
+const CALENDAR_START = new Date()
+const START_Y = CALENDAR_START.getFullYear()
+const START_M = CALENDAR_START.getMonth()
 const BOOKING_VIDEO_PLAYBACK_RATE = 0.42
-const VIDEOS = [
-  "8ao2RN8xswo",
-  "kgqpTmzPMa4",
-  null,
-  null,
-  null,
-  "9oQ3JNjBwbo",
-  "Wnn7LyRPdyE",
-  null,
-  null,
-  "12wlur-ij3A",
-  null,
-  null,
+const VIDEOS_BY_MONTH = [
+  "12wlur-ij3A", // leden
+  null, // únor
+  null, // březen
+  "8ao2RN8xswo", // duben
+  "kgqpTmzPMa4", // květen
+  null, // červen
+  null, // červenec
+  null, // srpen
+  "9oQ3JNjBwbo", // září
+  "Wnn7LyRPdyE", // říjen
+  null, // listopad
+  null, // prosinec
 ] as const
 
-const GRADIENTS = [
-  "linear-gradient(160deg, rgba(34,31,28,0.9) 0%, rgba(98,76,45,0.84) 34%, rgba(162,129,76,0.54) 100%)",
-  "linear-gradient(155deg, rgba(20,27,34,0.92) 0%, rgba(52,76,82,0.78) 40%, rgba(138,150,130,0.56) 100%)",
-  "linear-gradient(150deg, rgba(25,19,26,0.94) 0%, rgba(88,63,84,0.76) 42%, rgba(167,128,112,0.5) 100%)",
-  "linear-gradient(150deg, rgba(24,33,26,0.94) 0%, rgba(55,82,63,0.78) 40%, rgba(149,142,101,0.48) 100%)",
-  "linear-gradient(155deg, rgba(23,27,38,0.94) 0%, rgba(61,75,112,0.76) 42%, rgba(168,146,115,0.52) 100%)",
-  "linear-gradient(150deg, rgba(26,20,19,0.95) 0%, rgba(88,55,43,0.8) 40%, rgba(177,121,78,0.5) 100%)",
-  "linear-gradient(145deg, rgba(22,24,28,0.94) 0%, rgba(72,72,82,0.74) 42%, rgba(172,144,102,0.52) 100%)",
-  "linear-gradient(150deg, rgba(17,24,31,0.95) 0%, rgba(44,62,74,0.78) 38%, rgba(118,134,119,0.48) 100%)",
-  "linear-gradient(145deg, rgba(18,16,25,0.95) 0%, rgba(50,40,72,0.78) 42%, rgba(151,125,105,0.5) 100%)",
-  "linear-gradient(150deg, rgba(15,18,24,0.95) 0%, rgba(49,57,78,0.8) 42%, rgba(140,151,187,0.46) 100%)",
-  "linear-gradient(150deg, rgba(25,21,20,0.95) 0%, rgba(75,58,52,0.82) 42%, rgba(170,144,120,0.52) 100%)",
-  "linear-gradient(150deg, rgba(20,20,18,0.95) 0%, rgba(63,60,47,0.8) 42%, rgba(161,152,108,0.5) 100%)",
+const GRADIENTS_BY_MONTH = [
+  "linear-gradient(150deg, rgba(15,18,24,0.95) 0%, rgba(49,57,78,0.8) 42%, rgba(140,151,187,0.46) 100%)", // leden
+  "linear-gradient(150deg, rgba(25,21,20,0.95) 0%, rgba(75,58,52,0.82) 42%, rgba(170,144,120,0.52) 100%)", // únor
+  "linear-gradient(150deg, rgba(20,20,18,0.95) 0%, rgba(63,60,47,0.8) 42%, rgba(161,152,108,0.5) 100%)", // březen
+  "linear-gradient(160deg, rgba(34,31,28,0.9) 0%, rgba(98,76,45,0.84) 34%, rgba(162,129,76,0.54) 100%)", // duben
+  "linear-gradient(155deg, rgba(20,27,34,0.92) 0%, rgba(52,76,82,0.78) 40%, rgba(138,150,130,0.56) 100%)", // květen
+  "linear-gradient(150deg, rgba(25,19,26,0.94) 0%, rgba(88,63,84,0.76) 42%, rgba(167,128,112,0.5) 100%)", // červen
+  "linear-gradient(150deg, rgba(24,33,26,0.94) 0%, rgba(55,82,63,0.78) 40%, rgba(149,142,101,0.48) 100%)", // červenec
+  "linear-gradient(155deg, rgba(23,27,38,0.94) 0%, rgba(61,75,112,0.76) 42%, rgba(168,146,115,0.52) 100%)", // srpen
+  "linear-gradient(150deg, rgba(26,20,19,0.95) 0%, rgba(88,55,43,0.8) 40%, rgba(177,121,78,0.5) 100%)", // září
+  "linear-gradient(145deg, rgba(22,24,28,0.94) 0%, rgba(72,72,82,0.74) 42%, rgba(172,144,102,0.52) 100%)", // říjen
+  "linear-gradient(150deg, rgba(17,24,31,0.95) 0%, rgba(44,62,74,0.78) 38%, rgba(118,134,119,0.48) 100%)", // listopad
+  "linear-gradient(145deg, rgba(18,16,25,0.95) 0%, rgba(50,40,72,0.78) 42%, rgba(151,125,105,0.5) 100%)", // prosinec
 ] as const
 
-const BOOKED_RANGES: Record<number, Array<{ start: number; end: number }>> = {
-  0: [{ start: 17, end: 20 }],
+// klíč = "rok-měsíc" (měsíc 0 = leden), rozsahy jsou včetně krajních dnů
+const BOOKED_RANGES: Record<string, Array<{ start: number; end: number }>> = {
+  "2026-3": [{ start: 17, end: 20 }], // duben 2026
+  "2026-6": [{ start: 3, end: 3 }], // červenec 2026
+  "2026-7": [ // srpen 2026
+    { start: 7, end: 8 },
+    { start: 21, end: 21 },
+  ],
+  "2026-9": [ // říjen 2026
+    { start: 2, end: 2 },
+    { start: 9, end: 9 },
+    { start: 16, end: 16 },
+    { start: 23, end: 23 },
+    { start: 30, end: 31 },
+  ],
+  "2026-10": [ // listopad 2026
+    { start: 13, end: 13 },
+    { start: 21, end: 21 },
+  ],
+  "2026-11": [ // prosinec 2026
+    { start: 4, end: 4 },
+    { start: 11, end: 11 },
+  ],
 }
 
 type Locale = "cs" | "en" | "de"
@@ -116,44 +141,44 @@ type CalendarMonth = {
   weeks: Array<Array<number | null>>
 }
 
-const LOCAL_MEDIA_BY_INDEX: Partial<Record<number, { src: string; poster: string }>> = {
-  2: {
+const LOCAL_MEDIA_BY_MONTH: Partial<Record<number, { src: string; poster: string }>> = {
+  5: { // červen
     src: "/videos/bg/VDj9aKHnpcw_hq.mp4",
     poster: "/videos/bg/VDj9aKHnpcw_hq.jpg",
   },
-  3: {
+  6: { // červenec
     src: "/videos/bg/MczOR3DstPg.mp4",
     poster: "/videos/bg/MczOR3DstPg.jpg",
   },
-  4: {
+  7: { // srpen
     src: "/videos/bg/O431B93W9UY.mp4",
     poster: "/videos/bg/O431B93W9UY.jpg",
   },
-  5: {
+  8: { // září
     src: "/videos/bg/CJzYKr3JWC8.mp4",
     poster: "/videos/bg/CJzYKr3JWC8.jpg",
   },
-  6: {
+  9: { // říjen
     src: "/videos/bg/DY09nnytbjc.mp4",
     poster: "/videos/bg/DY09nnytbjc.jpg",
   },
-  7: {
+  10: { // listopad
     src: "/videos/bg/QsHqEEj4-60.mp4",
     poster: "/videos/bg/QsHqEEj4-60.jpg",
   },
-  8: {
+  11: { // prosinec
     src: "/videos/bg/M4QkWhz7CDo.mp4",
     poster: "/videos/bg/M4QkWhz7CDo.jpg",
   },
-  9: {
+  0: { // leden
     src: "/videos/bg/12wlur-ij3A.mp4",
     poster: "/videos/bg/12wlur-ij3A.jpg",
   },
-  10: {
+  1: { // únor
     src: "/videos/bg/gTqXu9xU_7k.mp4",
     poster: "/videos/bg/gTqXu9xU_7k.jpg",
   },
-  11: {
+  2: { // březen
     src: "/videos/bg/tWtT7cB1Tus.mp4",
     poster: "/videos/bg/tWtT7cB1Tus.jpg",
   },
@@ -366,7 +391,7 @@ const copyByLocale: Record<Locale, Copy> = {
     previous: "Předchozí měsíc",
     next: "Další měsíc",
     selectionHint: "Vyber příjezd a odjezd přímo v kalendáři přední karty.",
-    bookedHint: "17–20. 4. 2026 je již obsazeno.",
+    bookedHint: "Šedě označené dny jsou již obsazené.",
     modalTitle: "Vybraný termín",
     openInEmail: "Otevřít v e-mailu",
     closeDialog: "Zavřít dialog",
@@ -418,7 +443,7 @@ const copyByLocale: Record<Locale, Copy> = {
     previous: "Previous month",
     next: "Next month",
     selectionHint: "Choose arrival and departure directly in the calendar of the front card.",
-    bookedHint: "17–20 Apr 2026 is already booked.",
+    bookedHint: "Days marked in grey are already booked.",
     modalTitle: "Selected stay",
     openInEmail: "Open in email",
     closeDialog: "Close dialog",
@@ -470,7 +495,7 @@ const copyByLocale: Record<Locale, Copy> = {
     previous: "Vorheriger Monat",
     next: "Nächster Monat",
     selectionHint: "Wähle An- und Abreise direkt im Kalender der vorderen Karte.",
-    bookedHint: "17.–20. Apr. 2026 ist bereits belegt.",
+    bookedHint: "Grau markierte Tage sind bereits belegt.",
     modalTitle: "Gewählter Aufenthalt",
     openInEmail: "Im E-Mail-Programm öffnen",
     closeDialog: "Dialog schließen",
@@ -598,28 +623,31 @@ function buildMonths(locale: Locale): CalendarMonth[] {
       title: buildMonthTitle(locale, date, "long"),
       shortTitle: buildCardLabel(date),
       ghostTitle: buildGhostTitle(locale, date),
-      gradient: GRADIENTS[offset % GRADIENTS.length],
-      youtubeId: VIDEOS[offset] ?? null,
-      localVideoSrc: LOCAL_MEDIA_BY_INDEX[offset]?.src ?? null,
-      localPosterSrc: LOCAL_MEDIA_BY_INDEX[offset]?.poster ?? null,
-      blockedRanges: BOOKED_RANGES[offset] ?? [],
+      gradient: GRADIENTS_BY_MONTH[month],
+      youtubeId: VIDEOS_BY_MONTH[month] ?? null,
+      localVideoSrc: LOCAL_MEDIA_BY_MONTH[month]?.src ?? null,
+      localPosterSrc: LOCAL_MEDIA_BY_MONTH[month]?.poster ?? null,
+      blockedRanges: BOOKED_RANGES[`${year}-${month}`] ?? [],
       weeks: buildCalendarWeeks(year, month),
     }
   })
 }
 
+// Karty stojí vedle sebe zleva doprava, ne v překrývajícím se vějíři.
+// Kotví se na svislý střed stage (.cardFrame top:50%); závěrečné
+// translateY(-50%) běží až po scale, takže se na střed zarovná i zmenšená karta.
 function getCardTransform(offset: number) {
-  if (offset === 0) return "translate3d(0, 0, 0) scale(1)"
-  if (offset === 1) return "translate3d(208px, 10px, 0) scale(0.86)"
-  if (offset === 2) return "translate3d(348px, 22px, 0) scale(0.72)"
-  return "translate3d(456px, 34px, 0) scale(0.6)"
+  if (offset === 0) return "translate3d(0, 0, 0) scale(1) translateY(-50%)"
+  if (offset === 1) return "translate3d(352px, 0, 0) scale(0.92) translateY(-50%)"
+  if (offset === 2) return "translate3d(682px, 0, 0) scale(0.84) translateY(-50%)"
+  return "translate3d(982px, 0, 0) scale(0.76) translateY(-50%)"
 }
 
 function getCardOpacity(offset: number) {
   if (offset === 0) return 1
-  if (offset === 1) return 0.98
-  if (offset === 2) return 0.96
-  return 0.94
+  if (offset === 1) return 0.9
+  if (offset === 2) return 0.78
+  return 0.66
 }
 
 function buildYoutubeUrl(videoId: string) {
@@ -726,6 +754,13 @@ function formatDateForMail(locale: Locale, date: Date) {
 
 function getDateAtMonthDay(months: CalendarMonth[], monthIndex: number, day: number) {
   return new Date(months[monthIndex].year, months[monthIndex].month, day)
+}
+
+// Dnešek od půlnoci — v prvním (aktuálním) měsíci se už proběhlé dny nedají vybrat.
+function getTodayStart() {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return today
 }
 
 function getNightsCount(arrival: Date, departure: Date) {
@@ -937,6 +972,8 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const copy = copyByLocale[locale]
   const router = useRouter()
   const searchParams = useSearchParams()
+  const liveBg = useLiveBgConfig("booking")
+  const adminBg = Boolean(liveBg?.image || liveBg?.video)
   const langSwitchRef = useRef<HTMLDivElement | null>(null)
   const touchStartXRef = useRef<number | null>(null)
   const touchStartYRef = useRef<number | null>(null)
@@ -944,7 +981,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const lastPostedHeightRef = useRef(0)
   const [navScrolled, setNavScrolled] = useState(false)
   const [paused, setPaused] = useState(false)
-  const [nightMode] = useState(false)
+  const [nightMode, setNightMode] = useState(true)
   const [langOpen, setLangOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -958,23 +995,57 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const [modalOpen, setModalOpen] = useState(false)
   const embedded = searchParams.get("embed") === "1"
 
+  // Režim sdílíme s hlavní stránkou přes stejný klíč v localStorage,
+  // aby booking (i vložený v sekci Ubytování) vypadal stejně jako web.
+  useEffect(() => {
+    const read = () => {
+      try {
+        return window.localStorage.getItem(MODE_STORAGE_KEY) !== "day"
+      } catch {
+        return true
+      }
+    }
+    setNightMode(read())
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === MODE_STORAGE_KEY) setNightMode(read())
+    }
+    window.addEventListener("storage", onStorage)
+    return () => window.removeEventListener("storage", onStorage)
+  }, [])
+
+  const toggleMode = () => {
+    setNightMode((current) => {
+      const next = !current
+      try {
+        window.localStorage.setItem(MODE_STORAGE_KEY, next ? "night" : "day")
+      } catch {}
+      return next
+    })
+  }
+
   const months = useMemo(() => buildMonths(locale), [locale])
+  const todayStart = useMemo(() => getTodayStart(), [])
   const activeMonth = months[currentIndex]
   const activeMonthGuide = MONTH_GUIDES_CS[activeMonth.month]
   const visibleMonths = months.slice(currentIndex, Math.min(currentIndex + 4, months.length))
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.body.style.background = embedded ? "transparent" : "#07060a"
 
     try {
       window.localStorage.setItem(LANG_STORAGE_KEY, locale)
     } catch {}
+  }, [locale, embedded])
 
+  // Tělo stránky drží barvu podle režimu, jinak by kolem obsahu zůstal
+  // černý pruh i v denním režimu.
+  useEffect(() => {
+    document.body.style.background = nightMode ? "#000" : "#e2e0dc"
     return () => {
       document.body.style.background = ""
     }
-  }, [locale, embedded])
+  }, [nightMode])
 
   useEffect(() => {
     if (embedded) {
@@ -1169,6 +1240,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
   const handleDayClick = (day: number) => {
     if (isBlockedDay(activeMonth, day)) return
+    if (getDateAtMonthDay(months, currentIndex, day) < todayStart) return
 
     const clickedDate = getDateAtMonthDay(months, currentIndex, day)
 
@@ -1234,12 +1306,13 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className={cx(styles.bookingPage, embedded && styles.embedded, manrope.className, nightMode && styles.nightMode)}>
-      {!embedded ? (
+    <div className={cx(styles.bookingPage, embedded && styles.embedded, manrope.className, nightMode ? styles.nightMode : styles.dayMode)}>
+      {!embedded && !adminBg ? (
         <div className={styles.bgShell} aria-hidden="true">
           <div className={styles.bgOverlay} />
         </div>
       ) : null}
+      {!embedded && adminBg ? <PageBgLayer pageId="booking" /> : null}
 
       {!embedded && (
         <>
@@ -1268,6 +1341,27 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                 onClick={() => setPaused((current) => !current)}
               >
                 <span className={styles.pauseIcon}>{paused ? "▶" : "II"}</span>
+              </button>
+              <button
+                type="button"
+                className={cx(styles.btnMode, !nightMode && styles.btnModeOn)}
+                aria-pressed={!nightMode}
+                aria-label={nightMode ? copy.switchToDay : copy.switchToNight}
+                title={nightMode ? copy.switchToDay : copy.switchToNight}
+                onClick={toggleMode}
+              >
+                <span className={styles.modeIcon} aria-hidden="true">
+                  {nightMode ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <circle cx="12" cy="12" r="4.2" />
+                      <path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.4 5.4l1.6 1.6M17 17l1.6 1.6M18.6 5.4L17 7M7 17l-1.6 1.6" strokeLinecap="round" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                      <path d="M20 14.2A8.2 8.2 0 1 1 9.8 4a6.6 6.6 0 0 0 10.2 10.2z" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </span>
               </button>
               <div ref={langSwitchRef} className={cx(styles.langSwitch, langOpen && styles.langSwitchOpen)}>
                 <button
@@ -1371,44 +1465,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            {activeMonthGuide ? (
-              <section className={styles.monthGuide}>
-                <div className={styles.monthGuideBlock}>
-                  <h3>V tomto měsíci se konají:</h3>
-                  <ul className={styles.monthGuideList}>
-                    {activeMonthGuide.events.map((item) => {
-                      const isActive = eventMatchesSelection(months, item, selection, currentIndex)
-                      const { lead, rest } = splitEventLead(item.text)
-
-                      return (
-                        <li key={`${activeMonthGuide.monthTitle}-event-${item.text}`}>
-                          {lead ? (
-                            <span className={cx(isActive && styles.monthGuideEventLeadActive)}>
-                              {lead}
-                            </span>
-                          ) : null}
-                          {lead ? " · " : ""}
-                          {renderGuideText(rest)}
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </div>
-
-                {activeMonthGuide.note ? <p className={styles.monthGuideNote}>{activeMonthGuide.note}</p> : null}
-
-                <div className={styles.monthGuideBlock}>
-                  <h3>Tipy do okolí:</h3>
-                  <ul className={styles.monthGuideList}>
-                    {activeMonthGuide.tips.map((item) => (
-                      <li key={`${activeMonthGuide.monthTitle}-tip-${item}`}>{renderGuideText(item)}</li>
-                    ))}
-                  </ul>
-                </div>
-              </section>
-            ) : null}
-          </div>
-
           <div className={styles.stackColumn}>
             <div className={styles.stackStage} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
               {visibleMonths.map((month, visibleIndex) => {
@@ -1450,7 +1506,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                     <article className={cx(styles.card, !isFront && styles.cardInactive)}>
                       <div className={cx(styles.cardClip, isFront && styles.cardClipFront)}>
                         <div className={styles.cardMedia} aria-hidden="true">
-                          {!paused && month.localVideoSrc ? (
+                          {!paused && isFront && month.localVideoSrc ? (
                             <SeamlessLoopVideo
                               key={`${month.localVideoSrc}-${paused ? "paused" : "playing"}`}
                               className={styles.cardLocalVideo}
@@ -1459,7 +1515,13 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               playbackRate={BOOKING_VIDEO_PLAYBACK_RATE}
                             />
                           ) : null}
-                          {!paused && !month.localVideoSrc && month.youtubeId ? (
+                          {(paused || !isFront) && month.localPosterSrc ? (
+                            <div
+                              className={styles.cardLocalPoster}
+                              style={{ backgroundImage: `url("${month.localPosterSrc}")` }}
+                            />
+                          ) : null}
+                          {!paused && isFront && !month.localVideoSrc && month.youtubeId ? (
                             <iframe
                               key={`${month.youtubeId}-${paused ? "paused" : "playing"}`}
                               className={styles.cardVideo}
@@ -1491,7 +1553,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               <span className={styles.calendarYear}>{month.shortTitle}</span>
                             </div>
 
-                            <div className={cx(styles.weekdays, !isFront && styles.weekdaysHidden)}>
+                            <div className={styles.weekdays}>
                               {copy.weekdays.map((weekday) => (
                                 <span key={`${month.title}-${weekday}`} className={styles.weekday}>
                                   {weekday}
@@ -1499,7 +1561,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               ))}
                             </div>
 
-                            <div className={cx(styles.calendarGrid, !isFront && styles.calendarGridHidden)}>
+                            <div className={styles.calendarGrid}>
                               {month.weeks.flat().map((day, cellIndex) => {
                                 if (day === null) {
                                   return <span key={`${month.title}-empty-${cellIndex}`} className={styles.dayEmpty} />
@@ -1507,6 +1569,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
                                 const isBlocked = isBlockedDay(month, day)
                                 const currentDayDate = getDateAtMonthDay(months, month.index, day)
+                                const isPast = currentDayDate < todayStart
                                 const isArrival =
                                   selection.arrivalMonthIndex === month.index && selection.arrivalDay === day
                                 const isDeparture =
@@ -1523,13 +1586,14 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                                     type="button"
                                     className={cx(
                                       styles.dayButton,
+                                      isPast && styles.dayPast,
                                       isBlocked && styles.dayBlocked,
                                       isArrival && styles.dayArrival,
                                       isDeparture && styles.dayDeparture,
                                       isBetween && styles.dayBetween,
                                       !isFront && styles.dayDisabled,
                                     )}
-                                    disabled={!isFront || isBlocked}
+                                    disabled={!isFront || isBlocked || isPast}
                                     onClick={(event) => {
                                       event.stopPropagation()
                                       if (!isFront) return
@@ -1550,6 +1614,44 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               })}
             </div>
 
+          </div>
+
+            {activeMonthGuide ? (
+              <section className={styles.monthGuide}>
+                <div className={styles.monthGuideBlock}>
+                  <h3>V tomto měsíci se konají:</h3>
+                  <ul className={styles.monthGuideList}>
+                    {activeMonthGuide.events.map((item) => {
+                      const isActive = eventMatchesSelection(months, item, selection, currentIndex)
+                      const { lead, rest } = splitEventLead(item.text)
+
+                      return (
+                        <li key={`${activeMonthGuide.monthTitle}-event-${item.text}`}>
+                          {lead ? (
+                            <span className={cx(isActive && styles.monthGuideEventLeadActive)}>
+                              {lead}
+                            </span>
+                          ) : null}
+                          {lead ? " · " : ""}
+                          {renderGuideText(rest)}
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+
+                {activeMonthGuide.note ? <p className={styles.monthGuideNote}>{activeMonthGuide.note}</p> : null}
+
+                <div className={styles.monthGuideBlock}>
+                  <h3>Tipy do okolí:</h3>
+                  <ul className={styles.monthGuideList}>
+                    {activeMonthGuide.tips.map((item) => (
+                      <li key={`${activeMonthGuide.monthTitle}-tip-${item}`}>{renderGuideText(item)}</li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            ) : null}
           </div>
         </section>
 
