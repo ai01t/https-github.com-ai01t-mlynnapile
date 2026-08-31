@@ -3,692 +3,1240 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kalkulace chleba - Mlyn na Pile</title>
+  <title>Bread Fitt - kváskový plánovač</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     :root {
-      --bg: #f4f1ea;
-      --panel: #fffefa;
-      --panel-2: #eee8dc;
-      --ink: #191512;
-      --muted: #746b5f;
-      --faint: #a99f91;
-      --line: #e2d8c8;
-      --accent: #9f3d2d;
-      --accent-2: #27615b;
-      --blue: #265caa;
-      --green: #15803d;
-      --red: #c33126;
-      --amber: #b7791f;
-      --shadow: 0 18px 55px rgba(64, 45, 25, .09);
+      --ink: #3b281b;
+      --muted: #8b765d;
+      --paper: #fff7df;
+      --paper-soft: rgba(255, 248, 226, .88);
+      --cream: #f3e3bd;
+      --crust: #995b1d;
+      --crust-dark: #673612;
+      --honey: #e8b84f;
+      --leaf: #5e876d;
+      --water: #5b9bc6;
+      --line: rgba(128, 89, 36, .22);
+      --shadow: 0 24px 70px rgba(97, 61, 21, .13);
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      background:
-        linear-gradient(135deg, rgba(159, 61, 45, .08), transparent 32rem),
-        linear-gradient(315deg, rgba(39, 97, 91, .10), transparent 34rem),
-        var(--bg);
+      min-height: 100vh;
+      overflow: hidden;
       color: var(--ink);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-size: 14px;
+      font-family: ui-rounded, "Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(255,255,255,.72) 0 11rem, transparent 11.4rem),
+        radial-gradient(circle at 78% 4%, rgba(255,220,132,.55) 0 10rem, transparent 10.5rem),
+        linear-gradient(180deg, #fbefd0 0%, #f3dfb1 47%, #ead39e 100%);
     }
-    button, input, select { font: inherit; }
-    .app { width: min(1380px, calc(100% - 28px)); margin: 0 auto; padding: 18px 0 34px; transition: width .25s ease; }
-    .app.sixk { width: 5680px; max-width: none; margin-left: 16px; margin-right: 16px; }
-    .top {
-      display: grid;
-      grid-template-columns: minmax(280px, 1.15fr) minmax(280px, .85fr);
-      gap: 16px;
-      align-items: stretch;
-      margin-bottom: 14px;
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(circle at 24px 32px, rgba(126, 83, 29, .15) 1px, transparent 1.4px),
+        radial-gradient(circle at 88px 70px, rgba(255, 255, 255, .42) 1px, transparent 1.5px);
+      background-size: 112px 112px;
+      mix-blend-mode: multiply;
+      opacity: .45;
     }
-    .hero, .decision, .card {
-      background: rgba(255, 253, 248, .88);
-      border: 1px solid var(--line);
+
+    .paper {
+      background: var(--paper-soft);
+      border: 1px solid rgba(128, 89, 36, .16);
       box-shadow: var(--shadow);
-      border-radius: 8px;
+      backdrop-filter: blur(16px);
     }
-    .hero { padding: 22px; position: relative; overflow: hidden; min-height: 215px; }
-    .hero > * { position: relative; z-index: 1; }
-    .hero:after {
+
+    .warm-chip {
+      background: rgba(255, 248, 226, .78);
+      border: 1px solid rgba(128, 89, 36, .15);
+      box-shadow: 0 10px 22px rgba(97, 61, 21, .07);
+    }
+
+    .brand-letter {
+      background:
+        radial-gradient(circle at 35% 28%, rgba(255,255,255,.28), transparent 25%),
+        linear-gradient(145deg, #b96d25, #7b3d16);
+    }
+
+    .story-node {
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .story-node:hover {
+      transform: translateY(-2px);
+    }
+
+    .story-node[aria-pressed="true"] {
+      background: #fff4d2;
+      border-color: rgba(153, 91, 29, .55);
+      box-shadow: 0 16px 34px rgba(153, 91, 29, .16);
+    }
+
+    input[type="range"] {
+      accent-color: var(--crust);
+    }
+
+    button, input { font: inherit; }
+
+    canvas {
+      min-height: 290px;
+      touch-action: none;
+    }
+
+    .grain-line {
+      background-image:
+        linear-gradient(90deg, rgba(153, 91, 29, .16), rgba(153, 91, 29, .04)),
+        repeating-linear-gradient(0deg, transparent 0 11px, rgba(153, 91, 29, .08) 11px 12px);
+    }
+
+    .bread-illo {
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 0%, #fff8d9 0 30%, transparent 31%), linear-gradient(135deg, #fff3ce, #e9f2df);
+    }
+
+    .bread-illo::before {
       content: "";
       position: absolute;
-      right: -40px;
-      bottom: -80px;
-      width: 360px;
-      height: 250px;
-      background: url("/images/chleba-hero.jpeg") center/cover;
-      border-radius: 50% 0 0 0;
-      opacity: .36;
-      filter: saturate(.85) contrast(1.05);
-      z-index: 0;
+      left: 18%;
+      top: 34%;
+      width: 46%;
+      height: 30%;
+      border-radius: 55% 55% 45% 45%;
+      background: linear-gradient(180deg, #b76a2b, #874219);
+      box-shadow: inset 0 10px 18px rgba(255,255,255,.18);
     }
-    .eyebrow {
-      display: inline-flex;
-      gap: 8px;
-      align-items: center;
-      color: var(--accent);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: .12em;
-      text-transform: uppercase;
+
+    .bread-illo::after {
+      content: "";
+      position: absolute;
+      left: 28%;
+      top: 28%;
+      width: 42%;
+      height: 26%;
+      border-top: 4px solid rgba(255,247,213,.85);
+      border-radius: 50%;
+      transform: rotate(-7deg);
     }
-    h1 { max-width: 760px; margin: 12px 0 10px; font-size: clamp(31px, 4.4vw, 62px); line-height: .94; letter-spacing: -.045em; }
-    .lead { max-width: 560px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
-    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
-    .btn {
-      border: 1px solid var(--line);
-      background: var(--ink);
+
+    body[data-design="poster"] {
+      --paper-soft: rgba(255, 241, 205, .9);
+      --crust: #b05a17;
+      --crust-dark: #6d300c;
+      --honey: #f2bd39;
+      --leaf: #5d9156;
+      --water: #3487bd;
+      background:
+        radial-gradient(circle at 72% 11%, rgba(255,199,58,.55) 0 13rem, transparent 13.5rem),
+        radial-gradient(circle at 18% 22%, rgba(255,255,255,.8) 0 10rem, transparent 10.5rem),
+        linear-gradient(160deg, #fff4cf 0%, #eec979 100%);
+    }
+
+    body[data-design="night"] {
+      --ink: #f8edcb;
+      --muted: #d9c9a5;
+      --paper-soft: rgba(44, 48, 83, .72);
+      --crust: #f0a13c;
+      --crust-dark: #ffe0a5;
+      --honey: #f4d677;
+      --leaf: #8fc5a0;
+      --water: #8bc6e8;
+      --line: rgba(255, 239, 188, .22);
+      --shadow: 0 24px 70px rgba(16, 20, 44, .28);
+      background:
+        radial-gradient(circle at 70% 8%, rgba(244,214,119,.34) 0 9rem, transparent 9.4rem),
+        radial-gradient(circle at 20% 78%, rgba(139,198,232,.18) 0 18rem, transparent 18.5rem),
+        linear-gradient(180deg, #28325d 0%, #514879 48%, #8c6a4d 100%);
+    }
+
+    body[data-design="clean"] {
+      --ink: #2d261e;
+      --muted: #756b5d;
+      --paper-soft: rgba(255, 253, 246, .92);
+      --crust: #81522c;
+      --crust-dark: #4f2e17;
+      --honey: #d7b15d;
+      --leaf: #5c806b;
+      --water: #5c91a8;
+      background: linear-gradient(180deg, #fbf6e9 0%, #eee4d0 100%);
+    }
+
+    body[data-layout="focus"] #storySection {
+      display: none;
+    }
+
+    body[data-layout="focus"] #mainGrid {
+      grid-template-columns: minmax(0, 1fr) 330px;
+    }
+
+    body[data-layout="recipe"] #mainGrid {
+      grid-template-columns: minmax(0, .92fr) 470px;
+    }
+
+    body[data-layout="recipe"] #storySection > div {
+      height: 104px;
+    }
+
+    .control-button[aria-pressed="true"] {
+      background: var(--crust);
       color: #fff;
-      border-radius: 7px;
-      padding: 9px 12px;
-      cursor: pointer;
-      font-size: 12px;
-      font-weight: 850;
-      letter-spacing: .04em;
-      text-transform: uppercase;
+      border-color: transparent;
     }
-    .btn.secondary { background: #fff; color: var(--ink); }
-    .btn.active { background: var(--accent-2); border-color: var(--accent-2); }
-    .decision { padding: 16px; display: grid; gap: 10px; }
-    .verdict {
-      padding: 15px;
-      border-radius: 8px;
-      color: #fff;
-      background: var(--red);
+
+    @media (max-height: 820px) {
+      canvas { min-height: 250px; }
+      .short-hide { display: none; }
+      .short-tight { padding-top: .55rem; padding-bottom: .55rem; }
     }
-    .verdict.ok { background: var(--green); }
-    .verdict.warn { background: var(--amber); }
-    .verdict strong { display: block; font-size: 23px; line-height: 1.05; margin-bottom: 5px; }
-    .verdict span { opacity: .9; }
-    .quick { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .mini { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
-    .mini small, .metric small, .field label { display: block; color: var(--faint); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-    .mini b { display: block; margin-top: 3px; font-size: 20px; letter-spacing: -.025em; }
-    .grid { display: grid; grid-template-columns: 390px minmax(0, 1fr); gap: 14px; align-items: start; }
-    .app.sixk .grid { grid-template-columns: 420px minmax(0, 1fr); }
-    .app.sixk .wide-board { display: grid; grid-template-columns: 1.05fr 1.1fr .95fr; gap: 14px; align-items: start; }
-    .app.sixk .metrics { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-    .app.sixk .stack-in-sixk { display: grid; gap: 14px; }
-    .app.sixk .stack-in-sixk > .split { grid-template-columns: 1fr; margin-bottom: 0; }
-    .controls { display: grid; gap: 10px; }
-    .card { padding: 14px; }
-    .card h2 { margin: 0 0 10px; font-size: 15px; letter-spacing: -.015em; }
-    .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
-    .field { display: grid; gap: 5px; min-width: 0; }
-    .field input[type=range] { width: 100%; accent-color: var(--accent); }
-    .field input[type=number], .field select {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 7px;
-      padding: 9px 10px;
-      color: var(--ink);
-    }
-    .value { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
-    .value b { font-variant-numeric: tabular-nums; font-size: 17px; }
-    .value span { color: var(--muted); font-size: 12px; }
-    .toggle { display: flex; align-items: center; gap: 8px; margin-top: 4px; color: var(--muted); }
-    .toggle input { width: 16px; height: 16px; accent-color: var(--accent); }
-    .metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
-    .metric {
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--blue);
-      border-radius: 8px;
-      padding: 12px;
-      min-width: 0;
-    }
-    .metric.green { border-left-color: var(--green); }
-    .metric.red { border-left-color: var(--red); }
-    .metric.amber { border-left-color: var(--amber); }
-    .metric b { display: block; margin-top: 5px; font-size: clamp(20px, 2.4vw, 30px); line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
-    .metric p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
-    .split { display: grid; grid-template-columns: 1.05fr .95fr; gap: 14px; margin-bottom: 14px; }
-    .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; table-layout: auto; }
-    th, td { padding: 8px 7px; border-bottom: 1px solid #eee6da; text-align: right; white-space: nowrap; }
-    th { color: var(--faint); font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-    th:first-child, td:first-child { text-align: left; }
-    td:first-child { white-space: normal; min-width: 92px; }
-    td { font-variant-numeric: tabular-nums; }
-    tbody tr.active { background: #edf4f2; }
-    .pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 800; }
-    .pill.good { background: #dcfce7; color: var(--green); }
-    .pill.bad { background: #fee2e2; color: var(--red); }
-    .pill.mid { background: #fef3c7; color: #92400e; }
-    .chart-card { padding: 14px; }
-    canvas { width: 100%; height: 250px; display: block; }
-    .app.sixk canvas { height: 340px; }
-    .bars { display: grid; gap: 9px; }
-    .bar-row { display: grid; grid-template-columns: 130px 1fr 78px; gap: 9px; align-items: center; }
-    .bar-label { color: var(--muted); font-size: 12px; }
-    .bar-track { height: 9px; background: #eee7db; border-radius: 99px; overflow: hidden; }
-    .bar-fill { height: 100%; background: var(--accent-2); border-radius: 99px; }
-    .bar-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 800; }
-    .note {
-      border: 1px solid #ead7b4;
-      background: #fff8e8;
-      color: #674513;
-      padding: 11px 12px;
-      border-radius: 8px;
-      line-height: 1.45;
-      font-size: 13px;
-    }
-    .recipe-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: baseline;
-      margin-bottom: 10px;
-    }
-    .recipe-head h2 { margin: 0; }
-    .recipe-head span { color: var(--muted); font-weight: 800; font-variant-numeric: tabular-nums; }
-    .recipe-summary {
-      background: #eef4ff;
-      border: 1px solid #dfe8ff;
-      color: #24334d;
-      border-radius: 8px;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      font-size: 16px;
-      line-height: 1.35;
-    }
-    .recipe-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .ingredient {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.74);
-      border-radius: 8px;
-      padding: 12px;
-    }
-    .ingredient-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 15px;
-      font-weight: 900;
-      margin-bottom: 9px;
-    }
-    .dot { width: 9px; height: 9px; border-radius: 50%; flex: 0 0 auto; }
-    .ingredient-row {
-      display: grid;
-      grid-template-columns: 64px 1fr 72px;
-      gap: 8px;
-      align-items: center;
-      color: var(--muted);
-      margin: 4px 0;
-    }
-    .fake-range { height: 7px; background: #ebe7df; border: 1px solid #c6c1b7; border-radius: 99px; overflow: hidden; }
-    .fake-range span { display: block; height: 100%; background: #1677e8; border-radius: 99px; }
-    .ingredient-row b { color: var(--ink); text-align: right; font-variant-numeric: tabular-nums; font-size: 16px; }
-    .ingredient-cost {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      border-top: 1px solid #eee6da;
-      margin-top: 8px;
-      padding-top: 8px;
-      color: var(--faint);
-      font-variant-numeric: tabular-nums;
-    }
-    .ingredient-cost b { color: var(--blue); font-size: 22px; }
-    .microbar { height: 3px; background: #efe9df; border-radius: 99px; overflow: hidden; margin-top: 7px; }
-    .microbar span { display: block; height: 100%; border-radius: 99px; }
-    .compare-panel { border: 1px solid #d8d2ef; background: #fbfaff; }
-    .compare-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .compare-field label { display: block; color: #8375aa; font-size: 10px; font-weight: 850; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
-    .compare-field input { width: 100%; accent-color: #6d4bc2; }
-    .compare-result { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-    .compare-chip { background: #f1edff; border-radius: 8px; padding: 9px; }
-    .compare-chip small { color: #8375aa; font-size: 10px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
-    .compare-chip b { display: block; margin-top: 3px; font-size: 18px; }
-    .footer { color: var(--muted); font-size: 12px; margin-top: 12px; line-height: 1.5; }
-    @media (max-width: 980px) {
-      .top, .grid, .split, .app.sixk .wide-board, .app.sixk .grid { grid-template-columns: 1fr; }
-      .metrics { grid-template-columns: repeat(2, 1fr); }
-      .hero:after { opacity: .22; }
-    }
-    @media (max-width: 620px) {
-      .app { width: min(100% - 18px, 1280px); padding-top: 10px; }
-      .hero { padding: 18px; }
-      .fields, .quick, .metrics, .recipe-grid, .compare-grid, .compare-result { grid-template-columns: 1fr; }
-      .bar-row { grid-template-columns: 1fr; gap: 4px; }
-      canvas { height: 220px; }
+
+    @media (max-width: 900px) {
+      canvas { min-height: 230px; }
     }
   </style>
 </head>
-<body>
-  <main class="app" id="app">
-    <section class="top">
-      <div class="hero">
-        <span class="eyebrow">Mlyn na Pile · business plan</span>
-        <h1>Kalkulace chleba, ktera pocita i s realitou pece</h1>
-        <p class="lead">Model rozlisuje prodanou hmotnost, ztratu pecenim, neprodane kusy, vlastni praci a energii podle vsazky. Nahore ukazuje rychle rozhodnuti: zda nastaveni vydelava, kde je bod zvratu a jakou cenu potrebujes pro cilovy zisk.</p>
-        <div class="actions">
-          <button class="btn" id="sixkBtn" type="button">6K plocha</button>
-          <button class="btn secondary" id="resetBtn" type="button">Pomery 840g</button>
-        </div>
-      </div>
-      <aside class="decision">
-        <div id="verdict" class="verdict">
-          <strong>Prepocitavam</strong>
-          <span>Uprav parametry vlevo a model se prepocita.</span>
-        </div>
-        <div class="quick">
-          <div class="mini"><small>Doporucena cena</small><b id="needPrice">-</b></div>
-          <div class="mini"><small>Bod zvratu</small><b id="breakEven">-</b></div>
-          <div class="mini"><small>Hotovy vs testo</small><b id="doughInfo">-</b></div>
-          <div class="mini"><small>Prace / ks</small><b id="laborEach">-</b></div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="grid">
-      <div class="controls">
-        <section class="card">
-          <h2>Prodej</h2>
-          <div class="fields">
-            <div class="field"><label for="weight">Hotovy bochnik</label><input id="weight" type="range" min="400" max="1500" step="10" value="840"><div class="value"><b id="weightOut"></b><span id="kgOut"></span></div></div>
-            <div class="field"><label for="price">Cena pro zakaznika</label><input id="price" type="range" min="70" max="260" step="5" value="150"><div class="value"><b id="priceOut"></b><span id="priceKg"></span></div></div>
-            <div class="field"><label for="qty">Upeceno ks / den</label><input id="qty" type="range" min="1" max="80" step="1" value="10"><div class="value"><b id="qtyOut"></b><span id="monthQty"></span></div></div>
-            <div class="field"><label for="days">Pecici dny / mesic</label><input id="days" type="range" min="1" max="30" step="1" value="20"><div class="value"><b id="daysOut"></b><span id="soldMonth"></span></div></div>
-            <div class="field"><label for="waste">Neprodane / odpis</label><input id="waste" type="range" min="0" max="25" step="1" value="7"><div class="value"><b id="wasteOut"></b><span>z upecenych</span></div></div>
-            <div class="field"><label for="target">Cilovy zisk / mesic</label><input id="target" type="range" min="0" max="50000" step="1000" value="15000"><div class="value"><b id="targetOut"></b><span>po praci</span></div></div>
+<body class="h-screen overflow-hidden">
+  <main id="app" class="relative h-screen overflow-hidden p-3 lg:p-4">
+    <section class="h-full grid grid-rows-[auto_auto_minmax(0,1fr)_auto] gap-3">
+      <header class="paper rounded-lg px-4 py-3 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="brand-letter h-11 w-11 rounded-lg text-white grid place-items-center shadow-lg shadow-orange-900/20">
+            <span class="text-xl font-semibold">BF</span>
           </div>
-          <label class="toggle"><input id="vat" type="checkbox"> Platce DPH, cena obsahuje 12 % DPH</label>
-        </section>
-
-        <section class="card">
-          <h2>Vyroba</h2>
-          <div class="fields">
-            <div class="field"><label for="bakeLoss">Ztrata pecenim</label><input id="bakeLoss" type="range" min="8" max="22" step="1" value="16"><div class="value"><b id="bakeLossOut"></b><span>odpar vody</span></div></div>
-            <div class="field"><label for="batch">Ks ve vsazce</label><input id="batch" type="range" min="1" max="24" step="1" value="10"><div class="value"><b id="batchOut"></b><span>energie se deli</span></div></div>
-            <div class="field"><label for="fuel">Zdroj energie</label><select id="fuel"><option value="wood">Drevo</option><option value="electric">Elektrina</option></select><div class="value"><b id="fuelOut"></b><span id="fuelHint"></span></div></div>
-            <div class="field"><label for="fuelCost">Naklad pece / vsazka</label><input id="fuelCost" type="range" min="60" max="600" step="10" value="270"><div class="value"><b id="fuelCostOut"></b><span id="fuelUnit"></span></div></div>
-            <div class="field"><label for="laborHours">Aktivni prace / den</label><input id="laborHours" type="range" min="0" max="8" step=".25" value="2.5"><div class="value"><b id="laborHoursOut"></b><span>hodin</span></div></div>
-            <div class="field"><label for="hourRate">Cena prace</label><input id="hourRate" type="range" min="0" max="500" step="25" value="250"><div class="value"><b id="hourRateOut"></b><span>Kc/h</span></div></div>
-          </div>
-        </section>
-
-        <section class="card">
-          <h2>Fixy a provoz</h2>
-          <div class="fields">
-            <div class="field"><label for="flour">Rezerva surovin</label><input id="flour" type="range" min="0" max="25" step="1" value="5"><div class="value"><b id="flourOut"></b><span>% navic</span></div></div>
-            <div class="field"><label for="salt">Kvas / krmeni</label><input id="salt" type="range" min="0" max="10" step=".5" value="1.5"><div class="value"><b id="saltOut"></b><span>Kc/boch.</span></div></div>
-            <div class="field"><label for="pack">Obal + etiketa</label><input id="pack" type="range" min="0" max="20" step=".5" value="4"><div class="value"><b id="packOut"></b><span>Kc/ks</span></div></div>
-            <div class="field"><label for="fees">Platby / prodej</label><input id="fees" type="range" min="0" max="8" step=".5" value="2"><div class="value"><b id="feesOut"></b><span>% z trzby</span></div></div>
-            <div class="field"><label for="fixed">Fixni naklady</label><input id="fixed" type="range" min="0" max="30000" step="500" value="11000"><div class="value"><b id="fixedOut"></b><span>Kc/mes.</span></div></div>
-            <div class="field"><label for="admin">Ucetni / hygiena rezerva</label><input id="admin" type="range" min="0" max="10000" step="250" value="1500"><div class="value"><b id="adminOut"></b><span>Kc/mes.</span></div></div>
-          </div>
-        </section>
-      </div>
-
-      <div class="wide-board">
-        <div class="stack-in-sixk">
-        <section class="metrics">
-          <div class="metric"><small>Trzby ciste</small><b id="revenue">-</b><p id="revenueSub"></p></div>
-          <div class="metric amber"><small>Naklady vc. prace</small><b id="costs">-</b><p id="costsSub"></p></div>
-          <div class="metric green"><small>Zisk po praci</small><b id="profit">-</b><p id="profitSub"></p></div>
-          <div class="metric red"><small>Marze na prodany ks</small><b id="margin">-</b><p id="marginSub"></p></div>
-          <div class="metric amber"><small>Zisk bez práce</small><b id="profitNoLabor">-</b><p>pro pocit, co dělá vlastní čas</p></div>
-          <div class="metric"><small>Cena / kg</small><b id="pricePerKgMetric">-</b><p>pro srovnání s trhem</p></div>
-        </section>
-
-        <section class="split">
-          <div class="card chart-card">
-            <h2>Zisk podle poctu bochniku denne</h2>
-            <canvas id="chart"></canvas>
-          </div>
-          <div class="card">
-            <h2>Rozpad nakladu na hotovy bochnik</h2>
-            <div class="bars" id="bars"></div>
-            <p class="note" id="recipeNote"></p>
-          </div>
-        </section>
-        </div>
-
-        <div class="stack-in-sixk">
-          <section class="card">
-            <div class="recipe-head"><h2>Receptura / bochnik</h2><span id="recipeHead">573g+427g</span></div>
-            <div class="recipe-summary" id="recipeSummary">Suché 573 g + voda 427 g · Hydratace 78%</div>
-            <div class="recipe-grid" id="recipeGrid"></div>
-          </section>
-
-          <section class="card compare-panel">
-            <h2>Alternativa</h2>
-            <div class="compare-grid">
-              <div class="compare-field"><label for="altPrice">Cena</label><input id="altPrice" type="range" min="70" max="320" step="5" value="180"><div class="value"><b id="altPriceOut"></b><span id="altKgOut"></span></div></div>
-              <div class="compare-field"><label for="altQty">Ks / den</label><input id="altQty" type="range" min="1" max="80" step="1" value="15"><div class="value"><b id="altQtyOut"></b><span>alternativa</span></div></div>
-              <div class="compare-field"><label for="altBatch">Ks ve vsazce</label><input id="altBatch" type="range" min="1" max="24" step="1" value="15"><div class="value"><b id="altBatchOut"></b><span>energie/ks</span></div></div>
-              <div class="compare-field"><label for="altLabor">Prace / den</label><input id="altLabor" type="range" min="0" max="8" step=".25" value="3"><div class="value"><b id="altLaborOut"></b><span>hodin</span></div></div>
+          <div class="min-w-0">
+            <div class="flex items-baseline gap-2 min-w-0">
+              <h1 class="text-xl lg:text-2xl font-semibold tracking-tight whitespace-nowrap">Bread Fitt</h1>
+              <span id="brandJoke" class="hidden sm:inline text-xs font-semibold uppercase tracking-[.18em] text-[var(--muted)] truncate"></span>
             </div>
-            <div class="compare-result">
-              <div class="compare-chip"><small>Trzby</small><b id="altRevenue"></b></div>
-              <div class="compare-chip"><small>Naklady</small><b id="altCosts"></b></div>
-              <div class="compare-chip"><small>Zisk</small><b id="altProfit"></b></div>
-              <div class="compare-chip"><small>Rozdil</small><b id="altDiff"></b></div>
+            <p id="subtitle" class="text-sm text-[var(--muted)] truncate"></p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <div class="hidden xl:flex items-center gap-2">
+            <div class="warm-chip rounded-full p-1 flex items-center gap-1">
+              <button id="layoutStory" type="button" class="control-button rounded-full border border-transparent px-3 py-1.5 text-xs font-semibold"></button>
+              <button id="layoutFocus" type="button" class="control-button rounded-full border border-transparent px-3 py-1.5 text-xs font-semibold"></button>
+              <button id="layoutRecipe" type="button" class="control-button rounded-full border border-transparent px-3 py-1.5 text-xs font-semibold"></button>
             </div>
-          </section>
+            <div class="warm-chip rounded-full p-1 flex items-center gap-1">
+              <button id="designPoster" type="button" class="control-button rounded-full border border-transparent px-3 py-1.5 text-xs font-semibold"></button>
+              <button id="designNight" type="button" class="control-button rounded-full border border-transparent px-3 py-1.5 text-xs font-semibold"></button>
+              <button id="designClean" type="button" class="control-button rounded-full border border-transparent px-3 py-1.5 text-xs font-semibold"></button>
+            </div>
+            <label class="warm-chip rounded-full px-3 py-1.5 flex items-center gap-2 text-xs font-semibold">
+              <span id="detailLabel"></span>
+              <input id="detailRange" class="w-24" type="range" min="1" max="3" step="1">
+            </label>
+          </div>
+          <div class="hidden md:flex items-center gap-2">
+            <div class="warm-chip rounded-full px-4 py-2">
+              <span id="deliveryLabel" class="text-[10px] uppercase tracking-[.16em] text-[var(--muted)] mr-2"></span>
+              <strong id="deliveryValue" class="tabular-nums"></strong>
+            </div>
+            <div class="warm-chip rounded-full px-3 py-2">
+              <span id="totalLabel" class="text-[10px] uppercase tracking-[.16em] text-[var(--muted)] mr-2"></span>
+              <strong id="totalTime" class="tabular-nums"></strong>
+            </div>
+          </div>
+          <div class="flex rounded-full border border-amber-900/15 bg-[#fff8e6]/75 p-1" aria-label="Language">
+            <button id="langCs" class="px-3 py-2 rounded-full text-sm font-semibold" type="button">CZ</button>
+            <button id="langEn" class="px-3 py-2 rounded-full text-sm font-semibold" type="button">EN</button>
+          </div>
+        </div>
+      </header>
+
+      <section id="storySection" class="paper rounded-lg overflow-hidden">
+        <div class="relative h-[122px] lg:h-[138px]">
+          <div class="absolute inset-0 bg-gradient-to-r from-sky-100 via-indigo-900 to-amber-100 opacity-75"></div>
+          <div class="absolute inset-x-0 bottom-8 h-px bg-white/70 shadow-[0_0_18px_rgba(255,255,255,.7)]"></div>
+          <div class="absolute left-[7%] bottom-8 h-16 w-16 rounded-full bg-yellow-300 shadow-[0_0_42px_rgba(250,204,21,.75)]"></div>
+          <div class="absolute right-[9%] bottom-8 h-20 w-20 rounded-full bg-yellow-200 shadow-[0_0_50px_rgba(250,204,21,.65)]"></div>
+          <div class="absolute left-[56%] top-8 h-10 w-10 rounded-full bg-white/80 shadow-lg"></div>
+          <div class="absolute left-[58%] top-5 h-10 w-10 rounded-full bg-indigo-900/75"></div>
+          <div id="stars" class="absolute inset-0"></div>
+          <div id="storyline" class="relative z-10 h-full px-4 lg:px-7 flex items-end gap-2 pb-3"></div>
+        </div>
+      </section>
+
+      <section id="mainGrid" class="min-h-0 grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_390px] gap-3">
+        <div class="min-h-0 paper rounded-lg p-3 lg:p-4 grid grid-rows-[auto_minmax(0,1fr)_auto] gap-3">
+          <div class="flex items-center justify-between gap-3">
+            <div class="min-w-0">
+              <h2 id="gridTitle" class="text-lg lg:text-xl font-semibold tracking-tight"></h2>
+              <p id="gridHint" class="text-sm text-[var(--muted)] truncate"></p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button id="todayBtn" type="button" class="warm-chip rounded-full px-4 py-2 text-sm font-semibold hover:bg-white"></button>
+              <button id="plusDayBtn" type="button" class="rounded-full bg-[var(--crust)] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-orange-900/20 hover:bg-[var(--crust-dark)]">+24h</button>
+            </div>
+          </div>
+
+          <div class="relative min-h-0 rounded-lg border border-amber-900/15 bg-[#fff2ca]/70 overflow-hidden">
+            <canvas id="handoverCanvas" class="h-full w-full block" aria-label="Bread Fitt handover calendar"></canvas>
+          </div>
+
+          <div class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 text-xs text-[var(--muted)]">
+            <span id="minDateLabel" class="tabular-nums"></span>
+            <div class="h-3 rounded-full bg-gradient-to-r from-[var(--leaf)] via-[var(--honey)] to-[var(--crust)] shadow-inner"></div>
+            <span id="maxDateLabel" class="tabular-nums"></span>
+          </div>
         </div>
 
-        <div class="stack-in-sixk">
-        <section class="split">
-          <div class="card table-wrap">
-            <h2>Scenare za mesic</h2>
-            <table>
-              <thead><tr><th>Ks/den</th><th>Prodano</th><th>Trzby</th><th>Naklady</th><th>Zisk</th></tr></thead>
-              <tbody id="scenarioRows"></tbody>
-            </table>
+        <aside class="min-h-0 paper rounded-lg p-3 lg:p-4 grid grid-rows-[auto_auto_minmax(0,1fr)] gap-3">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h2 id="recipeTitle" class="text-lg font-semibold tracking-tight"></h2>
+              <p id="recipeSub" class="text-sm text-[var(--muted)]"></p>
+            </div>
+            <div class="bread-illo h-16 w-24 rounded-lg border border-amber-900/15 shrink-0"></div>
           </div>
-          <div class="card table-wrap">
-            <h2>Pozice proti konkurenci</h2>
-            <table>
-              <thead><tr><th>Produkt</th><th>Gramaz</th><th>Cena</th><th>Kc/kg</th><th>Rozdil</th></tr></thead>
-              <tbody id="compRows"></tbody>
-            </table>
-          </div>
-        </section>
 
-        <p class="footer" id="audit"></p>
-        </div>
-      </div>
+          <div class="rounded-lg bg-[#fff8e6]/75 border border-amber-900/15 p-3">
+            <div class="flex items-center justify-between gap-3">
+              <label id="weightLabel" for="weightRange" class="text-sm font-semibold"></label>
+              <output id="weightOut" for="weightRange" class="text-xl font-semibold tabular-nums text-[var(--crust-dark)]"></output>
+            </div>
+            <input id="weightRange" class="mt-3 w-full" type="range" min="600" max="2400" step="50">
+            <div class="mt-2 flex justify-between text-[11px] text-[var(--muted)] tabular-nums">
+              <span>600 g</span>
+              <span>2400 g</span>
+            </div>
+          </div>
+
+          <div class="min-h-0 grid content-start gap-2">
+            <div class="grid grid-cols-3 gap-2">
+              <div class="rounded-lg bg-amber-50/80 border border-amber-900/10 p-2">
+                <p id="flourLabel" class="text-[10px] uppercase tracking-[.14em] text-[var(--muted)]"></p>
+                <p id="flourOut" class="text-lg font-semibold tabular-nums"></p>
+              </div>
+              <div class="rounded-lg bg-sky-50/80 border border-sky-900/10 p-2">
+                <p id="waterLabel" class="text-[10px] uppercase tracking-[.14em] text-[var(--muted)]"></p>
+                <p id="waterOut" class="text-lg font-semibold tabular-nums text-[var(--water)]"></p>
+              </div>
+              <div class="rounded-lg bg-orange-50/80 border border-orange-900/10 p-2">
+                <p id="hydrationLabel" class="text-[10px] uppercase tracking-[.14em] text-[var(--muted)]"></p>
+                <p class="text-lg font-semibold tabular-nums">78%</p>
+              </div>
+            </div>
+            <div id="ingredients" class="grid grid-cols-2 gap-2"></div>
+          </div>
+        </aside>
+      </section>
+
+      <footer class="paper rounded-lg p-2">
+        <div id="timeline" class="grid grid-cols-11 gap-1.5"></div>
+      </footer>
     </section>
   </main>
 
   <script>
-    const $ = (id) => document.getElementById(id);
-    const ids = ["weight","price","qty","days","waste","target","vat","bakeLoss","batch","fuel","fuelCost","laborHours","hourRate","flour","salt","pack","fees","fixed","admin","altPrice","altQty","altBatch","altLabor"];
-    const recipe = [
-      { id: "bio", name: "PRO BIO pšeničná", grams: 235, price: 46, color: "#d97706" },
-      { id: "rye", name: "Žitná chlebová", grams: 102, price: 42, color: "#92400e" },
-      { id: "pernerka", name: "Pernerka (černá)", grams: 124, price: 27, color: "#44403c" },
-      { id: "saltR", name: "Himalájská sůl", grams: 18, price: 22, color: "#ec6aa8" },
-      { id: "cumin", name: "Bio kmín", grams: 1.7, price: 300, color: "#65a30d" }
-    ];
-    const recipeBase = { dry: 573, water: 427, hydration: 78 };
-    const competitors = [
-      { name: "Kabát Třicátník", g: 900, price: 104.9 },
-      { name: "Pepekárna Šumava", g: 720, price: 82 },
-      { name: "Breadhaus BIO", g: 760, price: 114 },
-      { name: "Eska Chleba 33", g: 750, price: 138 }
-    ];
-    const fmt = (n) => Math.round(n).toLocaleString("cs-CZ") + " Kč";
-    const dec = (n, d = 1) => Number(n).toFixed(d).replace(".", ",");
-    const cls = (v) => v >= 0 ? "good" : "bad";
+    (() => {
+      const STORAGE_KEY = "breadfitt.v2";
+      const MS = 60000;
+      const DAY = 24 * 60 * MS;
+      const START_HOUR = 6;
+      const END_HOUR = 22;
+      const TOTAL_GRID_MIN = (END_HOUR - START_HOUR) * 60;
 
-    function read() {
-      const fuel = $("fuel").value;
-      return {
-        weight: +$("weight").value,
-        price: +$("price").value,
-        qty: +$("qty").value,
-        days: +$("days").value,
-        waste: +$("waste").value / 100,
-        target: +$("target").value,
-        vat: $("vat").checked ? .12 : 0,
-        bakeLoss: +$("bakeLoss").value / 100,
-        batch: +$("batch").value,
-        fuel,
-        fuelCost: +$("fuelCost").value,
-        laborHours: +$("laborHours").value,
-        hourRate: +$("hourRate").value,
-        ingredientReserve: +$("flour").value / 100,
-        starterCost: +$("salt").value,
-        pack: +$("pack").value,
-        fees: +$("fees").value / 100,
-        fixed: +$("fixed").value,
-        admin: +$("admin").value
+      const i18n = {
+        cs: {
+          brandJoke: "fit plán pro chleba",
+          subtitle: "Obrázkový plán kváskového chleba pro rušný den",
+          total: "postup",
+          delivery: "předání",
+          recipe: "Recept 1",
+          recipeSub: "Těsto se samo přepočítá podle velikosti bochníku.",
+          hydration: "hydratace",
+          weight: "Velikost bochníku",
+          flour: "mouky",
+          water: "voda",
+          gridTitle: "Naplánovat podle předání",
+          gridHint: "Táhni kulatý bochník. V tabulce vidíš i všechny předchozí body spojené do trasy.",
+          today: "Nejdřív",
+          detail: "detaily",
+          layouts: ["příběh", "velká mapa", "recept"],
+          designs: ["med", "noc", "čistě"],
+          min: "nejdřív",
+          max: "výhled",
+          days: ["ne", "po", "út", "st", "čt", "pá", "so"],
+          dayNames: ["neděle", "pondělí", "úterý", "středa", "čtvrtek", "pátek", "sobota"],
+          ingredients: {
+            wheat: "Pšeničná",
+            rye: "Žitná",
+            pernerka: "Pernerka",
+            water: "Voda",
+            salt: "Sůl",
+            cumin: "Kmín"
+          },
+          steps: [
+            "Nakrm kvásek",
+            "Autolýza",
+            "Fermentolýza",
+            "Sůl + voda",
+            "Překlady",
+            "Odpočinek",
+            "Lednice",
+            "Rozehřát pec",
+            "Pečení",
+            "Chladnutí",
+            "Předání"
+          ],
+          longSteps: [
+            "Příprava kvásku",
+            "Autolýza",
+            "Fermentolýza",
+            "Sůl + voda + míchání",
+            "Překlady celkem",
+            "Kynutí na stole",
+            "Kynutí v lednici",
+            "Předehřátí pece",
+            "Pečení",
+            "Chladnutí",
+            "Předání chleba"
+          ],
+          handover: "Předání",
+          morning: "ráno",
+          noon: "poledne",
+          evening: "večer",
+          night: "noc",
+          hours: "h",
+          minutes: "min",
+          nodeHint: "Kliknutím z toho uděláš pevný bod"
+        },
+        en: {
+          brandJoke: "a fit plan for bread",
+          subtitle: "A picture-first sourdough plan for a busy day",
+          total: "routine",
+          delivery: "handover",
+          recipe: "Recipe 1",
+          recipeSub: "The dough scales itself to the loaf size.",
+          hydration: "hydration",
+          weight: "Loaf size",
+          flour: "flour",
+          water: "water",
+          gridTitle: "Plan from handover",
+          gridHint: "Drag the round loaf. The table also shows every previous point connected as one route.",
+          today: "Earliest",
+          detail: "detail",
+          layouts: ["story", "big map", "recipe"],
+          designs: ["honey", "night", "clean"],
+          min: "earliest",
+          max: "range",
+          days: ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
+          dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+          ingredients: {
+            wheat: "Wheat",
+            rye: "Rye",
+            pernerka: "Pernerka",
+            water: "Water",
+            salt: "Salt",
+            cumin: "Caraway"
+          },
+          steps: [
+            "Feed starter",
+            "Autolyse",
+            "Fermentolyse",
+            "Salt + water",
+            "Folds",
+            "Rest",
+            "Fridge",
+            "Heat oven",
+            "Bake",
+            "Cool",
+            "Handover"
+          ],
+          longSteps: [
+            "Levain build",
+            "Autolyse",
+            "Fermentolyse",
+            "Salt + water + mixing",
+            "Folds total",
+            "Bench proof",
+            "Cold proof",
+            "Oven preheat",
+            "Bake",
+            "Cooling",
+            "Bread handover"
+          ],
+          handover: "Handover",
+          morning: "morning",
+          noon: "noon",
+          evening: "evening",
+          night: "night",
+          hours: "h",
+          minutes: "min",
+          nodeHint: "Click to make this the fixed point"
+        }
       };
-    }
 
-    function recipeCost(input) {
-      const doughWeight = input.weight / (1 - input.bakeLoss);
-      const scale = doughWeight / 1000;
-      const base = recipe.reduce((sum, item) => sum + item.grams * scale / 1000 * item.price, 0);
-      return { doughWeight, scale, base, total: base * (1 + input.ingredientReserve) + input.starterCost };
-    }
-
-    function calc(input, qtyOverride, overrides = {}) {
-      input = { ...input, ...overrides };
-      const q = qtyOverride ?? input.qty;
-      const baked = q * input.days;
-      const sold = baked * (1 - input.waste);
-      const netPrice = input.price / (1 + input.vat);
-      const rc = recipeCost(input);
-      const doughWeight = rc.doughWeight;
-      const ingredientCost = rc.total;
-      const energyEach = input.fuelCost / input.batch;
-      const feeEachSold = netPrice * input.fees;
-      const variableBaked = ingredientCost + energyEach + input.pack;
-      const variableMonth = variableBaked * baked + feeEachSold * sold;
-      const laborMonth = input.laborHours * input.hourRate * input.days;
-      const fixedMonth = input.fixed + input.admin;
-      const revenue = netPrice * sold;
-      const costs = variableMonth + laborMonth + fixedMonth;
-      const profit = revenue - costs;
-      const contributionPerBaked = netPrice * (1 - input.waste) - variableBaked - feeEachSold * (1 - input.waste);
-      const beDaily = contributionPerBaked > 0 ? (fixedMonth + laborMonth) / (input.days * contributionPerBaked) : Infinity;
-      const requiredNet = sold > 0 ? (variableBaked * baked + fixedMonth + laborMonth + input.target) / (sold * (1 - input.fees)) : Infinity;
-      const requiredGross = requiredNet * (1 + input.vat);
-      return { q, baked, sold, netPrice, doughWeight, ingredientCost, recipeBase: rc.base, energyEach, feeEachSold, variableBaked, variableMonth, laborMonth, fixedMonth, revenue, costs, profit, contributionPerBaked, beDaily, requiredGross };
-    }
-
-    function setOutputs(input, result) {
-      $("weightOut").textContent = input.weight + " g";
-      $("kgOut").textContent = Math.round(input.price / input.weight * 1000) + " Kč/kg";
-      $("priceOut").textContent = input.price + " Kč";
-      $("priceKg").textContent = Math.round(input.price / input.weight * 1000) + " Kč/kg";
-      $("qtyOut").textContent = input.qty + " ks";
-      $("monthQty").textContent = result.baked + " upeceno/měs.";
-      $("daysOut").textContent = input.days;
-      $("soldMonth").textContent = Math.round(result.sold) + " prodáno/měs.";
-      $("wasteOut").textContent = Math.round(input.waste * 100) + " %";
-      $("targetOut").textContent = fmt(input.target);
-      $("bakeLossOut").textContent = Math.round(input.bakeLoss * 100) + " %";
-      $("batchOut").textContent = input.batch + " ks";
-      $("fuelOut").textContent = input.fuel === "wood" ? "Dřevo" : "Elektřina";
-      $("fuelHint").textContent = input.fuel === "wood" ? "na zatopení" : "na pečení";
-      $("fuelCostOut").textContent = fmt(input.fuelCost);
-      $("fuelUnit").textContent = "na vsázku";
-      $("laborHoursOut").textContent = dec(input.laborHours, 2);
-      $("hourRateOut").textContent = fmt(input.hourRate).replace(" Kč", "");
-      $("flourOut").textContent = Math.round(input.ingredientReserve * 100) + " %";
-      $("saltOut").textContent = dec(input.starterCost, 1);
-      $("packOut").textContent = dec(input.pack, 1);
-      $("feesOut").textContent = dec(input.fees * 100, 1) + " %";
-      $("fixedOut").textContent = fmt(input.fixed);
-      $("adminOut").textContent = fmt(input.admin);
-
-      $("needPrice").textContent = fmt(result.requiredGross);
-      $("breakEven").textContent = isFinite(result.beDaily) ? Math.ceil(result.beDaily) + " ks/den" : "-";
-      $("doughInfo").textContent = Math.round(result.doughWeight) + " g těsta";
-      $("laborEach").textContent = result.baked ? fmt(result.laborMonth / result.baked) : "-";
-
-      $("revenue").textContent = fmt(result.revenue);
-      $("revenueSub").textContent = Math.round(result.sold) + " prodaných ks × " + fmt(result.netPrice).replace(" Kč", "") + " Kč bez DPH";
-      $("costs").textContent = fmt(result.costs);
-      $("costsSub").textContent = "var. " + fmt(result.variableMonth) + " + práce " + fmt(result.laborMonth) + " + fixy " + fmt(result.fixedMonth);
-      $("profit").textContent = fmt(result.profit);
-      $("profit").parentElement.className = "metric " + (result.profit >= 0 ? "green" : "red");
-      $("profitSub").textContent = "bez práce by to bylo " + fmt(result.profit + result.laborMonth);
-      $("margin").textContent = fmt((result.revenue - result.variableMonth) / Math.max(result.sold, 1));
-      $("marginSub").textContent = "po variabilních nákladech, před fixy a prací";
-      $("profitNoLabor").textContent = fmt(result.profit + result.laborMonth);
-      $("pricePerKgMetric").textContent = fmt(input.price / input.weight * 1000);
-
-      const verdict = $("verdict");
-      verdict.className = "verdict " + (result.profit >= input.target ? "ok" : result.profit >= 0 ? "warn" : "");
-      verdict.innerHTML = result.profit >= input.target
-        ? "<strong>Model plní cíl</strong><span>Zisk po práci je nad cílem " + fmt(input.target) + ".</span>"
-        : result.profit >= 0
-          ? "<strong>Vydělává, ale slabě</strong><span>Zisk je kladný, ale nedosahuje cílové rezervy.</span>"
-          : "<strong>Tohle ještě nevydělává</strong><span>Zvyš cenu, vsázku nebo objem. Nejcitlivější je práce na kus a odpisy.</span>";
-
-      $("recipeNote").innerHTML = "Suroviny jsou predvyplnene podle pomeru z navrhu: pri 840g hotovem bochniku cca <b>573 g suchych surovin + 427 g vody</b>. Rezerva surovin a kvas se pricitaji navic.";
-      $("audit").textContent = "Audit: cena je brána jako cena pro zákazníka; při DPH se tržba očistí o 12 %. Neprodané kusy nesou plné výrobní náklady, ale netvoří tržbu. Fixy a práce se počítají měsíčně podle počtu pečicích dnů.";
-    }
-
-    function drawBars(input, result) {
-      const items = [
-        ["Suroviny", result.recipeBase, "#27615b"],
-        ["Rezerva + kvas", result.ingredientCost - result.recipeBase, "#7c3aed"],
-        ["Energie", result.energyEach, "#b7791f"],
-        ["Obal + etiketa", input.pack, "#265caa"],
-        ["Platby", result.feeEachSold, "#9f3d2d"],
-        ["Práce", result.baked ? result.laborMonth / result.baked : 0, "#111827"]
+      const ingredientBase = [
+        ["wheat", 280, "#d39232"],
+        ["rye", 122, "#9a5b28"],
+        ["pernerka", 148, "#caa05d"],
+        ["water", 427, "#408cb8"],
+        ["salt", 21, "#8a8f91"],
+        ["cumin", 2, "#607d3d"]
       ];
-      const max = Math.max(...items.map((x) => x[1]), 1);
-      $("bars").innerHTML = items.map(([label, value, color]) => `
-        <div class="bar-row">
-          <div class="bar-label">${label}</div>
-          <div class="bar-track"><div class="bar-fill" style="width:${Math.max(3, value / max * 100)}%;background:${color}"></div></div>
-          <div class="bar-val">${dec(value, 1)} Kč</div>
-        </div>
-      `).join("");
-    }
 
-    function drawRecipe(input) {
-      const r = recipeCost(input);
-      const dry = recipeBase.dry * r.scale;
-      const water = recipeBase.water * r.scale;
-      const hydration = recipeBase.hydration;
-      $("recipeHead").textContent = Math.round(dry) + "g+" + Math.round(water) + "g";
-      $("recipeSummary").innerHTML = "Suché <b>" + Math.round(dry) + " g</b> + voda <b>" + Math.round(water) + " g</b> · Hydratace <b>" + hydration + "%</b>";
-      const maxCost = Math.max(...recipe.map((item) => item.grams * r.scale / 1000 * item.price), 1);
-      $("recipeGrid").innerHTML = recipe.map((item) => {
-        const grams = item.grams * r.scale;
-        const cost = grams / 1000 * item.price;
-        const gText = item.grams < 5 ? dec(grams, 1) : Math.round(grams);
-        return `
-          <div class="ingredient">
-            <div class="ingredient-title"><span class="dot" style="background:${item.color}"></span>${item.name}</div>
-            <div class="ingredient-row"><span>Gramáž</span><div class="fake-range"><span style="width:${Math.min(100, item.grams / Math.max(item.grams * 1.7, 10) * 100)}%"></span></div><b>${gText} g</b></div>
-            <div class="ingredient-row"><span>Kč/kg</span><div class="fake-range"><span style="width:${Math.min(100, item.price / Math.max(item.price * 1.7, 100) * 100)}%"></span></div><b>${Math.round(item.price)}</b></div>
-            <div class="ingredient-cost"><span>${gText}g×${Math.round(item.price)}</span><b>${dec(cost, 2)} Kč</b></div>
-            <div class="microbar"><span style="width:${Math.max(3, cost / maxCost * 100)}%;background:${item.color}"></span></div>
-          </div>
-        `;
-      }).join("");
-    }
+      const stepMeta = [
+        { key: "levain", mins: 540, icon: "jar", color: "#8c5a26" },
+        { key: "autolyse", mins: 60, icon: "bowl", color: "#d2a34d" },
+        { key: "fermentolyse", mins: 20, icon: "bubble", color: "#c78b35" },
+        { key: "mix", mins: 40, icon: "drop", color: "#4f9ac1" },
+        { key: "folds", mins: 135, icon: "hands", color: "#9b6a2d" },
+        { key: "bench", mins: 50, icon: "cloth", color: "#6f8d62" },
+        { key: "cold", mins: 840, icon: "moon", color: "#50639d" },
+        { key: "preheat", mins: 40, icon: "sun", color: "#d9952f" },
+        { key: "bake", mins: 61, icon: "oven", color: "#a84c20" },
+        { key: "cool", mins: 120, icon: "wind", color: "#6f9c9a" },
+        { key: "handover", mins: 0, icon: "bread", color: "#8a4319" }
+      ];
 
-    function drawAlternative(input, result) {
-      $("altPriceOut").textContent = $("altPrice").value + " Kč";
-      $("altKgOut").textContent = Math.round(+$("altPrice").value / input.weight * 1000) + " Kč/kg";
-      $("altQtyOut").textContent = $("altQty").value + " ks";
-      $("altBatchOut").textContent = $("altBatch").value + " ks";
-      $("altLaborOut").textContent = dec(+$("altLabor").value, 2);
-      const alt = calc(input, +$("altQty").value, {
-        price: +$("altPrice").value,
-        batch: +$("altBatch").value,
-        laborHours: +$("altLabor").value
-      });
-      $("altRevenue").textContent = fmt(alt.revenue);
-      $("altCosts").textContent = fmt(alt.costs);
-      $("altProfit").textContent = fmt(alt.profit);
-      $("altProfit").style.color = alt.profit >= 0 ? "var(--green)" : "var(--red)";
-      const diff = alt.profit - result.profit;
-      $("altDiff").textContent = (diff > 0 ? "+" : "") + fmt(diff);
-      $("altDiff").style.color = diff >= 0 ? "var(--green)" : "var(--red)";
-    }
+      const offsets = stepMeta.reduce((acc, step, index) => {
+        acc[index] = index === 0 ? 0 : acc[index - 1] + stepMeta[index - 1].mins;
+        return acc;
+      }, []);
+      const totalMinutes = offsets[offsets.length - 1];
 
-    function drawScenarios(input) {
-      const points = [3, 5, 7, 10, 15, 20, 30, 50, input.qty].filter((v, i, a) => v <= 80 && a.indexOf(v) === i).sort((a,b) => a-b);
-      $("scenarioRows").innerHTML = points.map((q) => {
-        const r = calc(input, q);
-        return `<tr class="${q === input.qty ? "active" : ""}"><td>${q} ${q === input.qty ? "aktuálně" : ""}</td><td>${Math.round(r.sold)}</td><td>${fmt(r.revenue)}</td><td>${fmt(r.costs)}</td><td><span class="pill ${cls(r.profit)}">${fmt(r.profit)}</span></td></tr>`;
-      }).join("");
-    }
-
-    function drawCompetitors(input) {
-      const myKg = input.price / input.weight * 1000;
-      const rows = [{ name: "Mlyn na Pile", g: input.weight, price: input.price, you: true }, ...competitors];
-      $("compRows").innerHTML = rows.map((c) => {
-        const kg = c.price / c.g * 1000;
-        const diff = myKg - kg;
-        return `<tr class="${c.you ? "active" : ""}"><td>${c.name}</td><td>${c.g} g</td><td>${fmt(c.price)}</td><td>${fmt(kg)}</td><td>${c.you ? "—" : `<span class="pill ${diff > 0 ? "bad" : "good"}">${diff > 0 ? "+" : ""}${fmt(diff)}</span>`}</td></tr>`;
-      }).join("");
-    }
-
-    function drawChart(input) {
-      const canvas = $("chart");
+      const $ = (id) => document.getElementById(id);
+      const canvas = $("handoverCanvas");
       const ctx = canvas.getContext("2d");
-      const dpr = window.devicePixelRatio || 1;
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const W = rect.width, H = rect.height;
-      const pad = { l: 70, r: 16, t: 18, b: 30 };
-      const qs = Array.from({ length: 80 }, (_, i) => i + 1);
-      const profits = qs.map((q) => calc(input, q).profit);
-      const minY = Math.min(-10000, ...profits);
-      const maxY = Math.max(10000, ...profits, input.target);
-      const x = (q) => pad.l + (q - 1) / 79 * (W - pad.l - pad.r);
-      const y = (v) => pad.t + (maxY - v) / (maxY - minY) * (H - pad.t - pad.b);
-      ctx.clearRect(0, 0, W, H);
-      ctx.strokeStyle = "#e4dacb";
-      ctx.lineWidth = 1;
-      [minY, 0, input.target, maxY].forEach((v) => {
-        ctx.beginPath(); ctx.moveTo(pad.l, y(v)); ctx.lineTo(W - pad.r, y(v)); ctx.stroke();
-      });
-      ctx.strokeStyle = "#15803d";
-      ctx.lineWidth = 2.5;
-      ctx.beginPath();
-      qs.forEach((q, i) => i ? ctx.lineTo(x(q), y(profits[i])) : ctx.moveTo(x(q), y(profits[i])));
-      ctx.stroke();
-      const current = calc(input).profit;
-      ctx.fillStyle = "#9f3d2d";
-      ctx.beginPath(); ctx.arc(x(input.qty), y(current), 5, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = "#746b5f";
-      ctx.font = "12px system-ui";
-      ctx.textAlign = "right";
-      ctx.fillText(fmt(maxY), pad.l - 7, y(maxY) + 4);
-      ctx.fillText("0 Kč", pad.l - 7, y(0) + 4);
-      ctx.fillText(fmt(minY), pad.l - 7, y(minY) + 4);
-      ctx.textAlign = "center";
-      [1, 10, 20, 40, 60, 80].forEach((q) => ctx.fillText(q, x(q), H - 10));
-    }
+      let canvasBox = null;
+      let dragging = false;
+      let schedule = [];
+      let animationStart = performance.now();
+      const state = loadState();
 
-    function render() {
-      const input = read();
-      if (input.fuel === "electric") {
-        $("fuelCost").min = 20; $("fuelCost").max = 220; $("fuelCost").step = 5;
-        if (+$("fuelCost").value > 220) $("fuelCost").value = 90;
-      } else {
-        $("fuelCost").min = 60; $("fuelCost").max = 600; $("fuelCost").step = 10;
+      function minHandoverTime() {
+        const now = new Date();
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, START_HOUR, 0, 0, 0);
       }
-      const fresh = read();
-      const result = calc(fresh);
-      setOutputs(fresh, result);
-      drawBars(fresh, result);
-      drawRecipe(fresh);
-      drawAlternative(fresh, result);
-      drawScenarios(fresh);
-      drawCompetitors(fresh);
-      drawChart(fresh);
-    }
 
-    function resetRatios() {
-      $("weight").value = 840;
-      $("bakeLoss").value = 16;
-      $("price").value = 150;
-      $("qty").value = 10;
-      $("batch").value = 10;
-      $("fuelCost").value = 270;
-      $("flour").value = 5;
-      $("salt").value = 1.5;
-      render();
-    }
+      function alignToGrid(date) {
+        const d = new Date(date);
+        d.setMinutes(Math.round(d.getMinutes() / 15) * 15, 0, 0);
+        if (d.getHours() < START_HOUR) d.setHours(START_HOUR, 0, 0, 0);
+        if (d.getHours() >= END_HOUR) {
+          d.setDate(d.getDate() + 1);
+          d.setHours(START_HOUR, 0, 0, 0);
+        }
+        return d;
+      }
 
-    ids.forEach((id) => $(id).addEventListener(id === "vat" ? "change" : "input", render));
-    $("sixkBtn").addEventListener("click", () => {
-      $("app").classList.toggle("sixk");
-      $("sixkBtn").classList.toggle("active", $("app").classList.contains("sixk"));
+      function loadState() {
+        const fallback = {
+          lang: "cs",
+          weight: 1000,
+          anchorIndex: 10,
+          anchorTime: alignToGrid(minHandoverTime()).getTime(),
+          layout: "story",
+          design: "poster",
+          detail: 2
+        };
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+          return {
+            ...fallback,
+            ...saved,
+            anchorTime: Math.max(Number(saved.anchorTime || fallback.anchorTime), minHandoverTime().getTime())
+          };
+        } catch {
+          return fallback;
+        }
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          lang: state.lang,
+          weight: state.weight,
+          anchorIndex: state.anchorIndex,
+          anchorTime: state.anchorTime,
+          layout: state.layout,
+          design: state.design,
+          detail: state.detail
+        }));
+      }
+
+      function dict() {
+        return i18n[state.lang];
+      }
+
+      function recalc() {
+        const start = state.anchorTime - offsets[state.anchorIndex] * MS;
+        schedule = stepMeta.map((step, index) => ({
+          ...step,
+          index,
+          name: dict().steps[index],
+          longName: dict().longSteps[index],
+          start: new Date(start + offsets[index] * MS),
+          end: new Date(start + (offsets[index] + step.mins) * MS)
+        }));
+      }
+
+      function getHandoverTime() {
+        return state.anchorTime + (offsets[10] - offsets[state.anchorIndex]) * MS;
+      }
+
+      function clampHandoverDate(date) {
+        const min = minHandoverTime().getTime();
+        const max = min + 6 * DAY + TOTAL_GRID_MIN * MS;
+        return new Date(Math.min(Math.max(date.getTime(), min), max));
+      }
+
+      function setAnchor(index, time) {
+        state.anchorIndex = index;
+        state.anchorTime = time;
+        saveState();
+        recalc();
+        render();
+      }
+
+      function setHandover(time) {
+        const clamped = clampHandoverDate(alignToGrid(new Date(time)));
+        state.anchorIndex = 10;
+        state.anchorTime = clamped.getTime();
+        saveState();
+        recalc();
+        render();
+      }
+
+      function fmtTime(date) {
+        return new Intl.DateTimeFormat(state.lang === "cs" ? "cs-CZ" : "en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false
+        }).format(date);
+      }
+
+      function fmtDate(date) {
+        const d = new Date(date);
+        const dateText = new Intl.DateTimeFormat(state.lang === "cs" ? "cs-CZ" : "en-US", {
+          day: "2-digit",
+          month: "2-digit"
+        }).format(d);
+        return `${dict().days[d.getDay()]} ${dateText}`;
+      }
+
+      function duration(mins) {
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        if (!h) return `${m} ${dict().minutes}`;
+        if (!m) return `${h} ${dict().hours}`;
+        return `${h} ${dict().hours} ${m} ${dict().minutes}`;
+      }
+
+      function setText(id, value) {
+        $(id).textContent = value;
+      }
+
+      function langClass(active) {
+        return `px-3 py-2 rounded-full text-sm font-semibold ${active ? "bg-[var(--crust)] text-white" : "text-[var(--muted)] hover:bg-white/70"}`;
+      }
+
+      function renderLabels() {
+        const t = dict();
+        document.documentElement.lang = state.lang;
+        setText("brandJoke", t.brandJoke);
+        setText("subtitle", t.subtitle);
+        setText("totalLabel", t.total);
+        setText("deliveryLabel", t.delivery);
+        setText("recipeTitle", t.recipe);
+        setText("recipeSub", t.recipeSub);
+        setText("hydrationLabel", t.hydration);
+        setText("weightLabel", t.weight);
+        setText("flourLabel", t.flour);
+        setText("waterLabel", t.water);
+        setText("gridTitle", t.gridTitle);
+        setText("gridHint", t.gridHint);
+        setText("todayBtn", t.today);
+        setText("detailLabel", t.detail);
+        ["Story", "Focus", "Recipe"].forEach((name, index) => setText(`layout${name}`, t.layouts[index]));
+        ["Poster", "Night", "Clean"].forEach((name, index) => setText(`design${name}`, t.designs[index]));
+        $("langCs").className = langClass(state.lang === "cs");
+        $("langEn").className = langClass(state.lang === "en");
+        document.body.dataset.layout = state.layout;
+        document.body.dataset.design = state.design;
+        $("detailRange").value = state.detail;
+        updateControlButtons();
+      }
+
+      function updateControlButtons() {
+        const layoutMap = { story: "layoutStory", focus: "layoutFocus", recipe: "layoutRecipe" };
+        const designMap = { poster: "designPoster", night: "designNight", clean: "designClean" };
+        Object.entries(layoutMap).forEach(([key, id]) => $(id).setAttribute("aria-pressed", String(state.layout === key)));
+        Object.entries(designMap).forEach(([key, id]) => $(id).setAttribute("aria-pressed", String(state.design === key)));
+      }
+
+      function renderStats() {
+        const handover = schedule[10].start;
+        setText("deliveryValue", `${fmtDate(handover)} · ${fmtTime(handover)}`);
+        setText("totalTime", duration(totalMinutes));
+        setText("minDateLabel", `${dict().min}: ${fmtDate(minHandoverTime())}`);
+        setText("maxDateLabel", `${dict().max}: ${fmtDate(new Date(minHandoverTime().getTime() + 6 * DAY))}`);
+      }
+
+      function renderRecipe() {
+        const scale = state.weight / 1000;
+        $("weightRange").value = state.weight;
+        setText("weightOut", `${state.weight} g`);
+        const flour = Math.round((280 + 122 + 148) * scale);
+        const water = Math.round(427 * scale);
+        setText("flourOut", `${flour} g`);
+        setText("waterOut", `${water} g`);
+        const max = Math.max(...ingredientBase.map((item) => item[1]));
+        $("ingredients").innerHTML = ingredientBase.map(([key, grams, color]) => {
+          const amount = Math.round(grams * scale);
+          const pct = Math.max(3, grams / max * 100);
+          return `
+            <div class="rounded-lg border border-amber-900/10 bg-[#fff9ea]/72 px-2.5 py-2">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="h-2.5 w-2.5 rounded-full shrink-0" style="background:${color}"></span>
+                  <span class="text-sm font-semibold truncate">${dict().ingredients[key]}</span>
+                </div>
+                <strong class="text-sm tabular-nums">${amount} g</strong>
+              </div>
+              <div class="mt-1.5 h-1.5 rounded-full bg-amber-950/10 overflow-hidden">
+                <div class="h-full rounded-full" style="width:${pct}%; background:${color}"></div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      function renderStoryline() {
+        const max = Math.max(...stepMeta.map((step) => step.mins));
+        $("storyline").innerHTML = schedule.map((step) => {
+          const pressed = step.index === state.anchorIndex ? "true" : "false";
+          const grow = step.mins ? 0.62 + (step.mins / max) * 1.25 : .8;
+          return `
+            <button type="button" data-step="${step.index}" aria-pressed="${pressed}" title="${dict().nodeHint}" class="story-node min-w-0 flex-1 rounded-lg border border-white/40 bg-[#fff8e6]/80 px-2 py-2 text-center">
+              <span class="mx-auto mb-1 block h-7 w-7 rounded-full bg-white/75 shadow-inner" data-icon="${step.icon}" style="border:2px solid ${step.color}"></span>
+              <span class="block truncate text-[11px] font-semibold leading-tight">${step.name}</span>
+              <span class="block text-[10px] text-[var(--muted)] tabular-nums">${fmtTime(step.start)}</span>
+              <span class="mx-auto mt-1 block h-1.5 rounded-full bg-[var(--crust)]/75" style="width:${Math.min(100, grow * 42)}%"></span>
+            </button>
+          `;
+        }).join("");
+        $("storyline").querySelectorAll("button").forEach((button) => {
+          button.addEventListener("click", () => {
+            const index = Number(button.dataset.step);
+            setAnchor(index, schedule[index].start.getTime());
+          });
+        });
+      }
+
+      function renderTimeline() {
+        $("timeline").innerHTML = schedule.map((step) => {
+          const pressed = step.index === state.anchorIndex ? "true" : "false";
+          return `
+            <button type="button" data-step="${step.index}" aria-pressed="${pressed}" title="${dict().nodeHint}" class="story-node min-w-0 rounded-lg border border-amber-900/12 bg-[#fff8e6]/72 px-1.5 py-2 text-left">
+              <div class="flex items-center gap-1.5">
+                <span class="h-2.5 w-2.5 rounded-full shrink-0" style="background:${step.color}"></span>
+                <span class="truncate text-[11px] font-semibold">${step.longName}</span>
+              </div>
+              <div class="mt-1 text-[11px] text-[var(--muted)] tabular-nums">${fmtTime(step.start)} · ${fmtDate(step.start)}</div>
+            </button>
+          `;
+        }).join("");
+        $("timeline").querySelectorAll("button").forEach((button) => {
+          button.addEventListener("click", () => {
+            const index = Number(button.dataset.step);
+            setAnchor(index, schedule[index].start.getTime());
+          });
+        });
+      }
+
+      function renderStars() {
+        $("stars").innerHTML = Array.from({ length: 42 }, (_, i) => {
+          const left = 30 + Math.random() * 42;
+          const top = 10 + Math.random() * 38;
+          const opacity = .35 + Math.random() * .55;
+          return `<span class="absolute h-1 w-1 rounded-full bg-white" style="left:${left}%; top:${top}%; opacity:${opacity}"></span>`;
+        }).join("");
+      }
+
+      function render() {
+        renderLabels();
+        renderStats();
+        renderRecipe();
+        renderStoryline();
+        renderTimeline();
+        drawCanvas();
+      }
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+        canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        canvasBox = {
+          w: rect.width,
+          h: rect.height,
+          left: 62,
+          right: rect.width - 18,
+          top: 54,
+          bottom: rect.height - 42
+        };
+        drawCanvas();
+      }
+
+      function gridStartDate() {
+        const min = minHandoverTime();
+        return new Date(min.getFullYear(), min.getMonth(), min.getDate() - 2, 0, 0, 0, 0);
+      }
+
+      function canvasPointForDate(date) {
+        const start = gridStartDate().getTime();
+        const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+        const dayIndex = Math.round((dayStart - start) / DAY);
+        const minute = (date.getHours() - START_HOUR) * 60 + date.getMinutes();
+        const colW = (canvasBox.right - canvasBox.left) / 7;
+        return {
+          x: canvasBox.left + dayIndex * colW + colW / 2,
+          y: canvasBox.top + (minute / TOTAL_GRID_MIN) * (canvasBox.bottom - canvasBox.top)
+        };
+      }
+
+      function dateForCanvasPoint(x, y) {
+        const colW = (canvasBox.right - canvasBox.left) / 7;
+        const dayIndex = Math.min(6, Math.max(0, Math.floor((x - canvasBox.left) / colW)));
+        const yClamped = Math.min(canvasBox.bottom, Math.max(canvasBox.top, y));
+        const rawMin = ((yClamped - canvasBox.top) / (canvasBox.bottom - canvasBox.top)) * TOTAL_GRID_MIN;
+        const snapped = Math.round(rawMin / 15) * 15;
+        const d = new Date(gridStartDate().getTime() + dayIndex * DAY);
+        d.setHours(START_HOUR, snapped, 0, 0);
+        return clampHandoverDate(d);
+      }
+
+      function drawCanvas() {
+        if (!canvasBox) return;
+        const w = canvasBox.w;
+        const h = canvasBox.h;
+        ctx.clearRect(0, 0, w, h);
+        drawSky(w, h);
+        drawGrid();
+        drawCalendarRoute();
+        drawTarget();
+      }
+
+      function drawSky(w, h) {
+        const g = ctx.createLinearGradient(0, 0, w, 0);
+        g.addColorStop(0, "#fff2bd");
+        g.addColorStop(.32, "#fff8dd");
+        g.addColorStop(.55, "#dce6f8");
+        g.addColorStop(.7, "#314276");
+        g.addColorStop(1, "#fff0b1");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.fillStyle = "rgba(255,255,255,.36)";
+        for (let i = 0; i < 5; i++) {
+          const x = 120 + i * 190;
+          ctx.beginPath();
+          ctx.ellipse(x, 32 + (i % 2) * 12, 50, 13, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        drawSun(112, 38, 24);
+        drawMoon(w * .68, 34, 18);
+      }
+
+      function drawSun(x, y, r) {
+        const g = ctx.createRadialGradient(x, y, 4, x, y, r * 2.2);
+        g.addColorStop(0, "#fff6a4");
+        g.addColorStop(.42, "#f6b72b");
+        g.addColorStop(1, "rgba(246,183,43,0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(x, y, r * 2.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawMoon(x, y, r) {
+        ctx.fillStyle = "rgba(255,255,255,.86)";
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(49,66,118,.84)";
+        ctx.beginPath();
+        ctx.arc(x + 8, y - 4, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      function drawGrid() {
+        const colW = (canvasBox.right - canvasBox.left) / 7;
+        const rowH = (canvasBox.bottom - canvasBox.top) / 8;
+        const gridStart = gridStartDate();
+
+        ctx.fillStyle = "rgba(255,248,226,.76)";
+        roundRect(ctx, canvasBox.left, canvasBox.top - 28, canvasBox.right - canvasBox.left, canvasBox.bottom - canvasBox.top + 28, 12);
+        ctx.fill();
+
+        for (let i = 0; i < 7; i++) {
+          const x = canvasBox.left + i * colW;
+          ctx.fillStyle = i % 2 ? "rgba(255,255,255,.24)" : "rgba(153,91,29,.045)";
+          ctx.fillRect(x, canvasBox.top, colW, canvasBox.bottom - canvasBox.top);
+          const d = new Date(gridStart.getTime() + i * DAY);
+          ctx.fillStyle = i === 0 ? "rgba(153,91,29,.16)" : "rgba(255,255,255,.42)";
+          roundRect(ctx, x + 6, canvasBox.top - 24, colW - 12, 20, 10);
+          ctx.fill();
+          ctx.fillStyle = i === 0 ? "#673612" : "#6f5b44";
+          ctx.font = "600 12px ui-rounded, system-ui";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(`${dict().days[d.getDay()]} ${d.getDate()}.${d.getMonth() + 1}.`, x + colW / 2, canvasBox.top - 14);
+        }
+
+        ctx.strokeStyle = "rgba(128,89,36,.18)";
+        ctx.lineWidth = 1;
+        for (let i = 0; i <= 7; i++) {
+          const x = canvasBox.left + i * colW;
+          ctx.beginPath();
+          ctx.moveTo(x, canvasBox.top - 28);
+          ctx.lineTo(x, canvasBox.bottom);
+          ctx.stroke();
+        }
+        for (let i = 0; i <= 8; i++) {
+          const y = canvasBox.top + i * rowH;
+          ctx.beginPath();
+          ctx.moveTo(canvasBox.left, y);
+          ctx.lineTo(canvasBox.right, y);
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = "#806447";
+        ctx.font = "600 12px ui-rounded, system-ui";
+        ctx.textAlign = "right";
+        for (let hour = START_HOUR; hour <= END_HOUR; hour += 3) {
+          const y = canvasBox.top + ((hour - START_HOUR) * 60 / TOTAL_GRID_MIN) * (canvasBox.bottom - canvasBox.top);
+          ctx.fillText(`${String(hour).padStart(2, "0")}:00`, canvasBox.left - 10, y);
+        }
+
+        const labels = [
+          [dict().morning, .12],
+          [dict().noon, .38],
+          [dict().evening, .72],
+          [dict().night, .94]
+        ];
+        ctx.textAlign = "left";
+        ctx.font = "600 11px ui-rounded, system-ui";
+        labels.forEach(([label, ratio]) => {
+          const y = canvasBox.top + ratio * (canvasBox.bottom - canvasBox.top);
+          const labelW = ctx.measureText(label).width + 14;
+          ctx.fillStyle = "rgba(255,248,226,.78)";
+          roundRect(ctx, canvasBox.left + 8, y - 10, labelW, 20, 10);
+          ctx.fill();
+          ctx.fillStyle = "rgba(103,54,18,.68)";
+          ctx.fillText(label, canvasBox.left + 15, y);
+        });
+      }
+
+      function drawSchedulePath() {
+        const start = schedule[0].start.getTime();
+        const end = schedule[10].start.getTime();
+        const points = schedule.map((step) => {
+          const ratio = (step.start.getTime() - start) / (end - start || 1);
+          const x = canvasBox.left + 20 + ratio * (canvasBox.right - canvasBox.left - 40);
+          const y = canvasBox.bottom + 21 + Math.sin(ratio * Math.PI * 2) * 4;
+          return { x, y, step };
+        });
+        ctx.strokeStyle = "rgba(103,54,18,.24)";
+        ctx.lineWidth = 6;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        points.forEach((p, i) => i ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+        ctx.stroke();
+        points.forEach((p) => {
+          ctx.fillStyle = p.step.index === state.anchorIndex ? "#8a4319" : p.step.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.step.index === state.anchorIndex ? 6 : 4, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      function visibleCanvasPointForDate(date) {
+        const p = canvasPointForDate(date);
+        const hour = date.getHours() + date.getMinutes() / 60;
+        if (hour < START_HOUR) p.y = canvasBox.top - 16;
+        if (hour >= END_HOUR) p.y = canvasBox.bottom + 20;
+        return {
+          x: Math.min(canvasBox.right - 8, Math.max(canvasBox.left + 8, p.x)),
+          y: Math.min(canvasBox.h - 18, Math.max(28, p.y))
+        };
+      }
+
+      function drawCalendarRoute() {
+        const detail = Number(state.detail || 2);
+        const points = schedule.map((step) => ({
+          ...visibleCanvasPointForDate(step.start),
+          step
+        }));
+        ctx.save();
+        ctx.strokeStyle = state.design === "night" ? "rgba(255,238,190,.52)" : "rgba(103,54,18,.32)";
+        ctx.lineWidth = detail === 1 ? 3 : detail === 2 ? 4 : 5;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.beginPath();
+        points.forEach((p, index) => index ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+        ctx.stroke();
+
+        const labelRects = [];
+        points.forEach((p, index) => {
+          const active = p.step.index === state.anchorIndex;
+          const isHandover = p.step.index === 10;
+          const r = isHandover ? 16 : active ? 12 : detail === 1 ? 6 : 8;
+          ctx.fillStyle = "rgba(255,248,226,.92)";
+          ctx.strokeStyle = p.step.color;
+          ctx.lineWidth = isHandover ? 4 : 3;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          drawMiniIcon(p.step.icon, p.x, p.y, r, p.step.color);
+          if (!isHandover && (detail > 1 || index % 2 === 0)) {
+            drawStepLabel(p, index, labelRects);
+          }
+        });
+        ctx.restore();
+      }
+
+      function drawMiniIcon(icon, x, y, r, color) {
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+        ctx.lineWidth = 1.6;
+        if (icon === "drop") {
+          ctx.beginPath();
+          ctx.moveTo(x, y - r * .45);
+          ctx.quadraticCurveTo(x + r * .45, y, x, y + r * .46);
+          ctx.quadraticCurveTo(x - r * .45, y, x, y - r * .45);
+          ctx.stroke();
+        } else if (icon === "moon") {
+          ctx.beginPath();
+          ctx.arc(x, y, r * .42, Math.PI * .35, Math.PI * 1.65);
+          ctx.stroke();
+        } else if (icon === "sun") {
+          ctx.beginPath();
+          ctx.arc(x, y, r * .34, 0, Math.PI * 2);
+          ctx.stroke();
+        } else if (icon === "bread") {
+          ctx.beginPath();
+          ctx.ellipse(x, y + 1, r * .55, r * .38, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(x, y, r * .28, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      function drawStepLabel(point, index, labelRects) {
+        const step = point.step;
+        const detail = Number(state.detail || 2);
+        const label = detail === 3
+          ? `${step.name} · ${fmtTime(step.start)}`
+          : step.name;
+        ctx.font = detail === 3 ? "700 12px ui-rounded, system-ui" : "700 11px ui-rounded, system-ui";
+        const w = Math.min(ctx.measureText(label).width + 18, 150);
+        const candidates = [
+          [point.x - w / 2, point.y - 34],
+          [point.x - w / 2, point.y + 18],
+          [point.x + 16, point.y - 12],
+          [point.x - w - 16, point.y - 12],
+          [point.x - w / 2, point.y - 58],
+          [point.x - w / 2, point.y + 42]
+        ];
+        let chosen = candidates.map(([x, y]) => ({
+          x: Math.min(Math.max(x, canvasBox.left + 4), canvasBox.right - w - 4),
+          y: Math.min(Math.max(y, canvasBox.top + 4), canvasBox.bottom - 26)
+        })).find((rect) => !labelRects.some((other) => intersects(rect.x, rect.y, w, 24, other.x, other.y, other.w, other.h)));
+        if (!chosen) {
+          chosen = {
+            x: Math.min(Math.max(point.x - w / 2, canvasBox.left + 4), canvasBox.right - w - 4),
+            y: Math.min(Math.max(point.y + 18 + (index % 4) * 25, canvasBox.top + 4), canvasBox.bottom - 26)
+          };
+        }
+        labelRects.push({ x: chosen.x - 4, y: chosen.y - 4, w: w + 8, h: 32 });
+        ctx.fillStyle = state.design === "night" ? "rgba(35,38,73,.9)" : "rgba(255,246,218,.94)";
+        roundRect(ctx, chosen.x, chosen.y, w, 24, 10);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(153,91,29,.22)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = state.design === "night" ? "#fff2c8" : "#3b281b";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        clipText(label, chosen.x + w / 2, chosen.y + 12, w - 14);
+      }
+
+      function intersects(ax, ay, aw, ah, bx, by, bw, bh) {
+        return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+      }
+
+      function clipText(text, x, y, maxWidth) {
+        if (ctx.measureText(text).width <= maxWidth) {
+          ctx.fillText(text, x, y);
+          return;
+        }
+        let out = text;
+        while (out.length > 3 && ctx.measureText(`${out}…`).width > maxWidth) out = out.slice(0, -1);
+        ctx.fillText(`${out}…`, x, y);
+      }
+
+      function drawTarget() {
+        const date = schedule[10].start;
+        const p = canvasPointForDate(date);
+        const pulse = Math.sin((performance.now() - animationStart) / 420) * 2.5;
+
+        ctx.save();
+        ctx.shadowColor = "rgba(103,54,18,.32)";
+        ctx.shadowBlur = 18;
+        ctx.fillStyle = "rgba(153,91,29,.14)";
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 31 + pulse, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = "#9b5420";
+        ctx.beginPath();
+        ctx.ellipse(p.x, p.y, 22, 18, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#fff1c8";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(p.x - 4, p.y - 3, 11, Math.PI * 1.1, Math.PI * 1.92);
+        ctx.stroke();
+        ctx.strokeStyle = "#5e876d";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+        ctx.stroke();
+
+        const label = `${dict().handover}: ${fmtDate(date)} · ${fmtTime(date)}`;
+        ctx.font = "700 14px ui-rounded, system-ui";
+        const labelW = ctx.measureText(label).width + 24;
+        const labelX = Math.min(Math.max(p.x - labelW / 2, canvasBox.left + 4), canvasBox.right - labelW - 4);
+        const labelY = p.y > canvasBox.top + 48 ? p.y - 48 : p.y + 30;
+        ctx.fillStyle = "#fff5d9";
+        roundRect(ctx, labelX, labelY, labelW, 30, 12);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(153,91,29,.24)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = "#3b281b";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(label, labelX + labelW / 2, labelY + 15);
+        ctx.restore();
+      }
+
+      function roundRect(c, x, y, w, h, r) {
+        const radius = Math.min(r, w / 2, h / 2);
+        c.beginPath();
+        c.moveTo(x + radius, y);
+        c.arcTo(x + w, y, x + w, y + h, radius);
+        c.arcTo(x + w, y + h, x, y + h, radius);
+        c.arcTo(x, y + h, x, y, radius);
+        c.arcTo(x, y, x + w, y, radius);
+        c.closePath();
+      }
+
+      function pointerPosition(event) {
+        const rect = canvas.getBoundingClientRect();
+        const point = event.touches ? event.touches[0] : event;
+        return { x: point.clientX - rect.left, y: point.clientY - rect.top };
+      }
+
+      function startDrag(event) {
+        event.preventDefault();
+        dragging = true;
+        moveDrag(event);
+      }
+
+      function moveDrag(event) {
+        if (!dragging) return;
+        event.preventDefault();
+        const p = pointerPosition(event);
+        setHandover(dateForCanvasPoint(p.x, p.y).getTime());
+      }
+
+      function endDrag() {
+        dragging = false;
+      }
+
+      function animate() {
+        drawCanvas();
+        requestAnimationFrame(animate);
+      }
+
+      $("weightRange").addEventListener("input", (event) => {
+        state.weight = Number(event.target.value);
+        saveState();
+        renderRecipe();
+      });
+
+      $("langCs").addEventListener("click", () => {
+        state.lang = "cs";
+        recalc();
+        saveState();
+        render();
+      });
+
+      $("langEn").addEventListener("click", () => {
+        state.lang = "en";
+        recalc();
+        saveState();
+        render();
+      });
+
+      $("todayBtn").addEventListener("click", () => setHandover(minHandoverTime().getTime()));
+      $("plusDayBtn").addEventListener("click", () => setHandover(getHandoverTime() + DAY));
+      $("layoutStory").addEventListener("click", () => setViewOption("layout", "story"));
+      $("layoutFocus").addEventListener("click", () => setViewOption("layout", "focus"));
+      $("layoutRecipe").addEventListener("click", () => setViewOption("layout", "recipe"));
+      $("designPoster").addEventListener("click", () => setViewOption("design", "poster"));
+      $("designNight").addEventListener("click", () => setViewOption("design", "night"));
+      $("designClean").addEventListener("click", () => setViewOption("design", "clean"));
+      $("detailRange").addEventListener("input", (event) => {
+        state.detail = Number(event.target.value);
+        saveState();
+        drawCanvas();
+      });
+
+      function setViewOption(key, value) {
+        state[key] = value;
+        saveState();
+        render();
+        requestAnimationFrame(resizeCanvas);
+      }
+
+      canvas.addEventListener("mousedown", startDrag);
+      canvas.addEventListener("mousemove", moveDrag);
+      window.addEventListener("mousemove", moveDrag);
+      window.addEventListener("mouseup", endDrag);
+      canvas.addEventListener("touchstart", startDrag, { passive: false });
+      canvas.addEventListener("touchmove", moveDrag, { passive: false });
+      window.addEventListener("touchmove", moveDrag, { passive: false });
+      window.addEventListener("touchend", endDrag);
+      window.addEventListener("resize", resizeCanvas);
+
+      renderStars();
+      recalc();
       render();
-    });
-    $("resetBtn").addEventListener("click", resetRatios);
-    window.addEventListener("resize", render);
-    render();
+      resizeCanvas();
+      requestAnimationFrame(animate);
+    })();
   </script>
 </body>
 </html>
