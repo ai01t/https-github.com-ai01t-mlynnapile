@@ -145,11 +145,14 @@ function logoSvg() {
 
 
 /** Mezery sekce podle nastavení (prázdné = výchozí z motivu stylu). */
+/* Mezery z editoru jdou do proměnných, ne rovnou do paddingu — vložený styl
+   by jinak přebil i zmenšení na mobilu a sekce by od sebe byly stejně daleko
+   jako na velké obrazovce. */
 function spaceStyle(key, extra = "") {
   const sp = (DATA.spacing || {})[key] || {};
   const parts = [];
-  if (sp.top != null) parts.push(`padding-top:${sp.top}px`);
-  if (sp.bottom != null) parts.push(`padding-bottom:${sp.bottom}px`);
+  if (sp.top != null) parts.push(`--sp-top:${sp.top}px`);
+  if (sp.bottom != null) parts.push(`--sp-bottom:${sp.bottom}px`);
   if (extra) parts.push(extra);
   return parts.length ? ` style="${parts.join(";")}"` : "";
 }
@@ -779,7 +782,7 @@ function renderContact() {
   const pull = Number(c.pullUp) || 0;
   return `
   ${motifBand("kontakt")}
-  <section id="kontakt"${spaceStyle("kontakt", pull ? `margin-top:-${pull}px` : "")}>
+  <section id="kontakt"${spaceStyle("kontakt", pull ? `--pull-up:${pull}px` : "")}>
     <div class="wrap contact-grid">
       <div class="reveal">
         ${T("contact.eyebrow", "p", "eyebrow")}
