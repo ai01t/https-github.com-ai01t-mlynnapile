@@ -247,7 +247,17 @@ section.tight { padding-block: calc(var(--space) * 0.62); }
 
 /* ---------- Feature ---------- */
 .feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); align-items: center; }
-.feature-grid.reverse .feature-media { order: 2; }
+/* Fotka drží levý sloupec přes obě řady, vpravo je nad textem nadpis
+   s přepínačem — na počítači to vypadá stejně jako dřív. */
+.feature-grid .feature-media { grid-column: 1; grid-row: 1 / span 2; }
+.feature-grid .feature-head { grid-column: 2; grid-row: 1; align-self: end; }
+.feature-grid .feature-body { grid-column: 2; grid-row: 2; align-self: start; }
+.feature-grid.reverse .feature-media { grid-column: 2; }
+.feature-grid.reverse .feature-head,
+.feature-grid.reverse .feature-body { grid-column: 1; }
+.feature-head h2 { margin-top: 10px; }
+.feature-head .feat-tabs { margin-top: 18px; margin-bottom: 0; }
+.feature-body .lead { margin-top: 0; }
 .feature-list { list-style: none; padding: 0; margin: 30px 0 38px; }
 .feature-list li { padding: 13px 0; border-top: 1px solid var(--line); color: var(--muted); font-size: var(--fs-sm); }
 .feature-list li:last-child { border-bottom: 1px solid var(--line); }
@@ -329,7 +339,14 @@ section.tight { padding-block: calc(var(--space) * 0.62); }
   .site-nav.open { display: flex; }
   .site-nav a { font-size: 15px; padding: 10px 0; }
   .hero-split, .feature-grid, .about-grid, .contact-grid, .intro-grid { grid-template-columns: 1fr; }
-  .feature-grid.reverse .feature-media { order: 0; }
+  /* Na výšku jde nadpis s přepínačem nad fotku a text až pod ni. */
+  .feature-grid .feature-head,
+  .feature-grid .feature-media,
+  .feature-grid .feature-body,
+  .feature-grid.reverse .feature-head,
+  .feature-grid.reverse .feature-media,
+  .feature-grid.reverse .feature-body { grid-column: 1; grid-row: auto; }
+  .feature-grid { gap: 26px; }
   .section-head { grid-template-columns: 1fr; align-items: start; }
   h1 { font-size: clamp(38px, 11vw, 62px); }
   h2 { font-size: clamp(30px, 8vw, 46px); }
@@ -338,7 +355,19 @@ section.tight { padding-block: calc(var(--space) * 0.62); }
   .cat-grid, .gal-grid { grid-template-columns: 1fr; }
   .gal-item[data-span="2"] { grid-column: span 1; }
   .wrap { width: calc(100% - 36px); }
+
+  /* Kontakt: pevný sloupec popisků (130 px) plus nezalomitelný e-mail
+     přetahoval stránku přes okraj displeje — proto vpravo svítil pruh.
+     Popisek jde nad hodnotu a mezery se stáhnou, ať se to vejde. */
+  .contact-row { grid-template-columns: 1fr; gap: 2px; padding: 9px 0; }
+  .contact-row dt { padding-top: 0; line-height: 1.4; }
+  .contact-row dd { font-size: clamp(17px, 4.6vw, 21px); line-height: 1.35; }
 }
+
+/* E-mail je jedno dlouhé slovo — bez tohohle rozšíří stránku na každém
+   displeji, na který se nevejde. */
+.contact-row dd { overflow-wrap: anywhere; min-width: 0; }
+.contact-grid > *, .feature-grid > *, .about-grid > * { min-width: 0; }
 
 /* ---------- Logo ---------- */
 .brand { flex-direction: row; align-items: center; gap: 12px; }

@@ -681,9 +681,9 @@ function renderFeature() {
 
   const tabs = f.items.length < 2 ? "" : `
     <div class="feat-tabs" role="tablist">
-      ${f.items.map((x, i) => `
-        <button class="feat-tab${i === at ? " is-on" : ""}" data-feat="${i}"
-                role="tab" aria-selected="${i === at}">${esc(x.title)}</button>`).join("")}
+      ${f.items.map((x, i) => i === at ? "" : `
+        <button class="feat-tab" data-feat="${i}"
+                role="tab" aria-selected="false">${esc(x.title)}</button>`).join("")}
     </div>`;
 
   const bullets = (it.bullets || []).map((b, i) =>
@@ -702,17 +702,21 @@ function renderFeature() {
       ${it.stepsNote ? `<p class="care-note" data-bind="${base}.stepsNote">${esc(it.stepsNote)}</p>` : ""}
     </div>`;
 
+  /* Nadpis a přepínač jsou samostatný blok, aby na mobilu mohly stát nad
+     fotkou. Na počítači zůstávají v pravém sloupci nad textem jako dřív. */
   return `
   <section class="tight" id="vybirame"${spaceStyle("vybirame")}>
     <div class="wrap feature-grid${f.reverse ? " reverse" : ""}">
+      <div class="feature-head reveal">
+        ${T("feature.eyebrow", "p", "eyebrow")}
+        <h2 data-bind="${base}.title">${esc(it.title)}</h2>
+        ${tabs}
+      </div>
       <div class="feature-media reveal">
         ${figure(it.image, `${base}.image`, `aspect-ratio:${it.image.ratio}`)}
       </div>
-      <div class="reveal">
-        ${T("feature.eyebrow", "p", "eyebrow")}
-        ${tabs}
-        <h2 data-bind="${base}.title">${esc(it.title)}</h2>
-        <p class="lead" style="margin-top:20px" data-bind="${base}.text">${esc(it.text)}</p>
+      <div class="feature-body reveal">
+        <p class="lead" data-bind="${base}.text">${esc(it.text)}</p>
         ${bullets ? `<ul class="feature-list">${bullets}</ul>` : ""}
         ${steps}
         ${it.ctaLabel ? `<a class="link-arrow" href="#${esc(it.ctaTarget)}" data-bind="${base}.ctaLabel">${esc(it.ctaLabel)}</a>` : ""}
