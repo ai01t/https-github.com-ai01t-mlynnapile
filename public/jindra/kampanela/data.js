@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------
    Keramika Kampanela — obsah a nastavení webu
-   Naposledy uloženo z editoru: 01.09.2026 07:42
+   Naposledy uloženo z editoru: 01.09.2026 12:22
 ----------------------------------------------------------------*/
 
 const DEFAULT_DATA = {
@@ -231,7 +231,7 @@ const DEFAULT_DATA = {
       {
         "id": "vazy",
         "name": "Vázy",
-        "desc": "Na jednu větev i na plnou náruč.",
+        "desc": "Vázy různých rozměrů",
         "image": {
           "src": "images/vaza-narcisy.jpg",
           "alt": "Váza s narcisy",
