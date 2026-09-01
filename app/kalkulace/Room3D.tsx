@@ -6,7 +6,7 @@
 // Objekty (dveře, okna…) se přetahují z palety přímo na stěnu; kliknutím se upraví rozměr.
 
 import { useRef, useState } from "react";
-import { clamp, f2, inferOtherOpening, n, openingKind, outerOpening, uid, WALL_COLORS, wallArcs, wallStats } from "./core";
+import { clamp, f2, inferOtherOpening, n, openingKind, outerOpening, uid, WALL_COLORS, wallArcs, wallStats, windowPanes, WINDOW_PANE_PRESETS } from "./core";
 
 const DIRS = [
   [1, 0],
@@ -111,6 +111,8 @@ export default function Room3D({
   const [selFloor, setSelFloor] = useState<string | null>(null);
   const [stairsUp, setStairsUp] = useState(true); // směr schodiště: nahoru / dolů
   const [trashHot, setTrashHot] = useState(false); // úchyt je nad košem – zvýrazní se červeně
+  // Popisky stěn: "full" = název + rozměry + plocha, "dims" = jen kóty, "off" = nic
+  const [labelMode, setLabelMode] = useState<"full" | "dims" | "off">("full");
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Pokud existuje náčrt půdorysu, použijeme jeho skutečnou geometrii (přesné rohy a směry),
@@ -338,6 +340,28 @@ export default function Room3D({
     <div className="relative">
       {/* paleta objektů */}
       <div className="mb-2 space-y-1.5">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="w-24 shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Detail:</span>
+          {([
+            ["full", "Vše", "Název stěny, rozměry i plocha"],
+            ["dims", "Jen kóty", "Pouze rozměry stěn"],
+            ["off", "Bez popisků", "Čistý model bez textu"],
+          ] as const).map(([mode, label, hint]) => (
+            <button
+              key={mode}
+              type="button"
+              onClick={() => setLabelMode(mode)}
+              title={hint}
+              className={`rounded-[var(--radius-sm)] border px-2 py-1 text-[11px] font-bold transition ${
+                labelMode === mode
+                  ? "border-[var(--brand)] bg-[var(--brand)] text-white"
+                  : "border-[var(--line)] bg-[var(--card)] text-[var(--muted)] hover:border-[var(--brand)] hover:text-[var(--brand)]"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="w-24 shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Na stěnu:</span>
           {WALL_ITEMS.map((item) => (
@@ -643,12 +667,34 @@ export default function Room3D({
                   return d + " Z";
                 };
 
+                // Příčle členěného okna — dělicí čáry v rovině otvoru.
+                // Kreslí se stejnou projekcí jako obrys, takže ve 3D leží na stěně.
+                const panes = kind === "window" ? windowPanes(opening) : { x: 1, y: 1 };
+                const paneLines = () => {
+                  if (panes.x < 2 && panes.y < 2) return "";
+                  let d = "";
+                  for (let i = 1; i < panes.x; i++) {
+                    const t = ox + (ow * i) / panes.x;
+                    const a = at(t, oy);
+                    const b = at(t, oy + oh);
+                    d += ` M ${a.sx} ${a.sy} L ${b.sx} ${b.sy}`;
+                  }
+                  for (let j = 1; j < panes.y; j++) {
+                    const z = oy + (oh * j) / panes.y;
+                    const a = at(ox, z);
+                    const b = at(ox + ow, z);
+                    d += ` M ${a.sx} ${a.sy} L ${b.sx} ${b.sy}`;
+                  }
+                  return d.trim();
+                };
+
                 if (!depth) {
                   return (
                     <g key={opening.id}>
                       <path d={shape(0)} fill={fill} fillOpacity="0.9" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" className="cursor-grab active:cursor-grabbing" onPointerDown={grab}>
                         <title>{arch > 0 ? `Oblouk ${arch} cm · ` : ""}Kliknutím upravíš rozměr objektu</title>
                       </path>
+                      {paneLines() && <path d={paneLines()} fill="none" stroke={stroke} strokeWidth="1" strokeOpacity="0.65" pointerEvents="none" />}
                       {arch > 0 && (
                         <circle
                           cx={at(ox + ow / 2, oy + oh + arch).sx}
@@ -781,12 +827,26 @@ export default function Room3D({
                   </circle>
                 );
               })}
-              <text x={top.sx} y={top.sy - 8} textAnchor="middle" fontSize="13" fontWeight="800" fill={active ? "var(--brand)" : "#334155"} pointerEvents="none">
-                {wall.name}
-              </text>
-              <text x={top.sx} y={top.sy + 6} textAnchor="middle" fontSize="10" fill="#64748b" pointerEvents="none">
-                {n(wall.width)} × {n(wall.height)} cm · {f2(wallStats(wall).clean)} m²
-              </text>
+              {labelMode === "full" && (
+                <text x={top.sx} y={top.sy - 8} textAnchor="middle" fontSize="13" fontWeight="800" fill={active ? "var(--brand)" : "#334155"} pointerEvents="none">
+                  {wall.name}
+                </text>
+              )}
+              {labelMode !== "off" && (
+                <text
+                  x={top.sx}
+                  y={labelMode === "full" ? top.sy + 6 : top.sy}
+                  textAnchor="middle"
+                  fontSize={labelMode === "dims" ? 12 : 10}
+                  fontWeight={labelMode === "dims" ? 700 : 400}
+                  fill={labelMode === "dims" ? "#334155" : "#64748b"}
+                  pointerEvents="none"
+                >
+                  {labelMode === "dims"
+                    ? `${n(wall.width)} × ${n(wall.height)} cm`
+                    : `${n(wall.width)} × ${n(wall.height)} cm · ${f2(wallStats(wall).clean)} m²`}
+                </text>
+              )}
             </g>
           );
         })}
@@ -822,6 +882,25 @@ export default function Room3D({
               </label>
             ))}
           </div>
+          {openingKind(selOpening) === "window" && (
+            <label className="mt-2 block">
+              <div className="mb-0.5 text-[10px] font-bold uppercase text-[var(--muted)]">Členění okna</div>
+              <select
+                value={`${windowPanes(selOpening).x}x${windowPanes(selOpening).y}`}
+                onChange={(event) => {
+                  const [px, py] = event.target.value.split("x").map(Number);
+                  onUpdateOpening?.(sel!.wallId, sel!.openingId, { panesX: px, panesY: py });
+                }}
+                className="w-full rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1"
+              >
+                {WINDOW_PANE_PRESETS.map((preset) => (
+                  <option key={preset.id} value={`${preset.x}x${preset.y}`}>
+                    {preset.label} ({preset.x} × {preset.y})
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           {n(selOpening.reveal) > 0 && (
             <div className="mt-2 border-t border-[var(--line)] pt-1.5">
               <label className="flex items-center gap-1.5 font-bold" title="Špaleta kolmo ke stěně. Odškrtnutím se otvor na vnější straně zmenší a špaleta se do místnosti šikmo rozevře.">

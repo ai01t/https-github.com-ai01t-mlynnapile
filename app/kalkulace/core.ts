@@ -56,8 +56,68 @@ export const defaultWalls = [
   { id: "stena-4", name: "Stěna 4", width: 300, height: 250, scope: "damaged", openings: [], workIds: ["oklep", "perlinka", "malba"] },
 ];
 
+// Pekárna — skutečná místnost ze mlýna: valená klenba na kratších stěnách,
+// členěné okno a dvoje dveře. Slouží jako výchozí ukázka.
+export const bakeryWalls = [
+  {
+    id: "stena-a",
+    name: "Stěna A",
+    width: 512,
+    height: 216,
+    scope: "visual",
+    openings: [{ id: "o-a1", name: "Dveře", type: "door", width: 113, height: 180, count: 1, x: 2, y: 0, reveal: 0 }],
+    workIds: ["oklep", "perlinka", "malba"],
+  },
+  {
+    id: "stena-b",
+    name: "Stěna B",
+    width: 335,
+    height: 216,
+    scope: "visual",
+    openings: [],
+    // tři klenby s traverzami mezi nimi
+    arcs: [
+      { id: "a-b1", x: 60, rise: 31 },
+      { id: "a-b2", x: 168, rise: 31, gapBefore: 10 },
+      { id: "a-b3", x: 275, rise: 31, gapBefore: 10 },
+    ],
+    mirrorArcs: true,
+    workIds: ["malba"],
+  },
+  {
+    id: "stena-c",
+    name: "Stěna C",
+    width: 512,
+    height: 216,
+    scope: "visual",
+    openings: [
+      // členěné okno 6 × 5 tabulek, hluboká špaleta
+      { id: "o-c1", name: "Okno", type: "window", width: 182, height: 135, count: 1, x: 170, y: 60, reveal: 63, panesX: 6, panesY: 5 },
+    ],
+    workIds: ["malba"],
+  },
+  {
+    id: "stena-d",
+    name: "Stěna D",
+    width: 335,
+    height: 216,
+    scope: "visual",
+    openings: [{ id: "o-d1", name: "Dveře", type: "door", width: 90, height: 197, count: 1, x: 205, y: 0, reveal: 0 }],
+    arcs: [
+      { id: "a-d1", x: 60, rise: 31 },
+      { id: "a-d2", x: 168, rise: 31, gapBefore: 10 },
+      { id: "a-d3", x: 275, rise: 31, gapBefore: 10 },
+    ],
+    mirrorArcs: true,
+    workIds: ["oklep", "perlinka", "malba"],
+  },
+];
+
 // Stěny jsou seskupené do místností (taby v horní části kalkulačky).
-export const defaultRooms = [{ id: "room-1", name: "Místnost 1", walls: defaultWalls }];
+export const defaultRooms = [
+  { id: "room-1", name: "Pekárna", walls: bakeryWalls },
+  { id: "room-2", name: "Místnost 2", walls: defaultWalls },
+];
 
 export const uidRoom = () => `room-${Math.random().toString(36).slice(2, 9)}`;
 
@@ -223,6 +283,24 @@ export function wallStats(wall: any) {
   // špalety se k ploše naopak přičítají – je to plocha navíc k omítnutí / vymalování
   const reveals = wall.openings.reduce((sum: number, opening: any) => sum + revealArea(opening), 0);
   return { gross, openings, reveals, arcs, clean: Math.max(0, gross - openings) + reveals };
+}
+
+/** Členění okna na tabulky. 1 × 1 = jedno sklo, 6 × 5 = malá okýnka v mřížce. */
+export const WINDOW_PANE_PRESETS = [
+  { id: "1x1", label: "Jedno sklo", x: 1, y: 1 },
+  { id: "2x1", label: "Dvoukřídlé", x: 2, y: 1 },
+  { id: "3x1", label: "Trojkřídlé", x: 3, y: 1 },
+  { id: "2x2", label: "Čtyři tabulky", x: 2, y: 2 },
+  { id: "3x2", label: "Šest tabulek", x: 3, y: 2 },
+  { id: "4x3", label: "Dvanáct tabulek", x: 4, y: 3 },
+  { id: "6x5", label: "Členěné 6 × 5", x: 6, y: 5 },
+];
+
+/** Kolik tabulek má okno vodorovně a svisle (výchozí jedno sklo). */
+export function windowPanes(opening: any) {
+  const x = Math.max(1, Math.min(12, Math.round(n(opening?.panesX) || 1)));
+  const y = Math.max(1, Math.min(12, Math.round(n(opening?.panesY) || 1)));
+  return { x, y };
 }
 
 export function openingKind(opening: any) {

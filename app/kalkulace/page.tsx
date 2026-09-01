@@ -63,7 +63,7 @@ import Room3D from "./Room3D";
 import SketchModal from "./Sketch";
 import { track } from "@/lib/analytics";
 import { BRAND, Logo } from "./Logo";
-import { defaultDesign, designStyle, DOC_STYLE, readLogoFile, SPACING_CSS, defaultRooms, flattenRooms, makeRoom, roomsFromData, TRASH_TTL_DAYS, setStorageNamespace } from "./core";
+import { defaultDesign, designStyle, DOC_STYLE, readLogoFile, SPACING_CSS, defaultRooms, flattenRooms, makeRoom, roomsFromData, TRASH_TTL_DAYS, setStorageNamespace, windowPanes, WINDOW_PANE_PRESETS } from "./core";
 
 const emptyMeta = { id: null, number: null, name: "", validUntil: "", status: "draft" };
 
@@ -1536,6 +1536,19 @@ function WallGraphic({ wall, onMoveOpening, onUpdateWall, oppositeName, mirror =
                     <span className="text-sm">{inferred.mark}</span>
                     <span className="max-w-full truncate px-1">{inferred.label}</span>
                   </span>
+                ) : kind === "window" && (windowPanes(opening).x > 1 || windowPanes(opening).y > 1) ? (
+                  // členěné okno: mřížka tabulek místo popisku
+                  <div
+                    className="pointer-events-none absolute inset-0 grid"
+                    style={{
+                      gridTemplateColumns: `repeat(${windowPanes(opening).x}, 1fr)`,
+                      gridTemplateRows: `repeat(${windowPanes(opening).y}, 1fr)`,
+                    }}
+                  >
+                    {Array.from({ length: windowPanes(opening).x * windowPanes(opening).y }).map((_, index) => (
+                      <div key={index} className="border border-sky-700/45" />
+                    ))}
+                  </div>
                 ) : (
                   <span className="-rotate-45 whitespace-nowrap opacity-80">{kind === "door" ? "Dveře" : "Okno"}</span>
                 )}
