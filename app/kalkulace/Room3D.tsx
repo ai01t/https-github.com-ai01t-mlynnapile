@@ -52,6 +52,9 @@ const POINT_MIME = "application/x-kalk-point";
 const ARCH_DEFAULT = 30; // výchozí vzepětí oblouku (cm)
 
 // izometrická projekce: půdorys (x, y) + výška z → obrazovka
+// Výchozí natočení modelu (stupně).
+const DEFAULT_YAW = 162;
+
 const isoFlat = (x: number, y: number, z: number) => ({ sx: (x - y) * 0.866, sy: (x + y) * 0.5 - z });
 
 const pointsAttr = (points: { sx: number; sy: number }[]) => points.map((p) => `${p.sx.toFixed(1)},${p.sy.toFixed(1)}`).join(" ");
@@ -113,8 +116,9 @@ export default function Room3D({
   const [trashHot, setTrashHot] = useState(false); // úchyt je nad košem – zvýrazní se červeně
   // Popisky stěn: "full" = název + rozměry + plocha, "dims" = jen kóty, "off" = nic
   const [labelMode, setLabelMode] = useState<"full" | "dims" | "off">("full");
-  // Otočení modelu kolem svislé osy (stupně). 0 = výchozí izometrie.
-  const [yaw, setYaw] = useState(0);
+  // Otočení modelu kolem svislé osy (stupně). Výchozí pohled ukazuje okno
+  // i obě dveře najednou — čitelnější než čistá izometrie.
+  const [yaw, setYaw] = useState(DEFAULT_YAW);
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Pokud existuje náčrt půdorysu, použijeme jeho skutečnou geometrii (přesné rohy a směry),
@@ -379,8 +383,8 @@ export default function Room3D({
           </button>
           <button
             type="button"
-            onClick={() => setYaw(0)}
-            disabled={yaw === 0}
+            onClick={() => setYaw(DEFAULT_YAW)}
+            disabled={yaw === DEFAULT_YAW}
             title="Zpět do výchozího pohledu"
             className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1 text-[11px] font-bold text-[var(--muted)] transition enabled:hover:border-[var(--brand)] enabled:hover:text-[var(--brand)] disabled:opacity-40"
           >
@@ -617,6 +621,30 @@ export default function Room3D({
           const at = (t: number, z: number) => iso(start[0] + dir[0] * t, start[1] + dir[1] * t, z);
           const corners = [at(0, 0), at(seg.length, 0), at(seg.length, height), at(0, height)];
           const top = at(seg.length / 2, height);
+
+          // silueta stěny (rovná nebo klenutá horní hrana) – slouží i jako ořez špalet
+          const wallPathD = (() => {
+            const wallArcList = wallArcs(wall);
+            const p0 = at(0, 0);
+            const p1 = at(seg.length, 0);
+            let d = `M ${p0.sx} ${p0.sy} L ${p1.sx} ${p1.sy}`;
+            if (!wallArcList.length) {
+              const t1 = at(seg.length, height);
+              const t0 = at(0, height);
+              return d + ` L ${t1.sx} ${t1.sy} L ${t0.sx} ${t0.sy} Z`;
+            }
+            const end = at(seg.length, height);
+            d += ` L ${end.sx} ${end.sy}`;
+            [...wallArcList].reverse().forEach((arc: any) => {
+              const from = at(arc.to, height);
+              const to = at(arc.from, height);
+              const apex = at(arc.x, height + arc.rise);
+              d += ` L ${from.sx} ${from.sy}`; // plochý úsek mezery (traverza) před obloukem
+              d += ` Q ${2 * apex.sx - (from.sx + to.sx) / 2} ${2 * apex.sy - (from.sy + to.sy) / 2} ${to.sx} ${to.sy}`;
+            });
+            return d + " Z";
+          })();
+
           return (
             <g
               key={wall.id}
@@ -632,42 +660,14 @@ export default function Room3D({
               onDrop={(event) => dropOnWall(event, seg)}
             >
               <title>Přetáhni sem objekt z palety · kliknutím přejdeš na zadání rozměrů stěny</title>
-              {(() => {
-                // horní hrana: rovná, nebo klenutá podle geometrických bodů
-                const arcs = wallArcs(wall);
-                const p0 = at(0, 0);
-                const p1 = at(seg.length, 0);
-                let d = `M ${p0.sx} ${p0.sy} L ${p1.sx} ${p1.sy}`;
-                if (!arcs.length) {
-                  const t1 = at(seg.length, height);
-                  const t0 = at(0, height);
-                  d += ` L ${t1.sx} ${t1.sy} L ${t0.sx} ${t0.sy} Z`;
-                } else {
-                  const end = at(seg.length, height);
-                  d += ` L ${end.sx} ${end.sy}`;
-                  // zprava doleva přes jednotlivé oblouky
-                  [...arcs].reverse().forEach((arc: any) => {
-                    const from = at(arc.to, height);
-                    const to = at(arc.from, height);
-                    const apex = at(arc.x, height + arc.rise);
-                    const cx = 2 * apex.sx - (from.sx + to.sx) / 2;
-                    const cy = 2 * apex.sy - (from.sy + to.sy) / 2;
-                    d += ` L ${from.sx} ${from.sy}`; // plochý úsek mezery (traverza) před obloukem
-                    d += ` Q ${cx} ${cy} ${to.sx} ${to.sy}`;
-                  });
-                  d += " Z";
-                }
-                return (
-                  <path
-                    d={d}
-                    fill={dropTarget || active ? "var(--brand)" : facade ? WALL_COLORS.facade.fill : WALL_COLORS.interior.fill}
-                    fillOpacity={dropTarget ? 0.42 : active ? 0.28 : facade ? 0.92 : 0.72}
-                    stroke={dropTarget || active ? "var(--brand)" : facade ? WALL_COLORS.facade.stroke : WALL_COLORS.interior.stroke}
-                    strokeWidth={dropTarget ? 4 : active ? 3 : 2}
-                    strokeLinejoin="round"
-                  />
-                );
-              })()}
+              <path
+                d={wallPathD}
+                fill={dropTarget || active ? "var(--brand)" : facade ? WALL_COLORS.facade.fill : WALL_COLORS.interior.fill}
+                fillOpacity={dropTarget ? 0.42 : active ? 0.28 : facade ? 0.92 : 0.72}
+                stroke={dropTarget || active ? "var(--brand)" : facade ? WALL_COLORS.facade.stroke : WALL_COLORS.interior.stroke}
+                strokeWidth={dropTarget ? 4 : active ? 3 : 2}
+                strokeLinejoin="round"
+              />
               {wall.openings.map((opening: any) => {
                 const kind = openingKind(opening);
                 const ow = Math.max(0, n(opening.width));
@@ -696,7 +696,7 @@ export default function Room3D({
                 const depth = Math.max(0, n(opening.reveal));
                 const arch = Math.max(0, n(opening.arch));
 
-                // vnější normála stěny (směr od středu místnosti ven)
+                // vnější normála stěny (směr od středu místnosti ven) – špaleta míří ven z půdorysu
                 let nx = -dir[1];
                 let ny = dir[0];
                 const mx = start[0] + dir[0] * (seg.length / 2);
@@ -766,7 +766,7 @@ export default function Room3D({
                   return (
                     <g key={opening.id}>
                       <path d={shape(0)} fill={fill} fillOpacity="0.9" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab}>
-                        <title>{arch > 0 ? `Oblouk ${arch} cm · ` : ""}Kliknutím upravíš rozměr objektu</title>
+                        <title>{`${arch > 0 ? `Oblouk ${arch} cm · ` : ""}Kliknutím upravíš rozměr objektu`}</title>
                       </path>
                       {paneLines() && <path d={paneLines()} fill="none" stroke={stroke} strokeWidth="1" strokeOpacity="0.65" pointerEvents="none" />}
                       {arch > 0 && (
@@ -793,7 +793,7 @@ export default function Room3D({
                             onUpdateOpening?.(wall.id, opening.id, { arch: 0 });
                           }}
                         >
-                          <title>Táhni nahoru/dolů – vzepětí oblouku ({arch} cm). Dvojklik oblouk zruší.</title>
+                          <title>{`Táhni nahoru/dolů – vzepětí oblouku (${arch} cm). Dvojklik oblouk zruší.`}</title>
                         </circle>
                       )}
                     </g>
@@ -831,9 +831,7 @@ export default function Room3D({
 
                 return (
                   <g key={opening.id}>
-                    <title>
-                      Špaleta {depth} cm{arch > 0 ? ` · oblouk ${arch} cm` : ""} · kliknutím upravíš rozměr objektu
-                    </title>
+                    <title>{`Špaleta ${depth} cm${arch > 0 ? ` · oblouk ${arch} cm` : ""} · kliknutím upravíš rozměr objektu`}</title>
                     {/* zapuštěná výplň (okno / dveře) */}
                     <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
                     {/* příčle členěného okna na zapuštěném skle */}
@@ -868,7 +866,7 @@ export default function Room3D({
                           onUpdateOpening?.(wall.id, opening.id, { arch: 0 });
                         }}
                       >
-                        <title>Táhni nahoru/dolů – vzepětí oblouku ({arch} cm) · přetažením do Koše zrušíš</title>
+                        <title>{`Táhni nahoru/dolů – vzepětí oblouku (${arch} cm) · přetažením do Koše zrušíš`}</title>
                       </circle>
                     )}
                   </g>
@@ -902,7 +900,7 @@ export default function Room3D({
                       onUpdateWall?.(wall.id, { arcs: (wall.arcs ?? []).filter((item: any) => item.id !== arc.id) });
                     }}
                   >
-                    <title>Klenba {arc.rise} cm · táhni nahoru/dolů · přetažením do Koše odstraníš</title>
+                    <title>{`Klenba ${arc.rise} cm · táhni nahoru/dolů · přetažením do Koše odstraníš`}</title>
                   </circle>
                 );
               })}

@@ -101,7 +101,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
   const [quotesOpen, setQuotesOpen] = useState(false);
   const [invoicesOpen, setInvoicesOpen] = useState(false);
   const [invoiceView, setInvoiceView] = useState(null);
-  const [show3D, setShow3D] = useState(false);
+  // 3D náhled je hlavní pohled na místnost — otevřený rovnou po načtení.
+  const [show3D, setShow3D] = useState(true);
   const [draggedWallId, setDraggedWallId] = useState(null);
 
   // aktivní místnost (tab) – stěny na obrazovce patří jí, výpočet jde přes všechny místnosti
@@ -1522,9 +1523,8 @@ function WallGraphic({ wall, onMoveOpening, onUpdateWall, oppositeName, mirror =
                     onUpdateWall?.({ arcs: (wall.arcs ?? []).filter((item) => item.id !== arc.id) });
                   }}
                 >
-                  <title>
-                    Bod {arc.x} cm · vzepětí {arc.rise} cm — táhni vodorovně/svisle, dvojklik odstraní
-                  </title>
+                  {/* jeden textový uzel – víc uzlů v SVG <title> rozbíjí hydrataci */}
+                  <title>{`Bod ${arc.x} cm · vzepětí ${arc.rise} cm — táhni vodorovně/svisle, dvojklik odstraní`}</title>
                 </circle>
               ))}
             </svg>
