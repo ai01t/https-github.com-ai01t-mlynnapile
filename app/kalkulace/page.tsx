@@ -54,6 +54,8 @@ import {
   HISTORY_PIN,
   WALL_COLORS,
   uid,
+  revealArea,
+  wallArcs,
   wallStats,
 } from "./core";
 import Room3D from "./Room3D";
@@ -787,6 +789,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                 type="button"
                 onClick={() => setTrashOpen(true)}
                 title="Koš smazaných místností"
+                id="kalk-trash"
                 className="ml-auto flex items-center gap-1.5 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] px-2.5 py-2 text-xs font-bold text-[var(--muted)] transition hover:border-[var(--muted)] hover:text-[var(--text)]"
               >
                 <Trash2 className="h-4 w-4" />
@@ -861,6 +864,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                   onAddOpening={addOpening}
                   onUpdateOpening={updateOpening}
                   onRemoveOpening={removeOpening}
+                  onUpdateWall={updateWall}
                   onAddFloorObject={addFloorObject}
                   onUpdateFloorObject={updateFloorObject}
                   onRemoveFloorObject={removeFloorObject}
@@ -943,7 +947,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                         <div className="space-y-1.5">
                           {wall.openings.length === 0 && <div className="px-1 text-[11px] text-[var(--muted)]">Bez odečtů.</div>}
                           {wall.openings.length > 0 && (
-                            <div className="grid gap-1.5 px-2 text-[9px] font-bold uppercase text-[var(--muted)] xl:grid-cols-[72px_minmax(110px,440px)_52px_52px_40px_52px_88px_minmax(74px,1fr)_28px]">
+                            <div className="grid gap-1.5 px-2 text-[9px] font-bold uppercase text-[var(--muted)] xl:grid-cols-[72px_minmax(110px,380px)_52px_52px_40px_52px_88px_60px_minmax(74px,1fr)_28px]">
                               <span>Typ</span>
                               <span>Název</span>
                               <span className="text-right">Šířka</span>
@@ -951,14 +955,15 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                               <span className="text-right">Ks</span>
                               <span className="text-right">Zleva</span>
                               <span className="text-right">Od podlahy</span>
-                              <span className="text-right">Odečet</span>
+                              <span className="text-right">Špaleta</span>
+                              <span className="text-right">Bilance</span>
                               <span />
                             </div>
                           )}
                           {wall.openings.map((opening) => {
                             const normalized = normalizeOpening(opening, wall);
                             return (
-                              <div key={opening.id} className="grid items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--card)] p-1.5 shadow-sm xl:grid-cols-[72px_minmax(110px,440px)_52px_52px_40px_52px_88px_minmax(74px,1fr)_28px]">
+                              <div key={opening.id} className="grid items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--card)] p-1.5 shadow-sm xl:grid-cols-[72px_minmax(110px,380px)_52px_52px_40px_52px_88px_60px_minmax(74px,1fr)_28px]">
                                 <select
                                   className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-xs"
                                   value={openingKind(opening)}
@@ -986,7 +991,23 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                                 <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Počet" value={opening.count} onChange={(event) => updateOpening(wall.id, opening.id, { count: event.target.value })} />
                                 <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Posun zleva v cm" value={normalized.x} onChange={(event) => updateOpening(wall.id, opening.id, { x: event.target.value })} />
                                 <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Výška od podlahy v cm" value={normalized.y} onChange={(event) => updateOpening(wall.id, opening.id, { y: event.target.value })} />
-                                <div className="rounded-[var(--radius-sm)] bg-[var(--bg)] px-1.5 py-1 text-right text-xs font-bold">-{f2(areaCm(opening.width, opening.height, opening.count))} m²</div>
+                                <input
+                                  className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs"
+                                  title="Hloubka špalety v cm (ostění a nadpraží se přičtou k ploše). 0 = neúčtovat."
+                                  placeholder="0"
+                                  value={opening.reveal ?? 0}
+                                  onChange={(event) => updateOpening(wall.id, opening.id, { reveal: event.target.value })}
+                                />
+                                {(() => {
+                                  const minus = areaCm(opening.width, opening.height, opening.count);
+                                  const plus = revealArea(opening);
+                                  return (
+                                    <div className="rounded-[var(--radius-sm)] bg-[var(--bg)] px-1.5 py-1 text-right text-xs font-bold leading-tight" title={plus ? `Odečet otvoru -${f2(minus)} m², špalety +${f2(plus)} m²` : "Odečet otvoru"}>
+                                      -{f2(minus)}
+                                      {plus > 0 && <span className="text-emerald-700"> +{f2(plus)}</span>} m²
+                                    </div>
+                                  );
+                                })()}
                                 <button type="button" onClick={() => updateWall(wall.id, { openings: wall.openings.filter((item) => item.id !== opening.id) })} className="grid h-8 place-items-center rounded-[var(--radius-sm)] hover:bg-[var(--bg)]">
                                   <Trash2 className="h-4 w-4" />
                                 </button>
@@ -1005,7 +1026,11 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                         ))}
                       </div>
                     </div>
-                    <WallGraphic wall={displayWall} onMoveOpening={(openingId, patch) => updateOpening(wall.id, openingId, patch)} />
+                    <WallGraphic
+                      wall={displayWall}
+                      onMoveOpening={(openingId, patch) => updateOpening(wall.id, openingId, patch)}
+                      onUpdateWall={(patch) => updateWall(wall.id, patch)}
+                    />
                   </div>
                 </Card>
               );
@@ -1253,7 +1278,7 @@ function Card({ children, className = "", ...props }) {
   );
 }
 
-function WallGraphic({ wall, onMoveOpening }) {
+function WallGraphic({ wall, onMoveOpening, onUpdateWall }) {
   const width = Math.max(1, n(wall.width));
   const height = Math.max(1, n(wall.height));
   const ratio = width / height;
@@ -1265,6 +1290,39 @@ function WallGraphic({ wall, onMoveOpening }) {
   const scaleX = previewWidth / width;
   const scaleY = previewHeight / height;
   const stats = wallStats(wall);
+  const arcs = wallArcs(wall);
+  const headroom = arcs.length ? Math.max(...arcs.map((arc) => arc.rise)) * scaleY + 12 : 0;
+
+  // tažení geometrického bodu: vodorovně mění polohu, svisle vzepětí
+  const moveArc = (event, arc) => {
+    if (!onUpdateWall) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const patchArc = (patch) => onUpdateWall({ arcs: (wall.arcs ?? []).map((item) => (item.id === arc.id ? { ...item, ...patch } : item)) });
+    const onMove = (moveEvent) => {
+      patchArc({
+        x: Math.round(clamp(arc.x + (moveEvent.clientX - startX) / scaleX, 0, width)),
+        rise: Math.max(0, Math.round(arc.rise + (startY - moveEvent.clientY) / scaleY)),
+      });
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  };
+
+  // rovnoměrné rozmístění bodů (střed každého dílu) – dál jdou upravit ručně
+  const spreadArcs = () => {
+    const list = wall.arcs ?? [];
+    if (!list.length || !onUpdateWall) return;
+    const sorted = [...list].sort((a, b) => n(a.x) - n(b.x));
+    onUpdateWall({ arcs: sorted.map((arc, index) => ({ ...arc, x: Math.round((width * (index + 0.5)) / sorted.length) })) });
+  };
+
   const moveOpening = (event, opening) => {
     if (!onMoveOpening) return;
     event.preventDefault();
@@ -1298,16 +1356,68 @@ function WallGraphic({ wall, onMoveOpening }) {
     <div className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--bg-soft)] p-2.5">
       <div className="mb-2 flex items-center justify-between gap-3">
         <h2 className="text-xs font-black uppercase tracking-wide text-[var(--text-soft)]">Grafický náhled</h2>
-        <div className="text-right text-[11px] text-[var(--muted)]">
-          <b className="text-[var(--text)]">{f2(stats.clean)} m²</b> · {width} × {height} cm
+        <div className="flex items-center gap-2">
+          {arcs.length > 1 && (
+            <button
+              type="button"
+              onClick={spreadArcs}
+              title="Rozmístí geometrické body rovnoměrně po stěně (pak je můžeš doladit tažením)"
+              className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--muted)] transition hover:border-[var(--brand)] hover:text-[var(--brand)]"
+            >
+              ⇹ Rozmístit
+            </button>
+          )}
+          <div className="text-right text-[11px] text-[var(--muted)]">
+            <b className="text-[var(--text)]">{f2(stats.clean)} m²</b> · {width} × {height} cm
+          </div>
         </div>
       </div>
-      <div className="flex items-center justify-center rounded-[var(--radius-sm)] bg-[var(--card)] p-2.5">
+      <div className="flex items-center justify-center rounded-[var(--radius-sm)] bg-[var(--card)] p-2.5" style={{ paddingTop: `${10 + headroom}px` }}>
         <div
           className="relative border-2 border-neutral-800 bg-[linear-gradient(135deg,#fafafa_0%,#fafafa_49%,#f1f5f9_50%,#fafafa_51%,#fafafa_100%)] shadow-inner"
           style={{ width: `${previewWidth}px`, height: `${previewHeight}px` }}
         >
           <div className="absolute left-0 right-0 bottom-0 border-t border-dashed border-[var(--line)]" />
+          {/* geometrické body a klenby nad horní hranou */}
+          {arcs.length > 0 && (
+            <svg className="pointer-events-none absolute left-0 overflow-visible" style={{ top: `${-headroom}px`, width: `${previewWidth}px`, height: `${headroom}px` }}>
+              <path
+                d={arcs
+                  .map((arc) => {
+                    const x0 = arc.from * scaleX;
+                    const x1 = arc.to * scaleX;
+                    const apexX = arc.x * scaleX;
+                    const apexY = headroom - arc.rise * scaleY;
+                    return `M ${x0} ${headroom} Q ${2 * apexX - (x0 + x1) / 2} ${2 * apexY - headroom} ${x1} ${headroom}`;
+                  })
+                  .join(" ")}
+                fill="none"
+                stroke="var(--brand)"
+                strokeWidth="2"
+              />
+              {arcs.map((arc) => (
+                <circle
+                  key={arc.id}
+                  cx={arc.x * scaleX}
+                  cy={headroom - arc.rise * scaleY}
+                  r="6"
+                  fill="white"
+                  stroke="var(--brand)"
+                  strokeWidth="2.5"
+                  className="pointer-events-auto cursor-move"
+                  onPointerDown={(event) => moveArc(event, arc)}
+                  onDoubleClick={(event) => {
+                    event.stopPropagation();
+                    onUpdateWall?.({ arcs: (wall.arcs ?? []).filter((item) => item.id !== arc.id) });
+                  }}
+                >
+                  <title>
+                    Bod {arc.x} cm · vzepětí {arc.rise} cm — táhni vodorovně/svisle, dvojklik odstraní
+                  </title>
+                </circle>
+              ))}
+            </svg>
+          )}
           {wall.openings.map((opening) => {
             const kind = openingKind(opening);
             const inferred = kind === "other" ? inferOtherOpening(opening) : null;
@@ -1346,6 +1456,7 @@ function WallGraphic({ wall, onMoveOpening }) {
       <div className="mt-2 flex items-center justify-between gap-2 text-[11px] text-[var(--muted)]">
         <span>Hrubá: <b className="text-[var(--text)]">{f2(stats.gross)} m²</b></span>
         <span>Odečty: <b className="text-[var(--text)]">-{f2(stats.openings)} m²</b></span>
+        {stats.reveals > 0 && <span>Špalety: <b className="text-emerald-700">+{f2(stats.reveals)} m²</b></span>}
       </div>
       <p className="mt-1 text-[10px] leading-tight text-[var(--muted)]">Otvor přetáhni myší, nebo uprav hodnoty „zleva" a „od podlahy".</p>
     </div>

@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------
    Keramika Kampanela — obsah a nastavení webu
-   Naposledy uloženo z editoru: 31.08.2026 17:06
+   Naposledy uloženo z editoru: 31.08.2026 21:38
 ----------------------------------------------------------------*/
 
 const DEFAULT_DATA = {

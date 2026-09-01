@@ -347,7 +347,21 @@ section.tight {
     border-bottom: 1px solid var(--line);
     display: none;
   }
-  .site-nav.open { display: flex; }
+  .site-nav.open { display: flex; z-index: 70; }
+
+  /* Otevřené mobilní menu má vždy plné pozadí a tmavý text —
+     v režimu „menu přes fotku“ bylo bílé písmo na bílém pruhu neviditelné. */
+  body.nav-open .site-header,
+  body[data-header="over"].nav-open .site-header {
+    background: var(--bg); backdrop-filter: none; border-bottom: 1px solid var(--line);
+  }
+  body[data-header="over"].nav-open .site-header .brand-name { color: var(--display-color); }
+  body[data-header="over"].nav-open .site-header .brand-sub { color: var(--muted); }
+  body[data-header="over"].nav-open .site-header .nav-toggle { color: var(--ink); }
+  body[data-header="over"] .site-header .site-nav.open a,
+  body[data-header="over"] .site-header.scrolled .site-nav.open a { color: var(--muted); }
+  body[data-header="over"] .site-header .site-nav.open a:hover,
+  body[data-header="over"] .site-header .site-nav.open a.active { color: var(--display-color); }
   .site-nav a { font-size: 15px; padding: 10px 0; }
   .hero-split, .feature-grid, .about-grid, .contact-grid, .intro-grid { grid-template-columns: 1fr; }
   /* Na výšku jde nadpis s přepínačem nad fotku a text až pod ni. */

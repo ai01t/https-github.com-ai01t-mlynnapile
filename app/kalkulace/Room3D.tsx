@@ -6,7 +6,7 @@
 // Objekty (dveře, okna…) se přetahují z palety přímo na stěnu; kliknutím se upraví rozměr.
 
 import { useRef, useState } from "react";
-import { clamp, f2, inferOtherOpening, n, openingKind, uid, WALL_COLORS, wallStats } from "./core";
+import { clamp, f2, inferOtherOpening, n, openingKind, uid, WALL_COLORS, wallArcs, wallStats } from "./core";
 
 const DIRS = [
   [1, 0],
@@ -47,6 +47,9 @@ const FLOOR_STYLE: Record<string, { fill: string; stroke: string }> = {
 
 const WALL_MIME = "application/x-kalk-wall";
 const FLOOR_MIME = "application/x-kalk-floor";
+const POINT_MIME = "application/x-kalk-point";
+
+const ARCH_DEFAULT = 30; // výchozí vzepětí oblouku (cm)
 
 // izometrická projekce: půdorys (x, y) + výška z → obrazovka
 const iso = (x: number, y: number, z: number) => ({ sx: (x - y) * 0.866, sy: (x + y) * 0.5 - z });
@@ -99,6 +102,7 @@ export default function Room3D({
   onAddFloorObject,
   onUpdateFloorObject,
   onRemoveFloorObject,
+  onUpdateWall,
 }: any) {
   const [hoverId, setHoverId] = useState<string | null>(null);
   const [dragWallId, setDragWallId] = useState<string | null>(null);
@@ -106,6 +110,7 @@ export default function Room3D({
   const [sel, setSel] = useState<{ wallId: string; openingId: string } | null>(null);
   const [selFloor, setSelFloor] = useState<string | null>(null);
   const [stairsUp, setStairsUp] = useState(true); // směr schodiště: nahoru / dolů
+  const [trashHot, setTrashHot] = useState(false); // úchyt je nad košem – zvýrazní se červeně
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Pokud existuje náčrt půdorysu, použijeme jeho skutečnou geometrii (přesné rohy a směry),
@@ -212,12 +217,61 @@ export default function Room3D({
   const dropOnWall = (event: any, seg: any) => {
     event.preventDefault();
     setDragWallId(null);
+    const loc = toUser(event.clientX, event.clientY);
+    const { t, z } = invert(seg, loc.x, loc.y);
+
+    // geometrický bod: přichytí se na otvor pod kurzorem (obloukové nadpraží),
+    // jinak přidá bod na horní hranu stěny (klenba)
+    if (event.dataTransfer.getData(POINT_MIME)) {
+      const hit = seg.wall.openings.find((opening: any) => {
+        const ow = Math.max(0, n(opening.width));
+        const oh = Math.max(0, n(opening.height));
+        const ox = clamp(opening.x, 0, Math.max(0, seg.length - ow));
+        const oy = clamp(opening.y, 0, Math.max(0, seg.height - oh));
+        return t >= ox && t <= ox + ow && z >= oy && z <= oy + oh;
+      });
+      if (hit) onUpdateOpening?.(seg.wall.id, hit.id, { arch: ARCH_DEFAULT });
+      else onUpdateWall?.(seg.wall.id, { arcs: [...(seg.wall.arcs ?? []), { id: uid(), x: Math.round(clamp(t, 0, seg.length)), rise: ARCH_DEFAULT }] });
+      return;
+    }
+
     const key = event.dataTransfer.getData(WALL_MIME);
     const item = WALL_ITEMS.find((p) => p.key === key);
     if (!item || !onAddOpening) return;
-    const loc = toUser(event.clientX, event.clientY);
-    const { t, z } = invert(seg, loc.x, loc.y);
     onAddOpening(seg.wall.id, makeObject(item, seg.wall, t, z));
+  };
+
+  // Tažení úchytu oblouku: svislý pohyb myši mění vzepětí (z = konst − sy).
+  // Puštění nad tlačítkem Koš bod odstraní.
+  const overTrash = (event: any) => {
+    const trash = document.getElementById("kalk-trash");
+    if (!trash) return false;
+    const r = trash.getBoundingClientRect();
+    return event.clientX >= r.left && event.clientX <= r.right && event.clientY >= r.top && event.clientY <= r.bottom;
+  };
+
+  const dragArch = (event: any, startRise: number, apply: (rise: number) => void, remove?: () => void) => {
+    event.stopPropagation();
+    event.preventDefault();
+    const startY = toUser(event.clientX, event.clientY).y;
+    const trash = document.getElementById("kalk-trash");
+    const move = (moveEvent: any) => {
+      const onTrash = overTrash(moveEvent);
+      setTrashHot(onTrash);
+      if (trash) trash.style.outline = onTrash ? "2px solid #dc2626" : "";
+      if (onTrash) return; // nad košem se vzepětí nemění
+      const y = toUser(moveEvent.clientX, moveEvent.clientY).y;
+      apply(Math.max(0, Math.round(startRise + (startY - y))));
+    };
+    const up = (upEvent: any) => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      if (trash) trash.style.outline = "";
+      setTrashHot(false);
+      if (overTrash(upEvent)) remove?.();
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
   };
 
   const dropOnFloor = (event: any) => {
@@ -267,6 +321,18 @@ export default function Room3D({
               {item.name}
             </div>
           ))}
+          <div
+            draggable
+            onDragStart={(event) => {
+              event.dataTransfer.setData(POINT_MIME, "1");
+              event.dataTransfer.effectAllowed = "copy";
+            }}
+            title="Geometrický bod – přetáhni na okno/dveře (obloukové nadpraží) nebo na stěnu (klenba). Pak úchyt vytáhni myší nahoru."
+            className="inline-flex cursor-grab items-center gap-1 rounded-[var(--radius-sm)] border border-dashed border-[var(--muted)] bg-[var(--card)] px-2 py-1 text-xs font-bold text-[var(--text-soft)] shadow-sm transition hover:border-[var(--brand)] hover:text-[var(--brand)] active:cursor-grabbing"
+          >
+            <span className="text-sm leading-none">⌒</span>
+            Geom. bod
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="w-24 shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Na půdorys:</span>
@@ -428,40 +494,216 @@ export default function Room3D({
               onDrop={(event) => dropOnWall(event, seg)}
             >
               <title>Přetáhni sem objekt z palety · kliknutím přejdeš na zadání rozměrů stěny</title>
-              <polygon
-                points={pointsAttr(corners)}
-                fill={dropTarget || active ? "var(--brand)" : facade ? WALL_COLORS.facade.fill : WALL_COLORS.interior.fill}
-                fillOpacity={dropTarget ? 0.42 : active ? 0.28 : facade ? 0.92 : 0.72}
-                stroke={dropTarget || active ? "var(--brand)" : facade ? WALL_COLORS.facade.stroke : WALL_COLORS.interior.stroke}
-                strokeWidth={dropTarget ? 4 : active ? 3 : 2}
-                strokeLinejoin="round"
-              />
+              {(() => {
+                // horní hrana: rovná, nebo klenutá podle geometrických bodů
+                const arcs = wallArcs(wall);
+                const p0 = at(0, 0);
+                const p1 = at(seg.length, 0);
+                let d = `M ${p0.sx} ${p0.sy} L ${p1.sx} ${p1.sy}`;
+                if (!arcs.length) {
+                  const t1 = at(seg.length, height);
+                  const t0 = at(0, height);
+                  d += ` L ${t1.sx} ${t1.sy} L ${t0.sx} ${t0.sy} Z`;
+                } else {
+                  const end = at(seg.length, height);
+                  d += ` L ${end.sx} ${end.sy}`;
+                  // zprava doleva přes jednotlivé oblouky
+                  [...arcs].reverse().forEach((arc: any) => {
+                    const from = at(arc.to, height);
+                    const to = at(arc.from, height);
+                    const apex = at(arc.x, height + arc.rise);
+                    const cx = 2 * apex.sx - (from.sx + to.sx) / 2;
+                    const cy = 2 * apex.sy - (from.sy + to.sy) / 2;
+                    d += ` Q ${cx} ${cy} ${to.sx} ${to.sy}`;
+                  });
+                  d += " Z";
+                }
+                return (
+                  <path
+                    d={d}
+                    fill={dropTarget || active ? "var(--brand)" : facade ? WALL_COLORS.facade.fill : WALL_COLORS.interior.fill}
+                    fillOpacity={dropTarget ? 0.42 : active ? 0.28 : facade ? 0.92 : 0.72}
+                    stroke={dropTarget || active ? "var(--brand)" : facade ? WALL_COLORS.facade.stroke : WALL_COLORS.interior.stroke}
+                    strokeWidth={dropTarget ? 4 : active ? 3 : 2}
+                    strokeLinejoin="round"
+                  />
+                );
+              })()}
               {wall.openings.map((opening: any) => {
                 const kind = openingKind(opening);
                 const ow = Math.max(0, n(opening.width));
                 const oh = Math.max(0, n(opening.height));
                 const ox = Math.min(Math.max(0, n(opening.x)), Math.max(0, seg.length - ow));
                 const oy = Math.min(Math.max(0, n(opening.y)), Math.max(0, height - oh));
-                const quad = [at(ox, oy), at(ox + ow, oy), at(ox + ow, oy + oh), at(ox, oy + oh)];
                 const selected = sel?.wallId === wall.id && sel?.openingId === opening.id;
                 const fill = kind === "door" ? "#fbbf24" : kind === "other" ? "#d4d4d4" : "#7dd3fc";
                 const stroke = kind === "door" ? "#92400e" : kind === "other" ? "#525252" : "#0369a1";
+                const select = (event: any) => {
+                  event.stopPropagation();
+                  setSel({ wallId: wall.id, openingId: opening.id });
+                };
+
+                // hloubka špalety – okno/dveře se zapustí od líce stěny ven (do exteriéru)
+                const depth = Math.max(0, n(opening.reveal));
+                const arch = Math.max(0, n(opening.arch));
+
+                // vnější normála stěny (směr od středu místnosti ven)
+                let nx = -dir[1];
+                let ny = dir[0];
+                const mx = start[0] + dir[0] * (seg.length / 2);
+                const my = start[1] + dir[1] * (seg.length / 2);
+                if ((mx - floorCenter.x) * nx + (my - floorCenter.y) * ny < 0) {
+                  nx = -nx;
+                  ny = -ny;
+                }
+                const atO = (t: number, z: number, off: number) => iso(start[0] + dir[0] * t + nx * off, start[1] + dir[1] * t + ny * off, z);
+
+                // obrys otvoru v rovině stěny; při oblouku je nadpraží zaoblené
+                const shape = (off: number) => {
+                  const p = (t: number, z: number) => (off ? atO(t, z, off) : at(t, z));
+                  const bl = p(ox, oy);
+                  const br = p(ox + ow, oy);
+                  const tr = p(ox + ow, oy + oh);
+                  const tl = p(ox, oy + oh);
+                  let d = `M ${bl.sx} ${bl.sy} L ${br.sx} ${br.sy} L ${tr.sx} ${tr.sy}`;
+                  if (arch > 0) {
+                    const apex = p(ox + ow / 2, oy + oh + arch);
+                    d += ` Q ${2 * apex.sx - (tr.sx + tl.sx) / 2} ${2 * apex.sy - (tr.sy + tl.sy) / 2} ${tl.sx} ${tl.sy}`;
+                  } else {
+                    d += ` L ${tl.sx} ${tl.sy}`;
+                  }
+                  return d + " Z";
+                };
+
+                if (!depth) {
+                  return (
+                    <g key={opening.id}>
+                      <path d={shape(0)} fill={fill} fillOpacity="0.9" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" className="cursor-pointer" onClick={select}>
+                        <title>{arch > 0 ? `Oblouk ${arch} cm · ` : ""}Kliknutím upravíš rozměr objektu</title>
+                      </path>
+                      {arch > 0 && (
+                        <circle
+                          cx={at(ox + ow / 2, oy + oh + arch).sx}
+                          cy={at(ox + ow / 2, oy + oh + arch).sy}
+                          r="9"
+                          fill="white"
+                          stroke="var(--brand)"
+                          strokeWidth="3"
+                          className="cursor-ns-resize"
+                          onClick={(event) => event.stopPropagation()}
+                          onPointerDown={(event) =>
+                            dragArch(
+                              event,
+                              arch,
+                              (rise) => onUpdateOpening?.(wall.id, opening.id, { arch: rise }),
+                              () => onUpdateOpening?.(wall.id, opening.id, { arch: 0 }),
+                            )
+                          }
+                          onDoubleClick={(event) => {
+                            event.stopPropagation();
+                            onUpdateOpening?.(wall.id, opening.id, { arch: 0 });
+                          }}
+                        >
+                          <title>Táhni nahoru/dolů – vzepětí oblouku ({arch} cm). Dvojklik oblouk zruší.</title>
+                        </circle>
+                      )}
+                    </g>
+                  );
+                }
+
+                const corners2d = [
+                  [ox, oy],
+                  [ox + ow, oy],
+                  [ox + ow, oy + oh],
+                  [ox, oy + oh],
+                ];
+                const frontPts = corners2d.map(([t, z]) => atO(t, z, 0));
+                const backPts = corners2d.map(([t, z]) => atO(t, z, depth));
+                const onFloor = kind === "door" || n(opening.y) === 0;
+
+                // boční plochy špalety (0 = parapet/práh, 1 = pravé ostění, 2 = nadpraží, 3 = levé ostění)
+                const faces = [];
+                for (let i = 0; i < 4; i++) {
+                  if (onFloor && i === 0) continue; // otvor stojící na podlaze nemá spodní špaletu
+                  const j = (i + 1) % 4;
+                  const midT = (corners2d[i][0] + corners2d[j][0]) / 2;
+                  const px = start[0] + dir[0] * midT + nx * (depth / 2);
+                  const py = start[1] + dir[1] * midT + ny * (depth / 2);
+                  faces.push({ pts: [frontPts[i], frontPts[j], backPts[j], backPts[i]], d: px + py, top: i === 2 });
+                }
+                faces.sort((a, b) => a.d - b.d); // vzdálenější špaleta se kreslí dřív
+
                 return (
-                  <polygon
-                    key={opening.id}
-                    points={pointsAttr(quad)}
-                    fill={fill}
-                    fillOpacity="0.9"
-                    stroke={selected ? "var(--brand)" : stroke}
-                    strokeWidth={selected ? 4 : 1.5}
-                    className="cursor-pointer"
-                    onClick={(event) => {
+                  <g key={opening.id}>
+                    <title>
+                      Špaleta {depth} cm{arch > 0 ? ` · oblouk ${arch} cm` : ""} · kliknutím upravíš rozměr objektu
+                    </title>
+                    {/* zapuštěná výplň (okno / dveře) */}
+                    <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" className="cursor-pointer" onClick={select} />
+                    {/* plochy špalety – nadpraží ve stínu, ostění světlejší */}
+                    {faces.map((face, index) => (
+                      <polygon key={index} points={pointsAttr(face.pts)} fill={facade ? WALL_COLORS.facade.fill : "#cbd5e1"} fillOpacity={face.top ? 0.75 : 0.95} stroke={stroke} strokeWidth="1" strokeLinejoin="round" className="cursor-pointer" onClick={select} />
+                    ))}
+                    {/* obrys otvoru v líci stěny */}
+                    <path d={shape(0)} fill="none" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" className="cursor-pointer" onClick={select} />
+                    {arch > 0 && (
+                      <circle
+                        cx={at(ox + ow / 2, oy + oh + arch).sx}
+                        cy={at(ox + ow / 2, oy + oh + arch).sy}
+                        r="9"
+                        fill="white"
+                        stroke={trashHot ? "#dc2626" : "var(--brand)"}
+                        strokeWidth="3"
+                        className="cursor-ns-resize"
+                        onClick={(event) => event.stopPropagation()}
+                        onPointerDown={(event) =>
+                          dragArch(
+                            event,
+                            arch,
+                            (rise) => onUpdateOpening?.(wall.id, opening.id, { arch: rise }),
+                            () => onUpdateOpening?.(wall.id, opening.id, { arch: 0 }),
+                          )
+                        }
+                        onDoubleClick={(event) => {
+                          event.stopPropagation();
+                          onUpdateOpening?.(wall.id, opening.id, { arch: 0 });
+                        }}
+                      >
+                        <title>Táhni nahoru/dolů – vzepětí oblouku ({arch} cm) · přetažením do Koše zrušíš</title>
+                      </circle>
+                    )}
+                  </g>
+                );
+              })}
+              {/* úchyty kleneb na horní hraně stěny */}
+              {wallArcs(wall).map((arc: any) => {
+                const apex = at(arc.x, height + arc.rise);
+                return (
+                  <circle
+                    key={arc.id}
+                    cx={apex.sx}
+                    cy={apex.sy}
+                    r="9"
+                    fill="white"
+                    stroke={trashHot ? "#dc2626" : "var(--brand)"}
+                    strokeWidth="3"
+                    className="cursor-ns-resize"
+                    onClick={(event) => event.stopPropagation()}
+                    onPointerDown={(event) =>
+                      dragArch(
+                        event,
+                        arc.rise,
+                        (rise) => onUpdateWall?.(wall.id, { arcs: (wall.arcs ?? []).map((item: any) => (item.id === arc.id ? { ...item, rise } : item)) }),
+                        () => onUpdateWall?.(wall.id, { arcs: (wall.arcs ?? []).filter((item: any) => item.id !== arc.id) }),
+                      )
+                    }
+                    onDoubleClick={(event) => {
                       event.stopPropagation();
-                      setSel({ wallId: wall.id, openingId: opening.id });
+                      onUpdateWall?.(wall.id, { arcs: (wall.arcs ?? []).filter((item: any) => item.id !== arc.id) });
                     }}
                   >
-                    <title>Kliknutím upravíš rozměr objektu</title>
-                  </polygon>
+                    <title>Klenba {arc.rise} cm · táhni nahoru/dolů · přetažením do Koše odstraníš</title>
+                  </circle>
                 );
               })}
               <text x={top.sx} y={top.sy - 8} textAnchor="middle" fontSize="13" fontWeight="800" fill={active ? "var(--brand)" : "#334155"} pointerEvents="none">
@@ -492,6 +734,8 @@ export default function Room3D({
               ["Výška", "height"],
               ["Zleva", "x"],
               ["Od podlahy", "y"],
+              ["Špaleta", "reveal"],
+              ["Oblouk", "arch"],
             ].map(([label, field]) => (
               <label key={field} className="block">
                 <div className="mb-0.5 text-[10px] font-bold uppercase text-[var(--muted)]">{label}</div>
@@ -591,6 +835,12 @@ export default function Room3D({
             <span className="text-right font-semibold">{f2(wallStats(hovered.wall).clean)} m²</span>
             <span className="text-[var(--muted)]">Rozsah</span>
             <span className="text-right font-semibold">{SCOPE_LABEL[hovered.wall.scope] ?? hovered.wall.scope}</span>
+            {wallStats(hovered.wall).reveals > 0 && (
+              <>
+                <span className="text-[var(--muted)]">Špalety</span>
+                <span className="text-right font-semibold text-emerald-700">+{f2(wallStats(hovered.wall).reveals)} m²</span>
+              </>
+            )}
             <span className="text-[var(--muted)]">Otvory</span>
             <span className="text-right font-semibold">{hovered.wall.openings.length ? `${hovered.wall.openings.length}× (-${f2(wallStats(hovered.wall).openings)} m²)` : "žádné"}</span>
           </div>

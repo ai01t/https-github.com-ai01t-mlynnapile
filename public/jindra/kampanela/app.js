@@ -863,8 +863,12 @@ function wireUp() {
   if (toggle) toggle.addEventListener("click", () => {
     const open = nav.classList.toggle("open");
     toggle.setAttribute("aria-expanded", String(open));
+    document.body.classList.toggle("nav-open", open);   // otevřené menu = plné pozadí a tmavý text
   });
-  $$("#siteNav a").forEach((a) => a.addEventListener("click", () => nav.classList.remove("open")));
+  $$("#siteNav a").forEach((a) => a.addEventListener("click", () => {
+    nav.classList.remove("open");
+    document.body.classList.remove("nav-open");
+  }));
 
   fitRotated();
   initTrail();

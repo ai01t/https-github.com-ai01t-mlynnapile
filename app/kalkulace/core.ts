@@ -149,10 +149,49 @@ export function scopeText(scope: string) {
   return scope === "damaged" ? "Poškozená" : "Navazující / pohledová";
 }
 
+// Plocha špalet otvoru (ostění + nadpraží) – obvod otvoru × hloubka špalety.
+// Otvor stojící na podlaze (dveře) nemá spodní špaletu, proto se šířka počítá jednou.
+export function revealArea(opening: any) {
+  const depth = Math.max(0, n(opening.reveal));
+  if (!depth) return 0;
+  const width = Math.max(0, n(opening.width));
+  const height = Math.max(0, n(opening.height));
+  const onFloor = openingKind(opening) === "door" || n(opening.y) === 0;
+  const perimeter = onFloor ? width + 2 * height : 2 * (width + height);
+  return (perimeter / 100) * (depth / 100) * Math.max(1, n(opening.count || 1));
+}
+
+// Plocha parabolického oblouku (segment nad tětivou): 2/3 × rozpětí × vzepětí.
+export const archArea = (span: any, rise: any) => (Math.max(0, n(span)) / 100) * (Math.max(0, n(rise)) / 100) * (2 / 3);
+
+// Oblouky na horní hraně stěny. Každý bod tvoří jeden oblouk; hranice mezi
+// sousedními oblouky leží v polovině vzdálenosti mezi body (3 body = 3 oblouky).
+export function wallArcs(wall: any) {
+  const points = (wall.arcs ?? [])
+    .map((arc: any) => ({ x: Math.max(0, n(arc.x)), rise: Math.max(0, n(arc.rise)), id: arc.id }))
+    .sort((a: any, b: any) => a.x - b.x);
+  if (!points.length) return [];
+  const length = Math.max(1, n(wall.width));
+  return points.map((point: any, index: number) => {
+    const from = index === 0 ? 0 : (points[index - 1].x + point.x) / 2;
+    const to = index === points.length - 1 ? length : (point.x + points[index + 1].x) / 2;
+    return { ...point, from, to, span: Math.max(0, to - from) };
+  });
+}
+
 export function wallStats(wall: any) {
-  const gross = areaCm(wall.width, wall.height);
-  const openings = wall.openings.reduce((sum: number, opening: any) => sum + areaCm(opening.width, opening.height, opening.count), 0);
-  return { gross, openings, clean: Math.max(0, gross - openings) };
+  // klenby na horní hraně stěny plochu zvětšují
+  const arcs = wallArcs(wall).reduce((sum: number, arc: any) => sum + archArea(arc.span, arc.rise), 0);
+  const gross = areaCm(wall.width, wall.height) + arcs;
+  const openings = wall.openings.reduce(
+    (sum: number, opening: any) =>
+      // obloukové nadpraží otvor zvětšuje
+      sum + areaCm(opening.width, opening.height, opening.count) + archArea(opening.width, opening.arch) * Math.max(1, n(opening.count || 1)),
+    0,
+  );
+  // špalety se k ploše naopak přičítají – je to plocha navíc k omítnutí / vymalování
+  const reveals = wall.openings.reduce((sum: number, opening: any) => sum + revealArea(opening), 0);
+  return { gross, openings, reveals, arcs, clean: Math.max(0, gross - openings) + reveals };
 }
 
 export function openingKind(opening: any) {
@@ -179,6 +218,7 @@ export function openingDefaults(type: string, wall: any) {
     id: uid(),
     name: door ? "Dveře" : other ? "Jiné" : "Okno",
     type,
+    reveal: 0, // hloubka špalety v cm (0 = neúčtuje se)
     width: Math.round(width),
     height: Math.round(height),
     count: 1,
