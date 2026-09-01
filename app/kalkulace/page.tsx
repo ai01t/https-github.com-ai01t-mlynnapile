@@ -56,6 +56,7 @@ import {
   uid,
   revealArea,
   wallArcs,
+  wallGaps,
   wallStats,
 } from "./core";
 import Room3D from "./Room3D";
@@ -76,6 +77,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
   const [sketchOpen, setSketchOpen] = useState(false);
   const [docsOpen, setDocsOpen] = useState(false);
   const [selectedWallId, setSelectedWallId] = useState(null);
+  const [mirrorArcs, setMirrorArcs] = useState({}); // kopírovat klenby na protější stěnu (výchozí zapnuto)
   const selectWallTimer = useRef(null);
   // ruční dokument: { kind: "quote" | "invoice", initial?: uložená ruční nabídka }
   const [manualDoc, setManualDoc] = useState(null);
@@ -552,6 +554,39 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           : wall,
       ),
     );
+  // Protější stěna: u pravoúhlé místnosti leží o dvě pozice dál (1↔3, 2↔4).
+  const oppositeWall = (wallId) => {
+    const list = walls.filter((wall) => !wall.ceiling);
+    const index = list.findIndex((wall) => wall.id === wallId);
+    if (index < 0 || list.length < 4) return null;
+    return list[(index + Math.floor(list.length / 2)) % list.length] ?? null;
+  };
+
+  // zrcadlově zkopíruje klenby na protější stěnu (poloha se překlopí podle délky)
+  const copyArcsToOpposite = (wallId) => {
+    const source = walls.find((wall) => wall.id === wallId);
+    const target = oppositeWall(wallId);
+    if (!source?.arcs?.length || !target) return;
+    const sourceWidth = Math.max(1, n(source.width));
+    const targetWidth = Math.max(1, n(target.width));
+    const mirrored = [...source.arcs]
+      .sort((a, b) => n(a.x) - n(b.x))
+      .map((arc) => ({ ...arc, id: uid(), x: Math.round(((sourceWidth - n(arc.x)) / sourceWidth) * targetWidth) }))
+      .sort((a, b) => a.x - b.x)
+      // gapBefore patří vždy k následujícímu oblouku, po zrcadlení se posune
+      .map((arc, index, list) => ({ ...arc, gapBefore: index === 0 ? 0 : n(list[index - 1].gapBefore) || n(arc.gapBefore) }));
+    updateWall(target.id, { arcs: mirrored });
+    flash(`Klenby zkopírovány na ${target.name} ✓`);
+  };
+
+  // odškrtnutí zrcadlení klenby z protější stěny zase odebere
+  const clearOppositeArcs = (wallId) => {
+    const target = oppositeWall(wallId);
+    if (!target?.arcs?.length) return;
+    updateWall(target.id, { arcs: [] });
+    flash(`Klenby na ${target.name} odebrány ✓`);
+  };
+
   const addOpening = (wallId, opening) => setWalls((prev) => prev.map((wall) => (wall.id === wallId ? { ...wall, openings: [...wall.openings, opening] } : wall)));
   const removeOpening = (wallId, openingId) =>
     setWalls((prev) => prev.map((wall) => (wall.id === wallId ? { ...wall, openings: wall.openings.filter((opening) => opening.id !== openingId) } : wall)));
@@ -1029,7 +1064,17 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                     <WallGraphic
                       wall={displayWall}
                       onMoveOpening={(openingId, patch) => updateOpening(wall.id, openingId, patch)}
-                      onUpdateWall={(patch) => updateWall(wall.id, patch)}
+                      onUpdateWall={(patch) => {
+                        updateWall(wall.id, patch);
+                        if (patch.arcs && mirrorArcs[wall.id] !== false) setTimeout(() => copyArcsToOpposite(wall.id), 0);
+                      }}
+                      oppositeName={oppositeWall(wall.id)?.name}
+                      mirror={mirrorArcs[wall.id] !== false}
+                      onMirrorChange={(value) => {
+                        setMirrorArcs((prev) => ({ ...prev, [wall.id]: value }));
+                        if (value) copyArcsToOpposite(wall.id);
+                        else clearOppositeArcs(wall.id);
+                      }}
                     />
                   </div>
                 </Card>
@@ -1278,7 +1323,7 @@ function Card({ children, className = "", ...props }) {
   );
 }
 
-function WallGraphic({ wall, onMoveOpening, onUpdateWall }) {
+function WallGraphic({ wall, onMoveOpening, onUpdateWall, oppositeName, mirror = true, onMirrorChange }) {
   const width = Math.max(1, n(wall.width));
   const height = Math.max(1, n(wall.height));
   const ratio = width / height;
@@ -1315,12 +1360,32 @@ function WallGraphic({ wall, onMoveOpening, onUpdateWall }) {
     window.addEventListener("pointerup", onUp);
   };
 
-  // rovnoměrné rozmístění bodů (střed každého dílu) – dál jdou upravit ručně
+  // Rovnoměrné rozmístění: všechny oblouky dostanou stejné rozpětí a mezi ně
+  // se vloží zadané mezery. Dál jdou body upravit ručně.
   const spreadArcs = () => {
     const list = wall.arcs ?? [];
     if (!list.length || !onUpdateWall) return;
     const sorted = [...list].sort((a, b) => n(a.x) - n(b.x));
-    onUpdateWall({ arcs: sorted.map((arc, index) => ({ ...arc, x: Math.round((width * (index + 0.5)) / sorted.length) })) });
+    const gapsTotal = sorted.reduce((sum, arc, index) => sum + (index === 0 ? 0 : Math.max(0, n(arc.gapBefore))), 0);
+    const span = Math.max(0, (width - gapsTotal) / sorted.length);
+    let cursor = 0;
+    const next = sorted.map((arc, index) => {
+      if (index > 0) cursor += Math.max(0, n(arc.gapBefore));
+      const x = Math.round(cursor + span / 2);
+      cursor += span;
+      return { ...arc, x };
+    });
+    onUpdateWall({ arcs: next });
+  };
+
+  // mezery mezi oblouky (traverza apod.); N bodů → N−1 mezer
+  const gaps = wallGaps(wall);
+  const hasGaps = gaps.some((gap) => gap.width > 0);
+  const setGap = (arcId, value) =>
+    onUpdateWall?.({ arcs: (wall.arcs ?? []).map((arc) => (arc.id === arcId ? { ...arc, gapBefore: value } : arc)) });
+  const addGaps = () => {
+    const sorted = [...(wall.arcs ?? [])].sort((a, b) => n(a.x) - n(b.x));
+    onUpdateWall?.({ arcs: sorted.map((arc, index) => (index === 0 ? { ...arc, gapBefore: 0 } : { ...arc, gapBefore: n(arc.gapBefore) || 20 })) });
   };
 
   const moveOpening = (event, opening) => {
@@ -1358,14 +1423,24 @@ function WallGraphic({ wall, onMoveOpening, onUpdateWall }) {
         <h2 className="text-xs font-black uppercase tracking-wide text-[var(--text-soft)]">Grafický náhled</h2>
         <div className="flex items-center gap-2">
           {arcs.length > 1 && (
-            <button
-              type="button"
-              onClick={spreadArcs}
-              title="Rozmístí geometrické body rovnoměrně po stěně (pak je můžeš doladit tažením)"
-              className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--muted)] transition hover:border-[var(--brand)] hover:text-[var(--brand)]"
-            >
-              ⇹ Rozmístit
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={spreadArcs}
+                title="Rozmístí geometrické body rovnoměrně (pak je můžeš doladit tažením)"
+                className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--muted)] transition hover:border-[var(--brand)] hover:text-[var(--brand)]"
+              >
+                ⇹ Zarovnat body
+              </button>
+              <button
+                type="button"
+                onClick={addGaps}
+                title="Vloží mezi oblouky rovné mezery (např. na traverzu). Rozměr každé mezery pak zadáš v cm."
+                className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--muted)] transition hover:border-[var(--brand)] hover:text-[var(--brand)]"
+              >
+                ↔ Přidat mezeru
+              </button>
+            </>
           )}
           <div className="text-right text-[11px] text-[var(--muted)]">
             <b className="text-[var(--text)]">{f2(stats.clean)} m²</b> · {width} × {height} cm
@@ -1395,6 +1470,22 @@ function WallGraphic({ wall, onMoveOpening, onUpdateWall }) {
                 stroke="var(--brand)"
                 strokeWidth="2"
               />
+              {/* mezery (traverzy) – zvýrazněný rovný úsek s rozměrem */}
+              {gaps
+                .filter((gap) => gap.width > 0)
+                .map((gap) => (
+                  <g key={`gap-${gap.id}`}>
+                    <line x1={gap.from * scaleX} y1={headroom} x2={gap.to * scaleX} y2={headroom} stroke="#0f766e" strokeWidth="4" />
+                    <text x={((gap.from + gap.to) / 2) * scaleX} y={headroom - 4} textAnchor="middle" fontSize="8" fontWeight="700" fill="#0f766e">
+                      {Math.round(gap.width)}
+                    </text>
+                  </g>
+                ))}
+              {arcs.map((arc) => (
+                <text key={`lbl-${arc.id}`} x={arc.x * scaleX} y={headroom - arc.rise * scaleY - 9} textAnchor="middle" fontSize="8" fontWeight="700" fill="var(--brand)">
+                  {Math.round(arc.rise)}
+                </text>
+              ))}
               {arcs.map((arc) => (
                 <circle
                   key={arc.id}
@@ -1458,6 +1549,59 @@ function WallGraphic({ wall, onMoveOpening, onUpdateWall }) {
         <span>Odečty: <b className="text-[var(--text)]">-{f2(stats.openings)} m²</b></span>
         {stats.reveals > 0 && <span>Špalety: <b className="text-emerald-700">+{f2(stats.reveals)} m²</b></span>}
       </div>
+      {arcs.length > 0 && (
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-[var(--muted)]">
+          <span className="font-bold uppercase">Výška oblouků:</span>
+          {arcs.map((arc, index) => (
+            <label key={`rise-${arc.id}`} className="inline-flex items-center gap-1">
+              {index + 1}.
+              <input
+                value={(wall.arcs ?? []).find((item) => item.id === arc.id)?.rise ?? 0}
+                onChange={(event) => onUpdateWall?.({ arcs: (wall.arcs ?? []).map((item) => (item.id === arc.id ? { ...item, rise: event.target.value } : item)) })}
+                title={`Vzepětí ${index + 1}. oblouku (cm)`}
+                className="w-12 rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-1 py-0.5 text-right"
+              />
+              cm
+            </label>
+          ))}
+          {arcs.length > 1 && (
+            <button
+              type="button"
+              onClick={() => {
+                const first = n((wall.arcs ?? [])[0]?.rise) || 30;
+                onUpdateWall?.({ arcs: (wall.arcs ?? []).map((item) => ({ ...item, rise: first })) });
+              }}
+              title="Nastaví všem obloukům stejnou výšku jako prvnímu"
+              className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-1.5 py-0.5 font-bold transition hover:border-[var(--brand)] hover:text-[var(--brand)]"
+            >
+              = stejně
+            </button>
+          )}
+        </div>
+      )}
+      {arcs.length > 0 && oppositeName && (
+        <label className="mt-1 flex items-center gap-1.5 text-[10px] text-[var(--muted)]" title={`Změny kleneb se zrcadlově promítnou na ${oppositeName}`}>
+          <input type="checkbox" checked={mirror} onChange={(event) => onMirrorChange?.(event.target.checked)} />
+          Zkopírovat na protější stěnu (<b className="text-[var(--text-soft)]">{oppositeName}</b>)
+        </label>
+      )}
+      {gaps.length > 0 && hasGaps && (
+        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] text-[var(--muted)]">
+          <span className="font-bold uppercase">Mezery mezi oblouky:</span>
+          {gaps.map((gap, index) => (
+            <label key={gap.id} className="inline-flex items-center gap-1">
+              {index + 1}.
+              <input
+                value={(wall.arcs ?? []).find((arc) => arc.id === gap.id)?.gapBefore ?? 0}
+                onChange={(event) => setGap(gap.id, event.target.value)}
+                title={`Šířka mezery mezi ${index + 1}. a ${index + 2}. obloukem (cm)`}
+                className="w-12 rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-1 py-0.5 text-right"
+              />
+              cm
+            </label>
+          ))}
+        </div>
+      )}
       <p className="mt-1 text-[10px] leading-tight text-[var(--muted)]">Otvor přetáhni myší, nebo uprav hodnoty „zleva" a „od podlahy".</p>
     </div>
   );

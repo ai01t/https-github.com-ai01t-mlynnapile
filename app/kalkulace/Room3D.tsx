@@ -6,7 +6,7 @@
 // Objekty (dveře, okna…) se přetahují z palety přímo na stěnu; kliknutím se upraví rozměr.
 
 import { useRef, useState } from "react";
-import { clamp, f2, inferOtherOpening, n, openingKind, uid, WALL_COLORS, wallArcs, wallStats } from "./core";
+import { clamp, f2, inferOtherOpening, n, openingKind, outerOpening, uid, WALL_COLORS, wallArcs, wallStats } from "./core";
 
 const DIRS = [
   [1, 0],
@@ -250,15 +250,50 @@ export default function Room3D({
     return event.clientX >= r.left && event.clientX <= r.right && event.clientY >= r.top && event.clientY <= r.bottom;
   };
 
+  // Uchopení libovolného objektu: krátké kliknutí = výběr, tažení nad Koš = smazání.
+  // Jakmile se něco uchopí, koš se zvýrazní, aby bylo vidět, kam se dá pustit.
+  const paintTrash = (mode: "off" | "armed" | "hot") => {
+    const trash = document.getElementById("kalk-trash");
+    if (!trash) return;
+    trash.style.outline = mode === "hot" ? "2px solid #dc2626" : mode === "armed" ? "2px dashed #dc2626" : "";
+    trash.style.background = mode === "hot" ? "#fee2e2" : mode === "armed" ? "#fef2f2" : "";
+    trash.style.color = mode === "off" ? "" : "#b91c1c";
+  };
+
+  const grabToTrash = (event: any, remove?: () => void, onClickInstead?: () => void) => {
+    event.stopPropagation();
+    const startX = event.clientX;
+    const startY = event.clientY;
+    let moved = false;
+    paintTrash("armed");
+    setTrashHot(false);
+    const move = (moveEvent: any) => {
+      if (Math.hypot(moveEvent.clientX - startX, moveEvent.clientY - startY) > 6) moved = true;
+      const hot = overTrash(moveEvent);
+      setTrashHot(hot);
+      paintTrash(hot ? "hot" : "armed");
+    };
+    const up = (upEvent: any) => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      paintTrash("off");
+      setTrashHot(false);
+      if (overTrash(upEvent)) remove?.();
+      else if (!moved) onClickInstead?.();
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+  };
+
   const dragArch = (event: any, startRise: number, apply: (rise: number) => void, remove?: () => void) => {
     event.stopPropagation();
     event.preventDefault();
     const startY = toUser(event.clientX, event.clientY).y;
-    const trash = document.getElementById("kalk-trash");
+    paintTrash("armed");
     const move = (moveEvent: any) => {
       const onTrash = overTrash(moveEvent);
       setTrashHot(onTrash);
-      if (trash) trash.style.outline = onTrash ? "2px solid #dc2626" : "";
+      paintTrash(onTrash ? "hot" : "armed");
       if (onTrash) return; // nad košem se vzepětí nemění
       const y = toUser(moveEvent.clientX, moveEvent.clientY).y;
       apply(Math.max(0, Math.round(startRise + (startY - y))));
@@ -266,7 +301,7 @@ export default function Room3D({
     const up = (upEvent: any) => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
-      if (trash) trash.style.outline = "";
+      paintTrash("off");
       setTrashHot(false);
       if (overTrash(upEvent)) remove?.();
     };
@@ -429,11 +464,22 @@ export default function Room3D({
           return (
             <g
               key={obj.id}
-              className="cursor-pointer"
+              className="cursor-grab active:cursor-grabbing"
+              onPointerDown={(event) =>
+                grabToTrash(
+                  event,
+                  () => {
+                    onRemoveFloorObject?.(obj.id);
+                    setSelFloor(null);
+                  },
+                  () => {
+                    setSel(null);
+                    setSelFloor(obj.id);
+                  },
+                )
+              }
               onClick={(event) => {
                 event.stopPropagation();
-                setSel(null);
-                setSelFloor(obj.id);
               }}
             >
               <title>Kliknutím upravíš rozměr objektu</title>
@@ -514,6 +560,7 @@ export default function Room3D({
                     const apex = at(arc.x, height + arc.rise);
                     const cx = 2 * apex.sx - (from.sx + to.sx) / 2;
                     const cy = 2 * apex.sy - (from.sy + to.sy) / 2;
+                    d += ` L ${from.sx} ${from.sy}`; // plochý úsek mezery (traverza) před obloukem
                     d += ` Q ${cx} ${cy} ${to.sx} ${to.sy}`;
                   });
                   d += " Z";
@@ -542,6 +589,16 @@ export default function Room3D({
                   event.stopPropagation();
                   setSel({ wallId: wall.id, openingId: opening.id });
                 };
+                // uchopení otvoru: klik vybere, tažení do Koše smaže
+                const grab = (event: any) =>
+                  grabToTrash(
+                    event,
+                    () => {
+                      onRemoveOpening?.(wall.id, opening.id);
+                      setSel(null);
+                    },
+                    () => setSel({ wallId: wall.id, openingId: opening.id }),
+                  );
 
                 // hloubka špalety – okno/dveře se zapustí od líce stěny ven (do exteriéru)
                 const depth = Math.max(0, n(opening.reveal));
@@ -558,13 +615,24 @@ export default function Room3D({
                 }
                 const atO = (t: number, z: number, off: number) => iso(start[0] + dir[0] * t + nx * off, start[1] + dir[1] * t + ny * off, z);
 
+                // Vnější konec špalety: při pravém úhlu stejný otvor, jinak menší
+                // (špaleta se pak do místnosti šikmo rozevírá).
+                const outer = outerOpening(opening);
+                const insetX = Math.max(0, (ow - outer.width) / 2);
+                const insetY = Math.max(0, (oh - outer.height) / 2);
+                const onFloorOpening = kind === "door" || n(opening.y) === 0;
+
                 // obrys otvoru v rovině stěny; při oblouku je nadpraží zaoblené
                 const shape = (off: number) => {
                   const p = (t: number, z: number) => (off ? atO(t, z, off) : at(t, z));
-                  const bl = p(ox, oy);
-                  const br = p(ox + ow, oy);
-                  const tr = p(ox + ow, oy + oh);
-                  const tl = p(ox, oy + oh);
+                  // na vnějším konci se otvor zúží dovnitř (parapet u dveří zůstává na podlaze)
+                  const ix = off ? insetX : 0;
+                  const iyTop = off ? insetY : 0;
+                  const iyBottom = off && !onFloorOpening ? insetY : 0;
+                  const bl = p(ox + ix, oy + iyBottom);
+                  const br = p(ox + ow - ix, oy + iyBottom);
+                  const tr = p(ox + ow - ix, oy + oh - iyTop);
+                  const tl = p(ox + ix, oy + oh - iyTop);
                   let d = `M ${bl.sx} ${bl.sy} L ${br.sx} ${br.sy} L ${tr.sx} ${tr.sy}`;
                   if (arch > 0) {
                     const apex = p(ox + ow / 2, oy + oh + arch);
@@ -578,7 +646,7 @@ export default function Room3D({
                 if (!depth) {
                   return (
                     <g key={opening.id}>
-                      <path d={shape(0)} fill={fill} fillOpacity="0.9" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" className="cursor-pointer" onClick={select}>
+                      <path d={shape(0)} fill={fill} fillOpacity="0.9" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" className="cursor-grab active:cursor-grabbing" onPointerDown={grab}>
                         <title>{arch > 0 ? `Oblouk ${arch} cm · ` : ""}Kliknutím upravíš rozměr objektu</title>
                       </path>
                       {arch > 0 && (
@@ -618,7 +686,14 @@ export default function Room3D({
                   [ox, oy + oh],
                 ];
                 const frontPts = corners2d.map(([t, z]) => atO(t, z, 0));
-                const backPts = corners2d.map(([t, z]) => atO(t, z, depth));
+                // vnější konec je u šikmé špalety zúžený → boční plochy jsou lichoběžníky
+                const backCorners = [
+                  [ox + insetX, oy + (onFloorOpening ? 0 : insetY)],
+                  [ox + ow - insetX, oy + (onFloorOpening ? 0 : insetY)],
+                  [ox + ow - insetX, oy + oh - insetY],
+                  [ox + insetX, oy + oh - insetY],
+                ];
+                const backPts = backCorners.map(([t, z]) => atO(t, z, depth));
                 const onFloor = kind === "door" || n(opening.y) === 0;
 
                 // boční plochy špalety (0 = parapet/práh, 1 = pravé ostění, 2 = nadpraží, 3 = levé ostění)
@@ -639,13 +714,13 @@ export default function Room3D({
                       Špaleta {depth} cm{arch > 0 ? ` · oblouk ${arch} cm` : ""} · kliknutím upravíš rozměr objektu
                     </title>
                     {/* zapuštěná výplň (okno / dveře) */}
-                    <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" className="cursor-pointer" onClick={select} />
+                    <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
                     {/* plochy špalety – nadpraží ve stínu, ostění světlejší */}
                     {faces.map((face, index) => (
-                      <polygon key={index} points={pointsAttr(face.pts)} fill={facade ? WALL_COLORS.facade.fill : "#cbd5e1"} fillOpacity={face.top ? 0.75 : 0.95} stroke={stroke} strokeWidth="1" strokeLinejoin="round" className="cursor-pointer" onClick={select} />
+                      <polygon key={index} points={pointsAttr(face.pts)} fill={facade ? WALL_COLORS.facade.fill : "#cbd5e1"} fillOpacity={face.top ? 0.75 : 0.95} stroke={stroke} strokeWidth="1" strokeLinejoin="round" className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
                     ))}
                     {/* obrys otvoru v líci stěny */}
-                    <path d={shape(0)} fill="none" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" className="cursor-pointer" onClick={select} />
+                    <path d={shape(0)} fill="none" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
                     {arch > 0 && (
                       <circle
                         cx={at(ox + ow / 2, oy + oh + arch).sx}
@@ -747,6 +822,45 @@ export default function Room3D({
               </label>
             ))}
           </div>
+          {n(selOpening.reveal) > 0 && (
+            <div className="mt-2 border-t border-[var(--line)] pt-1.5">
+              <label className="flex items-center gap-1.5 font-bold" title="Špaleta kolmo ke stěně. Odškrtnutím se otvor na vnější straně zmenší a špaleta se do místnosti šikmo rozevře.">
+                <input
+                  type="checkbox"
+                  checked={selOpening.revealSquare !== false}
+                  onChange={(event) =>
+                    onUpdateOpening?.(sel!.wallId, sel!.openingId, {
+                      revealSquare: event.target.checked,
+                      ...(event.target.checked
+                        ? {}
+                        : { outerWidth: Math.round(n(selOpening.width) * 0.8), outerHeight: Math.round(n(selOpening.height) * 0.9) }),
+                    })
+                  }
+                />
+                ⊾ Pravý úhel
+              </label>
+              {selOpening.revealSquare === false && (
+                <div className="mt-1.5 grid grid-cols-2 gap-2">
+                  <label className="block">
+                    <div className="mb-0.5 text-[10px] font-bold uppercase text-[var(--muted)]">Venku šířka</div>
+                    <input
+                      value={selOpening.outerWidth ?? ""}
+                      onChange={(event) => onUpdateOpening?.(sel!.wallId, sel!.openingId, { outerWidth: event.target.value })}
+                      className="w-full rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1 text-right"
+                    />
+                  </label>
+                  <label className="block">
+                    <div className="mb-0.5 text-[10px] font-bold uppercase text-[var(--muted)]">Venku výška</div>
+                    <input
+                      value={selOpening.outerHeight ?? ""}
+                      onChange={(event) => onUpdateOpening?.(sel!.wallId, sel!.openingId, { outerHeight: event.target.value })}
+                      className="w-full rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1 text-right"
+                    />
+                  </label>
+                </div>
+              )}
+            </div>
+          )}
           <div className="mt-2 flex items-center justify-between">
             <span className="text-[var(--muted)]">-{f2((n(selOpening.width) * n(selOpening.height)) / 10000)} m²</span>
             <button

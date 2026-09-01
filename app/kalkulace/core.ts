@@ -151,14 +151,36 @@ export function scopeText(scope: string) {
 
 // Plocha špalet otvoru (ostění + nadpraží) – obvod otvoru × hloubka špalety.
 // Otvor stojící na podlaze (dveře) nemá spodní špaletu, proto se šířka počítá jednou.
+// Rozměr otvoru na vnějším konci špalety. Při pravém úhlu je shodný s otvorem,
+// jinak je otvor venku menší a špaleta se do místnosti šikmo rozevírá.
+export function outerOpening(opening: any) {
+  const width = Math.max(0, n(opening.width));
+  const height = Math.max(0, n(opening.height));
+  if (opening.revealSquare === false) {
+    return {
+      width: clamp(n(opening.outerWidth) || width, 1, width),
+      height: clamp(n(opening.outerHeight) || height, 1, height),
+    };
+  }
+  return { width, height };
+}
+
 export function revealArea(opening: any) {
   const depth = Math.max(0, n(opening.reveal));
   if (!depth) return 0;
   const width = Math.max(0, n(opening.width));
   const height = Math.max(0, n(opening.height));
+  const outer = outerOpening(opening);
   const onFloor = openingKind(opening) === "door" || n(opening.y) === 0;
-  const perimeter = onFloor ? width + 2 * height : 2 * (width + height);
-  return (perimeter / 100) * (depth / 100) * Math.max(1, n(opening.count || 1));
+  // šikmá špaleta je delší než tloušťka zdi (Pythagoras přes zúžení na stranu)
+  const insetX = Math.max(0, (width - outer.width) / 2);
+  const insetY = Math.max(0, (height - outer.height) / 2);
+  const slantX = Math.hypot(depth, insetX); // ostění (levá + pravá)
+  const slantY = Math.hypot(depth, insetY); // nadpraží (a parapet)
+  const sides = ((height + outer.height) / 2) * slantX * 2;
+  const head = ((width + outer.width) / 2) * slantY;
+  const sill = onFloor ? 0 : head;
+  return ((sides + head + sill) / 10000) * Math.max(1, n(opening.count || 1));
 }
 
 // Plocha parabolického oblouku (segment nad tětivou): 2/3 × rozpětí × vzepětí.
@@ -168,15 +190,24 @@ export const archArea = (span: any, rise: any) => (Math.max(0, n(span)) / 100) *
 // sousedními oblouky leží v polovině vzdálenosti mezi body (3 body = 3 oblouky).
 export function wallArcs(wall: any) {
   const points = (wall.arcs ?? [])
-    .map((arc: any) => ({ x: Math.max(0, n(arc.x)), rise: Math.max(0, n(arc.rise)), id: arc.id }))
+    .map((arc: any) => ({ x: Math.max(0, n(arc.x)), rise: Math.max(0, n(arc.rise)), gapBefore: Math.max(0, n(arc.gapBefore)), id: arc.id }))
     .sort((a: any, b: any) => a.x - b.x);
   if (!points.length) return [];
   const length = Math.max(1, n(wall.width));
+  // mezera mezi sousedními oblouky (např. traverza) se rozdělí na obě strany hranice
   return points.map((point: any, index: number) => {
-    const from = index === 0 ? 0 : (points[index - 1].x + point.x) / 2;
-    const to = index === points.length - 1 ? length : (point.x + points[index + 1].x) / 2;
-    return { ...point, from, to, span: Math.max(0, to - from) };
+    const from = index === 0 ? 0 : (points[index - 1].x + point.x) / 2 + point.gapBefore / 2;
+    const next = points[index + 1];
+    const to = index === points.length - 1 ? length : (point.x + next.x) / 2 - Math.max(0, n(next.gapBefore)) / 2;
+    const safeTo = Math.max(from, to);
+    return { ...point, from, to: safeTo, span: safeTo - from };
   });
+}
+
+// Mezery mezi oblouky (plochý úsek, kam patří např. traverza).
+export function wallGaps(wall: any) {
+  const arcs = wallArcs(wall);
+  return arcs.slice(1).map((arc: any, index: number) => ({ id: arc.id, from: arcs[index].to, to: arc.from, width: Math.max(0, arc.from - arcs[index].to) }));
 }
 
 export function wallStats(wall: any) {
