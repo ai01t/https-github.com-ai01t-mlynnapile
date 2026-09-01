@@ -18,7 +18,8 @@
       "fontScale": 1,
       "bulletStyle": "disc",
       "headingCase": "normal",
-      "dividers": true
+      "dividers": true,
+      "contactStyle": "icon"
     }
   },
   "basics": {
@@ -36,6 +37,7 @@
     },
     "email": "j.traxmandl@gmail.com",
     "phone": "+420 724 050 093",
+    "photo": null,
     "links": [
       {
         "id": "lnk-linkedin",
@@ -660,7 +662,7 @@
       "visible": true,
       "display": {
         "bulletStyle": "inherit",
-        "inline": false
+        "inline": true
       },
       "groups": [
         {
