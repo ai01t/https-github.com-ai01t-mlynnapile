@@ -298,7 +298,7 @@ section.tight {
 /* Kontakt se vytahuje nahoru za galerii, aby pod ním prosvítala fotka.
    Násobí se stejným měřítkem jako mezery — na mobilu by jinak zůstal
    plný posun a sekce by si vlezla na text galerie. */
-#kontakt { margin-top: calc(-1 * var(--pull-up, 0px) * var(--space-scale, 1)); }
+#kontakt { margin-top: calc(-1 * var(--pull-up, 0px) * var(--pull-scale, 1)); }
 .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px, 6vw, 96px); }
 .contact-rows { border-top: 1px solid var(--line); }
 .contact-row { display: grid; grid-template-columns: 130px 1fr; gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--line); }
@@ -375,7 +375,7 @@ section.tight {
   .section-head { grid-template-columns: 1fr; align-items: start; }
   h1 { font-size: clamp(38px, 11vw, 62px); }
   h2 { font-size: clamp(30px, 8vw, 46px); }
-  :root { --space-scale: .6; }
+  :root { --space-scale: .6; --pull-scale: .25; }
 }
 @media (max-width: 560px) {
   .cat-grid, .gal-grid { grid-template-columns: 1fr; }
@@ -388,7 +388,7 @@ section.tight {
   /* Mezery mezi sekcemi se na mobilu stáhnou na necelou polovinu —
      hodnoty z editoru jsou laděné na velkou obrazovku a na telefonu
      z nich byly prázdné obrazovky mezi sekcemi. */
-  :root { --space-scale: .42; }
+  :root { --space-scale: .42; --pull-scale: 0; }     /* na telefonu žádné přisunutí — není kam */
 
   .contact-row { grid-template-columns: 1fr; gap: 2px; padding: 9px 0; }
   .contact-row dt { padding-top: 0; line-height: 1.4; }
