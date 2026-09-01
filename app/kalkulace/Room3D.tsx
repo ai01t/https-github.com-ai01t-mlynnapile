@@ -52,7 +52,7 @@ const POINT_MIME = "application/x-kalk-point";
 const ARCH_DEFAULT = 30; // výchozí vzepětí oblouku (cm)
 
 // izometrická projekce: půdorys (x, y) + výška z → obrazovka
-const iso = (x: number, y: number, z: number) => ({ sx: (x - y) * 0.866, sy: (x + y) * 0.5 - z });
+const isoFlat = (x: number, y: number, z: number) => ({ sx: (x - y) * 0.866, sy: (x + y) * 0.5 - z });
 
 const pointsAttr = (points: { sx: number; sy: number }[]) => points.map((p) => `${p.sx.toFixed(1)},${p.sy.toFixed(1)}`).join(" ");
 
@@ -113,6 +113,8 @@ export default function Room3D({
   const [trashHot, setTrashHot] = useState(false); // úchyt je nad košem – zvýrazní se červeně
   // Popisky stěn: "full" = název + rozměry + plocha, "dims" = jen kóty, "off" = nic
   const [labelMode, setLabelMode] = useState<"full" | "dims" | "off">("full");
+  // Otočení modelu kolem svislé osy (stupně). 0 = výchozí izometrie.
+  const [yaw, setYaw] = useState(0);
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Pokud existuje náčrt půdorysu, použijeme jeho skutečnou geometrii (přesné rohy a směry),
@@ -146,6 +148,23 @@ export default function Room3D({
   }
 
   const roomHeight = Math.round(Math.max(1, ...segments.map((s: any) => s.height)));
+
+  // Otáčení: půdorys se před promítnutím pootočí kolem svého středu.
+  // Stíní modulovou funkci iso, takže všechna volání níž otočení respektují.
+  const planXs = segments.flatMap((s: any) => [s.start[0], s.end[0]]);
+  const planYs = segments.flatMap((s: any) => [s.start[1], s.end[1]]);
+  const pivot = {
+    x: (Math.min(...planXs) + Math.max(...planXs)) / 2,
+    y: (Math.min(...planYs) + Math.max(...planYs)) / 2,
+  };
+  const yawRad = (yaw * Math.PI) / 180;
+  const cosYaw = Math.cos(yawRad);
+  const sinYaw = Math.sin(yawRad);
+  const iso = (x: number, y: number, z: number) => {
+    const dx = x - pivot.x;
+    const dy = y - pivot.y;
+    return isoFlat(pivot.x + dx * cosYaw - dy * sinYaw, pivot.y + dx * sinYaw + dy * cosYaw, z);
+  };
 
   // fasáda: obdélník terénu (trávník) kolem půdorysu
   const fxs = segments.flatMap((s: any) => [s.start[0], s.end[0]]);
@@ -341,7 +360,34 @@ export default function Room3D({
       {/* paleta objektů */}
       <div className="mb-2 space-y-1.5">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="w-24 shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Detail:</span>
+          <span className="w-24 shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Otočit:</span>
+          <button
+            type="button"
+            onClick={() => setYaw((v) => v - 15)}
+            title="Otočit model o 15° doleva (nebo táhni myší v prázdné ploše)"
+            className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1 text-[13px] font-bold text-[var(--muted)] transition hover:border-[var(--brand)] hover:text-[var(--brand)]"
+          >
+            ⟲
+          </button>
+          <button
+            type="button"
+            onClick={() => setYaw((v) => v + 15)}
+            title="Otočit model o 15° doprava (nebo táhni myší v prázdné ploše)"
+            className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1 text-[13px] font-bold text-[var(--muted)] transition hover:border-[var(--brand)] hover:text-[var(--brand)]"
+          >
+            ⟳
+          </button>
+          <button
+            type="button"
+            onClick={() => setYaw(0)}
+            disabled={yaw === 0}
+            title="Zpět do výchozího pohledu"
+            className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1 text-[11px] font-bold text-[var(--muted)] transition enabled:hover:border-[var(--brand)] enabled:hover:text-[var(--brand)] disabled:opacity-40"
+          >
+            {yaw % 360 === 0 ? "0°" : `${Math.round(((yaw % 360) + 360) % 360)}°`}
+          </button>
+          <span className="mx-1 h-4 w-px bg-[var(--line)]" />
+          <span className="shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Detail:</span>
           {([
             ["full", "Vše", "Název stěny, rozměry i plocha"],
             ["dims", "Jen kóty", "Pouze rozměry stěn"],
@@ -434,6 +480,27 @@ export default function Room3D({
         className={`mx-auto h-auto max-h-[440px] w-full touch-none ${facade ? "rounded-[var(--radius-sm)]" : ""}`}
         role="img"
         aria-label="3D náhled místnosti"
+        onPointerDown={(event) => {
+          // Otáčení tažením — jen v prázdné ploše; nad objekty má přednost jejich vlastní úchop.
+          if ((event.target as Element).closest("[data-grab]")) return;
+          if (event.button !== 0) return;
+          const startX = event.clientX;
+          const startYaw = yaw;
+          // Otáčet až po pár pixelech pohybu, ať prosté kliknutí model nestrhne.
+          let dragging = false;
+          const move = (moveEvent: PointerEvent) => {
+            const dx = moveEvent.clientX - startX;
+            if (!dragging && Math.abs(dx) < 4) return;
+            dragging = true;
+            setYaw(startYaw + dx * 0.4);
+          };
+          const up = () => {
+            window.removeEventListener("pointermove", move);
+            window.removeEventListener("pointerup", up);
+          };
+          window.addEventListener("pointermove", move);
+          window.addEventListener("pointerup", up);
+        }}
         onDragLeave={() => {
           setDragWallId(null);
           setDragFloor(false);
@@ -488,6 +555,7 @@ export default function Room3D({
           return (
             <g
               key={obj.id}
+              data-grab
               className="cursor-grab active:cursor-grabbing"
               onPointerDown={(event) =>
                 grabToTrash(
@@ -691,7 +759,7 @@ export default function Room3D({
                 if (!depth) {
                   return (
                     <g key={opening.id}>
-                      <path d={shape(0)} fill={fill} fillOpacity="0.9" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" className="cursor-grab active:cursor-grabbing" onPointerDown={grab}>
+                      <path d={shape(0)} fill={fill} fillOpacity="0.9" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab}>
                         <title>{arch > 0 ? `Oblouk ${arch} cm · ` : ""}Kliknutím upravíš rozměr objektu</title>
                       </path>
                       {paneLines() && <path d={paneLines()} fill="none" stroke={stroke} strokeWidth="1" strokeOpacity="0.65" pointerEvents="none" />}
@@ -703,6 +771,7 @@ export default function Room3D({
                           fill="white"
                           stroke="var(--brand)"
                           strokeWidth="3"
+                          data-grab
                           className="cursor-ns-resize"
                           onClick={(event) => event.stopPropagation()}
                           onPointerDown={(event) =>
@@ -760,13 +829,13 @@ export default function Room3D({
                       Špaleta {depth} cm{arch > 0 ? ` · oblouk ${arch} cm` : ""} · kliknutím upravíš rozměr objektu
                     </title>
                     {/* zapuštěná výplň (okno / dveře) */}
-                    <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
+                    <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
                     {/* plochy špalety – nadpraží ve stínu, ostění světlejší */}
                     {faces.map((face, index) => (
-                      <polygon key={index} points={pointsAttr(face.pts)} fill={facade ? WALL_COLORS.facade.fill : "#cbd5e1"} fillOpacity={face.top ? 0.75 : 0.95} stroke={stroke} strokeWidth="1" strokeLinejoin="round" className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
+                      <polygon key={index} points={pointsAttr(face.pts)} fill={facade ? WALL_COLORS.facade.fill : "#cbd5e1"} fillOpacity={face.top ? 0.75 : 0.95} stroke={stroke} strokeWidth="1" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
                     ))}
                     {/* obrys otvoru v líci stěny */}
-                    <path d={shape(0)} fill="none" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
+                    <path d={shape(0)} fill="none" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
                     {arch > 0 && (
                       <circle
                         cx={at(ox + ow / 2, oy + oh + arch).sx}
@@ -775,6 +844,7 @@ export default function Room3D({
                         fill="white"
                         stroke={trashHot ? "#dc2626" : "var(--brand)"}
                         strokeWidth="3"
+                        data-grab
                         className="cursor-ns-resize"
                         onClick={(event) => event.stopPropagation()}
                         onPointerDown={(event) =>
@@ -808,6 +878,7 @@ export default function Room3D({
                     fill="white"
                     stroke={trashHot ? "#dc2626" : "var(--brand)"}
                     strokeWidth="3"
+                    data-grab
                     className="cursor-ns-resize"
                     onClick={(event) => event.stopPropagation()}
                     onPointerDown={(event) =>
