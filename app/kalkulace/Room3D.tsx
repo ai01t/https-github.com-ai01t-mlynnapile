@@ -738,19 +738,25 @@ export default function Room3D({
                 // Příčle členěného okna — dělicí čáry v rovině otvoru.
                 // Kreslí se stejnou projekcí jako obrys, takže ve 3D leží na stěně.
                 const panes = kind === "window" ? windowPanes(opening) : { x: 1, y: 1 };
-                const paneLines = () => {
+                // off = 0 → příčle v líci stěny, off = hloubka špalety → na zapuštěném skle
+                const paneLines = (off = 0) => {
                   if (panes.x < 2 && panes.y < 2) return "";
+                  const p = (t: number, z: number) => (off ? atO(t, z, off) : at(t, z));
+                  const left = ox + (off ? insetX : 0);
+                  const right = ox + ow - (off ? insetX : 0);
+                  const bottom = oy + (off && !onFloorOpening ? insetY : 0);
+                  const top = oy + oh - (off ? insetY : 0);
                   let d = "";
                   for (let i = 1; i < panes.x; i++) {
-                    const t = ox + (ow * i) / panes.x;
-                    const a = at(t, oy);
-                    const b = at(t, oy + oh);
+                    const t = left + ((right - left) * i) / panes.x;
+                    const a = p(t, bottom);
+                    const b = p(t, top);
                     d += ` M ${a.sx} ${a.sy} L ${b.sx} ${b.sy}`;
                   }
                   for (let j = 1; j < panes.y; j++) {
-                    const z = oy + (oh * j) / panes.y;
-                    const a = at(ox, z);
-                    const b = at(ox + ow, z);
+                    const z = bottom + ((top - bottom) * j) / panes.y;
+                    const a = p(left, z);
+                    const b = p(right, z);
                     d += ` M ${a.sx} ${a.sy} L ${b.sx} ${b.sy}`;
                   }
                   return d.trim();
@@ -830,6 +836,8 @@ export default function Room3D({
                     </title>
                     {/* zapuštěná výplň (okno / dveře) */}
                     <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
+                    {/* příčle členěného okna na zapuštěném skle */}
+                    {paneLines(depth) && <path d={paneLines(depth)} fill="none" stroke={stroke} strokeWidth="1" strokeOpacity="0.65" pointerEvents="none" />}
                     {/* plochy špalety – nadpraží ve stínu, ostění světlejší */}
                     {faces.map((face, index) => (
                       <polygon key={index} points={pointsAttr(face.pts)} fill={facade ? WALL_COLORS.facade.fill : "#cbd5e1"} fillOpacity={face.top ? 0.75 : 0.95} stroke={stroke} strokeWidth="1" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />

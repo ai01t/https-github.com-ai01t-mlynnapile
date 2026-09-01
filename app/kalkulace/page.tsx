@@ -62,6 +62,7 @@ import {
 import Room3D from "./Room3D";
 import SketchModal from "./Sketch";
 import { track } from "@/lib/analytics";
+import { buildAiMarkdown, buildDrawingSvg } from "./aiExport";
 import { BRAND, Logo } from "./Logo";
 import { defaultDesign, designStyle, DOC_STYLE, readLogoFile, SPACING_CSS, defaultRooms, flattenRooms, makeRoom, roomsFromData, TRASH_TTL_DAYS, setStorageNamespace, windowPanes, WINDOW_PANE_PRESETS } from "./core";
 
@@ -76,6 +77,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
   const [trashOpen, setTrashOpen] = useState(false);
   const [sketchOpen, setSketchOpen] = useState(false);
   const [docsOpen, setDocsOpen] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
   const [selectedWallId, setSelectedWallId] = useState(null);
   const [mirrorArcs, setMirrorArcs] = useState({}); // kopírovat klenby na protější stěnu (výchozí zapnuto)
   const selectWallTimer = useRef(null);
@@ -706,6 +708,15 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                         Faktury
                         <span className="ml-auto rounded-full bg-[var(--bg)] px-2 text-xs font-black text-[var(--muted)]">{invoices.length}</span>
                       </button>
+                      <button
+                        type="button"
+                        onClick={() => { setAiOpen(true); setDocsOpen(false); }}
+                        className="flex w-full items-center gap-2 border-t border-[var(--line)] px-3 py-2.5 text-sm font-bold transition hover:bg-[var(--bg-soft)]"
+                        title="Kótovaný nákres a strukturovaný popis zakázky pro AI i pro člověka"
+                      >
+                        <Download className="h-4 w-4 text-[var(--muted)]" />
+                        Export pro AI
+                      </button>
                     </div>
                   </>
                 )}
@@ -979,10 +990,11 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                             ))}
                           </div>
                         </div>
-                        <div className="space-y-1.5">
+                        {/* tabulka odečtů drží mřížku i v úzkém sloupci, případně se posune vodorovně */}
+                        <div className="space-y-1.5 overflow-x-auto [&>*]:min-w-[660px]">
                           {wall.openings.length === 0 && <div className="px-1 text-[11px] text-[var(--muted)]">Bez odečtů.</div>}
                           {wall.openings.length > 0 && (
-                            <div className="grid gap-1.5 px-2 text-[9px] font-bold uppercase text-[var(--muted)] xl:grid-cols-[72px_minmax(110px,380px)_52px_52px_40px_52px_88px_60px_minmax(74px,1fr)_28px]">
+                            <div className="grid gap-1.5 px-2 text-[9px] font-bold uppercase text-[var(--muted)] grid-cols-[72px_minmax(110px,1fr)_52px_52px_40px_52px_88px_60px_minmax(74px,90px)_28px]">
                               <span>Typ</span>
                               <span>Název</span>
                               <span className="text-right">Šířka</span>
@@ -998,7 +1010,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                           {wall.openings.map((opening) => {
                             const normalized = normalizeOpening(opening, wall);
                             return (
-                              <div key={opening.id} className="grid items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--card)] p-1.5 shadow-sm xl:grid-cols-[72px_minmax(110px,380px)_52px_52px_40px_52px_88px_60px_minmax(74px,1fr)_28px]">
+                              <div key={opening.id} className="grid items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--card)] p-1.5 shadow-sm grid-cols-[72px_minmax(110px,1fr)_52px_52px_40px_52px_88px_60px_minmax(74px,90px)_28px]">
                                 <select
                                   className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-xs"
                                   value={openingKind(opening)}
@@ -1298,6 +1310,14 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
             flash("Půdorys použit ✓");
           }}
           close={() => setSketchOpen(false)}
+        />
+      )}
+      {aiOpen && (
+        <AiExportModal
+          svg={buildDrawingSvg(rooms, meta, company)}
+          markdown={buildAiMarkdown({ rooms, works, settings, calc, meta, customer })}
+          name={(meta.name || "nacenani").replace(/[^\w\-.]+/g, "_")}
+          close={() => setAiOpen(false)}
         />
       )}
       {trashOpen && (
@@ -2232,6 +2252,104 @@ function InvoiceModal({ invoice, company, close }) {
         <footer className="mt-6 border-t-2 pt-2 text-center text-[10px] text-[var(--muted)]" style={{ borderColor: BRAND }}>
           {[supplier.name, supplier.ico && `IČO ${supplier.ico}`, supplier.address, supplier.phone, supplier.email, supplier.web].filter(Boolean).join(" · ")} — {supplier.register} {supplier.vatNote}
         </footer>
+      </div>
+    </Modal>
+  );
+}
+
+// Export zakázky pro AI: kótovaný nákres (SVG/PNG) + strukturovaný popis v Markdownu.
+function AiExportModal({ svg, markdown, name, close }) {
+  const [copied, setCopied] = useState("");
+
+  const download = (content, filename, type) => {
+    const blob = new Blob([content], { type });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // SVG → PNG přes canvas (kvůli nástrojům, které vektor nepřečtou)
+  const downloadPng = () => {
+    const image = new Image();
+    image.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = image.width * 2;
+      canvas.height = image.height * 2;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${name}-nakres.png`;
+        link.click();
+        URL.revokeObjectURL(url);
+      });
+    };
+    image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+  };
+
+  const copy = async (text, label) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(label);
+      setTimeout(() => setCopied(""), 2000);
+    } catch {
+      window.alert("Kopírování se nepodařilo, stáhni prosím soubor.");
+    }
+  };
+
+  return (
+    <Modal
+      wide
+      close={
+        <Button variant="outline" onClick={close}>
+          <X className="h-4 w-4" />
+        </Button>
+      }
+    >
+      <h1 className="mb-1 border-l-4 border-[var(--brand)] pl-2 text-xl font-black">Export pro AI</h1>
+      <p className="mb-3 text-sm text-[var(--muted)]">
+        Kótovaný nákres a popis se všemi rozměry. Obojí přečte člověk i AI — nákres má rozměry vypsané textem, popis je strukturovaná tabulka.
+      </p>
+
+      <div className="mb-3 flex flex-wrap gap-2">
+        <Button onClick={() => copy(markdown, "popis")}>
+          <Copy className="h-4 w-4" />
+          {copied === "popis" ? "Zkopírováno ✓" : "Kopírovat popis pro AI"}
+        </Button>
+        <Button variant="outline" onClick={() => download(markdown, `${name}-popis.md`, "text/markdown;charset=utf-8")}>
+          <Download className="h-4 w-4" />
+          Popis (.md)
+        </Button>
+        <Button variant="outline" onClick={() => download(svg, `${name}-nakres.svg`, "image/svg+xml;charset=utf-8")}>
+          <Download className="h-4 w-4" />
+          Nákres (.svg)
+        </Button>
+        <Button variant="outline" onClick={downloadPng}>
+          <Download className="h-4 w-4" />
+          Nákres (.png)
+        </Button>
+      </div>
+
+      <div className="grid gap-3 lg:grid-cols-2">
+        <div>
+          <div className="mb-1 text-[10px] font-bold uppercase text-[var(--muted)]">Nákres s kótami</div>
+          <div className="max-h-[460px] overflow-auto rounded-[var(--radius-sm)] border border-[var(--line)] bg-white p-2" dangerouslySetInnerHTML={{ __html: svg }} />
+        </div>
+        <div>
+          <div className="mb-1 text-[10px] font-bold uppercase text-[var(--muted)]">Popis (Markdown)</div>
+          <textarea
+            readOnly
+            value={markdown}
+            className="h-[460px] w-full rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--bg-soft)] p-2 font-mono text-[11px] leading-4"
+          />
+        </div>
       </div>
     </Modal>
   );
