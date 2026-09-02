@@ -182,6 +182,40 @@ function planSvg(room: any) {
   const d = points.map((p: any, i: number) => `${i ? "L" : "M"} ${px(n(p.x))} ${py(n(p.y))}`).join(" ") + " Z";
   parts.push(`<path d="${d}" fill="#f1f5f9" stroke="#111" stroke-width="2" stroke-linejoin="round"/>`);
 
+  // Otvory v obrysu: dveře a okna vyznačíme barevným úsekem přímo na stěně,
+  // aby bylo z půdorysu vidět, kde jsou a jak jsou široké.
+  points.forEach((p: any, i: number) => {
+    const wall = room.walls?.[i];
+    if (!wall?.openings?.length) return;
+    const q = points[(i + 1) % points.length];
+    const ax = px(n(p.x));
+    const ay = py(n(p.y));
+    const bx = px(n(q.x));
+    const by = py(n(q.y));
+    const wallLength = Math.max(1, n(wall.width));
+    const ux = (bx - ax) / wallLength;
+    const uy = (by - ay) / wallLength;
+
+    wall.openings.forEach((opening: any) => {
+      const kind = openingKind(opening);
+      if (kind === "other") return; // rozvaděče, trámy a spol. do půdorysu nepatří
+      const ow = Math.max(1, n(opening.width));
+      const from = Math.max(0, Math.min(wallLength - ow, n(opening.x)));
+      const sx = ax + ux * from;
+      const sy = ay + uy * from;
+      const ex = ax + ux * (from + ow);
+      const ey = ay + uy * (from + ow);
+      const color = kind === "door" ? "#b45309" : "#0284c7";
+      // silná čára překryje obrys – čitelné i v malém měřítku
+      parts.push(
+        `<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#ffffff" stroke-width="7" stroke-linecap="butt"/>`,
+      );
+      parts.push(
+        `<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="${color}" stroke-width="5" stroke-linecap="butt"><title>${esc(kindLabel(opening))} ${ow} cm</title></line>`,
+      );
+    });
+  });
+
   // délka a název stěny u každé strany, vždy vně obrysu
   const cx = points.reduce((sum: number, p: any) => sum + px(n(p.x)), 0) / points.length;
   const cy = points.reduce((sum: number, p: any) => sum + py(n(p.y)), 0) / points.length;
@@ -219,6 +253,18 @@ function planSvg(room: any) {
   points.forEach((p: any) => {
     parts.push(`<circle cx="${px(n(p.x))}" cy="${py(n(p.y))}" r="3" fill="#111"/>`);
   });
+
+  // legenda k barvám otvorů
+  const hasOpening = (test: (kind: string) => boolean) =>
+    (room.walls || []).some((wall: any) => (wall.openings || []).some((o: any) => test(openingKind(o))));
+  const legend: string[] = [];
+  if (hasOpening((k) => k === "door")) legend.push(`<tspan fill="#b45309">━</tspan> dveře`);
+  if (hasOpening((k) => k === "window")) legend.push(`<tspan fill="#0284c7">━</tspan> okna`);
+  if (legend.length) {
+    parts.push(
+      `<text x="${PAD.left}" y="${(TOP + h + 44).toFixed(1)}" font-size="11" fill="#555">${legend.join("  ")}</text>`,
+    );
+  }
 
   return { svg: parts.join("\n"), boxW, boxH };
 }
