@@ -76,10 +76,11 @@ export const bakeryWalls = [
     scope: "visual",
     openings: [],
     // tři klenby s traverzami mezi nimi
+    // rovnoměrně rozmístěné klenby (odpovídá tlačítku „Zarovnat body")
     arcs: [
-      { id: "a-b1", x: 60, rise: 31 },
+      { id: "a-b1", x: 53, rise: 31 },
       { id: "a-b2", x: 168, rise: 31, gapBefore: 10 },
-      { id: "a-b3", x: 275, rise: 31, gapBefore: 10 },
+      { id: "a-b3", x: 283, rise: 31, gapBefore: 10 },
     ],
     mirrorArcs: true,
     workIds: ["malba"],
@@ -104,9 +105,9 @@ export const bakeryWalls = [
     scope: "visual",
     openings: [{ id: "o-d1", name: "Dveře", type: "door", width: 90, height: 197, count: 1, x: 205, y: 0, reveal: 63 }],
     arcs: [
-      { id: "a-d1", x: 60, rise: 31 },
+      { id: "a-d1", x: 53, rise: 31 },
       { id: "a-d2", x: 168, rise: 31, gapBefore: 10 },
-      { id: "a-d3", x: 275, rise: 31, gapBefore: 10 },
+      { id: "a-d3", x: 283, rise: 31, gapBefore: 10 },
     ],
     mirrorArcs: true,
     workIds: ["oklep", "perlinka", "malba"],
