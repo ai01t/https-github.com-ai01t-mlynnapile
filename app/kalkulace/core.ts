@@ -115,7 +115,7 @@ export const bakeryWalls = [
 
 // Stěny jsou seskupené do místností (taby v horní části kalkulačky).
 export const defaultRooms = [
-  { id: "room-1", name: "Pekárna", walls: bakeryWalls },
+  { id: "room-1", name: "Místnost 1", walls: bakeryWalls },
   { id: "room-2", name: "Místnost 2", walls: defaultWalls },
 ];
 

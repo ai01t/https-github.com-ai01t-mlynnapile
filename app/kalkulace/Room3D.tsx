@@ -123,6 +123,8 @@ export default function Room3D({
   // Otočení modelu kolem svislé osy (stupně). Výchozí pohled ukazuje okno
   // i obě dveře najednou — čitelnější než čistá izometrie.
   const [yaw, setYaw] = useState(DEFAULT_YAW);
+  // Nenápadná nápověda: ukáže se, jen když kurzor visí v prázdné ploše kolem modelu.
+  const [rotateHint, setRotateHint] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Pokud existuje náčrt půdorysu, použijeme jeho skutečnou geometrii (přesné rohy a směry),
@@ -509,6 +511,11 @@ export default function Room3D({
           window.addEventListener("pointermove", move);
           window.addEventListener("pointerup", up);
         }}
+        onPointerMove={(event) => {
+          // jen v prázdné ploše kolem modelu – nad kresbou by nápověda překážela
+          setRotateHint(event.target === event.currentTarget);
+        }}
+        onPointerLeave={() => setRotateHint(false)}
         onDragLeave={() => {
           setDragWallId(null);
           setDragFloor(false);
@@ -971,6 +978,27 @@ export default function Room3D({
             </g>
           );
         })}
+
+        {/* Nenápadná nápověda k otáčení – jen při kurzoru v prázdné ploše, ať nepřekáží. */}
+        <g
+          transform={`translate(${(maxX - pad * 0.6).toFixed(0)} ${(minY + pad * 0.5).toFixed(0)})`}
+          opacity={rotateHint ? 0.45 : 0}
+          style={{ transition: "opacity 220ms ease" }}
+          pointerEvents="none"
+        >
+          {/* kruhová šipka */}
+          <path
+            d="M -13 0 a 13 13 0 1 1 4.6 9.9"
+            fill="none"
+            stroke="var(--text-soft, #475569)"
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+          <path d="M -9.4 6.2 l -4.6 4.6 l 6.4 1.4 z" fill="var(--text-soft, #475569)" />
+          <text x="0" y="30" fontSize="11" textAnchor="middle" fill="var(--text-soft, #475569)">
+            táhni pro otočení
+          </text>
+        </g>
       </svg>
 
       {/* editor vybraného objektu */}
