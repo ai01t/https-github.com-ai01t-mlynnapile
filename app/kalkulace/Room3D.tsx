@@ -711,6 +711,15 @@ export default function Room3D({
                 }
                 const atO = (t: number, z: number, off: number) => iso(start[0] + dir[0] * t + nx * off, start[1] + dir[1] * t + ny * off, z);
 
+                // Míří špaleta za stěnu, nebo k divákovi? V isometrii je bod tím blíž,
+                // čím větší je (x + y) po otočení půdorysu. U stěny, kterou vidíme zevnitř,
+                // leží špaleta za jejím lícem – smí být proto vidět jen skrz otvor.
+                // Bez toho by překreslila zeď nad oknem a otvor by opticky vystoupil do místnosti.
+                const nxRot = nx * cosYaw - ny * sinYaw;
+                const nyRot = nx * sinYaw + ny * cosYaw;
+                const behindWall = nxRot + nyRot < 0;
+                const clipId = `reveal-${wall.id}-${opening.id}`;
+
                 // Vnější konec špalety: při pravém úhlu stejný otvor, jinak menší
                 // (špaleta se pak do místnosti šikmo rozevírá).
                 const outer = outerOpening(opening);
@@ -836,27 +845,36 @@ export default function Room3D({
                 return (
                   <g key={opening.id}>
                     <title>{`Špaleta ${depth} cm${arch > 0 ? ` · oblouk ${arch} cm` : ""} · kliknutím upravíš rozměr objektu`}</title>
-                    {/* zapuštěná výplň (okno / dveře) */}
-                    <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
-                    {/* příčle členěného okna na zapuštěném skle */}
-                    {paneLines(depth) && <path d={paneLines(depth)} fill="none" stroke={stroke} strokeWidth="1" strokeOpacity="0.65" pointerEvents="none" />}
-                    {/* plochy špalety – nadpraží ve stínu, ostění světlejší */}
-                    {faces.map((face, index) => (
-                      <polygon
-                        key={index}
-                        points={pointsAttr(face.pts)}
-                        // odstupňovaný odstín podle orientace plochy, aby byla špaleta ve 3D čitelná
-                        fill={REVEAL_SHADE[face.side]}
-                        fillOpacity="1"
-                        stroke={stroke}
-                        strokeWidth="1.2"
-                        strokeOpacity="0.8"
-                        strokeLinejoin="round"
-                        data-grab
-                        className="cursor-grab active:cursor-grabbing"
-                        onPointerDown={grab}
-                      />
-                    ))}
+                    {behindWall && (
+                      <defs>
+                        <clipPath id={clipId}>
+                          <path d={shape(0)} />
+                        </clipPath>
+                      </defs>
+                    )}
+                    <g clipPath={behindWall ? `url(#${clipId})` : undefined}>
+                      {/* zapuštěná výplň (okno / dveře) */}
+                      <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
+                      {/* příčle členěného okna na zapuštěném skle */}
+                      {paneLines(depth) && <path d={paneLines(depth)} fill="none" stroke={stroke} strokeWidth="1" strokeOpacity="0.65" pointerEvents="none" />}
+                      {/* plochy špalety – nadpraží ve stínu, ostění světlejší */}
+                      {faces.map((face, index) => (
+                        <polygon
+                          key={index}
+                          points={pointsAttr(face.pts)}
+                          // odstupňovaný odstín podle orientace plochy, aby byla špaleta ve 3D čitelná
+                          fill={REVEAL_SHADE[face.side]}
+                          fillOpacity="1"
+                          stroke={stroke}
+                          strokeWidth="1.2"
+                          strokeOpacity="0.8"
+                          strokeLinejoin="round"
+                          data-grab
+                          className="cursor-grab active:cursor-grabbing"
+                          onPointerDown={grab}
+                        />
+                      ))}
+                    </g>
                     {/* obrys otvoru v líci stěny */}
                     <path d={shape(0)} fill="none" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
                     {arch > 0 && (
