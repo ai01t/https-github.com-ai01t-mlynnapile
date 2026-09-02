@@ -166,11 +166,14 @@ function planSvg(room: any) {
   const scale = Math.min(SCALE, 420 / Math.max(1, spanX), 320 / Math.max(1, spanY));
   const w = spanX * scale;
   const h = spanY * scale;
+  // špalety vystupují z obrysu ven – o jejich hloubku se musí rozestoupit i okraje
+  const maxReveal = Math.max(0, ...(room.walls || []).flatMap((wall: any) => (wall.openings || []).map((o: any) => n(o.reveal))));
+  const revealPad = Math.round(maxReveal * scale);
   // nahoře i po stranách je místo navíc na kóty, ať nelezou do titulku
-  const TOP = PAD.top + 26;
-  const boxW = w + PAD.left + PAD.right + 60;
-  const boxH = h + TOP + PAD.bottom + 20;
-  const px = (v: number) => PAD.left + 30 + (v - Math.min(...xs)) * scale;
+  const TOP = PAD.top + 26 + revealPad;
+  const boxW = w + PAD.left + PAD.right + 60 + revealPad * 2;
+  const boxH = h + TOP + PAD.bottom + 20 + revealPad;
+  const px = (v: number) => PAD.left + 30 + revealPad + (v - Math.min(...xs)) * scale;
   const py = (v: number) => TOP + (v - Math.min(...ys)) * scale;
 
   const parts: string[] = [];
@@ -181,6 +184,10 @@ function planSvg(room: any) {
 
   const d = points.map((p: any, i: number) => `${i ? "L" : "M"} ${px(n(p.x))} ${py(n(p.y))}`).join(" ") + " Z";
   parts.push(`<path d="${d}" fill="#f1f5f9" stroke="#111" stroke-width="2" stroke-linejoin="round"/>`);
+
+  // těžiště obrysu – kolmice od něj míří ven z místnosti (stejně jako špalety ve 3D)
+  const cx = points.reduce((sum: number, p: any) => sum + px(n(p.x)), 0) / points.length;
+  const cy = points.reduce((sum: number, p: any) => sum + py(n(p.y)), 0) / points.length;
 
   // Otvory v obrysu: dveře a okna vyznačíme barevným úsekem přímo na stěně,
   // aby bylo z půdorysu vidět, kde jsou a jak jsou široké.
@@ -206,6 +213,43 @@ function planSvg(room: any) {
       const ex = ax + ux * (from + ow);
       const ey = ay + uy * (from + ow);
       const color = kind === "door" ? "#b45309" : "#0284c7";
+
+      // Náznak špalety: ostění vystupuje z obrysu ven (obrys = vnitřní líc stěny).
+      // U šikmé špalety je vnější konec užší, takže vznikne lichoběžník.
+      const depth = Math.max(0, n(opening.reveal));
+      if (depth > 0) {
+        const len = Math.max(1, Math.hypot(bx - ax, by - ay));
+        let rnx = -((by - ay) / len);
+        let rny = (bx - ax) / len;
+        const midX = (sx + ex) / 2;
+        const midY = (sy + ey) / 2;
+        if ((midX - cx) * rnx + (midY - cy) * rny < 0) {
+          rnx = -rnx;
+          rny = -rny;
+        }
+        const outer = outerOpening(opening);
+        const inset = Math.max(0, (ow - outer.width) / 2);
+        const ox1 = ax + ux * (from + inset) + rnx * depth * scale;
+        const oy1 = ay + uy * (from + inset) + rny * depth * scale;
+        const ox2 = ax + ux * (from + ow - inset) + rnx * depth * scale;
+        const oy2 = ay + uy * (from + ow - inset) + rny * depth * scale;
+        const poly = [
+          [sx, sy],
+          [ex, ey],
+          [ox2, oy2],
+          [ox1, oy1],
+        ]
+          .map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`)
+          .join(" ");
+        parts.push(`<polygon points="${poly}" fill="#e2e8f0" fill-opacity="0.9" stroke="${color}" stroke-width="0.8" stroke-dasharray="3 2"/>`);
+        // popisek doprostřed špalety – venku by se tloukl s kótou délky stěny
+        if (depth * scale >= 12) {
+          parts.push(
+            `<text x="${(midX + rnx * depth * scale * 0.5).toFixed(1)}" y="${(midY + rny * depth * scale * 0.5).toFixed(1)}" font-size="8" text-anchor="middle" dominant-baseline="middle" fill="#64748b">špaleta ${depth}</text>`,
+          );
+        }
+      }
+
       // silná čára překryje obrys – čitelné i v malém měřítku
       parts.push(
         `<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#ffffff" stroke-width="7" stroke-linecap="butt"/>`,
@@ -217,8 +261,6 @@ function planSvg(room: any) {
   });
 
   // délka a název stěny u každé strany, vždy vně obrysu
-  const cx = points.reduce((sum: number, p: any) => sum + px(n(p.x)), 0) / points.length;
-  const cy = points.reduce((sum: number, p: any) => sum + py(n(p.y)), 0) / points.length;
   points.forEach((p: any, i: number) => {
     const q = points[(i + 1) % points.length];
     const ax = px(n(p.x));
@@ -236,8 +278,11 @@ function planSvg(room: any) {
       nx = -nx;
       ny = -ny;
     }
-    const lx = mx + nx * 20;
-    const ly = my + ny * 20;
+    // u stěny se špaletou musí kóta ustoupit až za ni, jinak si sednou na sebe
+    const deepest = Math.max(0, ...((room.walls?.[i]?.openings || []) as any[]).map((o: any) => n(o.reveal)));
+    const offset = Math.max(20, deepest * scale + 16);
+    const lx = mx + nx * offset;
+    const ly = my + ny * offset;
     const wallName = room.walls?.[i]?.name;
     // délka a název pod sebou v jednom bloku – dvě samostatné značky se u
     // svislých stran překrývaly
