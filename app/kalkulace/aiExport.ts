@@ -123,9 +123,112 @@ function wallSvg(wall: any, index: number, geometryOnly = false) {
 }
 
 // Celý nákres (všechny stěny pod sebou) jako samostatný SVG soubor.
+// ---------- kótovaný půdorys místnosti ----------
+
+// Směry pro odvozený obdélníkový obrys (stejné pořadí jako ve 3D náhledu).
+const PLAN_DIRS = [
+  [1, 0],
+  [0, 1],
+  [-1, 0],
+  [0, -1],
+];
+
+/**
+ * Obrys místnosti: buď nakreslený půdorys, nebo — když chybí — stěny
+ * poskládané za sebe s pravoúhlým otočením, jak to dělá i 3D náhled.
+ */
+function roomOutline(room: any) {
+  if (room.plan?.points?.length >= 3) return room.plan.points;
+  const walls = (room.walls || []).filter((w: any) => !w.ceiling);
+  if (walls.length < 3) return null;
+  let x = 0;
+  let y = 0;
+  return walls.map((wall: any, index: number) => {
+    const corner = { x, y };
+    const dir = PLAN_DIRS[index % 4];
+    const length = Math.max(1, n(wall.width));
+    x += dir[0] * length;
+    y += dir[1] * length;
+    return corner;
+  });
+}
+
+/** Obrys půdorysu s délkami stran a popisky stěn. Bez plánu vrací null. */
+function planSvg(room: any) {
+  const points = roomOutline(room);
+  if (!points || points.length < 3) return null;
+
+  const xs = points.map((p: any) => n(p.x));
+  const ys = points.map((p: any) => n(p.y));
+  const spanX = Math.max(...xs) - Math.min(...xs);
+  const spanY = Math.max(...ys) - Math.min(...ys);
+  // vejde se do stejné šířky jako pohledy na stěny
+  const scale = Math.min(SCALE, 420 / Math.max(1, spanX), 320 / Math.max(1, spanY));
+  const w = spanX * scale;
+  const h = spanY * scale;
+  // nahoře i po stranách je místo navíc na kóty, ať nelezou do titulku
+  const TOP = PAD.top + 26;
+  const boxW = w + PAD.left + PAD.right + 60;
+  const boxH = h + TOP + PAD.bottom + 20;
+  const px = (v: number) => PAD.left + 30 + (v - Math.min(...xs)) * scale;
+  const py = (v: number) => TOP + (v - Math.min(...ys)) * scale;
+
+  const parts: string[] = [];
+  parts.push(`<text x="${PAD.left}" y="24" font-size="15" font-weight="700" fill="#111">Půdorys — ${esc(room.name)}</text>`);
+  parts.push(
+    `<text x="${PAD.left}" y="42" font-size="12" fill="#555">podlahová plocha ${f2(planArea(points))} m² · obvod ${Math.round(planPerimeter(points))} cm</text>`,
+  );
+
+  const d = points.map((p: any, i: number) => `${i ? "L" : "M"} ${px(n(p.x))} ${py(n(p.y))}`).join(" ") + " Z";
+  parts.push(`<path d="${d}" fill="#f1f5f9" stroke="#111" stroke-width="2" stroke-linejoin="round"/>`);
+
+  // délka a název stěny u každé strany, vždy vně obrysu
+  const cx = points.reduce((sum: number, p: any) => sum + px(n(p.x)), 0) / points.length;
+  const cy = points.reduce((sum: number, p: any) => sum + py(n(p.y)), 0) / points.length;
+  points.forEach((p: any, i: number) => {
+    const q = points[(i + 1) % points.length];
+    const ax = px(n(p.x));
+    const ay = py(n(p.y));
+    const bx = px(n(q.x));
+    const by = py(n(q.y));
+    const length = Math.round(Math.hypot(n(q.x) - n(p.x), n(q.y) - n(p.y)));
+    const mx = (ax + bx) / 2;
+    const my = (ay + by) / 2;
+    // kolmice k hraně otočená vždy směrem od těžiště, ať popisek nepadne dovnitř
+    const len = Math.max(1, Math.hypot(bx - ax, by - ay));
+    let nx = -((by - ay) / len);
+    let ny = (bx - ax) / len;
+    if ((mx - cx) * nx + (my - cy) * ny < 0) {
+      nx = -nx;
+      ny = -ny;
+    }
+    const lx = mx + nx * 20;
+    const ly = my + ny * 20;
+    const wallName = room.walls?.[i]?.name;
+    // délka a název pod sebou v jednom bloku – dvě samostatné značky se u
+    // svislých stran překrývaly
+    parts.push(
+      `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="12" font-weight="700" fill="#111" text-anchor="middle" dominant-baseline="middle">` +
+        `<tspan x="${lx.toFixed(1)}" dy="0">${length} cm</tspan>` +
+        (wallName ? `<tspan x="${lx.toFixed(1)}" dy="13" font-size="10" font-weight="400" fill="#64748b">${esc(wallName)}</tspan>` : "") +
+        `</text>`,
+    );
+  });
+
+  // rohy se souřadnicemi, ať jde půdorys zrekonstruovat
+  points.forEach((p: any) => {
+    parts.push(`<circle cx="${px(n(p.x))}" cy="${py(n(p.y))}" r="3" fill="#111"/>`);
+  });
+
+  return { svg: parts.join("\n"), boxW, boxH };
+}
+
 export function buildDrawingSvg(rooms: any[], meta: any, company: any, geometryOnly = false) {
   const blocks: { svg: string; boxW: number; boxH: number; title: string }[] = [];
   rooms.forEach((room: any) => {
+    // půdorys jako první — dává pohledům na stěny kontext
+    const plan = planSvg(room);
+    if (plan) blocks.push({ ...plan, title: `${room.name} – půdorys` });
     room.walls.forEach((wall: any, index: number) => {
       const block = wallSvg(wall, index, geometryOnly);
       blocks.push({ ...block, title: rooms.length > 1 ? `${room.name} – ${wall.name}` : wall.name });
@@ -176,7 +279,6 @@ export function buildAiMarkdown({ rooms, works, settings, calc, meta, customer, 
   lines.push("Všechny rozměry jsou v centimetrech, plochy v m². Osa X je vodorovně po stěně zleva, Y je výška od podlahy.");
   if (geometryOnly) {
     lines.push("");
-    lines.push("Popis obsahuje **pouze zaměření a podobu prostoru** — žádné práce, materiály ani ceny.");
     lines.push("Špaleta = hloubka ostění otvoru (odpovídá tloušťce zdi v místě otvoru). Oblouk = vzepětí nad rovným nadpražím.");
   }
   lines.push("");
