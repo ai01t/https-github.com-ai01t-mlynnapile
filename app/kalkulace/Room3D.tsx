@@ -842,6 +842,14 @@ export default function Room3D({
                 }
                 faces.sort((a, b) => a.d - b.d); // vzdálenější špaleta se kreslí dřív
 
+                const glassNodes = (
+                  <>
+                    <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
+                    {/* příčle členěného okna na zapuštěném skle */}
+                    {paneLines(depth) && <path d={paneLines(depth)} fill="none" stroke={stroke} strokeWidth="1" strokeOpacity="0.65" pointerEvents="none" />}
+                  </>
+                );
+
                 return (
                   <g key={opening.id}>
                     <title>{`Špaleta ${depth} cm${arch > 0 ? ` · oblouk ${arch} cm` : ""} · kliknutím upravíš rozměr objektu`}</title>
@@ -853,10 +861,10 @@ export default function Room3D({
                       </defs>
                     )}
                     <g clipPath={behindWall ? `url(#${clipId})` : undefined}>
-                      {/* zapuštěná výplň (okno / dveře) */}
-                      <path d={shape(depth)} fill={fill} fillOpacity="0.9" stroke={stroke} strokeWidth="1.2" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
-                      {/* příčle členěného okna na zapuštěném skle */}
-                      {paneLines(depth) && <path d={paneLines(depth)} fill="none" stroke={stroke} strokeWidth="1" strokeOpacity="0.65" pointerEvents="none" />}
+                      {/* Výplň (sklo / křídlo) leží na vnějším konci špalety. Při pohledu zevnitř je
+                          nejdál – kreslí se první; při pohledu zvenku je nejblíž – kreslí se naposledy,
+                          jinak by ji plochy ostění přemalovaly. */}
+                      {behindWall && glassNodes}
                       {/* plochy špalety – nadpraží ve stínu, ostění světlejší */}
                       {faces.map((face, index) => (
                         <polygon
@@ -874,6 +882,7 @@ export default function Room3D({
                           onPointerDown={grab}
                         />
                       ))}
+                      {!behindWall && glassNodes}
                     </g>
                     {/* obrys otvoru v líci stěny */}
                     <path d={shape(0)} fill="none" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
