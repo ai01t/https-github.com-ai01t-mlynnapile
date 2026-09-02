@@ -566,13 +566,16 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
   };
 
   // zrcadlově zkopíruje klenby na protější stěnu (poloha se překlopí podle délky)
-  const copyArcsToOpposite = (wallId) => {
+  // sourceArcs = právě uložené klenby; bez nich by se sáhlo do `walls` z minulého
+  // renderu a na protější stěnu by se zkopírovala předchozí (např. nezarovnaná) poloha
+  const copyArcsToOpposite = (wallId, sourceArcs) => {
     const source = walls.find((wall) => wall.id === wallId);
+    const arcs = sourceArcs ?? source?.arcs;
     const target = oppositeWall(wallId);
-    if (!source?.arcs?.length || !target) return;
+    if (!arcs?.length || !source || !target) return;
     const sourceWidth = Math.max(1, n(source.width));
     const targetWidth = Math.max(1, n(target.width));
-    const mirrored = [...source.arcs]
+    const mirrored = [...arcs]
       .sort((a, b) => n(a.x) - n(b.x))
       .map((arc) => ({ ...arc, id: uid(), x: Math.round(((sourceWidth - n(arc.x)) / sourceWidth) * targetWidth) }))
       .sort((a, b) => a.x - b.x)
@@ -1079,7 +1082,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                       onMoveOpening={(openingId, patch) => updateOpening(wall.id, openingId, patch)}
                       onUpdateWall={(patch) => {
                         updateWall(wall.id, patch);
-                        if (patch.arcs && mirrorArcs[wall.id] !== false) setTimeout(() => copyArcsToOpposite(wall.id), 0);
+                        if (patch.arcs && mirrorArcs[wall.id] !== false) copyArcsToOpposite(wall.id, patch.arcs);
                       }}
                       oppositeName={oppositeWall(wall.id)?.name}
                       mirror={mirrorArcs[wall.id] !== false}

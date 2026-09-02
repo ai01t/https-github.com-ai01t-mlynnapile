@@ -213,11 +213,16 @@ function planSvg(room: any) {
       const ex = ax + ux * (from + ow);
       const ey = ay + uy * (from + ow);
       const color = kind === "door" ? "#b45309" : "#0284c7";
-
-      // Náznak špalety: ostění vystupuje z obrysu ven (obrys = vnitřní líc stěny).
-      // U šikmé špalety je vnější konec užší, takže vznikne lichoběžník.
       const depth = Math.max(0, n(opening.reveal));
+
+      // Otvor je díra ve zdi – obrys se v jeho šířce přeruší bílým překrytím.
+      parts.push(
+        `<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#ffffff" stroke-width="7" stroke-linecap="butt"/>`,
+      );
+
       if (depth > 0) {
+        // Špaleta: ostění vede z obrysu (vnitřní líc) ven, rám sedí na vnějším konci –
+        // stejně jako výplň ve 3D. U šikmé špalety je vnější konec užší → lichoběžník.
         const len = Math.max(1, Math.hypot(bx - ax, by - ay));
         let rnx = -((by - ay) / len);
         let rny = (bx - ax) / len;
@@ -241,22 +246,29 @@ function planSvg(room: any) {
         ]
           .map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`)
           .join(" ");
-        parts.push(`<polygon points="${poly}" fill="#e2e8f0" fill-opacity="0.9" stroke="${color}" stroke-width="0.8" stroke-dasharray="3 2"/>`);
-        // popisek doprostřed špalety – venku by se tloukl s kótou délky stěny
+        parts.push(`<polygon points="${poly}" fill="#e2e8f0" fill-opacity="0.9" stroke="none"/>`);
+        // ostění plnou čarou – to je ta špaleta, na kterou se ptá čtenář
+        parts.push(
+          `<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ox1.toFixed(1)}" y2="${oy1.toFixed(1)}" stroke="#111" stroke-width="1.6" stroke-linecap="round"/>`,
+        );
+        parts.push(
+          `<line x1="${ex.toFixed(1)}" y1="${ey.toFixed(1)}" x2="${ox2.toFixed(1)}" y2="${oy2.toFixed(1)}" stroke="#111" stroke-width="1.6" stroke-linecap="round"/>`,
+        );
+        // rám okna/dveří na vnějším konci špalety
+        parts.push(
+          `<line x1="${ox1.toFixed(1)}" y1="${oy1.toFixed(1)}" x2="${ox2.toFixed(1)}" y2="${oy2.toFixed(1)}" stroke="${color}" stroke-width="5" stroke-linecap="butt"><title>${esc(kindLabel(opening))} ${ow} cm · špaleta ${depth} cm</title></line>`,
+        );
         if (depth * scale >= 12) {
           parts.push(
             `<text x="${(midX + rnx * depth * scale * 0.5).toFixed(1)}" y="${(midY + rny * depth * scale * 0.5).toFixed(1)}" font-size="8" text-anchor="middle" dominant-baseline="middle" fill="#64748b">špaleta ${depth}</text>`,
           );
         }
+      } else {
+        // bez špalety leží rám rovnou v líci stěny
+        parts.push(
+          `<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="${color}" stroke-width="5" stroke-linecap="butt"><title>${esc(kindLabel(opening))} ${ow} cm</title></line>`,
+        );
       }
-
-      // silná čára překryje obrys – čitelné i v malém měřítku
-      parts.push(
-        `<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#ffffff" stroke-width="7" stroke-linecap="butt"/>`,
-      );
-      parts.push(
-        `<line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="${color}" stroke-width="5" stroke-linecap="butt"><title>${esc(kindLabel(opening))} ${ow} cm</title></line>`,
-      );
     });
   });
 
