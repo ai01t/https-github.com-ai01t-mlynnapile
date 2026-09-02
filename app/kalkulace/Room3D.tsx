@@ -49,6 +49,10 @@ const WALL_MIME = "application/x-kalk-wall";
 const FLOOR_MIME = "application/x-kalk-floor";
 const POINT_MIME = "application/x-kalk-point";
 
+// Odstíny ploch špalety podle orientace: 0 = parapet/práh, 1 = pravé ostění, 2 = nadpraží, 3 = levé ostění.
+// Nadpraží je ve stínu nejtmavší, parapet nejsvětlejší – špaleta je pak ve 3D jasně vidět.
+const REVEAL_SHADE = ["#f1f5f9", "#b6c2d1", "#8b98a8", "#d3dbe4"];
+
 const ARCH_DEFAULT = 30; // výchozí vzepětí oblouku (cm)
 
 // izometrická projekce: půdorys (x, y) + výška z → obrazovka
@@ -825,7 +829,7 @@ export default function Room3D({
                   const midT = (corners2d[i][0] + corners2d[j][0]) / 2;
                   const px = start[0] + dir[0] * midT + nx * (depth / 2);
                   const py = start[1] + dir[1] * midT + ny * (depth / 2);
-                  faces.push({ pts: [frontPts[i], frontPts[j], backPts[j], backPts[i]], d: px + py, top: i === 2 });
+                  faces.push({ pts: [frontPts[i], frontPts[j], backPts[j], backPts[i]], d: px + py, side: i });
                 }
                 faces.sort((a, b) => a.d - b.d); // vzdálenější špaleta se kreslí dřív
 
@@ -838,7 +842,20 @@ export default function Room3D({
                     {paneLines(depth) && <path d={paneLines(depth)} fill="none" stroke={stroke} strokeWidth="1" strokeOpacity="0.65" pointerEvents="none" />}
                     {/* plochy špalety – nadpraží ve stínu, ostění světlejší */}
                     {faces.map((face, index) => (
-                      <polygon key={index} points={pointsAttr(face.pts)} fill={facade ? WALL_COLORS.facade.fill : "#cbd5e1"} fillOpacity={face.top ? 0.75 : 0.95} stroke={stroke} strokeWidth="1" strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />
+                      <polygon
+                        key={index}
+                        points={pointsAttr(face.pts)}
+                        // odstupňovaný odstín podle orientace plochy, aby byla špaleta ve 3D čitelná
+                        fill={REVEAL_SHADE[face.side]}
+                        fillOpacity="1"
+                        stroke={stroke}
+                        strokeWidth="1.2"
+                        strokeOpacity="0.8"
+                        strokeLinejoin="round"
+                        data-grab
+                        className="cursor-grab active:cursor-grabbing"
+                        onPointerDown={grab}
+                      />
                     ))}
                     {/* obrys otvoru v líci stěny */}
                     <path d={shape(0)} fill="none" stroke={selected ? "var(--brand)" : stroke} strokeWidth={selected ? 4 : 1.5} strokeLinejoin="round" data-grab className="cursor-grab active:cursor-grabbing" onPointerDown={grab} />

@@ -65,7 +65,7 @@ export const bakeryWalls = [
     width: 512,
     height: 216,
     scope: "visual",
-    openings: [{ id: "o-a1", name: "Dveře", type: "door", width: 113, height: 180, count: 1, x: 2, y: 0, reveal: 0 }],
+    openings: [{ id: "o-a1", name: "Dveře", type: "door", width: 113, height: 180, count: 1, x: 2, y: 0, reveal: 63 }],
     workIds: ["oklep", "perlinka", "malba"],
   },
   {
@@ -102,7 +102,7 @@ export const bakeryWalls = [
     width: 335,
     height: 216,
     scope: "visual",
-    openings: [{ id: "o-d1", name: "Dveře", type: "door", width: 90, height: 197, count: 1, x: 205, y: 0, reveal: 0 }],
+    openings: [{ id: "o-d1", name: "Dveře", type: "door", width: 90, height: 197, count: 1, x: 205, y: 0, reveal: 63 }],
     arcs: [
       { id: "a-d1", x: 60, rise: 31 },
       { id: "a-d2", x: 168, rise: 31, gapBefore: 10 },

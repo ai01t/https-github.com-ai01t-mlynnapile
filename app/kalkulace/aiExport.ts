@@ -20,7 +20,7 @@ const kindLabel = (opening: any) => {
 const SCALE = 0.5; // 1 cm = 0,5 px
 const PAD = { left: 70, right: 40, top: 64, bottom: 64 };
 
-function wallSvg(wall: any, index: number) {
+function wallSvg(wall: any, index: number, geometryOnly = false) {
   const width = Math.max(1, n(wall.width));
   const height = Math.max(1, n(wall.height));
   const arcs = wallArcs(wall);
@@ -36,8 +36,11 @@ function wallSvg(wall: any, index: number) {
   const parts: string[] = [];
 
   parts.push(`<text x="${x0}" y="24" font-size="15" font-weight="700" fill="#111">${esc(wall.name)}${wall.ceiling ? " (strop)" : ""}</text>`);
+  // v režimu pro architekta se vynechá rozsah prací i „čistá“ plocha (to jsou údaje pro nacenění)
   parts.push(
-    `<text x="${x0}" y="42" font-size="12" fill="#555">${width} × ${height} cm · ${scopeText(wall.scope)} · čistá plocha ${f2(wallStats(wall).clean)} m²</text>`,
+    geometryOnly
+      ? `<text x="${x0}" y="42" font-size="12" fill="#555">${width} × ${height} cm · plocha stěny ${f2(wallStats(wall).gross)} m²</text>`
+      : `<text x="${x0}" y="42" font-size="12" fill="#555">${width} × ${height} cm · ${scopeText(wall.scope)} · čistá plocha ${f2(wallStats(wall).clean)} m²</text>`,
   );
 
   // stěna
@@ -81,6 +84,21 @@ function wallSvg(wall: any, index: number) {
       `<text x="${rx + rw / 2}" y="${ry + rh / 2}" font-size="10" font-weight="700" text-anchor="middle" fill="${stroke}">${esc(kindLabel(opening))}</text>`,
     );
     parts.push(`<text x="${rx + rw / 2}" y="${ry + rh / 2 + 12}" font-size="9" text-anchor="middle" fill="${stroke}">${ow}×${oh}</text>`);
+    // špaleta (ostění): čárkovaně vnější konec otvoru + popis hloubky
+    const depth = Math.max(0, n(opening.reveal));
+    if (depth > 0) {
+      const outer = outerOpening(opening);
+      const insetX = Math.max(0, ((ow - outer.width) / 2)) * SCALE;
+      const onFloor = kind === "door" || oy === 0;
+      const insetTop = Math.max(0, (oh - outer.height) / 2) * SCALE;
+      const insetBottom = onFloor ? 0 : insetTop;
+      parts.push(
+        `<rect x="${rx + insetX}" y="${ry + insetTop}" width="${Math.max(1, rw - 2 * insetX)}" height="${Math.max(1, rh - insetTop - insetBottom)}" fill="none" stroke="${stroke}" stroke-width="1" stroke-dasharray="4 3"/>`,
+      );
+      parts.push(
+        `<text x="${rx + rw / 2}" y="${ry + rh / 2 + 24}" font-size="8" text-anchor="middle" fill="${stroke}">špaleta ${depth}${opening.revealSquare === false ? ` · venku ${outer.width}×${outer.height}` : ""}</text>`,
+      );
+    }
     // vodorovná kóta šířky otvoru
     parts.push(`<line x1="${rx}" y1="${ry - 8}" x2="${rx + rw}" y2="${ry - 8}" stroke="${stroke}" stroke-width="0.8"/>`);
     parts.push(`<text x="${rx + rw / 2}" y="${ry - 11}" font-size="9" text-anchor="middle" fill="${stroke}">${ow}</text>`);
@@ -105,11 +123,11 @@ function wallSvg(wall: any, index: number) {
 }
 
 // Celý nákres (všechny stěny pod sebou) jako samostatný SVG soubor.
-export function buildDrawingSvg(rooms: any[], meta: any, company: any) {
+export function buildDrawingSvg(rooms: any[], meta: any, company: any, geometryOnly = false) {
   const blocks: { svg: string; boxW: number; boxH: number; title: string }[] = [];
   rooms.forEach((room: any) => {
     room.walls.forEach((wall: any, index: number) => {
-      const block = wallSvg(wall, index);
+      const block = wallSvg(wall, index, geometryOnly);
       blocks.push({ ...block, title: rooms.length > 1 ? `${room.name} – ${wall.name}` : wall.name });
     });
   });
@@ -127,7 +145,7 @@ export function buildDrawingSvg(rooms: any[], meta: any, company: any) {
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${totalW}" height="${totalH}" viewBox="0 0 ${totalW} ${totalH}" font-family="system-ui, sans-serif">
 <rect width="${totalW}" height="${totalH}" fill="#ffffff"/>
-<text x="24" y="28" font-size="17" font-weight="800" fill="#111">${esc(meta?.name || "Nacenění")}</text>
+<text x="24" y="28" font-size="17" font-weight="800" fill="#111">${esc(meta?.name || (geometryOnly ? "Zaměření místnosti" : "Nacenění"))}</text>
 <text x="24" y="46" font-size="12" fill="#555">${esc(company?.name || "")} · rozměry v cm · kóty: šířka nahoře, odsazení zleva dole, výška od podlahy vlevo</text>
 ${body}
 </svg>`;
@@ -135,30 +153,64 @@ ${body}
 
 // ---------- strojově i lidsky čitelný popis ----------
 
-export function buildAiMarkdown({ rooms, works, settings, calc, meta, customer }: any) {
+// Plocha půdorysu z obrysu (Gaussova formule), v m².
+const planArea = (points: any[]) =>
+  Math.abs(points.reduce((sum: number, p: any, i: number) => {
+    const q = points[(i + 1) % points.length];
+    return sum + (n(p.x) * n(q.y) - n(q.x) * n(p.y));
+  }, 0)) / 2 / 10000;
+
+const planPerimeter = (points: any[]) =>
+  points.reduce((sum: number, p: any, i: number) => {
+    const q = points[(i + 1) % points.length];
+    return sum + Math.hypot(n(q.x) - n(p.x), n(q.y) - n(p.y));
+  }, 0);
+
+// mode: "full" = kompletní podklad pro nacenění, "geometry" = jen zaměření a vzhled (pro architekta)
+export function buildAiMarkdown({ rooms, works, settings, calc, meta, customer, mode = "full" }: any) {
+  const geometryOnly = mode === "geometry";
   const lines: string[] = [];
-  lines.push(`# Zakázka: ${meta?.name || "bez názvu"}`);
-  if (customer?.name) lines.push(`Zákazník: ${customer.name}`);
+  lines.push(`# ${geometryOnly ? "Zaměření prostoru" : "Zakázka"}: ${meta?.name || "bez názvu"}`);
+  if (customer?.name && !geometryOnly) lines.push(`Zákazník: ${customer.name}`);
   lines.push("");
   lines.push("Všechny rozměry jsou v centimetrech, plochy v m². Osa X je vodorovně po stěně zleva, Y je výška od podlahy.");
+  if (geometryOnly) {
+    lines.push("");
+    lines.push("Popis obsahuje **pouze zaměření a podobu prostoru** — žádné práce, materiály ani ceny.");
+    lines.push("Špaleta = hloubka ostění otvoru (odpovídá tloušťce zdi v místě otvoru). Oblouk = vzepětí nad rovným nadpražím.");
+  }
   lines.push("");
 
   rooms.forEach((room: any) => {
     const kind = room.kind === "facade" ? "fasáda (venkovní pohled)" : "interiér";
     lines.push(`## ${room.name} — ${kind}`);
+    const heights = room.walls.filter((w: any) => !w.ceiling).map((w: any) => n(w.height));
+    if (heights.length) lines.push(`Světlá výška: ${Math.min(...heights)}–${Math.max(...heights)} cm`);
     if (room.plan?.points?.length) {
+      lines.push(`Podlahová plocha: ${f2(planArea(room.plan.points))} m² · obvod ${Math.round(planPerimeter(room.plan.points))} cm`);
       lines.push(`Půdorys (souřadnice rohů v cm): ${room.plan.points.map((p: any) => `[${Math.round(p.x)}, ${Math.round(p.y)}]`).join(" → ")}`);
     }
     lines.push("");
-    lines.push("| Stěna | Šířka | Výška | Rozsah | Hrubá | Odečty | Špalety | Čistá | Práce |");
-    lines.push("|---|---|---|---|---|---|---|---|---|");
-    room.walls.forEach((wall: any) => {
-      const stats = wallStats(wall);
-      const workNames = (wall.workIds ?? []).map((id: string) => works.find((w: any) => w.id === id)?.name ?? id).join(", ") || "—";
-      lines.push(
-        `| ${wall.name}${wall.ceiling ? " (strop)" : ""} | ${n(wall.width)} | ${n(wall.height)} | ${scopeText(wall.scope)} | ${f2(stats.gross)} | ${f2(stats.openings)} | ${f2(stats.reveals)} | ${f2(stats.clean)} | ${workNames} |`,
-      );
-    });
+    if (geometryOnly) {
+      lines.push("| Stěna | Šířka | Výška | Plocha stěny | Otvory |");
+      lines.push("|---|---|---|---|---|");
+      room.walls.forEach((wall: any) => {
+        const popis = wall.openings.length
+          ? wall.openings.map((o: any) => `${kindLabel(o)} ${n(o.width)}×${n(o.height)}${n(o.reveal) > 0 ? ` (špaleta ${n(o.reveal)})` : ""}`).join(", ")
+          : "—";
+        lines.push(`| ${wall.name}${wall.ceiling ? " (strop)" : ""} | ${n(wall.width)} | ${n(wall.height)} | ${f2(wallStats(wall).gross)} | ${popis} |`);
+      });
+    } else {
+      lines.push("| Stěna | Šířka | Výška | Rozsah | Hrubá | Odečty | Špalety | Čistá | Práce |");
+      lines.push("|---|---|---|---|---|---|---|---|---|");
+      room.walls.forEach((wall: any) => {
+        const stats = wallStats(wall);
+        const workNames = (wall.workIds ?? []).map((id: string) => works.find((w: any) => w.id === id)?.name ?? id).join(", ") || "—";
+        lines.push(
+          `| ${wall.name}${wall.ceiling ? " (strop)" : ""} | ${n(wall.width)} | ${n(wall.height)} | ${scopeText(wall.scope)} | ${f2(stats.gross)} | ${f2(stats.openings)} | ${f2(stats.reveals)} | ${f2(stats.clean)} | ${workNames} |`,
+        );
+      });
+    }
     lines.push("");
 
     room.walls.forEach((wall: any) => {
@@ -166,14 +218,17 @@ export function buildAiMarkdown({ rooms, works, settings, calc, meta, customer }
       lines.push(`### ${wall.name} — detaily`);
       if (wall.openings.length) {
         lines.push("");
-        lines.push("| Prvek | Šířka | Výška | Ks | Zleva | Od podlahy | Špaleta | Pravý úhel | Venku | Oblouk |");
-        lines.push("|---|---|---|---|---|---|---|---|---|---|");
+        lines.push("| Prvek | Šířka | Výška | Ks | Zleva | Od podlahy | Špaleta | Pravý úhel | Venku | Oblouk | Členění |");
+        lines.push("|---|---|---|---|---|---|---|---|---|---|---|");
         wall.openings.forEach((opening: any) => {
           const outer = outerOpening(opening);
           const square = opening.revealSquare === false ? "ne" : "ano";
           const outerText = opening.revealSquare === false ? `${outer.width}×${outer.height}` : "—";
+          const px = n(opening.panesX) || 1;
+          const py = n(opening.panesY) || 1;
+          const panesText = openingKind(opening) === "window" && (px > 1 || py > 1) ? `${px}×${py} tabulek` : "—";
           lines.push(
-            `| ${kindLabel(opening)} | ${n(opening.width)} | ${n(opening.height)} | ${n(opening.count || 1)} | ${n(opening.x)} | ${n(opening.y)} | ${n(opening.reveal)} | ${square} | ${outerText} | ${n(opening.arch) || "—"} |`,
+            `| ${kindLabel(opening)} | ${n(opening.width)} | ${n(opening.height)} | ${n(opening.count || 1)} | ${n(opening.x)} | ${n(opening.y)} | ${n(opening.reveal)} | ${square} | ${outerText} | ${n(opening.arch) || "—"} | ${panesText} |`,
           );
         });
         lines.push("");
@@ -193,6 +248,8 @@ export function buildAiMarkdown({ rooms, works, settings, calc, meta, customer }
       lines.push("");
     }
   });
+
+  if (geometryOnly) return lines.join("\n");
 
   lines.push("## Ceník a sazby");
   works.forEach((work: any) => lines.push(`- ${work.name}: ${n(work.price)} Kč/${work.unit}`));

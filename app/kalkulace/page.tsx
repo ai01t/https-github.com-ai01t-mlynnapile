@@ -1315,8 +1315,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       )}
       {aiOpen && (
         <AiExportModal
-          svg={buildDrawingSvg(rooms, meta, company)}
-          markdown={buildAiMarkdown({ rooms, works, settings, calc, meta, customer })}
+          buildSvg={(geometryOnly) => buildDrawingSvg(rooms, meta, company, geometryOnly)}
+          buildMarkdown={(mode) => buildAiMarkdown({ rooms, works, settings, calc, meta, customer, mode })}
           name={(meta.name || "nacenani").replace(/[^\w\-.]+/g, "_")}
           close={() => setAiOpen(false)}
         />
@@ -2258,8 +2258,14 @@ function InvoiceModal({ invoice, company, close }) {
 }
 
 // Export zakázky pro AI: kótovaný nákres (SVG/PNG) + strukturovaný popis v Markdownu.
-function AiExportModal({ svg, markdown, name, close }) {
+function AiExportModal({ buildSvg, buildMarkdown, name, close }) {
   const [copied, setCopied] = useState("");
+  // "full" = podklad pro nacenění, "geometry" = jen zaměření a podoba prostoru (pro architekta)
+  const [mode, setMode] = useState("full");
+  const geometryOnly = mode === "geometry";
+  const svg = buildSvg(geometryOnly);
+  const markdown = buildMarkdown(mode);
+  const fileName = geometryOnly ? `${name}-zamereni` : `${name}`;
 
   const download = (content, filename, type) => {
     const blob = new Blob([content], { type });
@@ -2286,7 +2292,7 @@ function AiExportModal({ svg, markdown, name, close }) {
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `${name}-nakres.png`;
+        link.download = `${fileName}-nakres.png`;
         link.click();
         URL.revokeObjectURL(url);
       });
@@ -2318,16 +2324,39 @@ function AiExportModal({ svg, markdown, name, close }) {
         Kótovaný nákres a popis se všemi rozměry. Obojí přečte člověk i AI — nákres má rozměry vypsané textem, popis je strukturovaná tabulka.
       </p>
 
+      <div className="mb-3 inline-flex overflow-hidden rounded-[var(--radius)] border border-[var(--line)]">
+        {[
+          ["full", "Podklad pro nacenění", "Rozměry, plochy, práce, ceník a celková cena."],
+          ["geometry", "Jen zaměření (pro architekta)", "Pouze rozměry a podoba prostoru — bez prací, materiálů a cen."],
+        ].map(([value, label, hint]) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setMode(value)}
+            title={hint}
+            className={`px-3 py-2 text-sm font-bold transition ${mode === value ? "text-white" : "bg-[var(--card)] text-[var(--text-soft)] hover:bg-[var(--bg-soft)]"}`}
+            style={mode === value ? { backgroundColor: "var(--brand)" } : undefined}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {geometryOnly && (
+        <p className="mb-3 text-xs text-[var(--muted)]">
+          Export obsahuje jen zaměření a podobu prostoru: rozměry stěn, otvory, špalety, oblouky, členění oken a půdorys. Žádné práce, materiály ani ceny.
+        </p>
+      )}
+
       <div className="mb-3 flex flex-wrap gap-2">
         <Button onClick={() => copy(markdown, "popis")}>
           <Copy className="h-4 w-4" />
           {copied === "popis" ? "Zkopírováno ✓" : "Kopírovat popis pro AI"}
         </Button>
-        <Button variant="outline" onClick={() => download(markdown, `${name}-popis.md`, "text/markdown;charset=utf-8")}>
+        <Button variant="outline" onClick={() => download(markdown, `${fileName}-popis.md`, "text/markdown;charset=utf-8")}>
           <Download className="h-4 w-4" />
           Popis (.md)
         </Button>
-        <Button variant="outline" onClick={() => download(svg, `${name}-nakres.svg`, "image/svg+xml;charset=utf-8")}>
+        <Button variant="outline" onClick={() => download(svg, `${fileName}-nakres.svg`, "image/svg+xml;charset=utf-8")}>
           <Download className="h-4 w-4" />
           Nákres (.svg)
         </Button>
