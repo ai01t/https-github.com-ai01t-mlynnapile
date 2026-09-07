@@ -95,6 +95,8 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
 .tele73-crop .zoom-inner{aspect-ratio:16/9;}
 .tele73-crop .zoom-inner img{width:100%;height:100%;object-fit:cover;object-position:50% 24%;}
 .src{margin-top:auto;padding-top:10px;border-top:1px solid var(--brd);font-size:10px;color:var(--mut)}
+.src-blk{margin-bottom:0}
+.src-lbl{font-size:9px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);opacity:.7;margin-right:5px}
 /* Accordion */
 .acc-cat{border-bottom:1px solid #181819}
 .acc-hdr{display:flex;align-items:center;gap:8px;padding:7px 16px;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.3px;color:#9a9794;transition:background .12s,color .12s;user-select:none;position:relative}
@@ -448,7 +450,7 @@ function showUAD(pluginName){
       const url=domains[t];
       return url?'<a href="'+url+'" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">'+t+'</a>':esc(t);
     });
-    h+=detailBlock('Zdroj','<div class="src">'+srcLinks.join(', ')+'</div>','mblk-source');
+    h+=srcLine(srcLinks.join(', '));
   }
   const dc=document.getElementById('dc');
   dc.innerHTML=h;
@@ -477,12 +479,12 @@ function showApolloView(sub){
     h+='<div class="dtit">Universal Audio Apollo X8P Gen 2 Studio+</div>';
     h+='<div class="zoom-photo"><div class="zoom-inner"><img src="'+APOLLO_IMG+'" alt="Universal Audio Apollo X8P" /></div></div>';
     h+=detailBlock('Technické specifikace','<div class="btxt" style="font-size:13px;line-height:1.6;color:#b0ada8">Profesionální zvuková karta s 8 Unison předzesilovači, která se umí nastavit sama. Díky funkci Auto Gain stačí jediné kliknutí — karta automaticky zkalibruje úrovně vstupu. Studio jsme záměrně navrhli tak, aby hudebníci mohli tvořit bez rušení a bez nutnosti technické asistence :-) (ale v případě potřeby, jsme plně k dispozici).</div>');
-    h+=detailBlock('Zdroj','<div class="src"><a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a></div>','mblk-source');
+    h+=srcLine('<a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a>');
   } else if(sub==='tech'){
     h+='<div class="dtit">Technické detaily</div>';
     h+='<div class="zoom-photo"><div class="zoom-inner"><img src="'+APOLLO_IMG+'" alt="Universal Audio Apollo X8P" /></div></div>';
     h+=detailBlock('Specifikace','<div class="btxt">Thunderbolt 3 audio interface. 16 vstupů × 22 výstupů. 24-bit/192 kHz. HEXA Core DSP (UAD plug-iny v reálném čase). 8× Unison™ preamp. Celkový dynamic range: 129 dB.</div>');
-    h+=detailBlock('Zdroj','<div class="src"><a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a></div>','mblk-source');
+    h+=srcLine('<a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a>');
   } else if(sub==='io'){
     h+='<div class="dtit">Vstupy & výstupy</div>';
     h+='<div class="zoom-photo" style="margin-top:18px;background:rgba(7,6,10,.72)"><div class="zoom-inner"><img src="'+APOLLO_REAR_IMG+'" alt="Apollo X8P zadní panel" style="background:rgba(7,6,10,.72);padding:12px 0" /></div></div>';
@@ -490,7 +492,7 @@ function showApolloView(sub){
     h+=detailBlock('Analogové výstupy','<div class="btxt">8× Analog line out (TRS, zadní panel)\n2× Monitor out L/R (TRS)\n2× Headphone out (přední panel, ¼")</div>');
     h+=detailBlock('Digitální I/O','<div class="btxt">2× Optical ADAT/S/MUX (až 8ch @ 44.1/48 kHz)\n1× AES/EBU (XLR, 2ch)\n1× S/PDIF (RCA)\n1× BNC Word Clock in/out</div>');
     h+=detailBlock('Připojení','<div class="btxt">Thunderbolt 3 (2× porty pro daisy-chain)\nUSB-C (monitoring pouze)</div>');
-    h+=detailBlock('Zdroj','<div class="src"><a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a></div>','mblk-source');
+    h+=srcLine('<a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>');
   }
   dc.innerHTML=h;
   pinSourceBottom();
@@ -800,6 +802,10 @@ function renderBelow(s){
   return linkItems(linkAnteater(s));
 }
 
+function srcLine(html){
+  return '<div class="blk src-blk mblk-source"><div class="src"><span class="src-lbl">Zdroj:</span> '+html+'</div></div>';
+}
+
 function detailBlock(label,html,extraClass=''){
   return '<div class="blk mblk '+extraClass+'">'+
     '<button type="button" class="mblk-toggle" onclick="toggleMobileDetail(this)">'+esc(label)+'</button>'+
@@ -902,7 +908,7 @@ function show(name,catLabel){
       const url=domains[t];
       return url ? '<a href="'+url+'" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">'+t+'</a>' : esc(t);
     });
-    h+=detailBlock('Zdroj','<div class="src">'+srcLinks.join(', ')+'</div>','mblk-source');
+    h+=srcLine(srcLinks.join(', '));
   }
 
   const dc=document.getElementById('dc');
