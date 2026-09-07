@@ -746,8 +746,18 @@ function fallbackNamedPhoto(img){
   if(wrap) wrap.remove();
 }
 
+const NOTE_LINKS=[
+  [/Kytarov\u00e1 zbrojnice #26/g,'https://youtu.be/mqq2q5bJrv8?si=75Cu7zMEC_t3vCN-&t=1130'],
+];
+
+function extLink(text,url){
+  return '<a href="'+url+'" target="_blank" rel="noopener noreferrer" style="color:#d4a84b;text-decoration:none;border-bottom:1px solid rgba(212,168,75,0.35)">'+text+'</a>';
+}
+
 function linkAnteater(s){
-  return s.replace(/\bAnteater\b/g,'<a href="https://www.anteaterofficial.com/" target="_blank" style="color:#d4a84b;text-decoration:none;border-bottom:1px solid rgba(212,168,75,0.35)">Anteater</a>');
+  s=s.replace(/\bAnteater\b/g,extLink('Anteater','https://www.anteaterofficial.com/'));
+  NOTE_LINKS.forEach(([re,url])=>{s=s.replace(re,m=>extLink(m,url));});
+  return s;
 }
 
 function linkItems(s){
