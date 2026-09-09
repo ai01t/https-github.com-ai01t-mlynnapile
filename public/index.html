@@ -695,13 +695,13 @@ body.de .de{display:revert;}
   .btn-lang,.btn-pause,.btn-mode{padding:7px 10px;}
   .hamburger{display:flex !important;}
   .side-nav{display:none;}
-  #history .history-embed-frame{pointer-events:none;}
+  #history .history-embed-frame{pointer-events:auto;touch-action:pan-y;}
 }
 @media(orientation:portrait){
   .nav-links{display:none;}
   .hamburger{display:flex !important;}
   .side-nav{display:none;}
-  #history .history-embed-frame{pointer-events:none;}
+  #history .history-embed-frame{pointer-events:auto;touch-action:pan-y;}
   .residency-track{min-height:auto;}
   .residency-panel{padding-bottom:0;}
   .residency-booking-panel{padding-left:0;}
@@ -768,6 +768,9 @@ body.de .de{display:revert;}
   .pkg-grid::-webkit-scrollbar{display:none;}
   .pkg-card{flex:0 0 100%;scroll-snap-align:start;min-height:0;padding:30px 22px;}
   .pkg-num{font-size:2.4rem;margin-bottom:12px;}
+  /* Booking sedí v pravém horním rohu karty balíčku. */
+  .pkg-stage{position:relative;}
+  .residency-actions{top:14px;right:14px;}
 
   /* --- balíčky se musí vejít na jednu obrazovku --- */
   #residency .big-n{display:none;}
@@ -1181,6 +1184,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
           <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <a class="chleba-trigger" href="/chleba">chléb</a> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
           <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <a class="chleba-trigger" href="/chleba">bread</a>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
           <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
+          <div class="pkg-stage">
           <div class="residency-actions rev rev-d2">
             <button type="button" class="btn-secondary residency-booking-trigger" data-open-booking="1">
               <span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span>
@@ -1191,6 +1195,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
       <div class="pkg-card" data-pkg="underwater"><div class="pkg-num">02</div><div class="pkg-name">Underwater</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Sauna</span><span class="en">#Main studio #Sauna</span><span class="de">#Hauptstudio #Sauna</span></span><p class="pkg-text cs">Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka. Skromné ale stylové a útulné přespání přímo v prostorách bývalé mlýnice.</p><p class="pkg-text en">Closest to the music, sleeping literally beneath the studio floor and below the pond level. Modest but stylish accommodation in the former mill.</p><p class="pkg-text de">Ganz nah an der Musik: Schlafen direkt unter dem Studioboden und unter der Teichoberfläche. Schlicht, aber stilvoll und gemütlich in der ehemaligen Mühle.</p></div>
       <div class="pkg-card" data-pkg="otherside"><div class="pkg-num">03</div><div class="pkg-name">Otherside</div><span class="pkg-tags"><span class="cs">#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV</span><span class="en">#Control room #Traditional Czech room #Two rooms #TV</span><span class="de">#Regieraum #Traditionelle Stube #Zwei Zimmer #TV</span></span><p class="pkg-text cs">Pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple + ubytování ve staročeské světnici. Vhodné i pro nehudební kreativní aktivity.</p><p class="pkg-text en">For post-production: 6K Apple Pro XDR with full Apple peripherals + accommodation in a traditional Czech room. Suitable for non-musical creative activities too.</p><p class="pkg-text de">Für Postproduktion: 6K Apple Pro XDR inkl. kompletter Apple-Peripherie + Unterkunft in einer traditionellen tschechischen Stube. Auch für nicht-musikalische Kreativarbeit geeignet.</p></div>
       <div class="pkg-card" data-pkg="fuel"><div class="pkg-num">04</div><div class="pkg-name">Fuel</div><span class="pkg-tags"><span class="cs">#VIP balíček</span><span class="en">#VIP package</span><span class="de">#VIP-Paket</span></span><p class="pkg-text cs">VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady a zapůjčení Tesla Model X. Profi catering, roztopení velké pece, pizza i <a class="chleba-trigger" href="/chleba">chleba</a> z pece.</p><p class="pkg-text en">VIP rental of the entire property with full service, including the winter garden and Tesla Model X. Professional catering, pizza and <a class="chleba-trigger" href="/chleba">bread</a> from the stone oven.</p><p class="pkg-text de">VIP-Miete der gesamten Anlage mit Full-Service inklusive Wintergarten und Tesla Model X. Professionelles Catering, Pizza und <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Steinofen.</p></div>
+    </div>
     </div>
     <div class="rules-box rules-list-tight rev rev-d3">
       <span class="rules-label"><span class="cs">DŮLEŽITÉ</span><span class="en">IMPORTANT</span><span class="de">WICHTIG</span></span>
