@@ -745,6 +745,30 @@ body.de .de{display:revert;}
   .founder-name{font-size:1.22rem;}
   .founder-text{font-size:.72rem;line-height:1.45;}
 
+  /* --- logo: Mlýn / na Pile --- */
+  .nav-logo{line-height:1.02;}
+  .nav-logo em{display:block;}
+
+  /* --- booking vpravo nahoře, jen u balíčků 01 a 02 --- */
+  .residency-main-panel{position:relative;padding-right:0;}
+  .residency-actions{position:absolute;top:0;right:0;margin:0;z-index:6;transition:opacity .25s ease,transform .25s ease;}
+  .residency-booking-trigger{min-width:0;padding:11px 20px;font-size:.68rem;}
+  .residency-main-panel.pkg-late .residency-actions{opacity:0;transform:translateY(-6px);pointer-events:none;}
+
+  /* --- balíčky: listování doprava --- */
+  .pkg-grid{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    gap:1px;
+    margin-bottom:30px;
+    scrollbar-width:none;
+  }
+  .pkg-grid::-webkit-scrollbar{display:none;}
+  .pkg-card{flex:0 0 100%;scroll-snap-align:start;min-height:0;padding:30px 22px;}
+  .pkg-num{font-size:2.4rem;margin-bottom:12px;}
+
 }
 </style>
 <style id="native-scroll-overrides">
@@ -1013,7 +1037,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
     <p class="eq-intro de rev rev-d1">Ausstattungsübersicht in Textform mit Beispielen wichtiger Instrumente und Studiotechnologien.</p>
 
     <div class="eq-embed-wrap rev rev-d2">
-      <iframe class="eq-embed-frame" src="/equipment-table/studio-equipment.html?lang=cs" title="Studio equipment"></iframe>
+      <iframe class="eq-embed-frame" src="/equipment-table/studio-equipment.html?lang=cs&amp;v=20260909a" title="Studio equipment"></iframe>
     </div>
     <p class="eq-thanks cs">Děkujeme kytaristovi Radkovi Fořtovi z kapely <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> za zapůjčení nástrojů z jeho sbírky.</p>
     <p class="eq-thanks en">We thank guitarist Radek Fort from the band <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> for lending instruments from his collection.</p>
@@ -2763,7 +2787,7 @@ function applyLang(){
   }
   if(eqEmbedFrame){
     eqEmbedFrame.setAttribute('title',text.equipmentTableTitle);
-    eqEmbedFrame.src=`${EQUIPMENT_EMBED_BASE}?lang=${lang}`;
+    eqEmbedFrame.src=`${EQUIPMENT_EMBED_BASE}?lang=${lang}&v=20260909a`;
   }
   if(bookingEmbedFrame){
     bookingEmbedFrame.setAttribute('title',text.bookingEmbedTitle);
@@ -2874,6 +2898,26 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
     setResidencyBooking(true);
   });
 });
+
+/* Mobil: booking trigger schovat, jakmile se odlistuje za balíček 02. */
+(function(){
+  const grid=document.querySelector('.pkg-grid');
+  const panel=document.querySelector('.residency-main-panel');
+  if(!grid||!panel)return;
+  const sync=()=>{
+    if(!matchMedia('(max-width:600px)').matches){panel.classList.remove('pkg-late');return;}
+    const card=grid.querySelector('.pkg-card');
+    if(!card)return;
+    const step=card.getBoundingClientRect().width+1;
+    panel.classList.toggle('pkg-late',Math.round(grid.scrollLeft/step)>1);
+  };
+  grid.addEventListener('scroll',()=>{
+    cancelAnimationFrame(grid._pkgRaf||0);
+    grid._pkgRaf=requestAnimationFrame(sync);
+  },{passive:true});
+  addEventListener('resize',sync);
+  sync();
+})();
 residencyBookingCloseTriggers.forEach((trigger)=>{
   trigger.addEventListener('click',()=>{
     setResidencyBooking(false);
