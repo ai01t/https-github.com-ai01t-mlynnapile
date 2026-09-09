@@ -769,6 +769,29 @@ body.de .de{display:revert;}
   .pkg-card{flex:0 0 100%;scroll-snap-align:start;min-height:0;padding:30px 22px;}
   .pkg-num{font-size:2.4rem;margin-bottom:12px;}
 
+  /* --- balíčky se musí vejít na jednu obrazovku --- */
+  #residency .big-n{display:none;}
+  #residency .sec-title{font-size:clamp(2.3rem,10.5vw,3.4rem);}
+  #residency .res-intro{font-size:.78rem;line-height:1.5;margin-bottom:16px;}
+  #residency .pkg-grid{margin-bottom:0;}
+  #residency .pkg-card{padding:24px 20px;}
+  #residency .pkg-name{font-size:1.05rem;}
+  #residency .pkg-text{font-size:.76rem;line-height:1.5;}
+  /* DŮLEŽITÉ se na mobilu přesouvá pod booking */
+  .residency-booking-panel .rules-box{margin-top:22px;flex:0 0 auto;height:auto;min-height:0;overflow:visible;}
+  /* DŮLEŽITÉ sedí v denním/nočním panelu bookingu — musí být čitelné v obou. */
+  .residency-booking-panel .rules-box{border-color:rgba(20,18,16,.18);text-shadow:none;}
+  .residency-booking-panel .rules-label{color:rgba(20,18,16,.5);}
+  .residency-booking-panel .rules-list li{color:rgba(20,18,16,.66);border-bottom-color:rgba(20,18,16,.12);}
+  body.night-mode .residency-booking-panel .rules-box{border-color:rgba(240,235,226,.16);}
+  body.night-mode .residency-booking-panel .rules-label{color:rgba(240,235,226,.5);}
+  body.night-mode .residency-booking-panel .rules-list li{color:rgba(240,235,226,.6);border-bottom-color:rgba(240,235,226,.12);}
+  /* Panely se navzájem nenatahují — každý má vlastní výšku, booking si roluje sám. */
+  #residency .residency-track{min-height:0;}
+  #residency .content{padding-top:96px;padding-bottom:28px;}
+  #residency .residency-panel{max-height:calc(100svh - 124px);overflow-y:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  #residency .residency-panel::-webkit-scrollbar{display:none;}
+
 }
 </style>
 <style id="native-scroll-overrides">
@@ -2959,6 +2982,26 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
   },{passive:true});
   addEventListener('resize',sync);
   sync();
+})();
+
+/* Mobil: blok DŮLEŽITÉ patří pod booking, ne pod balíčky. */
+(function(){
+  const rules=document.querySelector('.rules-box');
+  if(!rules)return;
+  const home=rules.parentElement;
+  const next=rules.nextElementSibling;
+  const bookingPanel=document.querySelector('.residency-booking-panel');
+  if(!bookingPanel)return;
+  const mq=matchMedia('(max-width:600px)');
+  const place=()=>{
+    if(mq.matches){
+      if(rules.parentElement!==bookingPanel) bookingPanel.appendChild(rules);
+    } else if(rules.parentElement!==home){
+      home.insertBefore(rules,next);
+    }
+  };
+  mq.addEventListener('change',place);
+  place();
 })();
 residencyBookingCloseTriggers.forEach((trigger)=>{
   trigger.addEventListener('click',()=>{
