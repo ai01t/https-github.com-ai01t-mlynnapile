@@ -768,6 +768,38 @@ body.de .de{display:revert;}
   .pkg-grid::-webkit-scrollbar{display:none;}
   .pkg-card{flex:0 0 100%;scroll-snap-align:start;min-height:0;padding:30px 22px;}
   .pkg-num{font-size:2.4rem;margin-bottom:12px;}
+  /* --- prostory studia: listování do strany jako u balíčků --- */
+  #studio .rooms-grid{
+    display:flex;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    gap:1px;
+    margin-bottom:0;
+    scrollbar-width:none;
+  }
+  #studio .rooms-grid::-webkit-scrollbar{display:none;}
+  #studio .room-card{flex:0 0 100%;scroll-snap-align:start;padding:26px 22px;}
+  #studio .room-name{font-size:1.2rem;}
+  #studio .room-text{font-size:.76rem;line-height:1.6;}
+  #studio .studio-intro{font-size:.78rem;line-height:1.55;margin-bottom:20px;}
+  #studio .content{padding-top:96px;padding-bottom:28px;}
+  /* --- sekce s textem: vejít se na jednu obrazovku --- */
+  #place .content,#location .content,#contact .content{padding-top:96px;padding-bottom:28px;}
+  #place .tl-label,#place .val-label{margin-bottom:14px;}
+  #place .tl-item{padding:10px 0;gap:14px;grid-template-columns:60px 1fr;}
+  #place .tl-year{font-size:1.15rem;}
+  #place .tl-text{font-size:.75rem;line-height:1.5;}
+  #place .val-list{gap:9px;}
+  #place .val-list li{font-size:.75rem;line-height:1.5;}
+  #place .place-right{padding-top:8px;}
+  #place .values-block{margin-top:22px;}
+  #location .content p{font-size:.78rem;line-height:1.55;}
+  #location .access-item,#location .acc-item,#location li{padding-top:9px;padding-bottom:9px;}
+  #location .content{padding-top:88px;}
+  /* --- pohodlnější cíle pro prst --- */
+  .btn-lang,.btn-pause,.btn-mode{min-height:40px;padding-top:0;padding-bottom:0;display:inline-flex;align-items:center;justify-content:center;}
+  #contact a[href^="mailto:"],#contact a[href^="tel:"]{display:inline-block;padding:6px 0;}
   /* Booking sedí v pravém horním rohu karty balíčku. */
   .pkg-stage{position:relative;}
   .residency-actions{top:14px;right:14px;}
@@ -799,6 +831,12 @@ body.de .de{display:revert;}
 </style>
 <style id="native-scroll-overrides">
 html{-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;}
+/* Na nízkých displejích se delší sekce na jednu obrazovku nevejdou —
+   povinné snapování by v nich text uvěznilo, proto ho tam změkčíme. */
+@media(max-width:600px) and (max-height:700px){
+  html{scroll-snap-type:y proximity;}
+  section{scroll-snap-stop:normal;}
+}
 section{scroll-snap-align:start;scroll-snap-stop:always;}
 #contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:56px;padding:12px 60px;}
 #contact .content{position:relative;z-index:10;}
@@ -1092,9 +1130,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
         <p class="cs">Pila u Trhanova je ideální lokalitou pro milovníky krásné přírody, soukromí a aktivního odpočinku.</p>
         <p class="en">Pila near Trhanov is an ideal location for lovers of beautiful nature, privacy and active relaxation.</p>
         <p class="de">Pila bei Trhanov ist ein idealer Ort für Liebhaber schöner Natur, Privatsphäre und aktiver Erholung.</p>
-        <p class="cs">Celý kraj je známý svou zelení, čerstvým vzduchem a klidem, což vytváří perfektní podmínky pro všechny hledající únik z ruchu města.</p>
-        <p class="en">The whole region is known for its greenery, fresh air and tranquility, creating perfect conditions for those seeking an escape from city noise.</p>
-        <p class="de">Die gesamte Region ist für ihr Grün, frische Luft und Ruhe bekannt und bietet perfekte Bedingungen für alle, die dem Stadtlärm entfliehen möchten.</p>
       </div>
     </div>
     <div class="rev rev-d2">
