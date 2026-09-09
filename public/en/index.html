@@ -800,6 +800,62 @@ body.de .de{display:revert;}
   /* --- pohodlnější cíle pro prst --- */
   .btn-lang,.btn-pause,.btn-mode{min-height:40px;padding-top:0;padding-bottom:0;display:inline-flex;align-items:center;justify-content:center;}
   #contact a[href^="mailto:"],#contact a[href^="tel:"]{display:inline-block;padding:6px 0;}
+
+  /* --- 1. karusely: náhled další karty + tečky --- */
+  #residency .pkg-card,#studio .room-card{flex:0 0 88%;}
+  .carousel-dots{display:flex;justify-content:center;gap:9px;padding:14px 0 2px;}
+  .carousel-dots button{
+    width:26px;height:26px;padding:0;border:0;background:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .carousel-dots button::after{
+    content:"";width:6px;height:6px;border-radius:50%;
+    background:rgba(240,235,226,.28);transition:background .25s,transform .25s;
+  }
+  .carousel-dots button[aria-current="true"]::after{background:var(--gold);transform:scale(1.35);}
+
+  /* --- 2. čitelnost textu nad videem --- */
+  #hero .content,#place .content,#location .content{position:relative;isolation:isolate;}
+  #place .content::before,#location .content::before{
+    content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(7,6,10,.16) 0%,rgba(7,6,10,.56) 24%,rgba(7,6,10,.70) 100%);
+  }
+  #hero .content::before{
+    content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(7,6,10,0) 0%,rgba(7,6,10,.34) 42%,rgba(7,6,10,.60) 100%);
+  }
+
+  /* --- 4. FAQ přes celou obrazovku místo malého okénka --- */
+  body.faq-fullscreen .contact-faq-inline{
+    position:fixed;inset:0;z-index:120;margin:0;
+    padding:78px 22px 28px;
+    background:rgba(7,6,10,.97);
+    -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+    max-height:none;min-height:0;height:auto;border:0;
+  }
+  body.faq-fullscreen .contact-faq-inline #resFaqList{max-height:none;overflow:visible;}
+  body.faq-fullscreen .contact-faq-inline .resfaq-q{padding:11px 0;font-size:.85rem;}
+  .faq-close{
+    position:absolute;top:22px;right:18px;z-index:2;
+    min-width:44px;min-height:40px;padding:0 14px;
+    background:none;border:1px solid rgba(240,235,226,.22);color:rgba(240,235,226,.8);
+    font:400 .62rem/1 'Manrope',sans-serif;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;
+  }
+  body.faq-fullscreen{overflow:hidden;}
+
+  /* --- 5. náznak, že se historie listuje --- */
+  .swipe-hint{
+    position:absolute;left:50%;bottom:18px;transform:translateX(-50%);
+    z-index:12;display:flex;align-items:center;gap:8px;
+    font:400 .58rem/1 'Manrope',sans-serif;letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(240,235,226,.62);pointer-events:none;white-space:nowrap;
+    background:rgba(7,6,10,.55);padding:9px 14px;border:1px solid rgba(240,235,226,.14);
+    transition:opacity .4s ease;
+  }
+  .swipe-hint.gone{opacity:0;}
+  .swipe-hint span{animation:swipeNudge 1.9s ease-in-out infinite;}
+  @keyframes swipeNudge{0%,100%{transform:translateX(0)}50%{transform:translateX(-5px)}}
   /* Booking sedí v pravém horním rohu karty balíčku. */
   .pkg-stage{position:relative;}
   .residency-actions{top:14px;right:14px;}
@@ -2980,6 +3036,140 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
   },{passive:true});
   addEventListener('resize',sync);
   sync();
+})();
+
+/* ── Mobilní vylepšení: karusely, úsporná videa, FAQ na celou obrazovku, náznak swipe ── */
+(function(){
+  const MOBILE='(max-width:600px)';
+  const isMobile=()=>matchMedia(MOBILE).matches;
+
+  /* 1. Tečky pod karusely + aktivní stav podle scrollu. */
+  function initDots(grid,cardSel){
+    if(!grid||grid._dotsInit)return;
+    grid._dotsInit=true;
+    const cards=[...grid.querySelectorAll(cardSel)];
+    if(cards.length<2)return;
+    const dots=document.createElement('div');
+    dots.className='carousel-dots';
+    cards.forEach((card,i)=>{
+      const b=document.createElement('button');
+      b.type='button';
+      b.setAttribute('aria-label','Karta '+(i+1));
+      b.addEventListener('click',()=>grid.scrollTo({left:card.offsetLeft-grid.offsetLeft,behavior:'smooth'}));
+      dots.appendChild(b);
+    });
+    grid.insertAdjacentElement('afterend',dots);
+    const sync=()=>{
+      const mid=grid.scrollLeft+grid.clientWidth/2;
+      let best=0,bestD=Infinity;
+      cards.forEach((c,i)=>{
+        const d=Math.abs((c.offsetLeft-grid.offsetLeft)+c.offsetWidth/2-mid);
+        if(d<bestD){bestD=d;best=i;}
+      });
+      [...dots.children].forEach((b,i)=>b.setAttribute('aria-current',i===best?'true':'false'));
+      return best;
+    };
+    grid._syncDots=sync;
+    grid.addEventListener('scroll',()=>{
+      cancelAnimationFrame(grid._dotRaf||0);
+      grid._dotRaf=requestAnimationFrame(()=>{sync();if(grid._onCard)grid._onCard(sync());});
+    },{passive:true});
+    sync();
+  }
+
+  /* 2. Prostory studia: na mobilu běží jen video viditelné karty. */
+  function initStudioVideos(grid){
+    if(!grid||grid._vidInit||!isMobile())return;
+    grid._vidInit=true;
+    const frames=[...grid.querySelectorAll('.room-video-frame iframe')];
+    frames.forEach((f,i)=>{
+      if(i===0)return;
+      f.dataset.src=f.src;
+      f.removeAttribute('src');
+    });
+    grid._onCard=(idx)=>{
+      frames.forEach((f,i)=>{
+        if(i===idx){
+          if(!f.getAttribute('src')&&f.dataset.src)f.src=f.dataset.src;
+          try{f.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}','*');}catch(e){}
+        } else if(f.getAttribute('src')){
+          try{f.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}','*');}catch(e){}
+        }
+      });
+    };
+  }
+
+  /* 4. FAQ na mobilu jako celoobrazovkový panel s vlastním zavřením. */
+  function initFaq(){
+    const box=document.querySelector('.contact-faq-inline');
+    const toggle=document.getElementById('faqToggleBtn');
+    const section=document.getElementById('contact');
+    if(!box||!toggle||!section||box._faqInit)return;
+    box._faqInit=true;
+    const close=document.createElement('button');
+    close.type='button';
+    close.className='faq-close';
+    // Popisek bereme ze stejného zdroje jako zavírání mobilního menu,
+    // aby se přepínal s jazykem.
+    close.innerHTML='<span class="cs">Zavřít</span><span class="en">Close</span><span class="de">Schließen</span>';
+    close.addEventListener('click',()=>toggle.click());
+    box.appendChild(close);
+    // .contact-track má transform, takže by v něm position:fixed nepokrylo
+    // obrazovku — panel proto na mobilu přesouváme přímo do <body>.
+    const home=box.parentElement;
+    const anchor=box.nextElementSibling;
+    const sync=()=>{
+      const on=isMobile()&&section.classList.contains('view-faq');
+      close.style.display=on?'block':'none';
+      document.body.classList.toggle('faq-fullscreen',on);
+      if(on){
+        if(box.parentElement!==document.body)document.body.appendChild(box);
+      } else if(box.parentElement!==home){
+        home.insertBefore(box,anchor);
+      }
+    };
+    new MutationObserver(sync).observe(section,{attributes:true,attributeFilter:['class']});
+    addEventListener('resize',sync);
+    sync();
+  }
+
+  /* 5. Náznak, že se historie listuje do strany; zmizí po prvním tahu. */
+  function initSwipeHint(){
+    const host=document.querySelector('#history .history-embed-shell');
+    if(!host||host._hintInit||!isMobile())return;
+    host._hintInit=true;
+    const hint=document.createElement('div');
+    hint.className='swipe-hint';
+    hint.innerHTML='<span>\u2039\u2039</span> Potáhněte do strany';
+    host.appendChild(hint);
+    hint.classList.add('gone');
+    let timer=null;
+    const gone=()=>{hint.classList.add('gone');clearTimeout(timer);};
+    host.addEventListener('touchstart',gone,{passive:true});
+    // Náznak ukážeme teprve ve chvíli, kdy je sekce na obrazovce,
+    // jinak by stihl zmizet dávno předtím, než k ní uživatel dojde.
+    new IntersectionObserver((entries)=>{
+      entries.forEach((e)=>{
+        if(!e.isIntersecting){gone();return;}
+        hint.classList.remove('gone');
+        clearTimeout(timer);
+        timer=setTimeout(gone,6000);
+      });
+    },{threshold:.55}).observe(host);
+  }
+
+  function boot(){
+    if(!isMobile())return;
+    const pkg=document.querySelector('.pkg-grid');
+    const rooms=document.querySelector('.rooms-grid');
+    initDots(pkg,'.pkg-card');
+    initDots(rooms,'.room-card');
+    initStudioVideos(rooms);
+    initFaq();
+    initSwipeHint();
+  }
+  if(document.readyState==='loading')addEventListener('DOMContentLoaded',boot);else boot();
+  addEventListener('resize',()=>{if(isMobile())boot();});
 })();
 
 /* Mobil: blok DŮLEŽITÉ patří pod booking, ne pod balíčky. */
