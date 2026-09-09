@@ -588,6 +588,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const lastScrollYRef = useRef(0)
   const lastScrollDirectionRef = useRef<"up" | "down">("down")
   const [activeIndex, setActiveIndex] = useState(0)
+  const railWrapRef = useRef<HTMLDivElement | null>(null)
   const [navScrolled, setNavScrolled] = useState(false)
   const [paused, setPaused] = useState(false)
   const [nightMode, setNightMode] = useState(false)
@@ -1234,6 +1235,20 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   ]
 
   const activeProgress = timelinePositions[activeIndex] ?? 0
+
+  // Lišta let je užší než její obsah — aktivní rok musí dojet do záběru
+  // spolu s textem, jinak se text přepne a osa nahoře zůstane stát.
+  useEffect(() => {
+    const wrap = railWrapRef.current
+    if (!wrap) return
+    const point = wrap.querySelector<HTMLElement>(`[data-ti="${activeIndex}"]`)
+    if (!point) return
+    const target = point.offsetLeft + point.offsetWidth / 2 - wrap.clientWidth / 2
+    const max = Math.max(0, wrap.scrollWidth - wrap.clientWidth)
+    const left = Math.max(0, Math.min(target, max))
+    if (Math.abs(wrap.scrollLeft - left) < 2) return
+    wrap.scrollTo({ left, behavior: "smooth" })
+  }, [activeIndex])
   const progressWidth = `calc((100% - ${TIMELINE_INSET_PX * 2}px) * ${activeProgress})`
 
   const handleTimelineJump = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -1448,7 +1463,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
               <h2 className={cx(styles.timelineHeading, cormorant.className)}>{copy.timelineTitle}</h2>
             </div>
 
-            <div className={styles.timelineRailWrap}>
+            <div className={styles.timelineRailWrap} ref={railWrapRef}>
               <div className={styles.timelineRail}>
                 <div className={styles.timelineProgress} style={{ width: progressWidth }} />
                 {copy.entries.map((entry, index) => (
@@ -1460,6 +1475,7 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
                       index === activeIndex && styles.timelinePointActive,
                       index < activeIndex && styles.timelinePointPassed,
                     )}
+                    data-ti={index}
                     aria-pressed={index === activeIndex}
                     aria-label={`${entry.year} ${entry.title}`}
                     onClick={() => setActiveIndex(index)}
