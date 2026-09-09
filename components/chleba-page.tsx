@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Cormorant_Garamond, Manrope } from "next/font/google"
 import Link from "next/link"
-import BreadProcessTimeline from "@/components/bread-process-timeline"
+import BreadTimeline from "@/components/bread-timeline"
 import styles from "@/components/chleba-page.module.css"
 import { buildMediaFilter, buildOverlayGradients } from "@/lib/page-bg"
 import { useLiveBgConfig } from "@/lib/use-live-bg"
@@ -369,7 +369,7 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
           <h2 className={cormorant.className}>{t.processTitle}</h2>
           <p className={styles.processLead}>{t.processLead}</p>
           <div className={styles.processFrame}>
-            <BreadProcessTimeline />
+            <BreadTimeline locale={locale} />
           </div>
         </section>
 
