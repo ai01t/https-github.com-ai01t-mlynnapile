@@ -94,6 +94,7 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
 /* Crop top dark strip on Fender Telecaster Deluxe 1973 photo */
 .tele73-crop .zoom-inner{aspect-ratio:16/9;}
 .tele73-crop .zoom-inner img{width:100%;height:100%;object-fit:cover;object-position:50% 24%;}
+.backlist{display:none}
 .src{margin-top:auto;padding-top:10px;border-top:1px solid var(--brd);font-size:10px;color:var(--mut)}
 .src-blk{margin-bottom:0}
 .src-lbl{font-size:9px;letter-spacing:1.6px;text-transform:uppercase;color:var(--mut);opacity:.7;margin-right:5px}
@@ -151,6 +152,10 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
   #tabs{min-height:32px;background:rgba(7,6,10,.94);position:sticky;top:0;z-index:6;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
   #main{gap:0}
   #list{max-height:46vh;background:rgba(7,6,10,.92);box-shadow:0 10px 22px rgba(0,0,0,.45)}
+  body.picked #list{display:none}
+  body.picked .backlist{display:inline-flex}
+  .backlist{display:none;align-items:center;gap:7px;position:sticky;top:var(--tabsH);z-index:5;margin:0 0 10px;padding:9px 12px;min-height:38px;background:rgba(7,6,10,.92);border:1px solid var(--brd);color:var(--acc);font:600 10px/1 -apple-system,'Segoe UI',system-ui,sans-serif;letter-spacing:1.6px;text-transform:uppercase;cursor:pointer}
+  .backlist span{font-size:15px;line-height:1}
   .row{min-height:30px;align-items:center;padding:4px 12px;font-size:12px;line-height:1.28}
   .row-thumb{width:32px;height:32px}
   .acc-hdr{padding:6px 14px;font-size:11px}
@@ -184,6 +189,7 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
 <div id="main">
 <div id="list"></div>
 <div id="det">
+<button type="button" class="backlist" onclick="showList()"><span>‹</span> Seznam</button>
 <div id="empty"><div class="ei">🎸</div><p>Vyberte položku ze seznamu</p></div>
 <div id="dc"></div>
 </div>
@@ -457,7 +463,7 @@ function showUAD(pluginName){
   pinSourceBottom();
   document.getElementById('empty').style.display='none';
   dc.className='on';
-  if(window.matchMedia('(orientation:portrait)').matches) setTimeout(()=>document.getElementById('det').scrollIntoView({behavior:'smooth',block:'start'}),50);
+  showPicked();
 }
 
 function showApolloView(sub){
@@ -498,7 +504,7 @@ function showApolloView(sub){
   pinSourceBottom();
   document.getElementById('empty').style.display='none';
   dc.className='on';
-  if(window.matchMedia('(orientation:portrait)').matches) setTimeout(()=>document.getElementById('det').scrollIntoView({behavior:'smooth',block:'start'}),50);
+  showPicked();
 }
 
 function mesaTab(btn,panel){
@@ -823,6 +829,26 @@ function detailBlock(label,html,extraClass=''){
     '</div>';
 }
 
+/* Na výšku displeje se po výběru schová seznam, ať je nástroj vidět celý.
+   Dřív se místo toho volalo scrollIntoView, jenže to uvnitř iframu posune
+   i rodičovskou stránku — odtud to poskakování mezi sekcemi. */
+function isPortrait(){
+  return window.matchMedia('(orientation:portrait), (max-width:760px)').matches;
+}
+
+function showPicked(){
+  if(!isPortrait())return;
+  document.body.classList.add('picked');
+  window.scrollTo({top:0,behavior:'auto'});
+  const det=document.getElementById('det');
+  if(det)det.scrollTop=0;
+}
+
+function showList(){
+  document.body.classList.remove('picked');
+  window.scrollTo({top:0,behavior:'auto'});
+}
+
 function toggleMobileDetail(btn){
   const block=btn.closest('.mblk');
   if(!block) return;
@@ -1042,7 +1068,7 @@ function show(name,catLabel){
   }
   document.getElementById('empty').style.display='none';
   dc.className='on';
-  if(window.matchMedia('(orientation:portrait)').matches) setTimeout(()=>document.getElementById('det').scrollIntoView({behavior:'smooth',block:'start'}),50);
+  showPicked();
 }
 
 build();

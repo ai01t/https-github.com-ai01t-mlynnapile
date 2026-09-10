@@ -735,7 +735,7 @@ body.de .de{display:revert;}
 .mobile-nav a{font-family:'Manrope',sans-serif;font-size:.82rem;font-weight:400;color:var(--cream);text-decoration:none;letter-spacing:.22em;text-transform:uppercase;transition:color .2s,opacity .2s;}
 .mobile-nav a:hover{color:var(--gold);}
 .mobile-nav .close-nav{position:absolute;top:28px;right:28px;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);background:none;border:1px solid var(--border);padding:8px 18px;cursor:pointer;font-family:'Manrope',sans-serif;}
-@media(max-width:600px){
+@media(max-width:600px),(orientation:portrait){
   .pkg-grid{grid-template-columns:1fr;}
   .rules-box{height:auto;min-height:0;}
   .hero-title{font-size:clamp(4rem,20vw,8rem);}
@@ -801,7 +801,7 @@ body.de .de{display:revert;}
   #equipment .content{padding-top:96px;padding-bottom:24px;}
   #equipment .eq-embed-wrap{
     margin-top:18px;
-    height:calc(100dvh - 296px);
+    height:calc(100dvh - 304px);
     min-height:0;
     max-height:none;
   }
@@ -890,7 +890,6 @@ body.de .de{display:revert;}
 </style>
 <style id="native-scroll-overrides">
 html{-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;}
-}
 section{scroll-snap-align:start;scroll-snap-stop:always;}
 #contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:56px;padding:12px 60px;}
 #contact .content{position:relative;z-index:10;}
@@ -3022,7 +3021,7 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
   const panel=document.querySelector('.residency-main-panel');
   if(!grid||!panel)return;
   const sync=()=>{
-    if(!matchMedia('(max-width:600px)').matches){panel.classList.remove('pkg-late');return;}
+    if(!matchMedia(MOBILE).matches){panel.classList.remove('pkg-late');return;}
     const card=grid.querySelector('.pkg-card');
     if(!card)return;
     const step=card.getBoundingClientRect().width+1;
@@ -3038,7 +3037,7 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
 
 /* ── Mobilní vylepšení: karusely, úsporná videa, FAQ na celou obrazovku, náznak swipe ── */
 (function(){
-  const MOBILE='(max-width:600px)';
+  const MOBILE='(max-width:600px), (orientation:portrait)';
   const isMobile=()=>matchMedia(MOBILE).matches;
 
   /* 1. Tečky pod karusely + aktivní stav podle scrollu. */
@@ -3144,46 +3143,6 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
   addEventListener('resize',()=>{if(isMobile())boot();});
 })();
 
-/* Mobil: po dojetí prstu dorovnat na nejbližší sekci, ať nikdy nezůstane
-   viset napůl. Nativní snap to na iOS nezvládá — výška okna se mění spolu
-   s adresním řádkem a snapovací body se pod prstem posouvají. */
-(function(){
-  if(!matchMedia('(max-width:600px)').matches)return;
-  const TOL=6;          /* už zarovnáno, nic nedělat */
-  const MIN=48;         /* menší odchylku neřešíme, aby to necukalo */
-  let timer=null, adjusting=false, lastY=scrollY;
-
-  const tops=()=>[...document.querySelectorAll('section')]
-    .map((s)=>Math.round(scrollY+s.getBoundingClientRect().top));
-
-  function settle(){
-    if(adjusting||document.body.classList.contains('faq-fullscreen'))return;
-    const y=Math.round(scrollY);
-    const max=document.documentElement.scrollHeight-innerHeight;
-    if(y<=0||y>=max-1)return;
-    let best=null,bd=Infinity;
-    tops().forEach((top)=>{
-      const d=Math.abs(top-y);
-      if(d<bd){bd=d;best=top;}
-    });
-    if(best===null||bd<=TOL)return;
-    /* Když už jsme skoro na místě, dorovnáme bez ohledu na MIN. */
-    if(bd<MIN&&bd>TOL){adjusting=true;scrollTo({top:best,behavior:'smooth'});}
-    else if(bd>=MIN){adjusting=true;scrollTo({top:best,behavior:'smooth'});}
-    setTimeout(()=>{adjusting=false;},650);
-  }
-
-  addEventListener('scroll',()=>{
-    if(adjusting)return;
-    lastY=scrollY;
-    clearTimeout(timer);
-    timer=setTimeout(settle,130);
-  },{passive:true});
-  addEventListener('touchend',()=>{
-    clearTimeout(timer);
-    timer=setTimeout(settle,180);
-  },{passive:true});
-})();
 
 /* Mobil: blok DŮLEŽITÉ patří pod booking, ne pod balíčky. */
 (function(){
@@ -3193,7 +3152,7 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
   const next=rules.nextElementSibling;
   const bookingPanel=document.querySelector('.residency-booking-panel');
   if(!bookingPanel)return;
-  const mq=matchMedia('(max-width:600px)');
+  const mq=matchMedia(MOBILE);
   const place=()=>{
     if(mq.matches){
       if(rules.parentElement!==bookingPanel) bookingPanel.appendChild(rules);
