@@ -3144,6 +3144,47 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
   addEventListener('resize',()=>{if(isMobile())boot();});
 })();
 
+/* Mobil: po dojetí prstu dorovnat na nejbližší sekci, ať nikdy nezůstane
+   viset napůl. Nativní snap to na iOS nezvládá — výška okna se mění spolu
+   s adresním řádkem a snapovací body se pod prstem posouvají. */
+(function(){
+  if(!matchMedia('(max-width:600px)').matches)return;
+  const TOL=6;          /* už zarovnáno, nic nedělat */
+  const MIN=48;         /* menší odchylku neřešíme, aby to necukalo */
+  let timer=null, adjusting=false, lastY=scrollY;
+
+  const tops=()=>[...document.querySelectorAll('section')]
+    .map((s)=>Math.round(scrollY+s.getBoundingClientRect().top));
+
+  function settle(){
+    if(adjusting||document.body.classList.contains('faq-fullscreen'))return;
+    const y=Math.round(scrollY);
+    const max=document.documentElement.scrollHeight-innerHeight;
+    if(y<=0||y>=max-1)return;
+    let best=null,bd=Infinity;
+    tops().forEach((top)=>{
+      const d=Math.abs(top-y);
+      if(d<bd){bd=d;best=top;}
+    });
+    if(best===null||bd<=TOL)return;
+    /* Když už jsme skoro na místě, dorovnáme bez ohledu na MIN. */
+    if(bd<MIN&&bd>TOL){adjusting=true;scrollTo({top:best,behavior:'smooth'});}
+    else if(bd>=MIN){adjusting=true;scrollTo({top:best,behavior:'smooth'});}
+    setTimeout(()=>{adjusting=false;},650);
+  }
+
+  addEventListener('scroll',()=>{
+    if(adjusting)return;
+    lastY=scrollY;
+    clearTimeout(timer);
+    timer=setTimeout(settle,130);
+  },{passive:true});
+  addEventListener('touchend',()=>{
+    clearTimeout(timer);
+    timer=setTimeout(settle,180);
+  },{passive:true});
+})();
+
 /* Mobil: blok DŮLEŽITÉ patří pod booking, ne pod balíčky. */
 (function(){
   const rules=document.querySelector('.rules-box');
