@@ -209,6 +209,22 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
     () => Array.from(new Set(STEPS.map((_, i) => Math.floor((startHour * 60 + offsets[i]) / 1440) + 1))),
     [startHour, offsets],
   )
+  // Den dostane barvu z osy — ze středového kroku toho dne — aby tlačítka
+  // 1./2./3. den ladila se škálou od syrového těsta po vypečenou kůrku.
+  const dayTone = (d: number) => {
+    const idxs = STEPS.map((_, i) => i).filter((i) => dayOf(i) === d)
+    const mid = idxs[Math.floor((idxs.length - 1) / 2)] ?? 0
+    return DOUGH[Math.min(mid, DOUGH.length - 1)]
+  }
+  // Tlumená verze téže barvy pro pozadí tlačítka — počítáno v JS, ne přes
+  // CSS color-mix(), který na starších prohlížečích chybí.
+  const dayToneBg = (d: number) => {
+    const hex = dayTone(d).replace("#", "")
+    const r = parseInt(hex.slice(0, 2), 16)
+    const g = parseInt(hex.slice(2, 4), 16)
+    const b = parseInt(hex.slice(4, 6), 16)
+    return `rgba(${r}, ${g}, ${b}, 0.16)`
+  }
   // Odznačený den z osy zmizí; poslední zbylý se odznačit nedá, jinak by
   // osa zůstala prázdná.
   const shown = STEPS.map((_, i) => i).filter((i) => !hiddenDays.includes(dayOf(i)))
@@ -276,7 +292,9 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
               className={on ? "bt-day on" : "bt-day"}
               aria-pressed={on}
               onClick={() => toggleDay(d)}
+              style={{ ["--tone" as string]: dayTone(d), ["--toneBg" as string]: dayToneBg(d) }}
             >
+              <span className="bt-day-dot" />
               {t.day(d)}
             </button>
           )
@@ -457,18 +475,33 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
           font-size: 0.58rem;
           letter-spacing: 0.2em;
           text-transform: uppercase;
-          padding: 8px 14px;
+          padding: 8px 14px 8px 12px;
           min-height: 34px;
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
           cursor: pointer;
           transition: color 0.2s, border-color 0.2s, background 0.2s;
         }
         .bt-day:hover {
           color: rgba(238, 224, 196, 0.72);
         }
+        /* Barva jde ze stejné škály jako body na ose (--tone, nastaveno
+           inline podle středového kroku dne) — den 1 světlý, den 3 tmavý. */
+        .bt-day-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: rgba(238, 224, 196, 0.22);
+          transition: background 0.2s;
+        }
         .bt-day.on {
-          color: var(--gold);
-          border-color: rgba(194, 155, 97, 0.55);
-          background: rgba(194, 155, 97, 0.09);
+          color: rgba(243, 238, 228, 0.88);
+          border-color: var(--tone);
+          background: var(--toneBg);
+        }
+        .bt-day.on .bt-day-dot {
+          background: var(--tone);
         }
 
         /* Osa: vodorovný pás, na mobilu se posouvá spolu s aktivní zastávkou. */
