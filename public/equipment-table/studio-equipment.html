@@ -6,7 +6,7 @@
 <title>Vybavení</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
-:root{--bg:transparent;--sur:rgba(7,6,10,.58);--sur2:rgba(26,23,16,.68);--panel:rgba(7,6,10,.58);--panel-soft:rgba(7,6,10,.5);--panel-strong:rgba(7,6,10,.66);--brd:rgba(201,185,154,.18);--acc:#c8a96e;--acc2:#e0c080;--txt:#e8e4dd;--mut:#64615d;--chip:rgba(18,18,22,.58)}
+:root{--tabsH:32px;--bg:transparent;--sur:rgba(7,6,10,.58);--sur2:rgba(26,23,16,.68);--panel:rgba(7,6,10,.58);--panel-soft:rgba(7,6,10,.5);--panel-strong:rgba(7,6,10,.66);--brd:rgba(201,185,154,.18);--acc:#c8a96e;--acc2:#e0c080;--txt:#e8e4dd;--mut:#64615d;--chip:rgba(18,18,22,.58)}
 *{margin:0;padding:0;box-sizing:border-box}
 html{height:100%;background:transparent}
 body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:var(--txt);font-family:-apple-system,'Segoe UI',system-ui,sans-serif;overflow:hidden}
@@ -131,7 +131,7 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
 @media (orientation: portrait) {
   body{height:auto;min-height:100vh;overflow-y:auto;overflow-x:hidden}
   #main{display:flex;flex-direction:column;overflow:visible;min-height:auto}
-  #list{border-right:none;border-bottom:1px solid var(--brd);overflow-y:auto;max-height:30vh;flex-shrink:0}
+  #list{border-right:none;border-bottom:1px solid var(--brd);overflow-y:auto;max-height:30vh;flex-shrink:0;position:sticky;top:var(--tabsH);z-index:4}
   #det{overflow-y:visible;flex:1;min-height:50vh}
   .tb{font-size:9px;padding:0 6px}
   #tabs{min-height:28px}
@@ -150,7 +150,7 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
   body{background:transparent}
   #tabs{min-height:32px;background:rgba(7,6,10,.94);position:sticky;top:0;z-index:6;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
   #main{gap:0}
-  #list{max-height:46vh;background:rgba(7,6,10,.38)}
+  #list{max-height:46vh;background:rgba(7,6,10,.92);box-shadow:0 10px 22px rgba(0,0,0,.45)}
   .row{min-height:30px;align-items:center;padding:4px 12px;font-size:12px;line-height:1.28}
   .row-thumb{width:32px;height:32px}
   .acc-hdr{padding:6px 14px;font-size:11px}
