@@ -180,6 +180,7 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
   const t = COPY[locale] ?? COPY.cs
   const [startHour, setStartHour] = useState(23)
   const [active, setActive] = useState(0)
+  const [hiddenDays, setHiddenDays] = useState<number[]>([])
   const railRef = useRef<HTMLDivElement | null>(null)
 
   // Absolutní minuty od začátku pro každou zastávku.
@@ -203,6 +204,25 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
     return { day, label: `${h}:${String(m).padStart(2, "0")}` }
   }
 
+  const dayOf = (i: number) => Math.floor((startHour * 60 + offsets[i]) / 1440) + 1
+  const days = useMemo(
+    () => Array.from(new Set(STEPS.map((_, i) => Math.floor((startHour * 60 + offsets[i]) / 1440) + 1))),
+    [startHour, offsets],
+  )
+  // Odznačený den z osy zmizí; poslední zbylý se odznačit nedá, jinak by
+  // osa zůstala prázdná.
+  const shown = STEPS.map((_, i) => i).filter((i) => !hiddenDays.includes(dayOf(i)))
+  const toggleDay = (d: number) =>
+    setHiddenDays((cur) => {
+      const next = cur.includes(d) ? cur.filter((x) => x !== d) : [...cur, d]
+      return next.length >= days.length ? cur : next
+    })
+
+  // Když se skryje den s aktivní zastávkou, přesuneme se na první viditelnou.
+  useEffect(() => {
+    if (shown.length && !shown.includes(active)) setActive(shown[0])
+  }, [shown, active])
+
   // Aktivní zastávka musí zůstat v záběru i na úzké obrazovce.
   useEffect(() => {
     const rail = railRef.current
@@ -219,8 +239,10 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
   const step = STEPS[active]
   const at = clock(offsets[active])
   // Čára i body sedí na stejné mřížce: zastávka i má střed v ((i+0.5)/n).
-  const half = 50 / STEPS.length
-  const progress = (active / STEPS.length) * 100
+  // Počítá se z vykreslených zastávek, ne ze všech — dny se dají skrýt.
+  const shownCount = shown.length || 1
+  const half = 50 / shownCount
+  const progress = (Math.max(0, shown.indexOf(active)) / shownCount) * 100
 
   return (
     <div className="bt">
@@ -244,6 +266,23 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
         </span>
       </div>
 
+      <div className="bt-days">
+        {days.map((d) => {
+          const on = !hiddenDays.includes(d)
+          return (
+            <button
+              key={d}
+              type="button"
+              className={on ? "bt-day on" : "bt-day"}
+              aria-pressed={on}
+              onClick={() => toggleDay(d)}
+            >
+              {t.day(d)}
+            </button>
+          )
+        })}
+      </div>
+
       <div className="bt-railwrap">
       <div className="bt-rail" ref={railRef}>
         <div className="bt-stops">
@@ -252,9 +291,10 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
             className="bt-line bt-line-done"
             style={{ left: `${half}%`, width: `${progress}%` }}
           />
-          {STEPS.map((s, i) => {
+          {shown.map((i) => {
+            const s = STEPS[i]
             const c = clock(offsets[i])
-            const done = i <= active
+            const done = shown.indexOf(i) <= shown.indexOf(active)
             return (
               <button
                 key={s.id}
@@ -298,20 +338,20 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
             type="button"
             className="bt-arrow"
             aria-label={t.prev}
-            disabled={active === 0}
-            onClick={() => setActive((i) => Math.max(0, i - 1))}
+            disabled={shown.indexOf(active) <= 0}
+            onClick={() => setActive(shown[Math.max(0, shown.indexOf(active) - 1)])}
           >
             ‹
           </button>
           <span className="bt-count">
-            {active + 1} / {STEPS.length}
+            {shown.indexOf(active) + 1} / {shown.length}
           </span>
           <button
             type="button"
             className="bt-arrow"
             aria-label={t.next}
-            disabled={active === STEPS.length - 1}
-            onClick={() => setActive((i) => Math.min(STEPS.length - 1, i + 1))}
+            disabled={shown.indexOf(active) >= shown.length - 1}
+            onClick={() => setActive(shown[Math.min(shown.length - 1, shown.indexOf(active) + 1)])}
           >
             ›
           </button>
@@ -398,6 +438,37 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
           color: #1a1206;
           background: var(--gold);
           border-color: var(--gold);
+        }
+
+        /* Dny se dají odznačit a osa se zúží jen na vybraný den. */
+        .bt-days {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 7px;
+          margin-bottom: 16px;
+          padding-right: clamp(18px, 4vw, 56px);
+        }
+        .bt-day {
+          appearance: none;
+          border: 1px solid var(--hair);
+          background: transparent;
+          color: rgba(238, 224, 196, 0.34);
+          font: inherit;
+          font-size: 0.58rem;
+          letter-spacing: 0.2em;
+          text-transform: uppercase;
+          padding: 8px 14px;
+          min-height: 34px;
+          cursor: pointer;
+          transition: color 0.2s, border-color 0.2s, background 0.2s;
+        }
+        .bt-day:hover {
+          color: rgba(238, 224, 196, 0.72);
+        }
+        .bt-day.on {
+          color: var(--gold);
+          border-color: rgba(194, 155, 97, 0.55);
+          background: rgba(194, 155, 97, 0.09);
         }
 
         /* Osa: vodorovný pás, na mobilu se posouvá spolu s aktivní zastávkou. */
