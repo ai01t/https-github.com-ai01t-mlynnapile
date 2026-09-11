@@ -41,7 +41,6 @@ const COPY: Record<Locale, {
   next: string
   day: (n: number) => string
   duration: (m: number) => string
-  steam: (m: number) => string
   names: Record<string, string>
   story: Record<string, string>
 }> = {
@@ -52,7 +51,6 @@ const COPY: Record<Locale, {
     prev: "Předchozí krok",
     next: "Další krok",
     day: (n) => `${n}. den`,
-    steam: (m) => `${m} min v páře`,
     duration: (m) =>
       m >= 60
         ? `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}`
@@ -71,6 +69,7 @@ const COPY: Record<Locale, {
       lednice: "Do lednice",
       predehrati: "Předehřátí trouby",
       peceni: "Pečení",
+      steamStep: "Pečení v páře",
       predani: "Předání",
     },
     story: {
@@ -86,7 +85,8 @@ const COPY: Record<Locale, {
       osatka: "Krátké kynutí v ošatce, než přijde chlad.",
       lednice: "Čtrnáct hodin v lednici. Chlad kvašení zpomalí a chuť se za tu dobu prohloubí — tohle se uspěchat nedá.",
       predehrati: "Trouba se rozpaluje naprázdno, bochník zatím čeká v chladu. Do rozpálené pece jde rovnou ze studena.",
-      peceni: "Prvních 18 minut se peče pod poklicí s párou — ta drží kůrku poddajnou, aby se bochník mohl v troubě ještě roztáhnout. Pak se poklice sundá a chleba dopeče dokřupava.",
+      peceni: "Pečení pod poklicí a pak dopečení dokřupava. Kůrka vznikne až v posledních minutách.",
+      steamStep: "Prvních 18 minut se peče pod poklicí s párou. Ta drží kůrku poddajnou, aby se bochník mohl v troubě ještě roztáhnout — bez ní by se povrch zatáhl dřív, než těsto stihne vyjít. Pak se poklice sundá a chleba dopeče dokřupava.",
       predani: "Chleba musí vychladnout, jinak se uvnitř mázne. Teprve dvě hodiny po pečení je opravdu hotový.",
     },
   },
@@ -97,7 +97,6 @@ const COPY: Record<Locale, {
     prev: "Previous step",
     next: "Next step",
     day: (n) => `Day ${n}`,
-    steam: (m) => `${m} min with steam`,
     duration: (m) =>
       m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}` : `${m} min`,
     names: {
@@ -114,6 +113,7 @@ const COPY: Record<Locale, {
       lednice: "Into the fridge",
       predehrati: "Preheating the oven",
       peceni: "Baking",
+      steamStep: "Baking in steam",
       predani: "Handover",
     },
     story: {
@@ -129,7 +129,8 @@ const COPY: Record<Locale, {
       osatka: "A short proof in the banneton before the cold comes.",
       lednice: "Fourteen hours in the fridge. Cold slows fermentation and the flavour deepens — this cannot be rushed.",
       predehrati: "The oven heats up empty while the loaf waits in the cold. It goes into the hot oven straight from the fridge.",
-      peceni: "The first 18 minutes are baked covered with steam — it keeps the crust supple so the loaf can still expand in the oven. Then the lid comes off and the bread finishes uncovered until crisp.",
+      peceni: "Baked under a lid, then finished uncovered until crisp. The crust only forms in the final minutes.",
+      steamStep: "The first 18 minutes are baked covered, in steam. It keeps the crust supple so the loaf can still expand in the oven — without it the surface would set before the dough had risen. Then the lid comes off and the bread finishes until crisp.",
       predani: "Bread has to cool down, otherwise it turns gummy inside. Only two hours after baking is it truly done.",
     },
   },
@@ -140,7 +141,6 @@ const COPY: Record<Locale, {
     prev: "Vorheriger Schritt",
     next: "Nächster Schritt",
     day: (n) => `Tag ${n}`,
-    steam: (m) => `${m} Min. mit Dampf`,
     duration: (m) =>
       m >= 60 ? `${Math.floor(m / 60)} Std.${m % 60 ? ` ${m % 60} Min.` : ""}` : `${m} Min.`,
     names: {
@@ -157,6 +157,7 @@ const COPY: Record<Locale, {
       lednice: "In den Kühlschrank",
       predehrati: "Ofen vorheizen",
       peceni: "Backen",
+      steamStep: "Backen mit Dampf",
       predani: "Übergabe",
     },
     story: {
@@ -172,7 +173,8 @@ const COPY: Record<Locale, {
       osatka: "Eine kurze Gare im Gärkorb, bevor die Kälte kommt.",
       lednice: "Vierzehn Stunden im Kühlschrank. Kälte bremst die Gärung, der Geschmack wird tiefer — das lässt sich nicht beschleunigen.",
       predehrati: "Der Ofen heizt leer auf, der Laib wartet in der Kälte. Er kommt direkt aus dem Kühlschrank in den heißen Ofen.",
-      peceni: "Die ersten 18 Minuten wird mit Deckel und Dampf gebacken — das hält die Kruste geschmeidig, damit der Laib im Ofen noch aufgehen kann. Danach kommt der Deckel ab und das Brot bäckt offen knusprig fertig.",
+      peceni: "Backen unter dem Deckel, dann offen knusprig fertig backen. Die Kruste entsteht erst in den letzten Minuten.",
+      steamStep: "Die ersten 18 Minuten wird mit Deckel und Dampf gebacken. Das hält die Kruste geschmeidig, damit der Laib im Ofen noch aufgehen kann — ohne Dampf würde die Oberfläche fest werden, bevor der Teig aufgehen kann. Danach kommt der Deckel ab und das Brot bäckt knusprig fertig.",
       predani: "Brot muss auskühlen, sonst wird es innen klitschig. Erst zwei Stunden nach dem Backen ist es wirklich fertig.",
     },
   },
@@ -185,6 +187,7 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
   const [startHour, setStartHour] = useState(23)
   const [active, setActive] = useState(0)
   const [hiddenDays, setHiddenDays] = useState<number[]>([])
+  const [steamOpen, setSteamOpen] = useState(false)
   const railRef = useRef<HTMLDivElement | null>(null)
 
   // Absolutní minuty od začátku pro každou zastávku.
@@ -264,18 +267,19 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
   const half = 50 / shownCount
   const progress = (Math.max(0, shown.indexOf(active)) / shownCount) * 100
 
-  // Kóta páry na ose. Osa je kategorická (každý krok má stejně široký slot),
-  // takže šířka je symbolická — přesnou délku nese popisek.
+  // Fáze s párou sedí na ose jako drobná vedlejší zastávka hned za pečením.
+  // Osa je kategorická, takže odsazení je symbolické — délku nese text.
   const steamIdx = STEPS.findIndex((x) => x.steamMin)
   const steamAt = shown.indexOf(steamIdx)
   const steam =
     steamAt >= 0 && STEPS[steamIdx].steamMin
       ? {
           minutes: STEPS[steamIdx].steamMin as number,
-          left: ((steamAt + 0.5) / shownCount) * 100,
-          width: Math.min((0.62 / shownCount) * 100, 100 - ((steamAt + 0.5) / shownCount) * 100),
+          left: ((steamAt + 0.5 + 0.34) / shownCount) * 100,
         }
       : null
+
+  const showSteam = steamOpen && active === steamIdx && !!steam
 
   return (
     <div className="bt">
@@ -327,14 +331,26 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
             style={{ left: `${half}%`, width: `${progress}%` }}
           />
           {steam ? (
-            <div
-              className="bt-steam"
-              style={{ left: `${steam.left}%`, width: `${steam.width}%` }}
-              aria-hidden="true"
+            <button
+              type="button"
+              className={steamOpen ? "bt-steam on" : "bt-steam"}
+              style={{ left: `${steam.left}%` }}
+              aria-pressed={steamOpen}
+              aria-label={t.names.steamStep}
+              onClick={() => {
+                setActive(steamIdx)
+                setSteamOpen(true)
+              }}
             >
-              <span className="bt-steam-bar" />
-              <span className="bt-steam-label">{t.steam(steam.minutes)}</span>
-            </div>
+              <span className="bt-steam-wisps" aria-hidden="true">
+                <svg viewBox="0 0 16 18" fill="none" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round">
+                  <path d="M4 17c-1.6-2.2.9-3.4-.7-5.6" />
+                  <path d="M8 18c-1.9-3.4 1.1-5.2-.8-8.6" />
+                  <path d="M12 17c-1.6-2.2.9-3.4-.7-5.6" />
+                </svg>
+              </span>
+              <span className="bt-steam-dot" aria-hidden="true" />
+            </button>
           ) : null}
           {shown.map((i) => {
             const s = STEPS[i]
@@ -348,7 +364,10 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
                 className={i === active ? "bt-stop on" : done ? "bt-stop done" : "bt-stop"}
                 aria-pressed={i === active}
                 aria-label={`${c.label} — ${t.names[s.id]}`}
-                onClick={() => setActive(i)}
+                onClick={() => {
+                  setActive(i)
+                  setSteamOpen(false)
+                }}
               >
                 <span className="bt-time">{c.label}</span>
                 <span
@@ -368,15 +387,20 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
           <span>{t.day(at.day)}</span>
           <span className="bt-meta-dot">·</span>
           <span>{at.label}</span>
-          {step.gapAfter ? (
+          {showSteam ? (
+            <>
+              <span className="bt-meta-dot">·</span>
+              <span className="bt-gap">{t.duration(steam?.minutes ?? 0)}</span>
+            </>
+          ) : step.gapAfter ? (
             <>
               <span className="bt-meta-dot">·</span>
               <span className="bt-gap">{t.duration(step.gapAfter)}</span>
             </>
           ) : null}
         </p>
-        <h3 className="bt-name-big">{t.names[step.id]}</h3>
-        <p className="bt-story">{t.story[step.id]}</p>
+        <h3 className="bt-name-big">{showSteam ? t.names.steamStep : t.names[step.id]}</h3>
+        <p className="bt-story">{showSteam ? t.story.steamStep : t.story[step.id]}</p>
 
         <div className="bt-nav">
           <button
@@ -384,7 +408,10 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
             className="bt-arrow"
             aria-label={t.prev}
             disabled={shown.indexOf(active) <= 0}
-            onClick={() => setActive(shown[Math.max(0, shown.indexOf(active) - 1)])}
+            onClick={() => {
+              setSteamOpen(false)
+              setActive(shown[Math.max(0, shown.indexOf(active) - 1)])
+            }}
           >
             ‹
           </button>
@@ -396,7 +423,10 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
             className="bt-arrow"
             aria-label={t.next}
             disabled={shown.indexOf(active) >= shown.length - 1}
-            onClick={() => setActive(shown[Math.min(shown.length - 1, shown.indexOf(active) + 1)])}
+            onClick={() => {
+              setSteamOpen(false)
+              setActive(shown[Math.min(shown.length - 1, shown.indexOf(active) + 1)])
+            }}
           >
             ›
           </button>
@@ -583,8 +613,6 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
           position: relative;
           display: flex;
           gap: 0;
-          /* volný pruh dole pro kótu páry */
-          padding-bottom: 26px;
           /* stopa musí být tak široká jako zastávky, jinak by čára i procenta
              počítaly s viditelnou částí místo s celou osou */
           min-width: max-content;
@@ -645,47 +673,53 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
           color: rgba(238, 224, 196, 0.78);
         }
 
-        /* Kóta páry — jemná měřická značka pod osou, jako kóta ve výkresu. */
+        /* Pára jako drobná vedlejší zastávka na ose — obláček nad linkou,
+           tečka na ní. Text se ukáže až po klepnutí. */
         .bt-steam {
           position: absolute;
-          bottom: 0;
+          top: 0;
+          height: 44px;
+          width: 30px;
+          margin-left: -15px;
+          padding: 0;
+          border: 0;
+          background: none;
+          cursor: pointer;
           display: grid;
           justify-items: center;
-          gap: 4px;
-          pointer-events: none;
+          align-content: end;
+          gap: 3px;
+          color: rgba(238, 224, 196, 0.34);
+          transition: color 0.25s;
         }
-        .bt-steam-bar {
-          position: relative;
+        .bt-steam:hover,
+        .bt-steam.on {
+          color: var(--gold);
+        }
+        .bt-steam-wisps {
+          display: block;
+          width: 15px;
+          height: 17px;
+        }
+        .bt-steam-wisps svg {
+          display: block;
           width: 100%;
-          height: 1px;
-          background: linear-gradient(
-            90deg,
-            rgba(238, 224, 196, 0.42),
-            rgba(238, 224, 196, 0.12)
-          );
+          height: 100%;
+          opacity: 0.85;
         }
-        .bt-steam-bar::before,
-        .bt-steam-bar::after {
-          content: "";
-          position: absolute;
-          top: -3px;
-          width: 1px;
-          height: 7px;
-          background: rgba(238, 224, 196, 0.42);
+        .bt-steam.on .bt-steam-wisps svg {
+          opacity: 1;
         }
-        .bt-steam-bar::before {
-          left: 0;
+        .bt-steam-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: currentColor;
+          box-shadow: 0 0 0 3px rgba(8, 7, 6, 0.9);
+          transition: transform 0.25s;
         }
-        .bt-steam-bar::after {
-          right: 0;
-          background: rgba(238, 224, 196, 0.18);
-        }
-        .bt-steam-label {
-          font-size: 0.5rem;
-          letter-spacing: 0.16em;
-          text-transform: uppercase;
-          color: rgba(238, 224, 196, 0.4);
-          white-space: nowrap;
+        .bt-steam.on .bt-steam-dot {
+          transform: scale(1.4);
         }
 
         .bt-card {
