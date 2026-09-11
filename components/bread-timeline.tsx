@@ -7,7 +7,7 @@ type Locale = "cs" | "en" | "de"
 // Kroky a mezery mezi nimi pocházejí z postupu na BREAD.SK; tady je držíme
 // nativně, aby osa mohla vypadat jako zbytek stránky a fungovala i na mobilu.
 // gapAfter = minuty do dalšího kroku.
-type Step = { id: string; gapAfter: number }
+type Step = { id: string; gapAfter: number; steamMin?: number }
 
 const STEPS: Step[] = [
   { id: "kvas", gapAfter: 540 },
@@ -22,7 +22,7 @@ const STEPS: Step[] = [
   { id: "osatka", gapAfter: 30 },
   { id: "lednice", gapAfter: 800 },
   { id: "predehrati", gapAfter: 40 },
-  { id: "peceni", gapAfter: 181 },
+  { id: "peceni", gapAfter: 181, steamMin: 18 },
   { id: "predani", gapAfter: 0 },
 ]
 
@@ -41,6 +41,7 @@ const COPY: Record<Locale, {
   next: string
   day: (n: number) => string
   duration: (m: number) => string
+  steam: (m: number) => string
   names: Record<string, string>
   story: Record<string, string>
 }> = {
@@ -51,6 +52,7 @@ const COPY: Record<Locale, {
     prev: "Předchozí krok",
     next: "Další krok",
     day: (n) => `${n}. den`,
+    steam: (m) => `${m} min v páře`,
     duration: (m) =>
       m >= 60
         ? `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}`
@@ -95,6 +97,7 @@ const COPY: Record<Locale, {
     prev: "Previous step",
     next: "Next step",
     day: (n) => `Day ${n}`,
+    steam: (m) => `${m} min with steam`,
     duration: (m) =>
       m >= 60 ? `${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}` : `${m} min`,
     names: {
@@ -137,6 +140,7 @@ const COPY: Record<Locale, {
     prev: "Vorheriger Schritt",
     next: "Nächster Schritt",
     day: (n) => `Tag ${n}`,
+    steam: (m) => `${m} Min. mit Dampf`,
     duration: (m) =>
       m >= 60 ? `${Math.floor(m / 60)} Std.${m % 60 ? ` ${m % 60} Min.` : ""}` : `${m} Min.`,
     names: {
@@ -260,6 +264,19 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
   const half = 50 / shownCount
   const progress = (Math.max(0, shown.indexOf(active)) / shownCount) * 100
 
+  // Kóta páry na ose. Osa je kategorická (každý krok má stejně široký slot),
+  // takže šířka je symbolická — přesnou délku nese popisek.
+  const steamIdx = STEPS.findIndex((x) => x.steamMin)
+  const steamAt = shown.indexOf(steamIdx)
+  const steam =
+    steamAt >= 0 && STEPS[steamIdx].steamMin
+      ? {
+          minutes: STEPS[steamIdx].steamMin as number,
+          left: ((steamAt + 0.5) / shownCount) * 100,
+          width: Math.min((0.62 / shownCount) * 100, 100 - ((steamAt + 0.5) / shownCount) * 100),
+        }
+      : null
+
   return (
     <div className="bt">
       <div className="bt-top">
@@ -309,6 +326,16 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
             className="bt-line bt-line-done"
             style={{ left: `${half}%`, width: `${progress}%` }}
           />
+          {steam ? (
+            <div
+              className="bt-steam"
+              style={{ left: `${steam.left}%`, width: `${steam.width}%` }}
+              aria-hidden="true"
+            >
+              <span className="bt-steam-bar" />
+              <span className="bt-steam-label">{t.steam(steam.minutes)}</span>
+            </div>
+          ) : null}
           {shown.map((i) => {
             const s = STEPS[i]
             const c = clock(offsets[i])
@@ -556,6 +583,8 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
           position: relative;
           display: flex;
           gap: 0;
+          /* volný pruh dole pro kótu páry */
+          padding-bottom: 26px;
           /* stopa musí být tak široká jako zastávky, jinak by čára i procenta
              počítaly s viditelnou částí místo s celou osou */
           min-width: max-content;
@@ -614,6 +643,49 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
         .bt-stop:hover .bt-name,
         .bt-stop.on .bt-name {
           color: rgba(238, 224, 196, 0.78);
+        }
+
+        /* Kóta páry — jemná měřická značka pod osou, jako kóta ve výkresu. */
+        .bt-steam {
+          position: absolute;
+          bottom: 0;
+          display: grid;
+          justify-items: center;
+          gap: 4px;
+          pointer-events: none;
+        }
+        .bt-steam-bar {
+          position: relative;
+          width: 100%;
+          height: 1px;
+          background: linear-gradient(
+            90deg,
+            rgba(238, 224, 196, 0.42),
+            rgba(238, 224, 196, 0.12)
+          );
+        }
+        .bt-steam-bar::before,
+        .bt-steam-bar::after {
+          content: "";
+          position: absolute;
+          top: -3px;
+          width: 1px;
+          height: 7px;
+          background: rgba(238, 224, 196, 0.42);
+        }
+        .bt-steam-bar::before {
+          left: 0;
+        }
+        .bt-steam-bar::after {
+          right: 0;
+          background: rgba(238, 224, 196, 0.18);
+        }
+        .bt-steam-label {
+          font-size: 0.5rem;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: rgba(238, 224, 196, 0.4);
+          white-space: nowrap;
         }
 
         .bt-card {
