@@ -105,6 +105,23 @@
   color: rgba(24, 21, 18, 0.66);
 }
 
+/* Měsíční klipy jsou večerní/noční záběry. V denním režimu je prosvětlíme,
+   ať karty nepůsobí jako noc uprostřed světlé stránky. Text na nich zůstává
+   světlý, proto zároveň držíme jemný spodní závoj. */
+.dayMode .cardVideo,
+.dayMode .cardLocalVideo,
+.dayMode .cardLocalPoster {
+  filter: brightness(1.8) saturate(1.14) contrast(0.94);
+}
+
+/* Zadní karty mají přes video ještě závoj; ve dne ho ztenčíme, jinak by
+   prosvětlení klipu neprošlo. */
+.dayMode .cardShade {
+  background:
+    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.02) 0%, rgba(var(--surface-rgb), 0.05) 22%, rgba(var(--surface-rgb), 0.26) 100%),
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.08), transparent 28%);
+}
+
 /* Patička má natvrdo černé pozadí — ve dne musí jít se zbytkem stránky,
    jinak na ní tmavý text zanikne. */
 .dayMode .footer {
@@ -447,7 +464,7 @@
   z-index: 10;
   width: min(1360px, calc(100% - 96px));
   margin: 0 auto;
-  padding: 124px 0 0;
+  padding: 88px 0 0;
   min-height: calc(100vh - 96px + var(--footer-reveal-gap));
 }
 
@@ -516,6 +533,12 @@
   margin-bottom: 10px;
   min-height: 52px;
   max-width: 420px;
+}
+
+/* Zavřené upozornění drželo 52 px prázdna a tlačilo kalendáře dolů. */
+.noticeDockClosed {
+  min-height: 0;
+  margin-bottom: 0;
 }
 
 .bookingNotice {
@@ -636,8 +659,8 @@
 }
 
 .monthGuideNav {
-  margin-top: 14px;
-  margin-bottom: 22px;
+  margin-top: 8px;
+  margin-bottom: 14px;
 }
 
 .arrowGroup {
@@ -690,7 +713,7 @@
   justify-content: center;
   min-height: 620px;
   overflow: visible;
-  margin: 26px 0 40px;
+  margin: 12px 0 32px;
 }
 
 /* Šířka = přední karta (295) + odsazení posledního náhledu, aby šel vějíř

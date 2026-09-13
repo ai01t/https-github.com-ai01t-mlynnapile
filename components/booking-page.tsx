@@ -1422,7 +1422,10 @@ export default function BookingPage({ locale }: { locale: Locale }) {
       <main ref={mainRef} className={styles.pageShell}>
         <section className={styles.experience}>
           <div className={styles.infoColumn}>
-            <div className={styles.noticeDock} aria-live="polite">
+            <div
+              className={cx(styles.noticeDock, !bookingNoticeOpen && styles.noticeDockClosed)}
+              aria-live="polite"
+            >
               <div className={cx(styles.bookingNotice, bookingNoticeOpen && styles.bookingNoticeOpen)}>
                 <p>{copy.intro1}</p>
                 <button
