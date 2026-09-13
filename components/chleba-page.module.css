@@ -21,13 +21,30 @@
 }
 
 .shade {
+  /* Sílu ztmavení lze snížit v /chleba/admin — 1 je původní nastavení. */
+  --shade-k: 1;
   position: fixed;
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(circle at 70% 46%, rgba(7, 6, 5, 0.04), rgba(7, 6, 5, 0.42) 34%, rgba(7, 6, 5, 0.86) 78%),
-    linear-gradient(90deg, rgba(7, 6, 5, 0.9), rgba(7, 6, 5, 0.5) 48%, rgba(7, 6, 5, 0.22)),
-    linear-gradient(180deg, rgba(7, 6, 5, 0.42), rgba(7, 6, 5, 0.08) 34%, rgba(7, 6, 5, 0.9));
+    radial-gradient(
+      circle at 70% 46%,
+      rgba(7, 6, 5, calc(0.04 * var(--shade-k))),
+      rgba(7, 6, 5, calc(0.42 * var(--shade-k))) 34%,
+      rgba(7, 6, 5, calc(0.86 * var(--shade-k))) 78%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(7, 6, 5, calc(0.9 * var(--shade-k))),
+      rgba(7, 6, 5, calc(0.5 * var(--shade-k))) 48%,
+      rgba(7, 6, 5, calc(0.22 * var(--shade-k)))
+    ),
+    linear-gradient(
+      180deg,
+      rgba(7, 6, 5, calc(0.42 * var(--shade-k))),
+      rgba(7, 6, 5, calc(0.08 * var(--shade-k))) 34%,
+      rgba(7, 6, 5, calc(0.9 * var(--shade-k)))
+    );
 }
 
 .header {

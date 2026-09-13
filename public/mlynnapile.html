@@ -3053,6 +3053,8 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
   });
 });
 
+/* Mobilní rozvržení: stejná podmínka jako v CSS, sdílí ji víc bloků níž. */
+const MOBILE='(max-width:600px), (orientation:portrait)';
 /* Mobil: booking trigger schovat, jakmile se odlistuje za balíček 02. */
 (function(){
   const grid=document.querySelector('.pkg-grid');
@@ -3075,7 +3077,6 @@ residencyBookingOpenTriggers.forEach((trigger)=>{
 
 /* ── Mobilní vylepšení: karusely, úsporná videa, FAQ na celou obrazovku, náznak swipe ── */
 (function(){
-  const MOBILE='(max-width:600px), (orientation:portrait)';
   const isMobile=()=>matchMedia(MOBILE).matches;
 
   /* 1. Tečky pod karusely + aktivní stav podle scrollu. */
