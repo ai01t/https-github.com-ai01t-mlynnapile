@@ -77,6 +77,40 @@
   color: rgba(240, 235, 226, 0.95);
 }
 
+/* Zlatá z nočního režimu je na světlém podkladu prakticky neviditelná
+   (kontrast 1.6:1). Prvky, které leží přímo na pozadí stránky, proto ve dne
+   přebírají tmavší odstín; karty a modál zůstávají tmavé, tam platí dál. */
+.dayMode .title em,
+.dayMode .monthGuideBlock h3 {
+  color: var(--gold-light);
+}
+
+.dayMode .monthGuideList li::before {
+  color: var(--gold);
+}
+
+.dayMode .monthGuideLink {
+  text-decoration-color: rgba(109, 83, 39, 0.5);
+}
+
+.dayMode .monthGuideLink:hover {
+  text-decoration-color: rgba(109, 83, 39, 0.9);
+}
+
+.dayMode .arrowButton:hover:not(:disabled) {
+  border-color: rgba(138, 106, 52, 0.6);
+}
+
+.dayMode .ftCopy {
+  color: rgba(24, 21, 18, 0.66);
+}
+
+/* Patička má natvrdo černé pozadí — ve dne musí jít se zbytkem stránky,
+   jinak na ní tmavý text zanikne. */
+.dayMode .footer {
+  background: #d9d7d2;
+}
+
 .embedded .pageShell {
   min-height: 0 !important;
   width: min(100%, calc(100% - 8px));
