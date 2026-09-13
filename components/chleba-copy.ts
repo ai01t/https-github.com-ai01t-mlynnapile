@@ -21,8 +21,7 @@ export const CHLEBA_DEFAULT_COPY = {
     craftTitle: "Řemeslný kváskový chleba z naší pece",
     processEyebrow: "Postup",
     processTitle: "Jak pečeme chleba",
-    processLead:
-      "Od rozkvašení kvásku po vychladnutí bochníku uběhne zhruba dva dny. Časová osa ukazuje hlavní úkony — většinu času pracuje kvásek sám, ale trefit ho ve správnou chvíli je celé to řemeslo.",
+    processLead: "",
     benefitsTitle: "Co dává kvásek chlebu",
     ingredientsTitle: "Čisté složení",
     purityTitle: "Bez zkratek",
@@ -101,8 +100,7 @@ export const CHLEBA_DEFAULT_COPY = {
     craftTitle: "Craft sourdough bread from our oven",
     processEyebrow: "The process",
     processTitle: "How we bake our bread",
-    processLead:
-      "From refreshing the starter to the cooled loaf it takes about two days. The timeline shows the main steps — most of the time the starter works on its own, but catching it at the right moment is the whole craft.",
+    processLead: "",
     benefitsTitle: "Why sourdough",
     ingredientsTitle: "Clean ingredients",
     purityTitle: "No shortcuts",
@@ -181,8 +179,7 @@ export const CHLEBA_DEFAULT_COPY = {
     craftTitle: "Handwerkliches Sauerteigbrot aus unserem Ofen",
     processEyebrow: "Der Ablauf",
     processTitle: "Wie wir unser Brot backen",
-    processLead:
-      "Vom Auffrischen des Sauerteigs bis zum ausgekühlten Laib vergehen etwa zwei Tage. Die Zeitachse zeigt die wichtigsten Schritte — die meiste Zeit arbeitet der Sauerteig allein, ihn im richtigen Moment zu erwischen ist das ganze Handwerk.",
+    processLead: "",
     benefitsTitle: "Vorteile von Sauerteig",
     ingredientsTitle: "Klare Zutaten",
     purityTitle: "Ohne Abkürzungen",

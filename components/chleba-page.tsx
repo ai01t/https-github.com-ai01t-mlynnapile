@@ -145,7 +145,7 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
         <section className={styles.processBlock} aria-label={t.processTitle}>
           <p className={styles.cardEyebrow}>{t.processEyebrow}</p>
           <h2 className={cormorant.className}>{t.processTitle}</h2>
-          <p className={styles.processLead}>{t.processLead}</p>
+          {t.processLead ? <p className={styles.processLead}>{t.processLead}</p> : null}
           <div className={styles.processFrame}>
             <BreadTimeline locale={locale} />
           </div>
