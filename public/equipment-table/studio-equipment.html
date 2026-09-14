@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" id="eq-html">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -185,12 +185,13 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
 </style>
 </head>
 <body>
+<script src="i18n.js"></script>
 <div id="tabs"></div>
 <div id="main">
 <div id="list"></div>
 <div id="det">
-<button type="button" class="backlist" onclick="showList()"><span>‹</span> Seznam</button>
-<div id="empty"><div class="ei">🎸</div><p>Vyberte položku ze seznamu</p></div>
+<button type="button" class="backlist" onclick="showList()"><span>‹</span> '+EQ_T('backToList')+'</button>
+<div id="empty"><div class="ei">🎸</div><p id="empty-txt">Vyberte položku ze seznamu</p></div>
 <div id="dc"></div>
 </div>
 </div>
@@ -453,7 +454,7 @@ function showUAD(pluginName){
   const dKey=UAD_NAME_MAP[pluginName];
   const d=(dKey&&D[dKey])?D[dKey]:{};
   let h='<div class="dtit">'+esc(pluginName)+'</div>';
-  if(d.tech) h+=detailBlock('Technické specifikace','<div class="btxt" style="font-size:12px;color:var(--mut);line-height:1.5">'+esc(d.tech)+'</div>');
+  if(d.tech) h+=detailBlock(EQ_T('specs'),'<div class="btxt" style="font-size:12px;color:var(--mut);line-height:1.5">'+esc(d.tech)+'</div>');
   const _upi={'Avalon VT-737sp Channel Strip':UADP_AVALON_IMG,'Century Tube Channel Strip':UADP_CENTURY_IMG,'Helios Type 69 Preamp & EQ':UADP_HELIOS69_IMG,'Helios Type 69 Legacy EQ':UADP_HELIOS69_IMG,'Manley Reference Microphone Preamp':UADP_MANLEY_IMG,'Neve 1073 Preamp & EQ Collection':UADP_NEVE1073_IMG,'Neve 1073SE Classic Console EQ':UADP_NEVE1073_IMG,'UA 610-A Tube Preamp & EQ':UADP_610_IMG,'UA 610-B Tube Preamp & EQ':UADP_610_IMG,'V76 Preamplifier':UADP_V76_IMG,'dbx 160 Compressor / Limiter':UADP_DBX160_IMG,'Empirical Labs EL8 Distressor':UADP_DISTRESSOR_IMG,'Fairchild 660 Compressor':UADP_FAIRCHILD_IMG,'Fairchild 670 Compressor':UADP_FAIRCHILD_IMG,'Fairchild 670 Legacy':UADP_FAIRCHILD_IMG,'Teletronix LA-2A Leveler':UADP_LA2A_IMG,'Teletronix LA-2A Gray':UADP_LA2A_IMG,'Teletronix LA-2A Silver':UADP_LA2A_IMG,'Teletronix LA-2A Legacy':UADP_LA2A_IMG,'Teletronix LA-3A Classic Audio Leveler':UADP_LA3A_IMG,'UA 175B Tube Compressor':UADP_UA175_176_IMG,'UA 176 Tube Compressor':UADP_UA175_176_IMG,'UA 1176 Rev A Classic Limiter':UADP_1176_IMG,'UA 1176AE Classic Limiter':UADP_1176_IMG,'UA 1176LN Rev E Classic Limiter':UADP_1176_IMG,'UA 1176LN Legacy':UADP_1176_IMG,'UA 1176SE Legacy':UADP_1176_IMG,'Cambridge EQ':UADP_CAMBRIDGE_IMG,'Pultec EQP-1A Passive EQ':UADP_PULTEC_IMG,'Pultec MEQ-5 Passive EQ':UADP_PULTEC_IMG,'Pultec HLF-3C Passive EQ':UADP_PULTEC_IMG,'Pultec EQP-1A Legacy':UADP_PULTEC_IMG,'Pultec Pro Legacy':UADP_PULTEC_IMG,'Oxide Tape Recorder':UADP_OXIDE_IMG,'Studer A800 Multichannel Tape Recorder':UADP_STUDER_IMG,'Brigade Chorus':UADP_BRIGADE_IMG,'Cooper Time Cube Mk II Delay':UADP_COOPER_IMG,'EP-34 Tape Echo':UADP_EP34_IMG,'Galaxy Tape Echo':UADP_GALAXY_IMG,'Studio D Chorus':UADP_STUDIO_D_IMG,'Ampeg SVT-VR Classic Bass Amplifier':UADP_AMPEG_SVT_IMG,'Marshall Plexi Classic Amplifier':UADP_MARSHALL_PLEXI_IMG,'Raw Distortion':UADP_DISTORTION_IMG,'TS Overdrive':UADP_DISTORTION_IMG,"UAD Dream '65 Reverb Amplifier":UADP_DREAM65_IMG,"UAD Ruby '63 Top Boost Amplifier":UADP_RUBY63_IMG,"UAD Woodrow '55 Instrument Amplifier":UADP_WOODROW55_IMG,"UAD Lion '68 Super Lead Amplifier":UADP_LION68_IMG,'Lexicon 224 Digital Reverb':UADP_LEXICON224_IMG,'Pure Plate Reverb':UADP_PURE_PLATE_IMG,'Sound City Studios':UADP_SOUND_CITY_IMG,'PolyMAX Synth':UADP_POLYMAX_IMG,'Verve Analog Machines Essentials':UADP_VERVE_IMG};
   const _uimgSrc=_upi[pluginName]||UAD_IMG;
   h+='<div class="zoom-photo" style="margin-top:14px"><div class="zoom-inner"><img src="'+_uimgSrc+'" alt="'+esc(pluginName)+'" /></div></div>';
@@ -483,7 +484,7 @@ function showApolloView(sub){
   });
   const dc=document.getElementById('dc');
   if(sub==='plugins'){
-    dc.innerHTML='<div class="dtit">Pluginy & Unison</div>'+detailBlock('Technické specifikace','<div class="btxt" style="font-size:13px;line-height:1.7;color:#b0ada8">Onboard DSP supports UAD plug-ins via VST, AU, and AAX 64 formats in all major DAWs. Zde najde <a href="#" onclick="event.preventDefault();switchTab(\'audioproc\');setTimeout(()=>showUAD(UAD_PLUGIN_CATS[0].plugins[0]),10)" style="color:var(--acc2);text-decoration:none;border-bottom:1px solid rgba(200,169,110,0.4);cursor:pointer">plug-iny</a>, které máme k dispozici.</div>');
+    dc.innerHTML='<div class="dtit">Pluginy & Unison</div>'+detailBlock(EQ_T('specs'),'<div class="btxt" style="font-size:13px;line-height:1.7;color:#b0ada8">Onboard DSP supports UAD plug-ins via VST, AU, and AAX 64 formats in all major DAWs. Zde najde <a href="#" onclick="event.preventDefault();switchTab(\'audioproc\');setTimeout(()=>showUAD(UAD_PLUGIN_CATS[0].plugins[0]),10)" style="color:var(--acc2);text-decoration:none;border-bottom:1px solid rgba(200,169,110,0.4);cursor:pointer">plug-iny</a>, které máme k dispozici.</div>');
     pinSourceBottom();
     dc.className='on';
     document.getElementById('empty').style.display='none';
@@ -493,7 +494,7 @@ function showApolloView(sub){
   if(sub==='main'){
     h+='<div class="dtit">Universal Audio Apollo X8P Gen 2 Studio+</div>';
     h+='<div class="zoom-photo"><div class="zoom-inner"><img src="'+APOLLO_IMG+'" alt="Universal Audio Apollo X8P" /></div></div>';
-    h+=detailBlock('Technické specifikace','<div class="btxt" style="font-size:13px;line-height:1.6;color:#b0ada8">Profesionální zvuková karta s 8 Unison předzesilovači, která se umí nastavit sama. Díky funkci Auto Gain stačí jediné kliknutí — karta automaticky zkalibruje úrovně vstupu. Studio jsme záměrně navrhli tak, aby hudebníci mohli tvořit bez rušení a bez nutnosti technické asistence :-) (ale v případě potřeby, jsme plně k dispozici).</div>');
+    h+=detailBlock(EQ_T('specs'),'<div class="btxt" style="font-size:13px;line-height:1.6;color:#b0ada8">Profesionální zvuková karta s 8 Unison předzesilovači, která se umí nastavit sama. Díky funkci Auto Gain stačí jediné kliknutí — karta automaticky zkalibruje úrovně vstupu. Studio jsme záměrně navrhli tak, aby hudebníci mohli tvořit bez rušení a bez nutnosti technické asistence :-) (ale v případě potřeby, jsme plně k dispozici).</div>');
     h+=srcLine('<a href="https://www.uaudio.com" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">uaudio.com</a>, <a href="https://equipboard.com/items/universal-audio-apollo-x8p-thunderbolt-3" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">equipboard.com</a>');
   } else if(sub==='tech'){
     h+='<div class="dtit">Technické detaily</div>';
@@ -544,12 +545,16 @@ function loadVid(el){
 
 function build(){
   const tabs=document.getElementById('tabs');
+  // rozhraní podle ?lang= — prázdný stav a jazyk dokumentu
+  document.documentElement.lang=EQ_LANG;
+  const emptyTxt=document.getElementById('empty-txt');
+  if(emptyTxt) emptyTxt.textContent=EQ_T('empty');
   const list=document.getElementById('list');
   CATS.forEach(cat=>{
     const btn=document.createElement('button');
     btn.className='tb'+(cat.id===activeTab?' on':'');
     btn.dataset.id=cat.id;
-    btn.innerHTML=cat.label;
+    btn.innerHTML=EQ_CAT(cat.label);
     btn.onclick=()=>switchTab(cat.id);
     tabs.appendChild(btn);
 
@@ -648,7 +653,7 @@ function build(){
       cat.subgroups.forEach(sg=>{
         const shdr=document.createElement('div');
         shdr.className='sub-hdr';
-        shdr.textContent=sg.label;
+        shdr.textContent=EQ_CAT(sg.label);
         sec.appendChild(shdr);
         sg.items.forEach(name=>{
           const row=document.createElement('div');
@@ -828,7 +833,7 @@ function renderBelow(s){
 }
 
 function srcLine(html){
-  return '<div class="blk src-blk mblk-source"><div class="src"><span class="src-lbl">Zdroj:</span> '+html+'</div></div>';
+  return '<div class="blk src-blk mblk-source"><div class="src"><span class="src-lbl">'+EQ_T('source')+'</span> '+html+'</div></div>';
 }
 
 function detailBlock(label,html,extraClass=''){
@@ -888,23 +893,23 @@ function show(name,catLabel){
   h+='<div class="dtit'+(appIcon?' has-icon':'')+'">';
   if(appIcon) h+='<img class="app-icon" src="'+appIcon+'" alt="" />';
   h+=esc(mainName);
-  if(d.forsale) h+=' <a class="forsale-inline" href="'+esc(d.forsale)+'" target="_blank">🏷 Na prodej</a>';
+  if(d.forsale) h+=' <a class="forsale-inline" href="'+esc(d.forsale)+'" target="_blank">🏷 '+EQ_T('forSale')+'</a>';
   if(subName) h+='<div class="dtit-sub">'+esc(subName)+'</div>';
   h+='</div>';
-  if(d.tech) h+=detailBlock('Technické specifikace','<div class="btxt">'+esc(d.tech)+'</div>');
-  if(d.upgrade) h+=detailBlock('Upgrade','<div class="btxt upgrade-txt">'+esc(d.upgrade)+'</div>');
+  if(d.tech) h+=detailBlock(EQ_T('specs'),'<div class="btxt">'+esc(d.tech)+'</div>');
+  if(d.upgrade) h+=detailBlock(EQ_T('upgrade'),'<div class="btxt upgrade-txt">'+esc(d.upgrade)+'</div>');
   if(d.usedBy&&d.usedBy.length&&activeTab!=='sw'){
     let used='<div class="chips">';
     d.usedBy.forEach(a=>{used+='<span class="chip">'+esc(a)+'</span>';});
     used+='</div>';
-    h+=detailBlock('Používají / používali také',used);
+    h+=detailBlock(EQ_T('usedBy'),used);
   }
   if(d.note){
     const hasAnteaterVid=d.videos&&d.videos.some(v=>(v.title||'').includes('Anteater'));
     let noteHtml='<div class="btxt">'+linkAnteater(esc(d.note));
     if(hasAnteaterVid) noteHtml+='<div style="margin-top:8px;font-size:11px;color:#8a8580;font-style:italic">Kompletní chain, který v klipu slyšíte, je k dispozici ve studiu.</div>';
     noteHtml+='</div>';
-    h+=detailBlock('Poznámka',noteHtml);
+    h+=detailBlock(EQ_T('note'),noteHtml);
   }
   if(d.blocks&&d.blocks.length){
     d.blocks.forEach((block)=>{
@@ -929,13 +934,13 @@ function show(name,catLabel){
         h+='<div class="ctp-play"><span>▶</span></div>';
         h+='</div>';
       }
-      if(below) h+='<div class="vcard-below">'+detailBlock('Použitý chain','<div class="btxt">'+renderBelow(esc(below))+'</div>','mblk-compact')+'</div>';
+      if(below) h+='<div class="vcard-below">'+detailBlock(EQ_T('chain'),'<div class="btxt">'+renderBelow(esc(below))+'</div>','mblk-compact')+'</div>';
       h+='</div>';
     });
     h+='</div>';
   }
 
-  if(!d.tech&&!d.note&&!d.usedBy&&!d.videos&&!d.img) h+='<div class="btxt" style="color:var(--mut);font-style:italic">Podrobné informace nejsou k dispozici.</div>';
+  if(!d.tech&&!d.note&&!d.usedBy&&!d.videos&&!d.img) h+='<div class="btxt" style="color:var(--mut);font-style:italic">'+EQ_T('noDetail')+'</div>';
   if(d.src) {
     const srcLinks = d.src.split(',').map(s=>{
       const t=s.trim();
@@ -990,7 +995,7 @@ function show(name,catLabel){
       if(el){el.style.opacity='0';setTimeout(()=>{el.src=imgs[window._jbIdx];el.style.opacity='1';},180);}
     };
   } else if(d.img==='mapex_tabs'){
-    h+='<div class="mtabs"><button class="mtab on" onclick="mTab(this,\'mapex\')">📷 Fotografie</button><button class="mtab" onclick="mTab(this,\'drums\')">📐 Schéma sestavy</button></div>'+
+    h+='<div class="mtabs"><button class="mtab on" onclick="mTab(this,\'mapex\')">📷 '+EQ_T('photos')+'</button><button class="mtab" onclick="mTab(this,\'drums\')">📐 '+EQ_T('scheme')+'</button></div>'+
        '<div id="mpanel-mapex" class="zoom-photo"><div class="zoom-inner"><img src="'+MAPEX_IMG+'" alt="Mapex Saturn V" style="opacity:0.72;filter:saturate(0.8)" /></div></div>'+
        '<div id="mpanel-drums" class="drum-img" style="display:none"><img src="'+DRUMS_IMG+'" alt="Schéma sestave" /></div>';
     dc.innerHTML=h;
