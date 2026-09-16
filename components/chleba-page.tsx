@@ -170,6 +170,21 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
                   {detail.body.split("\n\n").map((paragraph) => (
                     <p key={paragraph}>{paragraph}</p>
                   ))}
+
+                  {detail.sub ? (
+                    <details className={styles.detailSub}>
+                      <summary>
+                        <span>{detail.sub.title}</span>
+                        <span className={styles.detailMark} aria-hidden="true" />
+                      </summary>
+                      <ul>
+                        {detail.sub.bullets.map((bullet) => (
+                          <li key={bullet}>{bullet}</li>
+                        ))}
+                      </ul>
+                      {detail.sub.closing ? <p>{detail.sub.closing}</p> : null}
+                    </details>
+                  ) : null}
                 </div>
               </details>
             ))}

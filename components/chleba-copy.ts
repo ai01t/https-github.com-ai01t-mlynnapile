@@ -48,12 +48,17 @@ export const CHLEBA_DEFAULT_COPY = {
       {
         title: "Přispívá kváskový chleba k hubnutí?",
         body:
-          "Ano i ne. :-) Kváskový chléb sám o sobě hubnutí nezpůsobuje, ale díky tomu, že ho stačí sníst méně a zasytí vás na delší dobu, k lepší postavě i trávení nepřímo skutečně pomáhá.\n\nJak je to možné? Klíčem je zasycení a pozvolná glykemická odezva. Oproti běžnému bílému pečivu se sacharidy z kváskového chleba uvolňují do těla mnohem pomaleji. V praxi to znamená, že vám hladina cukru v krvi nevyskočí prudce nahoru a vy tak máte delší pocit sytosti, sníte menší množství a nedostanete tak rychlý hlad.",
-      },
-      {
-        title: "Hmotnost a sytost",
-        body:
-          "Z chleba samotného se nepřibírá, rozhoduje celkový příjem energie. Protože je kváskový chleba sytější, příjem energie bývá nižší a v konečném důsledku má pozitivnější vliv než běžné drožďové pečivo.",
+          "Ano i ne. :-) Kváskový chléb sám o sobě hubnutí nezpůsobuje, ale díky tomu, že ho stačí sníst méně a zasytí vás na delší dobu, k lepší postavě i trávení nepřímo skutečně pomáhá.",
+        sub: {
+          title: "Jak je to možné?",
+          bullets: [
+            "Delší pocit sytosti: Stabilní hladina cukru zabraňuje výkyvům, takže nemáte po jídle rychlý hlad ani chuť na neustálé dojídání.",
+            "Menší porce: Díky hutnější struktuře a vyššímu zasycení vám k uspokojení hladu přirozeně stačí sníst menší množství.",
+            "Nižší energetický příjem: Z chleba samotného se nepřibírá – vždy rozhoduje celková kalorická bilance. Protože vás kváskový chléb zasytí na delší dobu, váš celkový denní příjem energie bývá nižší.",
+          ],
+          closing:
+            "Kváskové pečivo tak představuje oproti běžnému drožďovému chlebu nutričně výhodnější a udržitelnější alternativu při úpravě jídelníčku.",
+        },
       },
       {
         title: "Minerály, které tělo využije",
@@ -122,12 +127,17 @@ export const CHLEBA_DEFAULT_COPY = {
       {
         title: "Does sourdough bread help with weight loss?",
         body:
-          "Yes and no. :-) Sourdough bread does not cause weight loss on its own, but because you need less of it and it keeps you full for longer, it does help indirectly — both with your figure and with digestion.\n\nHow does that work? The key is satiety and a gradual glycaemic response. Compared to ordinary white bread, the carbohydrates in sourdough are released into the body far more slowly. In practice your blood sugar does not spike, you stay full for longer, you eat less and you don't get hungry again so quickly.",
-      },
-      {
-        title: "Weight and fullness",
-        body:
-          "Bread itself is not the issue; overall energy intake is. Because sourdough bread is more filling, people often eat less of it than ordinary yeast bread.",
+          "Yes and no. :-) Sourdough bread does not cause weight loss on its own, but because you need less of it and it keeps you full for longer, it does help indirectly — both with your figure and with digestion.",
+        sub: {
+          title: "How does that work?",
+          bullets: [
+            "Fuller for longer: steady blood sugar avoids the spikes, so you are not hungry again soon after a meal and you stop picking at food.",
+            "Smaller portions: the denser crumb and the greater satiety mean a smaller piece naturally satisfies you.",
+            "Lower energy intake: bread alone does not make you gain weight — what counts is the overall calorie balance. Because sourdough keeps you full for longer, your total daily intake tends to be lower.",
+          ],
+          closing:
+            "Compared with ordinary yeast bread, sourdough is the nutritionally better and more sustainable choice when you are adjusting your diet.",
+        },
       },
       {
         title: "Minerals the body can use",
@@ -196,12 +206,17 @@ export const CHLEBA_DEFAULT_COPY = {
       {
         title: "Hilft Sauerteigbrot beim Abnehmen?",
         body:
-          "Ja und nein. :-) Sauerteigbrot lässt die Kilos nicht von allein purzeln, aber weil man weniger davon braucht und länger satt bleibt, hilft es indirekt tatsächlich — der Figur wie der Verdauung.\n\nWie kommt das? Der Schlüssel sind Sättigung und eine langsame glykämische Reaktion. Im Vergleich zu gewöhnlichem Weißbrot gelangen die Kohlenhydrate aus dem Sauerteigbrot viel langsamer in den Körper. In der Praxis schießt der Blutzucker nicht nach oben, man bleibt länger satt, isst weniger und bekommt nicht so schnell wieder Hunger.",
-      },
-      {
-        title: "Gewicht und Sättigung",
-        body:
-          "Vom Brot allein nimmt man nicht zu, entscheidend ist die gesamte Energieaufnahme. Da Sauerteigbrot besser sättigt, isst man davon oft weniger.",
+          "Ja und nein. :-) Sauerteigbrot lässt die Kilos nicht von allein purzeln, aber weil man weniger davon braucht und länger satt bleibt, hilft es indirekt tatsächlich — der Figur wie der Verdauung.",
+        sub: {
+          title: "Wie kommt das?",
+          bullets: [
+            "Länger satt: ein stabiler Blutzucker verhindert Ausschläge, man bekommt nach dem Essen nicht so schnell wieder Hunger und nascht weniger nebenher.",
+            "Kleinere Portionen: durch die dichtere Krume und die stärkere Sättigung reicht von selbst ein kleineres Stück.",
+            "Geringere Energiezufuhr: Vom Brot allein nimmt man nicht zu — entscheidend ist die gesamte Kalorienbilanz. Weil Sauerteigbrot länger satt hält, fällt die Tagesbilanz meist niedriger aus.",
+          ],
+          closing:
+            "Gegenüber gewöhnlichem Hefebrot ist Sauerteig damit die nährstoffreichere und nachhaltigere Wahl, wenn man den Speiseplan umstellt.",
+        },
       },
       {
         title: "Mineralstoffe",
@@ -248,7 +263,12 @@ export const CHLEBA_DEFAULT_COPY = {
   benefits: string[]
   ingredients: { text: string; kind: "ok" | "no" }[]
   detailsTitle: string
-  details: { title: string; body: string }[]
+  details: {
+    title: string
+    body: string
+    /* Volitelná vnořená otázka — rozbalí se až uvnitř odpovědi. */
+    sub?: { title: string; bullets: string[]; closing?: string }
+  }[]
   back: string
   contact: string
 }>

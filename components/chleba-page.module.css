@@ -343,6 +343,74 @@
   margin-top: 14px;
 }
 
+/* Vnořená otázka uvnitř odpovědi — stejná mechanika, jen jemnější. */
+.detailSub {
+  margin-top: 16px;
+  border-top: 1px solid rgba(238, 224, 196, 0.12);
+}
+
+.detailSub summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  cursor: pointer;
+  list-style: none;
+  color: rgba(255, 249, 238, 0.74);
+  font-size: 12.5px;
+  font-weight: 400;
+  transition: color 0.2s;
+}
+
+.detailSub summary::-webkit-details-marker {
+  display: none;
+}
+
+.detailSub summary:hover,
+.detailSub[open] summary {
+  color: #c29b61;
+}
+
+.detailSub .detailMark {
+  width: 9px;
+  height: 9px;
+}
+
+.detailSub ul {
+  margin: 0 0 0 0;
+  padding: 0 0 4px;
+  list-style: none;
+  display: grid;
+  gap: 11px;
+}
+
+.detailSub li {
+  position: relative;
+  padding-left: 16px;
+  color: rgba(240, 235, 226, 0.62);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.75;
+  max-width: 68ch;
+}
+
+.detailSub li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: rgba(194, 155, 97, 0.7);
+}
+
+.detailSub > p {
+  margin: 14px 0 20px;
+  color: rgba(240, 235, 226, 0.62);
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.78;
+  max-width: 68ch;
+}
+
 @media (max-width: 760px) {
   .page {
     overflow: auto;
