@@ -13,20 +13,15 @@ export const CHLEBA_DEFAULT_COPY = {
     titleAccent: "mlýna",
     lead:
       "Součástí každého pobytu i nahrávání je snídaně nebo brunch. Všechno kolem chleba bereme stejně poctivě jako samotné studio: pomalu, řemeslně a z dobrých surovin.",
-    paragraphs: [
-      "Pečeme jak kváskový, tak i klasický chleba, vždy jen z prvotřídních surovin. Vzhledem k pozitivnímu ohlasu nakonec plánujeme dodávat i mimo studio.",
-      "Kvásek dává chlebu čas, vůni a přirozenou chuť. Používáme kvalitní mouku od českých mlýnů, vodu z vlastního zdroje, himalájskou sůl a bio kmín z farmy.",
-      "Bez dochucovadel, bez éček, bez zlepšovadel, bez konzervantů a bez zbytečných přísad. Jen základní suroviny, pec a čas.",
-    ],
+    paragraphs: [],
     craftTitle: "Řemeslný kváskový chleba z naší pece",
     processEyebrow: "Postup",
     processTitle: "Jak pečeme chleba",
     processLead: "",
     benefitsTitle: "Co dává kvásek chlebu",
     ingredientsTitle: "Čisté složení",
-    purityTitle: "Bez zkratek",
-    purityText:
-      "Žádné droždí, žádná dochucovadla, žádná éčka, žádná zlepšovadla, žádné konzervanty. Jen mouka, voda, kvásek, sůl, kmín a čas.",
+    purityTitle: "",
+    purityText: "",
     benefitsText:
       "Kvásek pracuje pomalu a chlebu dává chuť, strukturu i lepší stravitelnost. Díky fermentaci se sacharidy uvolňují pozvolněji, chleba déle zasytí a tělo z něj umí lépe využít minerály. Přirozeně kyselé prostředí navíc pomáhá, aby vydržel déle čerstvý i bez konzervantů.",
     ingredientsText:
@@ -92,20 +87,15 @@ export const CHLEBA_DEFAULT_COPY = {
     titleAccent: "the mill",
     lead:
       "Breakfast or brunch is part of every stay and recording session. Everything around the bread follows the same approach as the studio itself: slow, crafted, and built on good ingredients.",
-    paragraphs: [
-      "Andrea bakes it here at the mill. The dough is given time, the starter works slowly, and the result is bread with a crisp crust, soft crumb and a taste that needs no effects.",
-      "We use local ingredients, water from the place and an oven that turns everyday food into a small ritual. We serve the bread with breakfast, brunch, soup, cheese or simply with butter.",
-      "When time and mood allow, guests can join the baking too. Heating the oven, working with the dough and waiting for the first slice are part of the atmosphere of Mlýn na Pile.",
-    ],
+    paragraphs: [],
     craftTitle: "Craft sourdough bread from our oven",
     processEyebrow: "The process",
     processTitle: "How we bake our bread",
     processLead: "",
     benefitsTitle: "Why sourdough",
     ingredientsTitle: "Clean ingredients",
-    purityTitle: "No shortcuts",
-    purityText:
-      "No yeast, no flavour enhancers, no additives, no improvers, no preservatives. Just flour, water, sourdough starter, salt, caraway and time.",
+    purityTitle: "",
+    purityText: "",
     benefitsText:
       "Sourdough works slowly and gives the bread flavour, structure and gentler digestion. Fermentation helps carbohydrates release more gradually, keeps you full for longer and makes minerals easier for the body to use. Its naturally acidic environment also helps the bread stay fresh without preservatives.",
     ingredientsText:
@@ -171,20 +161,15 @@ export const CHLEBA_DEFAULT_COPY = {
     titleAccent: "der Mühle",
     lead:
       "Zu jedem Aufenthalt und jeder Recording-Session gehört ein Frühstück oder Brunch. Alles rund um das Brot folgt demselben Ansatz wie das Studio selbst: langsam, handwerklich und aus guten Zutaten.",
-    paragraphs: [
-      "Andrea backt es direkt in der Mühle. Der Teig bekommt Zeit, der Sauerteig arbeitet langsam, und am Ende steht ein Brot mit knuspriger Kruste, weicher Krume und einem Geschmack ohne Effekte.",
-      "Wir verwenden lokale Zutaten, Wasser vom Ort und einen Ofen, der alltägliches Essen in ein kleines Ritual verwandelt. Das Brot servieren wir zum Frühstück, Brunch, zur Suppe, zu Käse oder einfach mit Butter.",
-      "Wenn Zeit und Stimmung passen, können Gäste auch beim Backen mitmachen. Den Ofen anheizen, mit dem Teig arbeiten und auf die erste Scheibe warten: Das gehört zur Atmosphäre von Mlýn na Pile.",
-    ],
+    paragraphs: [],
     craftTitle: "Handwerkliches Sauerteigbrot aus unserem Ofen",
     processEyebrow: "Der Ablauf",
     processTitle: "Wie wir unser Brot backen",
     processLead: "",
     benefitsTitle: "Vorteile von Sauerteig",
     ingredientsTitle: "Klare Zutaten",
-    purityTitle: "Ohne Abkürzungen",
-    purityText:
-      "Keine Hefe, keine Geschmacksverstärker, keine Zusatzstoffe, keine Verbesserer, keine Konservierungsstoffe. Nur Mehl, Wasser, Sauerteig, Salz, Kümmel und Zeit.",
+    purityTitle: "",
+    purityText: "",
     benefitsText:
       "Sauerteig arbeitet langsam und gibt dem Brot Geschmack, Struktur und eine bessere Bekömmlichkeit. Durch die Fermentation werden Kohlenhydrate gleichmäßiger freigesetzt, das Brot sättigt länger und Mineralstoffe können besser genutzt werden. Das natürlich saure Milieu hilft außerdem, dass es ohne Konservierungsstoffe länger frisch bleibt.",
     ingredientsText:

@@ -115,18 +115,24 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
         </h1>
         <p className={styles.lead}>{t.lead}</p>
 
-        <section className={styles.storyGrid} aria-label={t.title}>
-          <div className={styles.textPanel}>
-            {t.paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
+        {t.paragraphs.length || t.purityTitle || t.purityText ? (
+          <section className={styles.storyGrid} aria-label={t.title}>
+            {t.paragraphs.length ? (
+              <div className={styles.textPanel}>
+                {t.paragraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            ) : null}
 
-          <aside className={styles.purityNote}>
-            <p className={styles.noteKicker}>{t.purityTitle}</p>
-            <p>{t.purityText}</p>
-          </aside>
-        </section>
+            {t.purityTitle || t.purityText ? (
+              <aside className={styles.purityNote}>
+                {t.purityTitle ? <p className={styles.noteKicker}>{t.purityTitle}</p> : null}
+                {t.purityText ? <p>{t.purityText}</p> : null}
+              </aside>
+            ) : null}
+          </section>
+        ) : null}
 
         <section className={styles.infoGrid} aria-label={t.craftTitle}>
           <article className={styles.infoCard}>
