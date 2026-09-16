@@ -180,11 +180,10 @@ const COPY: Record<Locale, {
   },
 }
 
-const START_CHOICES = [17, 19, 21, 23]
-
 export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Locale }) {
   const t = COPY[locale] ?? COPY.cs
-  const [startHour, setStartHour] = useState(23)
+  // Postup začíná večer ve 23:00 — od toho se odvíjejí všechny časy na ose.
+  const startHour = 23
   const [active, setActive] = useState(0)
   const [hiddenDays, setHiddenDays] = useState<number[]>([])
   const [steamOpen, setSteamOpen] = useState(false)
@@ -284,20 +283,9 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
   return (
     <div className="bt">
       <div className="bt-top">
-        <div className="bt-start">
-          <span className="bt-start-label">{t.startLabel}</span>
-          {START_CHOICES.map((h) => (
-            <button
-              key={h}
-              type="button"
-              className={h === startHour ? "bt-hour on" : "bt-hour"}
-              aria-pressed={h === startHour}
-              onClick={() => setStartHour(h)}
-            >
-              {h}:00
-            </button>
-          ))}
-        </div>
+        <span className="bt-start-label">
+          {t.startLabel} {startHour}:00
+        </span>
         <span className="bt-total">
           {t.totalLabel} {t.duration(total)}
         </span>
@@ -479,40 +467,12 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
         .bt-total {
           white-space: nowrap;
         }
-        .bt-start {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 7px;
-        }
         .bt-start-label,
         .bt-total {
           font-size: 0.6rem;
           letter-spacing: 0.22em;
           text-transform: uppercase;
           color: rgba(238, 224, 196, 0.5);
-        }
-        .bt-hour {
-          appearance: none;
-          border: 1px solid var(--hair);
-          background: transparent;
-          color: rgba(243, 238, 228, 0.72);
-          font: inherit;
-          font-size: 0.68rem;
-          letter-spacing: 0.06em;
-          padding: 7px 11px;
-          min-height: 34px;
-          cursor: pointer;
-          transition: color 0.2s, border-color 0.2s, background 0.2s;
-        }
-        .bt-hour:hover {
-          color: var(--cream);
-          border-color: rgba(238, 224, 196, 0.32);
-        }
-        .bt-hour.on {
-          color: #1a1206;
-          background: var(--gold);
-          border-color: var(--gold);
         }
 
         /* Dny se dají odznačit a osa se zúží jen na vybraný den. */
@@ -820,19 +780,6 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
         }
 
         @media (max-width: 720px) {
-          .bt-start {
-            width: 100%;
-            gap: 6px;
-          }
-          .bt-start-label {
-            flex-basis: 100%;
-            margin-bottom: 2px;
-          }
-          .bt-hour {
-            flex: 1 1 0;
-            padding: 7px 4px;
-            text-align: center;
-          }
           .bt-stop {
             flex: 0 0 84px;
           }
