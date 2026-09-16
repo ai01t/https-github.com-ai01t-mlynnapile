@@ -164,6 +164,8 @@ const back: React.CSSProperties = {
   color: "#8a8177",
   textDecoration: "none",
 }
+const linkedinLine: React.CSSProperties = { margin: "10px 0 0", fontSize: ".82rem" }
+
 const langBar: React.CSSProperties = { position: "absolute", top: "-40px", right: 0, display: "flex", gap: "8px" }
 const langBtn = (active: boolean): React.CSSProperties => ({
   fontSize: ".6rem",
@@ -201,6 +203,17 @@ export default function JindraProfileClient() {
         <p style={eyebrow}>{t.eyebrow}</p>
         <h1 className="mlyn-title">Ing. Jindřich Traxmandl</h1>
         <p style={role}>{t.bio}</p>
+
+        <p style={linkedinLine}>
+          <a
+            style={webLink}
+            href="https://www.linkedin.com/in/traxmandl/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            linkedin.com/in/traxmandl
+          </a>
+        </p>
 
         <div style={socials}>
           <a style={socialLink} href="https://www.facebook.com/j.traxmandl/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook">
