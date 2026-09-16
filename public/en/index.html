@@ -904,6 +904,23 @@ body.de .de{display:revert;}
 }
 </style>
 <style id="native-scroll-overrides">
+/* Široký displej na výšku (tablet, otočený monitor): mobilní rozvržení tam platí
+   kvůli navigaci, ale na karty je dost místa — karusel se vrací do mřížky. */
+@media (orientation:portrait) and (min-width:700px){
+  .pkg-grid{display:grid;grid-template-columns:repeat(2,1fr);overflow:visible;gap:1px;margin-bottom:52px;}
+  .pkg-card{flex:none;scroll-snap-align:none;min-height:var(--res-card-h);padding:40px 28px;}
+  #studio .rooms-grid{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible;gap:1px;margin-bottom:64px;}
+  #studio .room-card{flex:none;scroll-snap-align:none;padding:40px 32px;}
+  /* Booking zpátky do běžného toku nad kartami. */
+  .residency-actions{position:relative;top:auto;right:auto;margin-top:-28px;margin-bottom:44px;}
+  .residency-main-panel.pkg-late .residency-actions{opacity:1;transform:none;pointer-events:auto;}
+  .carousel-dots{display:none;}
+  /* Sekce se pak nevejde na jednu obrazovku, ať se dá dorolovat. */
+  #residency .residency-panel{max-height:none;overflow:visible;}
+}
+@media (orientation:portrait) and (min-width:1100px){
+  .pkg-grid{grid-template-columns:repeat(4,1fr);}
+}
 html{-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;}
 section{scroll-snap-align:start;scroll-snap-stop:always;}
 #contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:56px;padding:12px 60px;}
@@ -3043,6 +3060,8 @@ const MOBILE='(max-width:600px), (orientation:portrait)';
 /* ── Mobilní vylepšení: karusely, úsporná videa, FAQ na celou obrazovku, náznak swipe ── */
 (function(){
   const isMobile=()=>matchMedia(MOBILE).matches;
+  /* Karusel dává smysl jen na úzkém displeji; na širokém jsou karty v mřížce. */
+  const isCarousel=()=>matchMedia('(max-width:700px)').matches;
 
   /* 1. Tečky pod karusely + aktivní stav podle scrollu. */
   function initDots(grid,cardSel){
@@ -3138,8 +3157,10 @@ const MOBILE='(max-width:600px), (orientation:portrait)';
     if(!isMobile())return;
     const pkg=document.querySelector('.pkg-grid');
     const rooms=document.querySelector('.rooms-grid');
-    initDots(pkg,'.pkg-card');
-    initDots(rooms,'.room-card');
+    if(isCarousel()){
+      initDots(pkg,'.pkg-card');
+      initDots(rooms,'.room-card');
+    }
     initStudioVideos(rooms);
     initFaq();
   }

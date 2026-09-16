@@ -15,7 +15,7 @@ export const CHLEBA_DEFAULT_COPY = {
       "Součástí každého pobytu i nahrávání je snídaně nebo brunch. Všechno kolem chleba bereme stejně poctivě jako samotné studio: pomalu, řemeslně a z dobrých surovin.",
     paragraphs: [],
     craftTitle: "Řemeslný kváskový chleba z naší pece",
-    processEyebrow: "Postup",
+    processEyebrow: "",
     processTitle: "Jak pečeme chleba",
     processLead: "",
     benefitsTitle: "Co dává kvásek chlebu",
@@ -37,7 +37,7 @@ export const CHLEBA_DEFAULT_COPY = {
       { text: "voda, kvásek, himalájská sůl a bio kmín z farmy", kind: "ok" },
       { text: "bez éček, zlepšovadel a zbytečných přísad", kind: "no" },
     ],
-    detailsTitle: "Proč právě kváskový chleba",
+    detailsTitle: "",
     details: [
       {
         title: "Proč kvásek",
@@ -93,7 +93,7 @@ export const CHLEBA_DEFAULT_COPY = {
       "Breakfast or brunch is part of every stay and recording session. Everything around the bread follows the same approach as the studio itself: slow, crafted, and built on good ingredients.",
     paragraphs: [],
     craftTitle: "Craft sourdough bread from our oven",
-    processEyebrow: "The process",
+    processEyebrow: "",
     processTitle: "How we bake our bread",
     processLead: "",
     benefitsTitle: "Why sourdough",
@@ -115,7 +115,7 @@ export const CHLEBA_DEFAULT_COPY = {
       { text: "water, sourdough starter, Himalayan salt and organic caraway", kind: "ok" },
       { text: "no additives, improvers or unnecessary ingredients", kind: "no" },
     ],
-    detailsTitle: "A little more about the bread",
+    detailsTitle: "",
     details: [
       {
         title: "Why sourdough",
@@ -171,7 +171,7 @@ export const CHLEBA_DEFAULT_COPY = {
       "Zu jedem Aufenthalt und jeder Recording-Session gehört ein Frühstück oder Brunch. Alles rund um das Brot folgt demselben Ansatz wie das Studio selbst: langsam, handwerklich und aus guten Zutaten.",
     paragraphs: [],
     craftTitle: "Handwerkliches Sauerteigbrot aus unserem Ofen",
-    processEyebrow: "Der Ablauf",
+    processEyebrow: "",
     processTitle: "Wie wir unser Brot backen",
     processLead: "",
     benefitsTitle: "Vorteile von Sauerteig",
@@ -193,7 +193,7 @@ export const CHLEBA_DEFAULT_COPY = {
       { text: "Wasser, Sauerteig, Himalayasalz und Bio-Kümmel", kind: "ok" },
       { text: "ohne Zusatzstoffe, Verbesserer und unnötige Zutaten", kind: "no" },
     ],
-    detailsTitle: "Warum Sauerteigbrot",
+    detailsTitle: "",
     details: [
       {
         title: "Warum Sauerteig",

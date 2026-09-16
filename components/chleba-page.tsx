@@ -151,7 +151,7 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
         </section>
 
         <section className={styles.processBlock} aria-label={t.processTitle}>
-          <p className={styles.cardEyebrow}>{t.processEyebrow}</p>
+          {t.processEyebrow ? <p className={styles.cardEyebrow}>{t.processEyebrow}</p> : null}
           <h2 className={cormorant.className}>{t.processTitle}</h2>
           {t.processLead ? <p className={styles.processLead}>{t.processLead}</p> : null}
           <div className={styles.processFrame}>
@@ -160,7 +160,7 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
         </section>
 
         <section className={styles.detailsBlock} aria-label={t.detailsTitle}>
-          <h2 className={cormorant.className}>{t.detailsTitle}</h2>
+          {t.detailsTitle ? <h2 className={cormorant.className}>{t.detailsTitle}</h2> : null}
           <div className={styles.detailsList}>
             {t.details.map((detail) => (
               <details className={styles.detailItem} key={detail.title}>
