@@ -141,11 +141,13 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
             <p className={styles.infoText}>{t.benefitsText}</p>
           </article>
 
-          <article className={styles.infoCard}>
-            <p className={styles.cardEyebrow}>{t.ingredientsTitle}</p>
-            <h2 className={cormorant.className}>{t.ingredientsTitle}</h2>
-            <p className={styles.infoText}>{t.ingredientsText}</p>
-          </article>
+          {t.ingredientsTitle || t.ingredientsText ? (
+            <article className={styles.infoCard}>
+              <p className={styles.cardEyebrow}>{t.ingredientsTitle}</p>
+              <h2 className={cormorant.className}>{t.ingredientsTitle}</h2>
+              <p className={styles.infoText}>{t.ingredientsText}</p>
+            </article>
+          ) : null}
         </section>
 
         <section className={styles.processBlock} aria-label={t.processTitle}>

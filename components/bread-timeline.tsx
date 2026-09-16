@@ -283,9 +283,6 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
   return (
     <div className="bt">
       <div className="bt-top">
-        <span className="bt-start-label">
-          {t.startLabel} {startHour}:00
-        </span>
         <span className="bt-total">
           {t.totalLabel} {t.duration(total)}
         </span>
@@ -458,7 +455,7 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          justify-content: space-between;
+          justify-content: flex-end;
           gap: 10px 18px;
           margin-bottom: 22px;
           /* rámeček sekce vybledá na okrajích — text musí zůstat uvnitř */
@@ -467,7 +464,6 @@ export default function BreadTimeline({ locale = "cs" as Locale }: { locale?: Lo
         .bt-total {
           white-space: nowrap;
         }
-        .bt-start-label,
         .bt-total {
           font-size: 0.6rem;
           letter-spacing: 0.22em;

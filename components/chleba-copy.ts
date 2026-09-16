@@ -19,13 +19,12 @@ export const CHLEBA_DEFAULT_COPY = {
     processTitle: "Jak pečeme chleba",
     processLead: "",
     benefitsTitle: "Co dává kvásek chlebu",
-    ingredientsTitle: "Čisté složení",
+    ingredientsTitle: "",
     purityTitle: "",
     purityText: "",
     benefitsText:
       "Kvásek pracuje pomalu a chlebu dává chuť, strukturu i lepší stravitelnost. Díky fermentaci se sacharidy uvolňují pozvolněji, chleba déle zasytí a tělo z něj umí lépe využít minerály. Přirozeně kyselé prostředí navíc pomáhá, aby vydržel déle čerstvý i bez konzervantů.",
-    ingredientsText:
-      "Mouku bereme od českých mlýnů a pracujeme s vlastním poměrem různých typů. Přidáváme vodu z místa, živý kvásek, himalájskou sůl a bio kmín. Bez dochucovadel a bez přísad, které v chlebu nemají co dělat.",
+    ingredientsText: "",
     benefits: [
       "přirozené kvašení z živého kvásku",
       "lepší stravitelnost díky fermentaci",
@@ -98,13 +97,12 @@ export const CHLEBA_DEFAULT_COPY = {
     processTitle: "How we bake our bread",
     processLead: "",
     benefitsTitle: "Why sourdough",
-    ingredientsTitle: "Clean ingredients",
+    ingredientsTitle: "",
     purityTitle: "",
     purityText: "",
     benefitsText:
       "Sourdough works slowly and gives the bread flavour, structure and gentler digestion. Fermentation helps carbohydrates release more gradually, keeps you full for longer and makes minerals easier for the body to use. Its naturally acidic environment also helps the bread stay fresh without preservatives.",
-    ingredientsText:
-      "The base is simple: quality flour from Czech mills, local water, living sourdough starter, Himalayan salt and organic caraway. No flavour enhancers and no ingredients that do not belong in bread.",
+    ingredientsText: "",
     benefits: [
       "natural fermentation from a living starter",
       "gentler digestion thanks to fermentation",
@@ -177,13 +175,12 @@ export const CHLEBA_DEFAULT_COPY = {
     processTitle: "Wie wir unser Brot backen",
     processLead: "",
     benefitsTitle: "Vorteile von Sauerteig",
-    ingredientsTitle: "Klare Zutaten",
+    ingredientsTitle: "",
     purityTitle: "",
     purityText: "",
     benefitsText:
       "Sauerteig arbeitet langsam und gibt dem Brot Geschmack, Struktur und eine bessere Bekömmlichkeit. Durch die Fermentation werden Kohlenhydrate gleichmäßiger freigesetzt, das Brot sättigt länger und Mineralstoffe können besser genutzt werden. Das natürlich saure Milieu hilft außerdem, dass es ohne Konservierungsstoffe länger frisch bleibt.",
-    ingredientsText:
-      "Die Grundlage ist einfach: hochwertiges Mehl aus tschechischen Mühlen, Wasser vom Ort, lebendiger Sauerteig, Himalayasalz und Bio-Kümmel. Keine Geschmacksverstärker und keine Zutaten, die in Brot nichts zu suchen haben.",
+    ingredientsText: "",
     benefits: [
       "natürliche Fermentation mit lebendigem Sauerteig",
       "oft bekömmlicher durch lange Fermentation",
