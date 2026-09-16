@@ -161,10 +161,17 @@ export default function ChlebaPage({ locale }: { locale: Locale }) {
           <h2 className={cormorant.className}>{t.detailsTitle}</h2>
           <div className={styles.detailsList}>
             {t.details.map((detail) => (
-              <article className={styles.detailItem} key={detail.title}>
-                <h3>{detail.title}</h3>
-                <p>{detail.body}</p>
-              </article>
+              <details className={styles.detailItem} key={detail.title}>
+                <summary>
+                  <h3>{detail.title}</h3>
+                  <span className={styles.detailMark} aria-hidden="true" />
+                </summary>
+                <div className={styles.detailBody}>
+                  {detail.body.split("\n\n").map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              </details>
             ))}
           </div>
         </section>

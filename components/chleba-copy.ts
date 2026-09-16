@@ -46,9 +46,9 @@ export const CHLEBA_DEFAULT_COPY = {
           "Kvásek dává chlebu čas. Dlouhá fermentace umožňuje částečný rozklad některých složek obilí, například složitějších sacharidů a bílkovin, takže bývá pro trávení šetrnější než běžné pečivo z droždí.",
       },
       {
-        title: "Zasycení a glykemická odezva",
+        title: "Přispívá kváskový chleba k hubnutí?",
         body:
-          "Oproti běžnému bílému pečivu se sacharidy uvolňují pomaleji. To znamená pozvolnější glykemickou odezvu a delší pocit sytosti. V praxi to často vede k tomu, že člověk sní menší množství a nemá tak rychlý hlad.",
+          "Ano i ne. :-) Kváskový chléb sám o sobě hubnutí nezpůsobuje, ale díky tomu, že ho stačí sníst méně a zasytí vás na delší dobu, k lepší postavě i trávení nepřímo skutečně pomáhá.\n\nJak je to možné? Klíčem je zasycení a pozvolná glykemická odezva. Oproti běžnému bílému pečivu se sacharidy z kváskového chleba uvolňují do těla mnohem pomaleji. V praxi to znamená, že vám hladina cukru v krvi nevyskočí prudce nahoru a vy tak máte delší pocit sytosti, sníte menší množství a nedostanete tak rychlý hlad.",
       },
       {
         title: "Hmotnost a sytost",
@@ -120,9 +120,9 @@ export const CHLEBA_DEFAULT_COPY = {
           "Sourdough gives bread time. Long fermentation helps break down some components of grain, including more complex carbohydrates and proteins, so it is often gentler to digest than ordinary yeast bread.",
       },
       {
-        title: "Satiety and glycaemic response",
+        title: "Does sourdough bread help with weight loss?",
         body:
-          "Compared with ordinary white bread, carbohydrates are released more slowly. That means a steadier glycaemic response and a longer feeling of fullness.",
+          "Yes and no. :-) Sourdough bread does not cause weight loss on its own, but because you need less of it and it keeps you full for longer, it does help indirectly — both with your figure and with digestion.\n\nHow does that work? The key is satiety and a gradual glycaemic response. Compared to ordinary white bread, the carbohydrates in sourdough are released into the body far more slowly. In practice your blood sugar does not spike, you stay full for longer, you eat less and you don't get hungry again so quickly.",
       },
       {
         title: "Weight and fullness",
@@ -194,9 +194,9 @@ export const CHLEBA_DEFAULT_COPY = {
           "Sauerteig gibt dem Brot Zeit. Die lange Fermentation hilft, einige Bestandteile des Getreides teilweise abzubauen, darunter komplexere Kohlenhydrate und Proteine. Deshalb ist es oft bekömmlicher als gewöhnliches Hefebrot.",
       },
       {
-        title: "Sättigung und glykämische Reaktion",
+        title: "Hilft Sauerteigbrot beim Abnehmen?",
         body:
-          "Im Vergleich zu gewöhnlichem Weißbrot werden Kohlenhydrate langsamer freigesetzt. Das bedeutet eine ruhigere glykämische Reaktion und ein längeres Sättigungsgefühl.",
+          "Ja und nein. :-) Sauerteigbrot lässt die Kilos nicht von allein purzeln, aber weil man weniger davon braucht und länger satt bleibt, hilft es indirekt tatsächlich — der Figur wie der Verdauung.\n\nWie kommt das? Der Schlüssel sind Sättigung und eine langsame glykämische Reaktion. Im Vergleich zu gewöhnlichem Weißbrot gelangen die Kohlenhydrate aus dem Sauerteigbrot viel langsamer in den Körper. In der Praxis schießt der Blutzucker nicht nach oben, man bleibt länger satt, isst weniger und bekommt nicht so schnell wieder Hunger.",
       },
       {
         title: "Gewicht und Sättigung",
