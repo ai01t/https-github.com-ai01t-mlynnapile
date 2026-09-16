@@ -20,7 +20,9 @@ const T = {
     cvTitle: "CV Editor",
     cvDesc:
       "Editor životopisů — jedna sada dat, pět vizuálně odlišných šablon, dvě jazykové mutace, export do PDF i JSON a import existujícího CV. Data zůstávají v prohlížeči, bez účtu a bez databáze.",
-    cvMine: "Můj životopis",
+    cvMine: "Můj životopis — detailní verze",
+    cvShort: "Stručná verze — na jednu stranu",
+    cvEditor: "Otevřít v editoru",
     cvSample: "Ukázkové CV — možno editovat, zdarma k použití ;)",
     cvPrint: "Verze k tisku",
     keyfDesc: "Bookmark manager — cloudová aplikace pro ukládání a sdílení dat.",
@@ -46,7 +48,9 @@ const T = {
     cvTitle: "CV Editor",
     cvDesc:
       "CV editor — one set of data, five visually distinct templates, two language versions, export to PDF and JSON, and import of an existing CV. Data stays in the browser: no account, no database.",
-    cvMine: "My CV",
+    cvMine: "My CV — full version",
+    cvShort: "Short version — one page",
+    cvEditor: "Open in the editor",
     cvSample: "Sample CV — editable, free to use ;)",
     cvPrint: "Print version",
     keyfDesc: "Bookmark manager — a cloud app for saving and sharing data.",
@@ -240,9 +244,15 @@ export default function JindraProfileClient() {
               </span>
             </li>
             <li style={webItem}>
-              <a style={webLink} href="/jindra/cvapp">
-                {t.cvSample}
+              <a style={webLink} href="/jindra/cvapp/traxmandl-strucne">
+                {t.cvShort}
               </a>
+            </li>
+            <li style={webItem}>
+              <a style={webLink} href="/jindra/cvapp">
+                {t.cvEditor}
+              </a>{" "}
+              <span style={webDesc}>{t.cvSample}</span>
             </li>
           </ul>
         </div>
