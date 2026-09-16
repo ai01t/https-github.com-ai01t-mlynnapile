@@ -14,12 +14,13 @@
     "derivedFrom": null,
     "themeOverrides": {
       "accent": null,
-      "density": "comfortable",
+      "density": "compact",
       "fontScale": 1,
       "bulletStyle": "disc",
       "headingCase": "normal",
       "dividers": true,
-      "contactStyle": "icon"
+      "contactStyle": "icon",
+      "pageFormat": "a4"
     }
   },
   "basics": {
