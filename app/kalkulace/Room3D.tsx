@@ -442,9 +442,6 @@ export default function Room3D({
             {objectsOpen ? "Skrýt objekty" : "Přidat objekt"}
             <span className={`text-[9px] leading-none transition-transform ${objectsOpen ? "rotate-180" : ""}`}>▼</span>
           </button>
-          {!objectsOpen && (
-            <span className="text-[10px] text-[var(--muted)]">okno, dveře, topení, schodiště, kamna…</span>
-          )}
         </div>
 
         {objectsOpen && (
