@@ -5,7 +5,7 @@
 // Pro obdélníkovou místnost (4 stěny, protilehlé stejně dlouhé) vznikne uzavřený prostor.
 // Objekty (dveře, okna…) se přetahují z palety přímo na stěnu; kliknutím se upraví rozměr.
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { clamp, f2, inferOtherOpening, n, openingKind, outerOpening, uid, WALL_COLORS, wallArcs, wallStats, windowPanes, WINDOW_PANE_PRESETS } from "./core";
 
 const DIRS = [
@@ -125,6 +125,22 @@ export default function Room3D({
   const [yaw, setYaw] = useState(DEFAULT_YAW);
   // Nenápadná nápověda: ukáže se, jen když kurzor visí v prázdné ploše kolem modelu.
   const [rotateHint, setRotateHint] = useState(false);
+  // Paleta objektů je ve výchozím stavu sbalená, ať lišta nad modelem nepřetéká.
+  const [objectsOpen, setObjectsOpen] = useState(false);
+  // Překryvné panely (detail stěny, editor objektu) musí začít pod lištou –
+  // ta mění výšku podle rozbalené palety i podle zalomení na úzkém displeji.
+  const toolbarRef = useRef<HTMLDivElement | null>(null);
+  const [toolbarH, setToolbarH] = useState(70);
+  useEffect(() => {
+    const el = toolbarRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const sync = () => setToolbarH(el.offsetHeight);
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+  const overlayTop = { top: toolbarH + 6 };
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Pokud existuje náčrt půdorysu, použijeme jeho skutečnou geometrii (přesné rohy a směry),
@@ -368,7 +384,7 @@ export default function Room3D({
   return (
     <div className="relative">
       {/* paleta objektů */}
-      <div className="mb-2 space-y-1.5">
+      <div ref={toolbarRef} className="mb-2 space-y-1.5">
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="w-24 shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Otočit:</span>
           <button
@@ -418,6 +434,31 @@ export default function Room3D({
             </button>
           ))}
         </div>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setObjectsOpen((v) => !v)}
+            title="Okna, dveře, topení, schodiště a další – přetáhni je do modelu"
+            aria-expanded={objectsOpen}
+            className={`inline-flex items-center gap-1.5 rounded-[var(--radius-sm)] border px-2.5 py-1 text-[11px] font-bold transition ${
+              objectsOpen
+                ? "border-[var(--brand)] text-[var(--brand)]"
+                : "border-[var(--line)] bg-[var(--card)] text-[var(--text-soft)] hover:border-[var(--brand)] hover:text-[var(--brand)]"
+            }`}
+            style={objectsOpen ? { backgroundColor: "var(--bg-soft)" } : undefined}
+          >
+            <span className="text-sm leading-none">✥</span>
+            Objekty
+            <span className="text-[var(--muted)]">{WALL_ITEMS.length + FLOOR_ITEMS.length + 1}</span>
+            <span className={`text-[9px] leading-none transition-transform ${objectsOpen ? "rotate-180" : ""}`}>▼</span>
+          </button>
+          {!objectsOpen && (
+            <span className="text-[10px] text-[var(--muted)]">okna, dveře, topení, schodiště…</span>
+          )}
+        </div>
+
+        {objectsOpen && (
+        <>
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="w-24 shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Na stěnu:</span>
           {WALL_ITEMS.map((item) => (
@@ -482,6 +523,8 @@ export default function Room3D({
             </div>
           ))}
         </div>
+        </>
+        )}
       </div>
 
       <svg
@@ -1168,7 +1211,7 @@ export default function Room3D({
 
       {/* Detail stěny po najetí myší (skryje se, když je otevřený editor objektu) */}
       {!selOpening && !selFloorObj && hovered ? (
-        <div className="pointer-events-none absolute left-3 top-11 max-w-[260px] rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] p-3 text-xs shadow-lg">
+        <div style={overlayTop} className="pointer-events-none absolute left-3 max-w-[260px] rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] p-3 text-xs shadow-lg">
           <div className="font-black" style={{ color: "var(--brand)" }}>{hovered.wall.name}</div>
           <div className="mt-1 grid grid-cols-2 gap-x-3 gap-y-0.5 text-[var(--text-soft)]">
             <span className="text-[var(--muted)]">Rozměr</span>
@@ -1203,7 +1246,7 @@ export default function Room3D({
           </div>
         </div>
       ) : !selOpening && !selFloorObj ? (
-        <div className="pointer-events-none absolute left-3 top-11 rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] bg-[var(--card)]/80 px-2.5 py-1.5 text-[11px] text-[var(--muted)]">
+        <div style={overlayTop} className="pointer-events-none absolute left-3 rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] bg-[var(--card)]/80 px-2.5 py-1.5 text-[11px] text-[var(--muted)]">
           Najeď myší na stěnu pro detail
         </div>
       ) : null}
