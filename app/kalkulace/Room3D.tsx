@@ -438,13 +438,12 @@ export default function Room3D({
             }`}
             style={objectsOpen ? { backgroundColor: "var(--bg-soft)" } : undefined}
           >
-            <span className="text-sm leading-none">✥</span>
-            Objekty
-            <span className="text-[var(--muted)]">{WALL_ITEMS.length + FLOOR_ITEMS.length + 1}</span>
+            <span className="text-sm leading-none">＋</span>
+            {objectsOpen ? "Skrýt objekty" : "Přidat objekt"}
             <span className={`text-[9px] leading-none transition-transform ${objectsOpen ? "rotate-180" : ""}`}>▼</span>
           </button>
           {!objectsOpen && (
-            <span className="text-[10px] text-[var(--muted)]">okna, dveře, topení, schodiště…</span>
+            <span className="text-[10px] text-[var(--muted)]">okno, dveře, topení, schodiště, kamna…</span>
           )}
         </div>
 
@@ -1236,10 +1235,6 @@ export default function Room3D({
               <div className="mt-0.5 text-[var(--muted)]">Žádné práce nevybrány.</div>
             )}
           </div>
-        </div>
-      ) : !selOpening && !selFloorObj ? (
-        <div style={overlayTop} className="pointer-events-none absolute left-3 rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] bg-[var(--card)]/80 px-2.5 py-1.5 text-[11px] text-[var(--muted)]">
-          Najeď myší na stěnu pro detail
         </div>
       ) : null}
 
