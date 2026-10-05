@@ -269,6 +269,12 @@ body.pause-active section .content{filter:brightness(1.14);}
 
 /* PLACE */
 #place .content{display:grid;grid-template-columns:1fr;gap:80px;align-items:start;padding-top:150px;}
+/* Text sedí ve spodní části videa, horní část nechává záběru volnou.
+   Na mobilu se obsah vejde přesně na obrazovku, tam se neposouvá. */
+@media(min-width:601px) and (orientation:landscape){
+  #place{align-items:flex-end;}
+  #place .content{padding-top:0;padding-bottom:clamp(56px,9vh,110px);}
+}
 #place .content > div{max-width:760px;}
 .place-intro{font-size:.9rem;line-height:1.88;color:rgba(240,235,226,.62);margin-top:32px;max-width:460px;font-weight:300;}
 .place-quote{margin-top:44px;border-left:2px solid var(--gold);padding-left:26px;font-family:'Cormorant Garamond',serif;font-size:1.22rem;font-style:italic;line-height:1.75;color:var(--stone);font-weight:300;}
