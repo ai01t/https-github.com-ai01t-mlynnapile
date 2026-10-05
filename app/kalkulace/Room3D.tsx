@@ -119,7 +119,9 @@ export default function Room3D({
   const [stairsUp, setStairsUp] = useState(true); // směr schodiště: nahoru / dolů
   const [trashHot, setTrashHot] = useState(false); // úchyt je nad košem – zvýrazní se červeně
   // Popisky stěn: "full" = název + rozměry + plocha, "dims" = jen kóty, "off" = nic
-  const [labelMode, setLabelMode] = useState<"full" | "dims" | "off">("full");
+  // Popisky a kóty jdou zapnout nezávisle; výchozí stav ukazuje obojí.
+  const [showNames, setShowNames] = useState(true);
+  const [showDims, setShowDims] = useState(true);
   // Otočení modelu kolem svislé osy (stupně). Výchozí pohled ukazuje okno
   // i obě dveře najednou — čitelnější než čistá izometrie.
   const [yaw, setYaw] = useState(DEFAULT_YAW);
@@ -413,25 +415,14 @@ export default function Room3D({
             {yaw % 360 === 0 ? "0°" : `${Math.round(((yaw % 360) + 360) % 360)}°`}
           </button>
           <span className="mx-1 h-4 w-px bg-[var(--line)]" />
-          <span className="shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Detail:</span>
           {([
-            ["full", "Vše", "Název stěny, rozměry i plocha"],
-            ["dims", "Jen kóty", "Pouze rozměry stěn"],
-            ["off", "Bez popisků", "Čistý model bez textu"],
-          ] as const).map(([mode, label, hint]) => (
-            <button
-              key={mode}
-              type="button"
-              onClick={() => setLabelMode(mode)}
-              title={hint}
-              className={`rounded-[var(--radius-sm)] border px-2 py-1 text-[11px] font-bold transition ${
-                labelMode === mode
-                  ? "border-[var(--brand)] bg-[var(--brand)] text-white"
-                  : "border-[var(--line)] bg-[var(--card)] text-[var(--muted)] hover:border-[var(--brand)] hover:text-[var(--brand)]"
-              }`}
-            >
+            ["Popisky", showNames, setShowNames, "Názvy stěn v modelu"],
+            ["Kóty", showDims, setShowDims, "Rozměry stěn v modelu"],
+          ] as const).map(([label, checked, set, hint]) => (
+            <label key={label} title={hint} className="inline-flex cursor-pointer items-center gap-1.5 text-[11px] font-bold text-[var(--text-soft)]">
+              <input type="checkbox" checked={checked} onChange={(event) => set(event.target.checked)} className="h-3.5 w-3.5 cursor-pointer accent-[var(--brand)]" />
               {label}
-            </button>
+            </label>
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
@@ -998,24 +989,25 @@ export default function Room3D({
                   </circle>
                 );
               })}
-              {labelMode === "full" && (
+              {showNames && (
                 <text x={top.sx} y={top.sy - 8} textAnchor="middle" fontSize="13" fontWeight="800" fill={active ? "var(--brand)" : "#334155"} pointerEvents="none">
                   {wall.name}
                 </text>
               )}
-              {labelMode !== "off" && (
+              {showDims && (
                 <text
                   x={top.sx}
-                  y={labelMode === "full" ? top.sy + 6 : top.sy}
+                  /* samotné kóty jdou na místo názvu a nesou větší váhu */
+                  y={showNames ? top.sy + 6 : top.sy}
                   textAnchor="middle"
-                  fontSize={labelMode === "dims" ? 12 : 10}
-                  fontWeight={labelMode === "dims" ? 700 : 400}
-                  fill={labelMode === "dims" ? "#334155" : "#64748b"}
+                  fontSize={showNames ? 10 : 12}
+                  fontWeight={showNames ? 400 : 700}
+                  fill={showNames ? "#64748b" : "#334155"}
                   pointerEvents="none"
                 >
-                  {labelMode === "dims"
-                    ? `${n(wall.width)} × ${n(wall.height)} cm`
-                    : `${n(wall.width)} × ${n(wall.height)} cm · ${f2(wallStats(wall).clean)} m²`}
+                  {showNames
+                    ? `${n(wall.width)} × ${n(wall.height)} cm · ${f2(wallStats(wall).clean)} m²`
+                    : `${n(wall.width)} × ${n(wall.height)} cm`}
                 </text>
               )}
             </g>
