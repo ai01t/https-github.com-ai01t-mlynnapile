@@ -143,6 +143,29 @@ export default function Room3D({
     return () => observer.disconnect();
   }, []);
   const overlayTop = { top: toolbarH + 6 };
+
+  // Klávesa Delete smaže vybraný objekt – stejná akce jako koš v jeho editoru.
+  // (Na Macu posílá klávesa „delete" Backspace, proto obě.)
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Delete" && event.key !== "Backspace") return;
+      // ve formulářových polích má klávesa svůj běžný význam
+      if ((event.target as HTMLElement | null)?.closest("input,textarea,select,[contenteditable='true']")) return;
+      if (sel) {
+        event.preventDefault();
+        onRemoveOpening?.(sel.wallId, sel.openingId);
+        setSel(null);
+        return;
+      }
+      if (selFloor) {
+        event.preventDefault();
+        onRemoveFloorObject?.(selFloor);
+        setSelFloor(null);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [sel, selFloor, onRemoveOpening, onRemoveFloorObject]);
   const svgRef = useRef<SVGSVGElement>(null);
 
   // Pokud existuje náčrt půdorysu, použijeme jeho skutečnou geometrii (přesné rohy a směry),
@@ -388,7 +411,6 @@ export default function Room3D({
       {/* paleta objektů */}
       <div ref={toolbarRef} className="mb-2 space-y-1.5">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="w-24 shrink-0 text-[10px] font-bold uppercase tracking-wide text-[var(--muted)]">Otočit:</span>
           <button
             type="button"
             onClick={() => setYaw((v) => v - 15)}
@@ -424,8 +446,7 @@ export default function Room3D({
               {label}
             </label>
           ))}
-        </div>
-        <div className="flex flex-wrap items-center gap-1.5">
+          <span className="mx-1 h-4 w-px bg-[var(--line)]" />
           <button
             type="button"
             onClick={() => setObjectsOpen((v) => !v)}
