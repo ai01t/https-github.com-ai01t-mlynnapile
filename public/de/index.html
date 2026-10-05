@@ -272,8 +272,13 @@ body.pause-active section .content{filter:brightness(1.14);}
 /* Text sedí ve spodní části videa, horní část nechává záběru volnou.
    Na mobilu se obsah vejde přesně na obrazovku, tam se neposouvá. */
 @media(min-width:601px) and (orientation:landscape){
-  #place{align-items:flex-end;}
-  #place .content{padding-top:0;padding-bottom:clamp(56px,9vh,110px);}
+  /* Video končí nad spodním pruhem; v černém pásu pod ním je výčet. */
+  #place{--place-band:clamp(118px,16vh,170px);align-items:flex-end;}
+  #place .bg-video{bottom:var(--place-band);}
+  #place .bg-video::after{content:'';position:absolute;left:0;right:0;bottom:0;height:120px;
+    background:linear-gradient(to bottom,rgba(5,5,6,0),#050506);pointer-events:none;z-index:3;}
+  #place .content{padding-top:0;padding-bottom:clamp(30px,5vh,56px);}
+  #place .values-block{margin-top:calc(var(--place-band) - 92px);}
 }
 #place .content > div{max-width:760px;}
 .place-intro{font-size:.9rem;line-height:1.88;color:rgba(240,235,226,.62);margin-top:32px;max-width:460px;font-weight:300;}
@@ -1085,7 +1090,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
       <p class="place-intro en rev rev-d1">Three unique spaces for your creativity. From the main studio through the mill studio to the control room.</p>
       <p class="place-intro de rev rev-d1">Drei einzigartige Räume für eure Kreativität. Vom Hauptstudio über das Mühlenstudio bis zum Regieraum.</p>
       <div class="values-block rev rev-d3">
-        <span class="val-label cs">Co zde najdete</span><span class="val-label en">What you'll find here</span><span class="val-label de">Was Sie hier finden</span>
         <ul class="val-list">
           <li><span class="cs">Vintage nástroje — 60s–80s Fender, Gibson, VOX.</span><span class="en">Vintage instruments — 60s–80s Fender, Gibson, VOX.</span><span class="de">Vintage-Instrumente — 60er–80er Fender, Gibson, VOX.</span></li>
           <li><span class="cs">Butikové efekty, moderní technologie</span><span class="en">Boutique effects, modern technology</span><span class="de">Boutique-Effekte, moderne Technik</span></li>
