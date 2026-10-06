@@ -177,13 +177,16 @@ section{position:relative;min-height:100svh;overflow:hidden;display:flex;align-i
 #night .content{padding-bottom:150px;}
 .night-content{text-align:center;z-index:10;}
 .night-title{font-family:var(--serif,inherit);font-size:clamp(2rem,5.2vw,3.6rem);line-height:1.15;font-weight:400;
-  color:#e8eefc;letter-spacing:.01em;margin:0 0 18px;text-shadow:0 2px 26px rgba(90,120,190,.35);}
-.night-lead{max-width:640px;margin:0 auto;font-size:clamp(.95rem,1.7vw,1.1rem);line-height:1.7;color:rgba(200,212,235,.72);}
-.night-cue{margin-top:46px;display:flex;flex-direction:column;align-items:center;gap:12px;
-  font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(190,205,232,.55);
-  animation:nightCue 2.6s ease-in-out infinite;}
-.night-chevron{width:15px;height:15px;border-right:1.5px solid rgba(190,205,232,.6);border-bottom:1.5px solid rgba(190,205,232,.6);transform:rotate(45deg);}
-@keyframes nightCue{0%,100%{transform:translateY(0);opacity:.55;}50%{transform:translateY(8px);opacity:1;}}
+  color:#e8eefc;letter-spacing:.01em;margin:0;text-shadow:0 2px 26px rgba(90,120,190,.35);
+  opacity:0;}
+/* nápis se při příchodu do sekce sám rozsvítí, chvíli vydrží a zase se rozplyne ve tmě */
+#night.is-on .night-title{animation:nightTitle 7.5s cubic-bezier(.25,.46,.45,.94) forwards;}
+@keyframes nightTitle{
+  0%{opacity:0;transform:translateY(14px);}
+  24%{opacity:1;transform:translateY(0);}
+  62%{opacity:1;transform:translateY(0);}
+  100%{opacity:0;transform:translateY(-10px);}
+}
 
 /* Noční režim: přehodí paletu a ztlumí videa na celé stránce. */
 html.night{--bg:#010103;--cream:#d4dcec;--stone:#9aa6bd;--gold:#7e6d50;--gold-light:#a08d68;--muted:#5d6472;--border:rgba(154,166,189,0.12);}
@@ -195,12 +198,11 @@ html.night footer{background:#000;}
 html,body{transition:background-color 1.4s ease;}
 .bg-video video,.bg-video .bg-fallback,section .bg-css{transition:filter 1.4s ease;}
 @media(prefers-reduced-motion:reduce){
-  .night-sky,.night-cue{animation:none;}
+  .night-sky{animation:none;}
+  #night.is-on .night-title{animation:none;opacity:1;}
   html,body,.bg-video video,.bg-video .bg-fallback,section .bg-css{transition:none;}
 }
-@media(max-width:768px){
-  .night-cue{margin-top:34px;}
-}
+
 #contact .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 52% 44% at 72% 42%,rgba(128,82,18,.22) 0%,transparent 58%);animation:cA 20s ease-in-out infinite alternate;}
 @keyframes cA{0%{opacity:.45;transform:scale(1);}100%{opacity:1;transform:scale(1.09);}}
 
@@ -1473,12 +1475,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
   <div class="bg-css"></div>
   <div class="night-sky" aria-hidden="true"></div>
   <div class="content night-content">
-    <h2 class="night-title"><span class="cs">Zažijte Mlýn po tmě…</span><span class="en">Experience the Mill after dark…</span><span class="de">Erleben Sie die Mühle nach Einbruch der Dunkelheit…</span></h2>
-    <p class="night-lead"><span class="cs">Když zapadne slunce, ztichne údolí a zůstane jen zvuk vody, dřeva a strun.</span><span class="en">When the sun goes down, the valley falls silent and only water, wood and strings remain.</span><span class="de">Wenn die Sonne untergeht, verstummt das Tal und es bleiben nur Wasser, Holz und Saiten.</span></p>
-    <div class="night-cue" aria-hidden="true">
-      <span class="night-cue-text"><span class="cs">Scrollujte dál dolů</span><span class="en">Keep scrolling down</span><span class="de">Scrollen Sie weiter nach unten</span></span>
-      <span class="night-chevron"></span>
-    </div>
+    <h2 class="night-title"><span class="cs">Mlýn v noci 🌙</span><span class="en">The Mill at night 🌙</span><span class="de">Die Mühle bei Nacht 🌙</span></h2>
   </div>
 <footer>
   <span class="ft-copy"><span class="cs">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="en">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="de">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span></span>
@@ -3429,10 +3426,15 @@ window.addEventListener('load',()=>{
   let pending=false;
   function syncNight(){
     pending=false;
-    if(nightSec.getBoundingClientRect().top<=innerHeight*0.55){
+    const top=nightSec.getBoundingClientRect().top;
+    // noc nastupuje hned, jakmile se sekce začne objevovat zespodu
+    if(top<=innerHeight*0.98){
       root.classList.add('night');
+      // nápis se rozsvítí a zase rozplyne; třída se obnoví, až sekce zmizí z dohledu
+      nightSec.classList.add('is-on');
       return;
     }
+    nightSec.classList.remove('is-on');
     if(window.scrollY<innerHeight*0.5)root.classList.remove('night');
   }
   window.addEventListener('scroll',()=>{
