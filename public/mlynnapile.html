@@ -188,19 +188,9 @@ section{position:relative;min-height:100svh;overflow:hidden;display:flex;align-i
   100%{opacity:0;transform:translateY(-10px);}
 }
 
-/* Noční režim: přehodí paletu a ztlumí videa na celé stránce. */
-html.night{--bg:#010103;--cream:#d4dcec;--stone:#9aa6bd;--gold:#7e6d50;--gold-light:#a08d68;--muted:#5d6472;--border:rgba(154,166,189,0.12);}
-html.night,html.night body{background:#010103;}
-html.night .bg-video video,html.night .bg-video .bg-fallback{filter:brightness(.34) saturate(.5) contrast(1.06) hue-rotate(202deg);}
-html.night section:not(#night) .bg-css{filter:brightness(.45) saturate(.6) hue-rotate(200deg);}
-html.night footer{background:#000;}
-/* plynulý přechod do noci i zpět */
-html,body{transition:background-color 1.4s ease;}
-.bg-video video,.bg-video .bg-fallback,section .bg-css{transition:filter 1.4s ease;}
 @media(prefers-reduced-motion:reduce){
   .night-sky{animation:none;}
   #night.is-on .night-title{animation:none;opacity:1;}
-  html,body,.bg-video video,.bg-video .bg-fallback,section .bg-css{transition:none;}
 }
 
 #contact .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 52% 44% at 72% 42%,rgba(128,82,18,.22) 0%,transparent 58%);animation:cA 20s ease-in-out infinite alternate;}
@@ -3416,26 +3406,40 @@ window.addEventListener('load',()=>{
   });
 });
 
-/* NOC — závěrečná sekce přepne celou stránku do nočního režimu.
-   Zapne se, jakmile sekce vystoupá do viewportu, a zůstane zapnutá i při
-   scrollu zpět nahoru (stránka „pokračuje“ v noci). Vypne se až úplně nahoře. */
+/* NOC — závěrečná sekce je přechod do noci: rozsvítí se nápis, web se přepne
+   do vlastního nočního režimu (ten mění i videa na noční) a vrátí nás nahoru
+   na úvod. Stránka tak pokračuje od začátku, ale v noci.
+   Běží jen z denního režimu – jinak by se cesta dolů zacyklila. */
 (function(){
   const nightSec=document.getElementById('night');
   if(!nightSec)return;
-  const root=document.documentElement;
+  const title=nightSec.querySelector('.night-title');
   let pending=false;
+  let handed=false;
+
+  function enterNight(){
+    if(handed||visualMode==='night')return;
+    handed=true;
+    visualMode='night';
+    try{localStorage.setItem('mlyn_mode',visualMode);}catch(e){}
+    applyVisualMode(true);
+    kickBgVideos();
+    const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    scrollToSection('hero',{behavior:reduce?'auto':'smooth'});
+  }
+
+  // nápis dohraje (rozsvítí se a zase zhasne) → teprve pak nás to vezme na úvod
+  if(title)title.addEventListener('animationend',()=>{
+    if(nightSec.classList.contains('is-on'))enterNight();
+  });
+
   function syncNight(){
     pending=false;
-    const top=nightSec.getBoundingClientRect().top;
-    // noc nastupuje hned, jakmile se sekce začne objevovat zespodu
-    if(top<=innerHeight*0.98){
-      root.classList.add('night');
-      // nápis se rozsvítí a zase rozplyne; třída se obnoví, až sekce zmizí z dohledu
+    if(nightSec.getBoundingClientRect().top<=innerHeight*0.98){
       nightSec.classList.add('is-on');
       return;
     }
     nightSec.classList.remove('is-on');
-    if(window.scrollY<innerHeight*0.5)root.classList.remove('night');
   }
   window.addEventListener('scroll',()=>{
     if(pending)return;
