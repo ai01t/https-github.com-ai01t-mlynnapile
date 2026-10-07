@@ -148,9 +148,40 @@ export const flattenRooms = (rooms: any[]) => {
 };
 
 // Zpětná kompatibilita: starší uložená data mají jen walls bez místností.
+/**
+ * Sloupec „ks" u otvorů zanikl – každý otvor je teď vlastní položka.
+ * Starší záznam s počtem > 1 se proto rozpadne na jednotlivé otvory
+ * (plocha zůstává stejná, kopie se poskládají vedle sebe, pokud se na stěnu vejdou).
+ */
+const splitOpeningCounts = (rooms: any[]) =>
+  rooms.map((room: any) => ({
+    ...room,
+    walls: (room.walls ?? []).map((wall: any) => {
+      if (!(wall.openings ?? []).some((opening: any) => n(opening.count) > 1)) return wall;
+      const wallWidth = Math.max(1, n(wall.width));
+      return {
+        ...wall,
+        openings: (wall.openings ?? []).flatMap((opening: any) => {
+          const pieces = Math.max(1, Math.round(n(opening.count) || 1));
+          if (pieces === 1) return [{ ...opening, count: 1 }];
+          const step = n(opening.width) + 10;
+          return Array.from({ length: pieces }, (_, index) => {
+            const shifted = n(opening.x) + step * index;
+            return {
+              ...opening,
+              count: 1,
+              id: index === 0 ? opening.id : `${opening.id}-${index + 1}`,
+              x: shifted + n(opening.width) <= wallWidth ? shifted : n(opening.x),
+            };
+          });
+        }),
+      };
+    }),
+  }));
+
 export const roomsFromData = (data: any) => {
-  if (data?.rooms?.length) return data.rooms;
-  if (data?.walls?.length) return [{ id: "room-1", name: "Místnost 1", walls: data.walls }];
+  if (data?.rooms?.length) return splitOpeningCounts(data.rooms);
+  if (data?.walls?.length) return splitOpeningCounts([{ id: "room-1", name: "Místnost 1", walls: data.walls }]);
   return JSON.parse(JSON.stringify(defaultRooms));
 };
 

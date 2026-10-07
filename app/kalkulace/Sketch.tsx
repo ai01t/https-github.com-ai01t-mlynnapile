@@ -466,14 +466,45 @@ export default function SketchModal({ room, works, onApply, close }: any) {
                     </g>
                   );
                 })}
-                {/* popisky stěn */}
-                {labels.map((label, i) => (
-                  <g key={`label-${i}`} className="cursor-pointer" onClick={(event) => { event.stopPropagation(); setSelected(i); }}>
-                    <rect x={label.x - label.w / 2} y={label.y - label.h / 2} width={label.w} height={label.h} rx="8" fill="white" fillOpacity="0.92" stroke={selected === i ? "var(--brand)" : "#d4d4d8"} strokeWidth={selected === i ? 3 : 1.5} />
-                    <text x={label.x} y={label.y - 4} textAnchor="middle" fontSize="17" fontWeight="800" fill={selected === i ? "var(--brand)" : "#1f2937"}>{label.name}</text>
-                    <text x={label.x} y={label.y + 15} textAnchor="middle" fontSize="14" fill="#6b7280">{label.lenText}</text>
-                  </g>
-                ))}
+                {/* popisky stěn – klik je rozepíše na políčka, dá se přepsat rovnou tady */}
+                {labels.map((label, i) => {
+                  const editing = selected === i;
+                  const boxW = editing ? Math.max(176, label.w) : label.w;
+                  const boxH = editing ? 56 : label.h;
+                  return (
+                    <g key={`label-${i}`} className={editing ? "" : "cursor-pointer"} onClick={(event) => { event.stopPropagation(); setSelected(i); }}>
+                      <rect x={label.x - boxW / 2} y={label.y - boxH / 2} width={boxW} height={boxH} rx="8" fill="white" fillOpacity={editing ? 1 : 0.92} stroke={editing ? "var(--brand)" : "#d4d4d8"} strokeWidth={editing ? 3 : 1.5} />
+                      {editing ? (
+                        <foreignObject x={label.x - boxW / 2} y={label.y - boxH / 2} width={boxW} height={boxH}>
+                          <div className="flex h-full flex-col justify-center gap-1 px-2" style={{ fontSize: 14 }}>
+                            <input
+                              value={walls[i]?.name ?? ""}
+                              onChange={(event) => setWall(i, { name: event.target.value })}
+                              onClick={(event) => event.stopPropagation()}
+                              title="Název stěny"
+                              style={{ width: "100%", border: "none", outline: "none", background: "transparent", textAlign: "center", fontWeight: 800, fontSize: 16, color: "var(--brand)" }}
+                            />
+                            <div className="flex items-center justify-center gap-1" style={{ color: "#6b7280" }}>
+                              <input
+                                value={walls[i]?.width ?? ""}
+                                onChange={(event) => setWall(i, { width: event.target.value })}
+                                onClick={(event) => event.stopPropagation()}
+                                title="Délka stěny v cm"
+                                style={{ width: 54, border: "1px solid #d4d4d8", borderRadius: 4, outline: "none", background: "white", textAlign: "right", fontSize: 13, padding: "1px 4px" }}
+                              />
+                              cm
+                            </div>
+                          </div>
+                        </foreignObject>
+                      ) : (
+                        <>
+                          <text x={label.x} y={label.y - 4} textAnchor="middle" fontSize="17" fontWeight="800" fill="#1f2937">{label.name}</text>
+                          <text x={label.x} y={label.y + 15} textAnchor="middle" fontSize="14" fill="#6b7280">{label.lenText}</text>
+                        </>
+                      )}
+                    </g>
+                  );
+                })}
                 {/* rohy */}
                 {points.map((p, i) => (
                   <circle

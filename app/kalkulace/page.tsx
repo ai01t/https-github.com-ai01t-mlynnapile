@@ -998,12 +998,11 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                         <div className="space-y-1.5 overflow-x-auto [&>*]:min-w-[660px]">
                           {wall.openings.length === 0 && <div className="px-1 text-[11px] text-[var(--muted)]">Bez odečtů.</div>}
                           {wall.openings.length > 0 && (
-                            <div className="grid gap-1.5 px-2 text-[9px] font-bold uppercase text-[var(--muted)] grid-cols-[72px_minmax(110px,1fr)_52px_52px_40px_52px_88px_60px_minmax(74px,90px)_28px]">
+                            <div className="grid gap-1.5 px-2 text-[9px] font-bold uppercase text-[var(--muted)] grid-cols-[72px_minmax(110px,1fr)_52px_52px_52px_88px_60px_minmax(74px,90px)_28px]">
                               <span>Typ</span>
                               <span>Název</span>
                               <span className="text-right">Šířka</span>
                               <span className="text-right">Výška</span>
-                              <span className="text-right">Ks</span>
                               <span className="text-right">Zleva</span>
                               <span className="text-right">Od podlahy</span>
                               <span className="text-right">Špaleta</span>
@@ -1014,7 +1013,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                           {wall.openings.map((opening) => {
                             const normalized = normalizeOpening(opening, wall);
                             return (
-                              <div key={opening.id} className="grid items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--card)] p-1.5 shadow-sm grid-cols-[72px_minmax(110px,1fr)_52px_52px_40px_52px_88px_60px_minmax(74px,90px)_28px]">
+                              <div key={opening.id} className="grid items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--card)] p-1.5 shadow-sm grid-cols-[72px_minmax(110px,1fr)_52px_52px_52px_88px_60px_minmax(74px,90px)_28px]">
                                 <select
                                   className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-xs"
                                   value={openingKind(opening)}
@@ -1039,7 +1038,6 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                                 />
                                 <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Šířka v cm" value={opening.width} onChange={(event) => updateOpening(wall.id, opening.id, { width: event.target.value })} />
                                 <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Výška v cm" value={opening.height} onChange={(event) => updateOpening(wall.id, opening.id, { height: event.target.value })} />
-                                <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Počet" value={opening.count} onChange={(event) => updateOpening(wall.id, opening.id, { count: event.target.value })} />
                                 <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Posun zleva v cm" value={normalized.x} onChange={(event) => updateOpening(wall.id, opening.id, { x: event.target.value })} />
                                 <input className="h-8 rounded-[var(--radius-sm)] border border-[var(--line)] px-1.5 text-right text-xs" title="Výška od podlahy v cm" value={normalized.y} onChange={(event) => updateOpening(wall.id, opening.id, { y: event.target.value })} />
                                 <input
