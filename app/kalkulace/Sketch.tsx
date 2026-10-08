@@ -5,7 +5,7 @@
 // → přichycení stěn do pravých úhlů → editace tažením rohů → klik na stěnu = detail.
 // Souřadnice jsou přímo v centimetrech (1 jednotka SVG = 1 cm).
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, Eraser, Image as ImageIcon, MousePointerClick, PenLine, Shapes, X } from "lucide-react";
 import { f2, n, uid } from "./core";
 
@@ -201,6 +201,45 @@ function wallLabels(points: Pt[], walls: any[]) {
 
 // ---------- komponenta ----------
 
+/** Obrys ze čtyř rohů, kde každá hrana je vodorovná nebo svislá. */
+const isAxisRect = (pts: Pt[]) =>
+  pts.length === 4 &&
+  pts.every((p, i) => {
+    const q = pts[(i + 1) % 4];
+    return Math.abs(p.x - q.x) < 1 || Math.abs(p.y - q.y) < 1;
+  });
+
+/**
+ * Přepíše obrys podle zadaných délek stěn. Rozměr ve směru upravené hrany se
+ * vezme z ní, kolmý z první hrany opačné orientace – obrys tak odpovídá číslům.
+ * Levý horní roh zůstává na místě, pořadí rohů i smysl obíhání se nemění.
+ */
+const rectFromWalls = (pts: Pt[], wallsList: any[], editedIndex: number) => {
+  if (!isAxisRect(pts)) return pts;
+  const xs = pts.map((p) => p.x);
+  const ys = pts.map((p) => p.y);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  const horizontal = (i: number) => {
+    const a = pts[i];
+    const b = pts[(i + 1) % 4];
+    return Math.abs(a.y - b.y) < Math.abs(a.x - b.x);
+  };
+  const lenOf = (i: number) => Math.max(1, Math.round(n(wallsList[i]?.width)));
+  const editedHorizontal = horizontal(editedIndex);
+  const otherIndex = [0, 1, 2, 3].find((i) => horizontal(i) !== editedHorizontal);
+  const along = lenOf(editedIndex);
+  const across = otherIndex === undefined ? (editedHorizontal ? maxY - minY : maxX - minX) : lenOf(otherIndex);
+  const width = editedHorizontal ? along : across;
+  const height = editedHorizontal ? across : along;
+  return pts.map((p) => ({
+    x: p.x > (minX + maxX) / 2 ? minX + width : minX,
+    y: p.y > (minY + maxY) / 2 ? minY + height : minY,
+  }));
+};
+
 export default function SketchModal({ room, works, onApply, close }: any) {
   const hasPlan = room.plan?.points?.length >= 3;
   const [mode, setMode] = useState(hasPlan ? "edit" : "start"); // start | draw | edit
@@ -340,6 +379,46 @@ export default function SketchModal({ room, works, onApply, close }: any) {
 
   const setWall = (index: number, patch: any) => setWalls((prev) => prev.map((wall, i) => (i === index ? { ...wall, ...patch } : wall)));
 
+  // Protilehlá stěna: u čtyřstěnné místnosti leží o dvě pozice dál.
+  const oppositeIndex = (index: number) => (walls.length === 4 ? (index + 2) % 4 : -1);
+
+  // Většina pokojů má protilehlé strany stejné, tak ji nabídneme – ale až po
+  // odpočtu, ať se dá zadat i místnost, která pravidelná není.
+  const [mirror, setMirror] = useState<{ target: number; value: number; left: number } | null>(null);
+  const cancelMirror = () => setMirror(null);
+
+  const changeWallWidth = (index: number, value: string) => {
+    setWall(index, { width: value });
+    const target = oppositeIndex(index);
+    const length = Math.round(n(value));
+    if (target < 0 || !length) {
+      cancelMirror();
+      return;
+    }
+    if (Math.round(n(walls[target]?.width)) === length) {
+      // obě strany už sedí – obrys může rovnou odpovídat číslům
+      cancelMirror();
+      setPoints((prev) => rectFromWalls(prev, walls.map((wall, i) => (i === index ? { ...wall, width: value } : wall)), index));
+      return;
+    }
+    setMirror({ target, value: length, left: 3 });
+  };
+
+  useEffect(() => {
+    if (!mirror) return;
+    const timer = setTimeout(() => {
+      if (mirror.left > 1) {
+        setMirror({ ...mirror, left: mirror.left - 1 });
+        return;
+      }
+      const next = walls.map((wall, i) => (i === mirror.target ? { ...wall, width: mirror.value } : wall));
+      setWalls(next);
+      setPoints((prev) => rectFromWalls(prev, next, mirror.target));
+      setMirror(null);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [mirror, walls]);
+
   const apply = () => onApply({ points }, walls.map((wall) => ({ ...wall, width: Math.max(1, Math.round(n(wall.width))), height: Math.max(1, Math.round(n(wall.height))) || defaultHeight })));
 
   const selectedWall = selected !== null ? walls[selected] : null;
@@ -472,7 +551,16 @@ export default function SketchModal({ room, works, onApply, close }: any) {
                   const boxW = editing ? Math.max(176, label.w) : label.w;
                   const boxH = editing ? 56 : label.h;
                   return (
-                    <g key={`label-${i}`} className={editing ? "" : "cursor-pointer"} onClick={(event) => { event.stopPropagation(); setSelected(i); }}>
+                    <g
+                      key={`label-${i}`}
+                      className={editing ? "" : "cursor-pointer"}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        // sáhnutí na protilehlou stěnu znamená „délku si zadám sám" – odpočet se zruší
+                        if (mirror?.target === i) cancelMirror();
+                        setSelected(i);
+                      }}
+                    >
                       <rect x={label.x - boxW / 2} y={label.y - boxH / 2} width={boxW} height={boxH} rx="8" fill="white" fillOpacity={editing ? 1 : 0.92} stroke={editing ? "var(--brand)" : "#d4d4d8"} strokeWidth={editing ? 3 : 1.5} />
                       {editing ? (
                         <foreignObject x={label.x - boxW / 2} y={label.y - boxH / 2} width={boxW} height={boxH}>
@@ -487,8 +575,9 @@ export default function SketchModal({ room, works, onApply, close }: any) {
                             <div className="flex items-center justify-center gap-1" style={{ color: "#6b7280" }}>
                               <input
                                 value={walls[i]?.width ?? ""}
-                                onChange={(event) => setWall(i, { width: event.target.value })}
+                                onChange={(event) => changeWallWidth(i, event.target.value)}
                                 onClick={(event) => event.stopPropagation()}
+                                onFocus={() => { if (mirror?.target === i) cancelMirror(); }}
                                 title="Délka stěny v cm"
                                 style={{ width: 54, border: "1px solid #d4d4d8", borderRadius: 4, outline: "none", background: "white", textAlign: "right", fontSize: 13, padding: "1px 4px" }}
                               />
@@ -499,7 +588,9 @@ export default function SketchModal({ room, works, onApply, close }: any) {
                       ) : (
                         <>
                           <text x={label.x} y={label.y - 4} textAnchor="middle" fontSize="17" fontWeight="800" fill="#1f2937">{label.name}</text>
-                          <text x={label.x} y={label.y + 15} textAnchor="middle" fontSize="14" fill="#6b7280">{label.lenText}</text>
+                          <text x={label.x} y={label.y + 15} textAnchor="middle" fontSize="14" fill={mirror?.target === i ? "var(--brand)" : "#6b7280"}>
+                            {mirror?.target === i ? `→ ${mirror.value} cm za ${mirror.left}` : label.lenText}
+                          </text>
                         </>
                       )}
                     </g>
@@ -546,7 +637,12 @@ export default function SketchModal({ room, works, onApply, close }: any) {
                   <div className="grid grid-cols-2 gap-2">
                     <label className="block">
                       <div className="mb-0.5 text-[10px] font-bold uppercase text-[var(--muted)]">Délka (cm)</div>
-                      <input value={selectedWall.width} onChange={(event) => setWall(selected, { width: event.target.value })} className="w-full rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1.5 text-right text-sm" />
+                      <input
+                        value={selectedWall.width}
+                        onChange={(event) => changeWallWidth(selected as number, event.target.value)}
+                        onFocus={() => { if (mirror?.target === selected) cancelMirror(); }}
+                        className="w-full rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-2 py-1.5 text-right text-sm"
+                      />
                     </label>
                     <label className="block">
                       <div className="mb-0.5 text-[10px] font-bold uppercase text-[var(--muted)]">Výška (cm)</div>
