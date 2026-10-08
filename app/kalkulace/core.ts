@@ -122,21 +122,20 @@ export const defaultRooms = [
 
 export const uidRoom = () => `room-${Math.random().toString(36).slice(2, 9)}`;
 
-// Nová prázdná místnost s jednou výchozí stěnou.
+// Nová místnost: rovnou čtyři stěny do obdélníku, protilehlé stejně dlouhé.
+// Rozměry jsou jen výchozí – přepíší se v tabulce nebo v náčrtu půdorysu.
 export const makeRoom = (index: number) => ({
   id: uidRoom(),
   name: `Místnost ${index}`,
-  walls: [
-    {
-      id: `stena-${Math.random().toString(36).slice(2, 9)}`,
-      name: "Stěna 1",
-      width: 300,
-      height: 250,
-      scope: "damaged",
-      openings: [],
-      workIds: ["oklep", "perlinka", "malba"],
-    },
-  ],
+  walls: [400, 300, 400, 300].map((width, position) => ({
+    id: `stena-${Math.random().toString(36).slice(2, 9)}`,
+    name: `Stěna ${position + 1}`,
+    width,
+    height: 250,
+    scope: "damaged",
+    openings: [],
+    workIds: ["oklep", "perlinka", "malba"],
+  })),
 });
 
 // Zploštění místností na jeden seznam stěn pro výpočet a dokumenty.
