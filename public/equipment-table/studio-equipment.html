@@ -210,6 +210,7 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
 </head>
 <body>
 <script src="i18n.js"></script>
+<script>if(window.EQ_LANG==='en')document.write('<script src="i18n-items-en.js"><\/script>');</script>
 <div id="tabs"></div>
 <div id="main">
 <div id="list"></div>
@@ -454,7 +455,7 @@ const CATS=[{id:"ky",label:"Kytary",icon:"🎸",subgroups:[
 let activeTab=CATS[0].id;
 
 function rowMarkup(name){
-  const base=stripItemPhotoSuffix(name);
+  const base=stripItemPhotoSuffix(EQ_ITEM(name,'name',name));
   return '<span class="row-label">'+esc(base)+'</span>';
 }
 
@@ -473,12 +474,12 @@ function toggleAcc(hdr){
   }
 }
 
-function showUAD(pluginName){
+function showUAD(pluginName,fromUser){
   document.querySelectorAll('.row[data-uad]').forEach(r=>r.classList.toggle('sel',r.dataset.uad===pluginName));
   const dKey=UAD_NAME_MAP[pluginName];
   const d=(dKey&&D[dKey])?D[dKey]:{};
   let h='<div class="dtit">'+esc(pluginName)+'</div>';
-  if(d.tech) h+=detailBlock(EQ_T('specs'),'<div class="btxt" style="font-size:12px;color:var(--mut);line-height:1.5">'+esc(d.tech)+'</div>');
+  if(d.tech) h+=detailBlock(EQ_T('specs'),'<div class="btxt" style="font-size:12px;color:var(--mut);line-height:1.5">'+esc(EQ_ITEM(dKey,'tech',d.tech))+'</div>');
   const _upi={'Avalon VT-737sp Channel Strip':UADP_AVALON_IMG,'Century Tube Channel Strip':UADP_CENTURY_IMG,'Helios Type 69 Preamp & EQ':UADP_HELIOS69_IMG,'Helios Type 69 Legacy EQ':UADP_HELIOS69_IMG,'Manley Reference Microphone Preamp':UADP_MANLEY_IMG,'Neve 1073 Preamp & EQ Collection':UADP_NEVE1073_IMG,'Neve 1073SE Classic Console EQ':UADP_NEVE1073_IMG,'UA 610-A Tube Preamp & EQ':UADP_610_IMG,'UA 610-B Tube Preamp & EQ':UADP_610_IMG,'V76 Preamplifier':UADP_V76_IMG,'dbx 160 Compressor / Limiter':UADP_DBX160_IMG,'Empirical Labs EL8 Distressor':UADP_DISTRESSOR_IMG,'Fairchild 660 Compressor':UADP_FAIRCHILD_IMG,'Fairchild 670 Compressor':UADP_FAIRCHILD_IMG,'Fairchild 670 Legacy':UADP_FAIRCHILD_IMG,'Teletronix LA-2A Leveler':UADP_LA2A_IMG,'Teletronix LA-2A Gray':UADP_LA2A_IMG,'Teletronix LA-2A Silver':UADP_LA2A_IMG,'Teletronix LA-2A Legacy':UADP_LA2A_IMG,'Teletronix LA-3A Classic Audio Leveler':UADP_LA3A_IMG,'UA 175B Tube Compressor':UADP_UA175_176_IMG,'UA 176 Tube Compressor':UADP_UA175_176_IMG,'UA 1176 Rev A Classic Limiter':UADP_1176_IMG,'UA 1176AE Classic Limiter':UADP_1176_IMG,'UA 1176LN Rev E Classic Limiter':UADP_1176_IMG,'UA 1176LN Legacy':UADP_1176_IMG,'UA 1176SE Legacy':UADP_1176_IMG,'Cambridge EQ':UADP_CAMBRIDGE_IMG,'Pultec EQP-1A Passive EQ':UADP_PULTEC_IMG,'Pultec MEQ-5 Passive EQ':UADP_PULTEC_IMG,'Pultec HLF-3C Passive EQ':UADP_PULTEC_IMG,'Pultec EQP-1A Legacy':UADP_PULTEC_IMG,'Pultec Pro Legacy':UADP_PULTEC_IMG,'Oxide Tape Recorder':UADP_OXIDE_IMG,'Studer A800 Multichannel Tape Recorder':UADP_STUDER_IMG,'Brigade Chorus':UADP_BRIGADE_IMG,'Cooper Time Cube Mk II Delay':UADP_COOPER_IMG,'EP-34 Tape Echo':UADP_EP34_IMG,'Galaxy Tape Echo':UADP_GALAXY_IMG,'Studio D Chorus':UADP_STUDIO_D_IMG,'Ampeg SVT-VR Classic Bass Amplifier':UADP_AMPEG_SVT_IMG,'Marshall Plexi Classic Amplifier':UADP_MARSHALL_PLEXI_IMG,'Raw Distortion':UADP_DISTORTION_IMG,'TS Overdrive':UADP_DISTORTION_IMG,"UAD Dream '65 Reverb Amplifier":UADP_DREAM65_IMG,"UAD Ruby '63 Top Boost Amplifier":UADP_RUBY63_IMG,"UAD Woodrow '55 Instrument Amplifier":UADP_WOODROW55_IMG,"UAD Lion '68 Super Lead Amplifier":UADP_LION68_IMG,'Lexicon 224 Digital Reverb':UADP_LEXICON224_IMG,'Pure Plate Reverb':UADP_PURE_PLATE_IMG,'Sound City Studios':UADP_SOUND_CITY_IMG,'PolyMAX Synth':UADP_POLYMAX_IMG,'Verve Analog Machines Essentials':UADP_VERVE_IMG};
   const _uimgSrc=_upi[pluginName]||UAD_IMG;
   h+='<div class="zoom-photo" style="margin-top:14px"><div class="zoom-inner"><img src="'+_uimgSrc+'" alt="'+esc(pluginName)+'" /></div></div>';
@@ -500,7 +501,7 @@ function showUAD(pluginName){
   if(fromUser) showPicked();
 }
 
-function showApolloView(sub){
+function showApolloView(sub,fromUser){
   // Update selection state in left panel
   document.querySelectorAll('[data-apollo]').forEach(r=>{
     if(r.classList.contains('apollo-main')) r.classList.toggle('sel',sub==='main');
@@ -508,7 +509,7 @@ function showApolloView(sub){
   });
   const dc=document.getElementById('dc');
   if(sub==='plugins'){
-    dc.innerHTML='<div class="dtit">Pluginy & Unison</div>'+detailBlock(EQ_T('specs'),'<div class="btxt" style="font-size:13px;line-height:1.7;color:#b0ada8">Onboard DSP supports UAD plug-ins via VST, AU, and AAX 64 formats in all major DAWs. Zde najde <a href="#" onclick="event.preventDefault();switchTab(\'audioproc\');setTimeout(()=>showUAD(UAD_PLUGIN_CATS[0].plugins[0]),10)" style="color:var(--acc2);text-decoration:none;border-bottom:1px solid rgba(200,169,110,0.4);cursor:pointer">plug-iny</a>, které máme k dispozici.</div>');
+    dc.innerHTML='<div class="dtit">Pluginy & Unison</div>'+detailBlock(EQ_T('specs'),'<div class="btxt" style="font-size:13px;line-height:1.7;color:#b0ada8">Onboard DSP supports UAD plug-ins via VST, AU, and AAX 64 formats in all major DAWs. '+(EQ_LANG==='cs'?'Zde najdete':'Here you can find the')+' <a href="#" onclick="event.preventDefault();switchTab(\'audioproc\');setTimeout(()=>showUAD(UAD_PLUGIN_CATS[0].plugins[0]),10)" style="color:var(--acc2);text-decoration:none;border-bottom:1px solid rgba(200,169,110,0.4);cursor:pointer">'+(EQ_LANG==='cs'?'plug-iny':'plug-ins')+'</a>'+(EQ_LANG==='cs'?', které máme k dispozici.':' available in the studio.')+'</div>');
     pinSourceBottom();
     dc.className='on';
     document.getElementById('empty').style.display='none';
@@ -598,14 +599,14 @@ function build(){
       mainRow.className='row apollo-main';
       mainRow.dataset.apollo='main';
       mainRow.innerHTML='<div class="apollo-main-name">'+esc(ai.name)+'</div>';
-      mainRow.onclick=()=>showApolloView('main');
+      mainRow.onclick=()=>showApolloView('main',true);
       sec.appendChild(mainRow);
       ai.subTabs.forEach(st=>{
         const subRow=document.createElement('div');
         subRow.className='row apollo-sub';
         subRow.dataset.apollo=st.id;
         subRow.textContent=st.label;
-        subRow.onclick=()=>showApolloView(st.id);
+        subRow.onclick=()=>showApolloView(st.id,true);
         sec.appendChild(subRow);
       });
       const processingHdr=document.createElement('div');
@@ -665,14 +666,14 @@ function build(){
       mainRow.dataset.apollo='main';
       mainRow.innerHTML=
         '<div class="apollo-main-name">'+esc(ai.name)+'</div>';
-      mainRow.onclick=()=>showApolloView('main');
+      mainRow.onclick=()=>showApolloView('main',true);
       sec.appendChild(mainRow);
       ai.subTabs.forEach(st=>{
         const subRow=document.createElement('div');
         subRow.className='row apollo-sub';
         subRow.dataset.apollo=st.id;
         subRow.textContent=st.label;
-        subRow.onclick=()=>showApolloView(st.id);
+        subRow.onclick=()=>showApolloView(st.id,true);
         sec.appendChild(subRow);
       });
     } else if(cat.subgroups){
@@ -705,7 +706,7 @@ function build(){
   // Event delegation for UAD plugin rows
   list.addEventListener('click',function(e){
     const row=e.target.closest('.row[data-uad]');
-    if(row) showUAD(row.dataset.uad);
+    if(row) showUAD(row.dataset.uad,true);
   });
 }
 
@@ -910,10 +911,11 @@ function show(name,catLabel,fromUser){
 
   // Split name: "Main Name (Upgrade/note)" → title + subtitle
   // Skip year-only parens like (1967), (1964-65), (3x), (Snare 14"×8")
-  const parenMatch = name.match(/^(.+?)\s+\(([^)]{8,})\)\s*$/);
+  const shownName = EQ_ITEM(name,'name',name);
+  const parenMatch = shownName.match(/^(.+?)\s+\(([^)]{8,})\)\s*$/);
   const isYear = parenMatch && /^\d{4}(-\d{2,4})?$/.test(parenMatch[2]);
   const isShort = parenMatch && parenMatch[2].length < 8;
-  const mainName = (parenMatch && !isYear && !isShort) ? parenMatch[1] : name;
+  const mainName = (parenMatch && !isYear && !isShort) ? parenMatch[1] : shownName;
   const subName  = (parenMatch && !isYear && !isShort) ? parenMatch[2] : null;
 
   let h='';
@@ -924,8 +926,8 @@ function show(name,catLabel,fromUser){
   if(d.forsale) h+=' <a class="forsale-inline" href="'+esc(d.forsale)+'" target="_blank">🏷 '+EQ_T('forSale')+'</a>';
   if(subName) h+='<div class="dtit-sub">'+esc(subName)+'</div>';
   h+='</div>';
-  if(d.tech) h+=detailBlock(EQ_T('specs'),'<div class="btxt">'+esc(d.tech)+'</div>');
-  if(d.upgrade) h+=detailBlock(EQ_T('upgrade'),'<div class="btxt upgrade-txt">'+esc(d.upgrade)+'</div>');
+  if(d.tech) h+=detailBlock(EQ_T('specs'),'<div class="btxt">'+esc(EQ_ITEM(name,'tech',d.tech))+'</div>');
+  if(d.upgrade) h+=detailBlock(EQ_T('upgrade'),'<div class="btxt upgrade-txt">'+esc(EQ_ITEM(name,'upgrade',d.upgrade))+'</div>');
   if(d.usedBy&&d.usedBy.length&&activeTab!=='sw'){
     let used='<div class="chips">';
     d.usedBy.forEach(a=>{used+='<span class="chip">'+esc(a)+'</span>';});
@@ -934,13 +936,14 @@ function show(name,catLabel,fromUser){
   }
   if(d.note){
     const hasAnteaterVid=d.videos&&d.videos.some(v=>(v.title||'').includes('Anteater'));
-    let noteHtml='<div class="btxt">'+linkAnteater(esc(d.note));
+    let noteHtml='<div class="btxt">'+linkAnteater(esc(EQ_ITEM(name,'note',d.note)));
     if(hasAnteaterVid) noteHtml+='<div style="margin-top:8px;font-size:11px;color:#8a8580;font-style:italic">Kompletní chain, který v klipu slyšíte, je k dispozici ve studiu.</div>';
     noteHtml+='</div>';
     h+=detailBlock(EQ_T('note'),noteHtml);
   }
-  if(d.blocks&&d.blocks.length){
-    d.blocks.forEach((block)=>{
+  const blocks=EQ_ITEM(name,'blocks',d.blocks);
+  if(blocks&&blocks.length){
+    blocks.forEach((block)=>{
       const body='<div class="btxt">'+(block.html?block.html:esc(block.text||'').replace(/\n/g,'<br>'))+'</div>';
       h+=detailBlock(block.label,body);
     });
@@ -949,9 +952,10 @@ function show(name,catLabel,fromUser){
 
   if(d.videos&&d.videos.length){
     h+='<div class="vcards">';
-    d.videos.forEach(v=>{
+    d.videos.forEach((v,vi)=>{
       const link=v.link||'';
-      const below=v.below||'';
+      const belowEn=EQ_ITEM(name,'below',null);
+      const below=(Array.isArray(belowEn)&&belowEn[vi])||v.below||'';
       const vidMatch=link.match(/[?&]v=([^&]+)/);
       const vidId=vidMatch?vidMatch[1]:null;
       h+='<div class="vcard">';
@@ -971,7 +975,8 @@ function show(name,catLabel,fromUser){
   if(!d.tech&&!d.note&&!d.usedBy&&!d.videos&&!d.img) h+='<div class="btxt" style="color:var(--mut);font-style:italic">'+EQ_T('noDetail')+'</div>';
   if(d.src) {
     const srcLinks = d.src.split(',').map(s=>{
-      const t=s.trim();
+      const t0=s.trim();
+      const t=(EQ_LANG!=='cs'&&window.EQ_SRC_EN&&window.EQ_SRC_EN[t0])||t0;
       if(t.startsWith('http')) return '<a href="'+t+'" target="_blank" style="color:var(--mut);text-decoration:none;border-bottom:1px solid rgba(100,97,93,0.3)">'+t.replace('https://','')+'</a>';
       // Auto-detect domain and linkify
       const domains={
