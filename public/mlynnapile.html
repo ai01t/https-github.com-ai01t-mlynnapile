@@ -319,7 +319,7 @@ body.pause-active section .content{filter:brightness(1.14);}
   #place .bg-video{bottom:var(--place-band);}
   #place .bg-video::after{content:'';position:absolute;left:0;right:0;bottom:0;height:120px;
     background:linear-gradient(to bottom,rgba(5,5,6,0),#050506);pointer-events:none;z-index:3;}
-  #place .content{padding-top:0;padding-bottom:clamp(30px,5vh,56px);}
+  #place .content{padding-top:0;padding-bottom:clamp(16px,2.6vh,30px);}
   #place .values-block{margin-top:calc(var(--place-band) - 92px);}
 }
 #place .content > div{max-width:760px;}
@@ -899,7 +899,7 @@ body.de .de{display:revert;}
 
   /* --- 2. čitelnost textu nad videem --- */
   #hero .content,#place .content,#location .content{position:relative;isolation:isolate;}
-  #place .content::before,#location .content::before{
+  #location .content::before{
     content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
     background:linear-gradient(180deg,rgba(7,6,10,.16) 0%,rgba(7,6,10,.56) 24%,rgba(7,6,10,.70) 100%);
   }
@@ -957,6 +957,15 @@ body.de .de{display:revert;}
 }
 </style>
 <style id="native-scroll-overrides">
+/* Mobil / na výšku: jedno souvislé video přes celou obrazovku, text dole.
+   Ztmavení jde po celé výšce videa plynule ke spodnímu okraji — dřív leželo
+   jen za blokem textu a video nad a pod ním vypadalo jako dva různé záběry. */
+@media(max-width:600px),(orientation:portrait){
+  #place{align-items:flex-end;}
+  #place .content{padding-top:0;padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));}
+  #place .bg-video::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+    background:linear-gradient(to bottom,rgba(7,6,10,0) 0%,rgba(7,6,10,0) 38%,rgba(7,6,10,.55) 66%,rgba(7,6,10,.86) 100%);}
+}
 /* Široký displej na výšku (tablet, otočený monitor): mobilní rozvržení tam platí
    kvůli navigaci, ale na karty je dost místa — karusel se vrací do mřížky. */
 @media (orientation:portrait) and (min-width:700px){
