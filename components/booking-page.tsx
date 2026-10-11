@@ -81,6 +81,8 @@ const BOOKED_RANGES: Record<string, Array<{ start: number; end: number }>> = {
   "2026-11": [ // prosinec 2026
     { start: 4, end: 4 },
     { start: 11, end: 11 },
+    { start: 19, end: 19 },
+    { start: 21, end: 27 },
   ],
 }
 
