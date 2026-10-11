@@ -364,6 +364,13 @@ body.pause-active section .content{filter:brightness(1.14);}
 /* Booking místnosti: zvolená karta zůstane, panel s kalendářem vyjede přes zbylé dvě. */
 .rooms-grid{position:relative;}
 .room-book{margin-top:18px;}
+/* Při otevřeném bookingu hlavního studia nahradí video karty text o vybavení v ceně. */
+.room-book-info{display:none;aspect-ratio:16 / 9;border:1px solid var(--border);background:rgba(200,169,110,.06);padding:clamp(16px,2vw,26px);flex-direction:column;justify-content:center;gap:12px;}
+.room-book-info p{margin:0;font-family:'Cormorant Garamond',serif;font-size:clamp(1rem,1.25vw,1.2rem);line-height:1.45;color:var(--cream);}
+.room-book-info a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(200,169,110,.45);text-underline-offset:.2em;}
+.room-book-info a:hover{color:var(--gold-light);}
+.rooms-grid.booking-main .room-card:first-child .room-video-frame{display:none;}
+.rooms-grid.booking-main .room-card:first-child .room-book-info{display:flex;}
 .room-book .btn-secondary{padding:12px 28px;}
 .room-book .btn-secondary.on{border-color:var(--gold);color:var(--gold);}
 .room-book .btn-secondary:disabled{opacity:.42;cursor:not-allowed;}
@@ -1204,6 +1211,11 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
                 <iframe src="https://www.youtube-nocookie.com/embed/O431B93W9UY?autoplay=1&mute=1&loop=1&playlist=O431B93W9UY&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
                   allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
               </div>
+              <div class="room-book-info">
+                <p class="cs">Součástí pronájmu studia jsou aparatury i hudební nástroje, vše je připraveno, nemusíte si nic brát sebou. Více info v <a class="section-jump" href="#equipment">sekci vybavení</a>.</p>
+                <p class="en">Studio rental includes the gear and musical instruments – everything is ready, you don't need to bring anything. More info in the <a class="section-jump" href="#equipment">Equipment section</a>.</p>
+                <p class="de">Zur Studiomiete gehören die Technik und die Musikinstrumente – alles ist vorbereitet, Sie müssen nichts mitbringen. Mehr Infos im <a class="section-jump" href="#equipment">Bereich Ausstattung</a>.</p>
+              </div>
             </div>
             <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="main" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
           </div>
@@ -1642,6 +1654,14 @@ function setBookingEmbedHeight(rawHeight){
 
 function getResidencyVideoRate(){
   return residencyBookingOpen?RESIDENCY_BOOKING_VIDEO_RATE:1;
+}
+
+/* Otevřený booking místnosti ve studiu zpomalí záběr na pozadí sekce. */
+const STUDIO_BOOKING_VIDEO_RATE=.38;
+function getSectionVideoRate(sectionId){
+  if(sectionId==='residency')return getResidencyVideoRate();
+  if(sectionId==='studio'&&window.isStudioBookingOpen?.())return STUDIO_BOOKING_VIDEO_RATE;
+  return 1;
 }
 
 function applyVideoRate(video,rate){
@@ -2171,7 +2191,7 @@ function playBgVideo(video){
   };
   const videoSectionId=bgSectionByVideo.get(video);
   if(!videoSectionId||!isBgSectionAllowed(videoSectionId))return;
-  applyVideoRate(video,videoSectionId==='residency'?getResidencyVideoRate():1);
+  applyVideoRate(video,getSectionVideoRate(videoSectionId));
   if(!video.paused&&video.readyState>=2){
     markBgVideoFrame(video);
     markBgVideoPlaying(video);
@@ -2187,7 +2207,7 @@ function playBgVideo(video){
   video.defaultMuted=true;
   video.volume=0;
   video.controls=false;
-  applyVideoRate(video,videoSectionId==='residency'?getResidencyVideoRate():1);
+  applyVideoRate(video,getSectionVideoRate(videoSectionId));
   if(video.__playPending)return;
   video.__playPending=true;
   const p=video.play();
@@ -2583,6 +2603,7 @@ function clearActiveBgYoutube(){
 function shouldSuppressBgYoutube(){
   if(pauseAllVideos||document.hidden)return true;
   if(currentSectionId==='place'&&placeBgWrap?.classList.contains('history-on'))return true;
+  if(currentSectionId==='studio'&&window.isStudioBookingOpen?.())return true;
   if(currentSectionId==='residency'&&(residencyBgWrap?.classList.contains('chleba-on')||residencyBgWrap?.classList.contains('pkg-on')||residencySection?.classList.contains('inline-video-on')))return true;
   return false;
 }
@@ -3457,6 +3478,13 @@ updateNavCompactState();
     return cs.display==='grid'&&cs.gridTemplateColumns.trim().split(/\s+/).length===3;
   };
   const frameSrc=(room)=>`${BOOKING_EMBED_BASE_BY_LANG[lang]||BOOKING_EMBED_BASE_BY_LANG.cs}?embed=1&room=${room}`;
+  const syncBackground=()=>{
+    applyVideoRate(bgFrameBySectionId.get('studio'),getSectionVideoRate('studio'));
+    syncBgYoutubeVisibility();
+  };
+  window.isStudioBookingOpen=()=>Boolean(openRoom);
+  const syncCards=()=>grid.classList.toggle('booking-main',openRoom==='main');
+  grid.querySelectorAll('.room-book-info a').forEach((link)=>link.addEventListener('click',()=>close()));
   const syncTriggers=()=>triggers.forEach((btn)=>{
     const on=btn.dataset.studioBooking===openRoom;
     btn.classList.toggle('on',on);
@@ -3468,6 +3496,8 @@ updateNavCompactState();
     panel.classList.remove('open');
     panel.setAttribute('aria-hidden','true');
     syncTriggers();
+    syncCards();
+    syncBackground();
   };
   const open=(room)=>{
     const fullscreen=!isThreeColumns();
@@ -3487,6 +3517,8 @@ updateNavCompactState();
     panel.setAttribute('aria-hidden','false');
     requestAnimationFrame(()=>requestAnimationFrame(()=>panel.classList.add('open')));
     syncTriggers();
+    syncCards();
+    syncBackground();
   };
   triggers.forEach((btn)=>btn.addEventListener('click',()=>{
     const room=btn.dataset.studioBooking;
@@ -3499,6 +3531,7 @@ updateNavCompactState();
     else if(frame.getAttribute('src'))frame.setAttribute('src','');
   };
   window.getStudioBookingFrame=()=>frame;
+  window.closeStudioBooking=close;
 })();
 
 /* Eager přednačtení všech videí sekcí po startu (odstupňovaně) — žádné načítací kolečko při scrollu */
