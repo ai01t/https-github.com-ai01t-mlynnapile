@@ -1656,12 +1656,22 @@ function getResidencyVideoRate(){
   return residencyBookingOpen?RESIDENCY_BOOKING_VIDEO_RATE:1;
 }
 
-/* Otevřený booking místnosti ve studiu zpomalí záběr na pozadí sekce. */
-const STUDIO_BOOKING_VIDEO_RATE=.38;
 function getSectionVideoRate(sectionId){
   if(sectionId==='residency')return getResidencyVideoRate();
-  if(sectionId==='studio'&&window.isStudioBookingOpen?.())return STUDIO_BOOKING_VIDEO_RATE;
   return 1;
+}
+
+/* Otevřený booking místnosti ve studiu zastaví pozadí sekce na nejtmavším záběru
+   (zpomalení 24fps videa se sekalo). */
+const STUDIO_BOOKING_FREEZE_TIME=1;
+function isBgVideoFrozen(sectionId){
+  return sectionId==='studio'&&Boolean(window.isStudioBookingOpen?.());
+}
+function freezeBgVideo(video){
+  if(!video)return;
+  try{video.pause();}catch(e){}
+  const seek=()=>{try{video.currentTime=STUDIO_BOOKING_FREEZE_TIME;}catch(e){}};
+  if(video.readyState>=1)seek();else video.addEventListener('loadedmetadata',seek,{once:true});
 }
 
 function applyVideoRate(video,rate){
@@ -2193,6 +2203,7 @@ function playBgVideo(video){
   };
   const videoSectionId=bgSectionByVideo.get(video);
   if(!videoSectionId||!isBgSectionAllowed(videoSectionId))return;
+  if(isBgVideoFrozen(videoSectionId)){freezeBgVideo(video);return;}
   applyVideoRate(video,getSectionVideoRate(videoSectionId));
   if(!video.paused&&video.readyState>=2){
     markBgVideoFrame(video);
@@ -3482,7 +3493,9 @@ updateNavCompactState();
   };
   const frameSrc=(room)=>`${BOOKING_EMBED_BASE_BY_LANG[lang]||BOOKING_EMBED_BASE_BY_LANG.cs}?embed=1&room=${room}`;
   const syncBackground=()=>{
-    applyVideoRate(bgFrameBySectionId.get('studio'),getSectionVideoRate('studio'));
+    const video=bgFrameBySectionId.get('studio');
+    if(openRoom)freezeBgVideo(video);
+    else playBgVideo(video);
     syncBgYoutubeVisibility();
   };
   window.isStudioBookingOpen=()=>Boolean(openRoom);
