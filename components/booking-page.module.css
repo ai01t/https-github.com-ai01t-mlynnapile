@@ -1417,10 +1417,11 @@
   overflow: hidden;
 }
 
+/* Video je širší než svislý záběr (ořízne se jako cover), ať sahá blíž ke kalendáři. */
 .studioMedia {
   position: relative;
   height: 100%;
-  aspect-ratio: 9 / 16;
+  width: min(50vw, 86vh);
   overflow: hidden;
   background: #000;
 }
@@ -1437,7 +1438,13 @@
 
 /* YouTube přes okraje kartě nepřekryje název a logo přehrávače. */
 .studioMedia .cardVideo {
-  transform: scale(1.32);
+  inset: auto;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  transform: translateY(-50%) scale(1.12);
 }
 
 .studioBookingMain .studioMedia::after {
@@ -1452,13 +1459,12 @@
   /* Plynulý (zhruba ease-in) přechod videa do pozadí kalendáře bez viditelné hrany. */
   background: linear-gradient(
     to right,
-    rgba(11, 10, 13, 0) 30%,
-    rgba(11, 10, 13, 0.06) 42%,
-    rgba(11, 10, 13, 0.18) 54%,
-    rgba(11, 10, 13, 0.36) 65%,
-    rgba(11, 10, 13, 0.58) 76%,
-    rgba(11, 10, 13, 0.8) 87%,
-    rgba(11, 10, 13, 0.94) 95%,
+    rgba(11, 10, 13, 0) 52%,
+    rgba(11, 10, 13, 0.08) 62%,
+    rgba(11, 10, 13, 0.26) 72%,
+    rgba(11, 10, 13, 0.52) 82%,
+    rgba(11, 10, 13, 0.8) 91%,
+    rgba(11, 10, 13, 0.95) 97%,
     #0b0a0d 100%
   );
   pointer-events: none;
