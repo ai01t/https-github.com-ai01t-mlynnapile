@@ -334,15 +334,17 @@ body.pause-active section .content{filter:brightness(1.14);}
 .room-book-info a:hover{color:var(--gold-light);}
 .rooms-grid.booking-main .room-card:first-child .room-video-frame{display:none;}
 .rooms-grid.booking-main .room-card:first-child .room-book-info{display:flex;}
+.rooms-grid.booking-main .room-card:first-child,
+.rooms-grid.booking-control .room-card:nth-child(3){background:#0b0a0d;}
 .room-book .btn-secondary{padding:12px 28px;}
 .room-book .btn-secondary.on{border-color:var(--gold);color:var(--gold);}
 .room-book .btn-secondary:disabled{opacity:.42;cursor:not-allowed;}
 .room-book .btn-secondary:disabled:hover{border-color:var(--border);color:rgba(240,235,226,.7);}
-.studio-booking-panel{position:absolute;top:0;bottom:0;left:calc((100% - 2px) / 3 + 1px);right:0;z-index:6;overflow:hidden;visibility:hidden;pointer-events:none;transition:visibility 0s linear .55s;}
-.studio-booking-panel[data-room="control"]{left:0;right:calc((100% - 2px) / 3 + 1px);}
+.studio-booking-panel{position:absolute;top:0;bottom:0;left:calc((100% - 2px) / 3);right:0;z-index:6;overflow:hidden;visibility:hidden;pointer-events:none;transition:visibility 0s linear .55s;}
+.studio-booking-panel[data-room="control"]{left:0;right:calc((100% - 2px) / 3);}
 .studio-booking-panel.open{visibility:visible;pointer-events:auto;transition:none;}
 /* Obsah vyjíždí od karty zvolené místnosti (clip-path přes iframe Chrome vykresluje jen zčásti). */
-.studio-booking-inner{position:absolute;inset:0;background:#0b0a0d;box-shadow:0 24px 60px rgba(0,0,0,.45);transform:translate3d(-100%,0,0);transition:transform .55s cubic-bezier(.22,.61,.36,1);}
+.studio-booking-inner{position:absolute;inset:0;background:#0b0a0d;box-shadow:0 30px 50px -20px rgba(0,0,0,.45);transform:translate3d(-100%,0,0);transition:transform .55s cubic-bezier(.22,.61,.36,1);}
 .studio-booking-panel[data-room="control"] .studio-booking-inner{transform:translate3d(100%,0,0);}
 .studio-booking-panel.open .studio-booking-inner{transform:none;}
 .studio-booking-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0b0a0d;}
@@ -3392,7 +3394,10 @@ updateNavCompactState();
     syncBgYoutubeVisibility();
   };
   window.isStudioBookingOpen=()=>Boolean(openRoom);
-  const syncCards=()=>grid.classList.toggle('booking-main',openRoom==='main');
+  const syncCards=()=>{
+    grid.classList.toggle('booking-main',openRoom==='main');
+    grid.classList.toggle('booking-control',openRoom==='control');
+  };
   grid.querySelectorAll('.room-book-info a').forEach((link)=>link.addEventListener('click',()=>close()));
   const syncTriggers=()=>triggers.forEach((btn)=>{
     const on=btn.dataset.studioBooking===openRoom;

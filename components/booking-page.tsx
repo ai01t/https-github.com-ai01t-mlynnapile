@@ -866,7 +866,8 @@ function FadingYoutube({ videoId, className }: { videoId: string; className?: st
         const time = data.info.currentTime
         if (typeof time === "number") {
           const nearEnd = duration > 0 && time > duration - 0.9
-          setVisible(state === 1 && time > 0.4 && !nearEnd)
+          // YouTube po (re)startu na ~2–3 s ukáže ikonu pauzy; do té doby zůstává náhled.
+          setVisible(state === 1 && time > 3 && !nearEnd)
           return
         }
       }
