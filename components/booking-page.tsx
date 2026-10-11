@@ -29,6 +29,7 @@ const CALENDAR_START = new Date()
 const START_Y = CALENDAR_START.getFullYear()
 const START_M = CALENDAR_START.getMonth()
 const BOOKING_VIDEO_PLAYBACK_RATE = 0.42
+// Denní záběry natočené v daném měsíci (název videa na YouTube = měsíc).
 const VIDEOS_BY_MONTH = [
   "12wlur-ij3A", // leden
   null, // únor
@@ -142,11 +143,14 @@ type CalendarMonth = {
   youtubeId: string | null
   localVideoSrc: string | null
   localPosterSrc: string | null
+  nightClip: boolean
   blockedRanges: Array<{ start: number; end: number }>
   weeks: Array<Array<number | null>>
 }
 
-const LOCAL_MEDIA_BY_MONTH: Partial<Record<number, { src: string; poster: string }>> = {
+// Lokální kopie (rychlejší start). Měsíce bez vlastního měsíčního videa
+// zatím mají zástupný klip; noční z nich se v denním režimu prosvětlují.
+const LOCAL_MEDIA_BY_MONTH: Partial<Record<number, { src: string; poster: string; night?: boolean }>> = {
   5: { // červen
     src: "/videos/bg/VDj9aKHnpcw_hq.mp4",
     poster: "/videos/bg/VDj9aKHnpcw_hq.jpg",
@@ -159,21 +163,15 @@ const LOCAL_MEDIA_BY_MONTH: Partial<Record<number, { src: string; poster: string
     src: "/videos/bg/O431B93W9UY.mp4",
     poster: "/videos/bg/O431B93W9UY.jpg",
   },
-  8: { // září
-    src: "/videos/bg/CJzYKr3JWC8.mp4",
-    poster: "/videos/bg/CJzYKr3JWC8.jpg",
-  },
-  9: { // říjen
-    src: "/videos/bg/DY09nnytbjc.mp4",
-    poster: "/videos/bg/DY09nnytbjc.jpg",
-  },
   10: { // listopad
     src: "/videos/bg/QsHqEEj4-60.mp4",
     poster: "/videos/bg/QsHqEEj4-60.jpg",
+    night: true,
   },
   11: { // prosinec
     src: "/videos/bg/M4QkWhz7CDo.mp4",
     poster: "/videos/bg/M4QkWhz7CDo.jpg",
+    night: true,
   },
   0: { // leden
     src: "/videos/bg/12wlur-ij3A.mp4",
@@ -637,7 +635,11 @@ function buildMonths(locale: Locale): CalendarMonth[] {
       gradient: GRADIENTS_BY_MONTH[month],
       youtubeId: VIDEOS_BY_MONTH[month] ?? null,
       localVideoSrc: LOCAL_MEDIA_BY_MONTH[month]?.src ?? null,
-      localPosterSrc: LOCAL_MEDIA_BY_MONTH[month]?.poster ?? null,
+      // Svislá videa mají na YouTube náhled v původním poměru (oardefault).
+      localPosterSrc:
+        LOCAL_MEDIA_BY_MONTH[month]?.poster ??
+        (VIDEOS_BY_MONTH[month] ? `https://i.ytimg.com/vi/${VIDEOS_BY_MONTH[month]}/oardefault.jpg` : null),
+      nightClip: LOCAL_MEDIA_BY_MONTH[month]?.night ?? false,
       blockedRanges: BOOKED_RANGES[`${year}-${month}`] ?? [],
       weeks: buildCalendarWeeks(year, month),
     }
@@ -1518,7 +1520,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                   >
                     <article className={cx(styles.card, !isFront && styles.cardInactive)}>
                       <div className={cx(styles.cardClip, isFront && styles.cardClipFront)}>
-                        <div className={styles.cardMedia} aria-hidden="true">
+                        <div className={cx(styles.cardMedia, month.nightClip && styles.cardMediaNight)} aria-hidden="true">
                           {!paused && isFront && month.localVideoSrc ? (
                             <SeamlessLoopVideo
                               key={`${month.localVideoSrc}-${paused ? "paused" : "playing"}`}
@@ -1528,7 +1530,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               playbackRate={BOOKING_VIDEO_PLAYBACK_RATE}
                             />
                           ) : null}
-                          {(paused || !isFront) && month.localPosterSrc ? (
+                          {(paused || !isFront || !month.localVideoSrc) && month.localPosterSrc ? (
                             <div
                               className={styles.cardLocalPoster}
                               style={{ backgroundImage: `url("${month.localPosterSrc}")` }}
