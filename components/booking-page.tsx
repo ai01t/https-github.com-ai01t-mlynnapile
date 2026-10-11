@@ -649,16 +649,15 @@ function buildMonths(locale: Locale): CalendarMonth[] {
 // translateY(-50%) běží až po scale, takže se na střed zarovná i zmenšená karta.
 function getCardTransform(offset: number) {
   if (offset === 0) return "translate3d(0, 0, 0) scale(1) translateY(-50%)"
-  if (offset === 1) return "translate3d(352px, 0, 0) scale(0.92) translateY(-50%)"
-  if (offset === 2) return "translate3d(682px, 0, 0) scale(0.84) translateY(-50%)"
-  return "translate3d(982px, 0, 0) scale(0.76) translateY(-50%)"
+  if (offset === 1) return "translate3d(404px, 0, 0) scale(0.88) translateY(-50%)"
+  if (offset === 2) return "translate3d(760px, 0, 0) scale(0.78) translateY(-50%)"
+  return "translate3d(1078px, 0, 0) scale(0.68) translateY(-50%)"
 }
 
-function getCardOpacity(offset: number) {
-  if (offset === 0) return 1
-  if (offset === 1) return 0.9
-  if (offset === 2) return 0.78
-  return 0.66
+// Náhledy už neprůhledníme — na světlé stránce pak působily mléčně;
+// ustupují ztmavením (.cardInactive .cardClip).
+function getCardOpacity(_offset: number) {
+  return 1
 }
 
 function buildYoutubeUrl(videoId: string) {

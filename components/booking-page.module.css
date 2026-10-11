@@ -27,7 +27,7 @@
   --surface-rgb: 226, 224, 220;
   --edge-rgb: 120, 105, 80;
   --card-rgb: 236, 234, 230;
-  --bg: #e2e0dc;
+  --bg: #d4cfc6;
   --stone: #6b5c40;
   --gold: #8a6a34;
   --gold-light: #6d5327;
@@ -42,7 +42,7 @@
 }
 
 .dayMode .bgShell {
-  background: #e2e0dc;
+  background: #d4cfc6;
 }
 
 /* Nad světlým podkladem by bílý stín text spolykal. */
@@ -114,18 +114,10 @@
   filter: brightness(1.8) saturate(1.14) contrast(0.94);
 }
 
-/* Zadní karty mají přes video ještě závoj; ve dne ho ztenčíme, jinak by
-   prosvětlení klipu neprošlo. */
-.dayMode .cardShade {
-  background:
-    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.02) 0%, rgba(var(--surface-rgb), 0.05) 22%, rgba(var(--surface-rgb), 0.26) 100%),
-    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.08), transparent 28%);
-}
-
 /* Patička má natvrdo černé pozadí — ve dne musí jít se zbytkem stránky,
    jinak na ní tmavý text zanikne. */
 .dayMode .footer {
-  background: #d9d7d2;
+  background: #cac4ba;
 }
 
 .embedded .pageShell {
@@ -711,7 +703,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  min-height: 620px;
+  min-height: 720px;
   overflow: visible;
   margin: 12px 0 32px;
 }
@@ -721,7 +713,7 @@
 .stackStage {
   position: relative;
   width: 100%;
-  min-height: 560px;
+  min-height: 690px;
   padding-top: 8px;
   overflow: visible;
 }
@@ -734,7 +726,7 @@
   position: absolute;
   top: 50%;
   left: 0;
-  width: 330px;
+  width: 380px;
   transform-origin: top left;
   transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.45s ease;
 }
@@ -769,10 +761,10 @@
 
 .card {
   position: relative;
-  width: min(100%, 330px);
+  width: min(100%, 380px);
   aspect-ratio: 9 / 16;
   height: auto;
-  max-height: min(74vh, 524px);
+  max-height: min(80vh, 676px);
   border-radius: 12px;
   overflow: visible;
   border: 0;
@@ -783,6 +775,15 @@
 
 .cardInactive {
   cursor: pointer;
+}
+
+.cardInactive .cardClip {
+  filter: brightness(0.74) saturate(0.85);
+  transition: filter 0.3s ease;
+}
+
+.cardInactive:hover .cardClip {
+  filter: brightness(0.9) saturate(0.95);
 }
 
 .cardClip {
@@ -870,17 +871,19 @@
   opacity: 1;
 }
 
+/* Horní část karty patří videu, spodní tmavá plocha kalendáři —
+   čísla tak nikdy neleží přes světlý nebo rušný záběr. */
 .cardShade {
   z-index: 2;
-  background:
-    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.08) 0%, rgba(var(--surface-rgb), 0.12) 22%, rgba(var(--surface-rgb), 0.44) 100%),
-    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.06), transparent 28%);
-}
-
-.cardClipFront .cardShade {
-  background:
-    linear-gradient(to bottom, rgba(var(--surface-rgb), 0.01) 0%, rgba(var(--surface-rgb), 0.05) 22%, rgba(var(--surface-rgb), 0.18) 100%),
-    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.08), transparent 28%);
+  background: linear-gradient(
+    to bottom,
+    rgba(8, 7, 10, 0) 0%,
+    rgba(8, 7, 10, 0) 26%,
+    rgba(8, 7, 10, 0.3) 36%,
+    rgba(8, 7, 10, 0.7) 45%,
+    rgba(8, 7, 10, 0.93) 54%,
+    rgba(8, 7, 10, 0.97) 100%
+  );
 }
 
 .cardContent {
@@ -888,49 +891,15 @@
   z-index: 3;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: flex-end;
   height: 100%;
-  padding: 16px;
-}
-
-.cardContentFront {
-  padding-top: 16px;
-  align-items: flex-end;
-}
-
-.cardContentPreview {
-  padding-top: 14px;
+  padding: 14px;
 }
 
 .calendarPanel {
-  padding: 18px 16px 12px;
-  background: linear-gradient(180deg, rgba(var(--card-rgb), 0.62) 0%, rgba(var(--card-rgb), 0.74) 100%);
-  border: 1px solid rgba(var(--ink-rgb), 0.08);
-  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.16);
-  transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, max-height 0.32s ease;
-}
-
-.calendarPanelFront {
   width: 100%;
-  padding: 12px 12px 10px;
-  border-radius: 14px;
-  background: rgba(10, 9, 12, 0.6);
-  border-color: rgba(255, 255, 255, 0.12);
-  -webkit-backdrop-filter: blur(14px) saturate(1.15);
-  backdrop-filter: blur(14px) saturate(1.15);
-  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
-}
-
-.cardClipFront:hover .calendarPanelFront {
-  transform: translateY(-2px);
-  background: rgba(10, 9, 12, 0.66);
-  box-shadow: 0 20px 38px rgba(0, 0, 0, 0.32);
-}
-
-/* Náhledové karty ukazují celý kalendář, jen decentněji než přední. */
-.calendarPanelPreview {
-  padding: 14px 14px 10px;
-  border-radius: 12px;
+  padding: 6px 4px 2px;
+  transition: transform 0.3s ease;
 }
 
 .calendarHead {
@@ -1017,8 +986,8 @@
 /* Barvy dnů: zelená = volno, cihlová = obsazeno. Dvojitá třída kvůli
    .dayMode .dayButton, které jinak přebíjí barvu textu. */
 .calendarGrid .dayFree {
-  background: rgba(124, 196, 144, 0.2);
-  box-shadow: inset 0 0 0 1px rgba(146, 214, 166, 0.4);
+  background: rgba(124, 196, 144, 0.26);
+  box-shadow: inset 0 0 0 1px rgba(146, 214, 166, 0.5);
   color: #f1fbf3;
 }
 
@@ -1228,22 +1197,22 @@
   .stackStage {
     transform: scale(0.84);
     transform-origin: left center;
-    min-height: 500px;
+    min-height: 600px;
   }
 
   .stackColumn {
-    min-height: 500px;
+    min-height: 600px;
   }
 }
 
 @media (max-width: 1080px) {
   .stackStage {
     transform: scale(0.68);
-    min-height: 410px;
+    min-height: 490px;
   }
 
   .stackColumn {
-    min-height: 410px;
+    min-height: 490px;
   }
 }
 
@@ -1294,7 +1263,7 @@
 
   .stackColumn,
   .stackStage {
-    min-height: 340px;
+    min-height: 400px;
   }
 
   .stackStage {
@@ -1358,10 +1327,6 @@
 
   .cardContent {
     padding: 48px 14px 14px;
-  }
-
-  .calendarPanel {
-    padding: 14px 12px 12px;
   }
 
   .dayButton {
