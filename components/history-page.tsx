@@ -1,21 +1,10 @@
 "use client"
 
-import { Cormorant_Garamond, Manrope } from "next/font/google"
+import { cormorant, manrope } from "@/lib/fonts"
 import Link from "next/link"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import styles from "@/components/history-page.module.css"
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
-})
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-})
 
 const HISTORY_VIDEO_ASSETS = {
   horizontal: {

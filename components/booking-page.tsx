@@ -1,23 +1,12 @@
 "use client"
 
-import { Cormorant_Garamond, Manrope } from "next/font/google"
+import { cormorant, manrope } from "@/lib/fonts"
 import Link from "next/link"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import styles from "@/components/booking-page.module.css"
 import PageBgLayer from "@/components/page-bg-layer"
 import { useLiveBgConfig } from "@/lib/use-live-bg"
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  style: ["normal", "italic"],
-})
-
-const manrope = Manrope({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-})
 
 const MODE_STORAGE_KEY = "mlyn_mode"
 const LANG_STORAGE_KEY = "mlyn_lang"
