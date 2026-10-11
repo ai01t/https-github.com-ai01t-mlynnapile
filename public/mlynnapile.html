@@ -159,6 +159,7 @@ section{position:relative;min-height:100svh;overflow:hidden;display:flex;align-i
   font-family:'Manrope',sans-serif;font-size:.5rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);
   opacity:0;pointer-events:none;transition:opacity .6s ease,transform .6s ease;}
 .mode-flag.show{opacity:1;transform:translate(-50%,0);}
+.mode-filler{display:block;width:100%;pointer-events:none;}
 
 #contact .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 52% 44% at 72% 42%,rgba(128,82,18,.22) 0%,transparent 58%);animation:cA 20s ease-in-out infinite alternate;}
 @keyframes cA{0%{opacity:.45;transform:scale(1);}100%{opacity:1;transform:scale(1.09);}}
@@ -1571,7 +1572,8 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
     syncBackgroundVideos();
     const nextUrl=sectionId==='hero'?window.location.pathname:`${window.location.pathname}#${sectionId}`;
     window.history.replaceState({},'',nextUrl);
-    const targetTop=sectionId==='hero'?0:Math.max(0,Math.round(window.scrollY+section.getBoundingClientRect().top));
+    // úvod nemusí být nahoře (pás sekcí za kontaktem pokračuje), cíl se počítá vždy z polohy
+    const targetTop=Math.max(0,Math.round(window.scrollY+section.getBoundingClientRect().top));
     window.scrollTo({top:targetTop,behavior});
   };
   if(closeMenu){
@@ -3582,55 +3584,33 @@ window.addEventListener('load',()=>{
   });
 });
 
-/* KONEC → POKRAČOVÁNÍ V NOCI: za kontaktem následuje ještě jedna stránka – kopie
-   úvodu v opačném režimu (ze dne noc, z noci den). Jakmile se začne objevovat,
-   web se přepne do toho režimu (mění i videa) a štítek pod měsícem to ohlásí.
-   Když na ni stránka dosedne, tiše se přeskočí na skutečný úvod (vypadá stejně),
-   takže se dál normálně scrolluje dolů – nic nevyjíždí zpátky nahoru. */
+/* KONEC → POKRAČOVÁNÍ V NOCI: pod kontaktem stránka prostě pokračuje dál dolů –
+   znovu úvod, Pila, Studio…, ale v nočním režimu (a po dalším kole zase ve dne).
+   Funguje jako nekonečný pás: sekce, která už je daleko nad obrazovkou, se
+   nenápadně přesune pod konec a její místo nahoře drží výplň stejné výšky, takže
+   se obsah ani posuvník nepohne. Sekce zůstávají skutečné (videa, booking, odkazy
+   fungují), jen se mění jejich pořadí. Při návratu nahoru se to děje obráceně.
+   Režim se přepne, když přes polovinu obrazovky přejde sekce z dalšího kola;
+   štítek pod měsícem to krátce ohlásí. */
 (function(){
-  const hero=document.getElementById('hero');
-  const contact=document.getElementById('contact');
+  if(!secs.length)return;
   const flag=document.getElementById('modeFlag');
-  if(!hero||!contact)return;
-  const loop=hero.cloneNode(true);
-  loop.setAttribute('data-loop','1');
-  loop.setAttribute('aria-hidden','true');
-  loop.inert=true;
-  loop.querySelectorAll('script,.bg-yt-layer').forEach((el)=>el.remove());
-  contact.after(loop);
-  const wrap=loop.querySelector('.bg-video');
-  const video=wrap?.querySelector('video');
-  const source=video?.querySelector('source');
-  const fallback=wrap?.querySelector('.bg-fallback');
-  let switched=false;
-  let loopMode='';
-  let settleTimer=0;
+  const filler=document.createElement('div');
+  filler.className='mode-filler';
+  filler.setAttribute('aria-hidden','true');
+  filler.style.height='0px';
+  secs[0].before(filler);
+  let fillerH=0;
+  const lap=new Map(secs.map((s)=>[s,0]));
+  let baseNight=visualMode==='night';
   let flagTimer=0;
 
-  const otherMode=()=>visualMode==='night'?'day':'night';
-  function heroIdFor(mode){
-    const byMode=BG_VARIANTS.hero?.[mode]||BG_VARIANTS.hero?.day||{};
-    return byMode[getViewportOrientation()]||byMode.horizontal||byMode.vertical||null;
+  const modeForLap=(n)=>((baseNight?1:0)+n)%2===1?'night':'day';
+  function currentSection(){
+    let cur=secs[0];
+    secs.forEach((s)=>{if(s.getBoundingClientRect().top<=innerHeight*.55)cur=s;});
+    return cur;
   }
-  // kopie úvodu ukazuje úvod v režimu, do kterého se přepne
-  function prepareLoop(mode){
-    if(!video||!source||loopMode===mode)return;
-    loopMode=mode;
-    const id=heroIdFor(mode);
-    if(!id)return;
-    wrap.classList.remove('is-revealed','is-playing','has-frame');
-    wrap.classList.toggle('uses-portrait-asset',PORTRAIT_BG_ASSET_IDS.has(id));
-    const poster=`/videos/bg/${id}.jpg?v=${BG_ASSET_REV}`;
-    source.setAttribute('src',`/videos/bg/${id}.mp4?v=${BG_ASSET_REV}`);
-    video.poster=poster;
-    if(fallback)fallback.setAttribute('src',poster);
-    try{video.load();}catch(e){}
-  }
-  if(video){
-    video.muted=true;
-    video.addEventListener('playing',()=>wrap.classList.add('loaded','has-frame','is-playing','is-revealed'));
-  }
-
   function showFlag(mode){
     if(!flag)return;
     flag.textContent=mode==='night'?'Night mode':'Day mode';
@@ -3638,55 +3618,65 @@ window.addEventListener('load',()=>{
     clearTimeout(flagTimer);
     flagTimer=setTimeout(()=>flag.classList.remove('show'),5200);
   }
-
-  function switchMode(){
-    switched=true;
-    visualMode=otherMode();
-    try{localStorage.setItem('mlyn_mode',visualMode);}catch(e){}
-    applyVisualMode(true);
-    kickBgVideos();
-    showFlag(visualMode);
+  function setFiller(h){
+    fillerH=Math.max(0,h);
+    filler.style.height=fillerH+'px';
   }
-
-  function teleport(){
-    switched=false;
-    const t=video&&!video.paused?video.currentTime:0;
-    const prev=document.documentElement.style.scrollBehavior;
-    document.documentElement.style.scrollBehavior='auto';
-    window.scrollTo(0,0);
-    document.documentElement.style.scrollBehavior=prev;
-    try{window.history.replaceState({},'',window.location.pathname);}catch(e){}
-    handleNativeScroll();
-    // skutečný úvod navazuje ve stejném místě videa
-    const heroVideo=hero.querySelector('.bg-video video');
-    if(heroVideo&&t){try{heroVideo.currentTime=t;}catch(e){}}
-    if(video)video.pause();
-    loopMode='';
+  // dolů: první sekce (vysoko nad obrazovkou) jde na konec
+  function rotateDown(){
+    const first=secs[0];
+    const h=first.offsetHeight;
+    setFiller(fillerH+h);
+    secs[secs.length-1].after(first);
+    secs.push(secs.shift());
+    lap.set(first,lap.get(first)+1);
   }
-
+  // nahoru: poslední sekce (hluboko pod obrazovkou) se vrátí nahoru
+  function rotateUp(){
+    const last=secs[secs.length-1];
+    const h=last.offsetHeight;
+    if(fillerH<h-2)return false;
+    secs[0].before(last);
+    secs.unshift(secs.pop());
+    setFiller(fillerH-h);
+    lap.set(last,lap.get(last)-1);
+    return true;
+  }
   function sync(){
-    const top=loop.getBoundingClientRect().top;
-    const near=top<innerHeight*1.6;
-    if(near){
-      prepareLoop(switched?visualMode:otherMode());
-      if(video&&video.paused&&!pauseAllVideos)video.play().catch(()=>{});
-    }else if(video&&!video.paused){
-      video.pause();
+    let moved=false;
+    for(let guard=0;guard<3;guard++){
+      const last=secs[secs.length-1];
+      const first=secs[0];
+      if(last.getBoundingClientRect().top<innerHeight*1.2&&first.getBoundingClientRect().bottom<-innerHeight*.2){
+        rotateDown();moved=true;continue;
+      }
+      if(fillerH>0&&first.getBoundingClientRect().top>-innerHeight*1.2&&last.getBoundingClientRect().top>innerHeight*1.2){
+        if(rotateUp()){moved=true;continue;}
+      }
+      break;
     }
-    if(!switched&&top<innerHeight*0.98)switchMode();
-    clearTimeout(settleTimer);
-    if(Math.abs(top)<=2)settleTimer=setTimeout(()=>{
-      if(Math.abs(loop.getBoundingClientRect().top)<=2)teleport();
-    },140);
+    const target=modeForLap(lap.get(currentSection())||0);
+    if(target!==visualMode){
+      visualMode=target;
+      try{localStorage.setItem('mlyn_mode',visualMode);}catch(e){}
+      applyVisualMode(true);
+      kickBgVideos();
+      showFlag(visualMode);
+    }else if(moved){
+      syncBackgroundVideos();
+    }
   }
-
+  // ruční přepnutí režimu: aktuální kolo převezme zvolený režim
+  if(modeBtn)modeBtn.addEventListener('click',()=>{
+    const n=lap.get(currentSection())||0;
+    baseNight=(visualMode==='night')!==(n%2===1);
+  });
   let pending=false;
   window.addEventListener('scroll',()=>{
     if(pending)return;
     pending=true;
     requestAnimationFrame(()=>{pending=false;sync();});
   },{passive:true});
-  window.addEventListener('resize',()=>{loopMode='';sync();});
 })();
 
 /* Start: hash → sekce, jinak nahoru; aktivace výchozí sekce */
