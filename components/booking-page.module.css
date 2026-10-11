@@ -1425,9 +1425,23 @@
   background: #000;
 }
 
+/* Kalendář vždy sousedí s kartou místnosti: u hlavního studia (karta vlevo)
+   je kalendář vlevo a video vpravo. */
+.studioBookingMain {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.studioBookingMain .studioMedia {
+  order: 2;
+}
+
 /* YouTube přes okraje kartě nepřekryje název a logo přehrávače. */
 .studioMedia .cardVideo {
   transform: scale(1.32);
+}
+
+.studioBookingMain .studioMedia::after {
+  transform: scaleX(-1);
 }
 
 .studioMedia::after {
@@ -1599,6 +1613,10 @@
     grid-template-rows: 40vh minmax(0, 1fr);
   }
 
+  .studioBookingMain .studioMedia {
+    order: 0;
+  }
+
   .studioMedia {
     width: 100%;
     aspect-ratio: auto;
@@ -1614,4 +1632,14 @@
       #0b0a0d 100%
     );
   }
+}
+
+/* YouTube je vidět jen při skutečném přehrávání (viz FadingYoutube). */
+.fadingYoutube {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+
+.fadingYoutubeOn {
+  opacity: 1;
 }

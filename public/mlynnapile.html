@@ -361,6 +361,11 @@ body.pause-active section .content{filter:brightness(1.14);}
 .room-video-wrap{margin-top:auto;padding-top:20px;}
 .room-video-frame{position:relative;aspect-ratio:16 / 9;border:1px solid var(--border);background:#000;overflow:hidden;}
 .room-video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+/* Videa karet: lokální soubory přes dva přehrávače — konec smyčky se prolne do začátku,
+   bez YouTube popisků a bez černého probliknutí. */
+.room-video-frame[data-room-video]{background-size:cover;background-position:center;}
+.room-video-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease;pointer-events:none;}
+.room-video-frame video.on{opacity:1;}
 /* Booking místnosti: zvolená karta zůstane, panel s kalendářem vyjede přes zbylé dvě. */
 .rooms-grid{position:relative;}
 .room-book{margin-top:18px;}
@@ -385,6 +390,8 @@ body.pause-active section .content{filter:brightness(1.14);}
 .studio-booking-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0b0a0d;}
 .studio-booking-close{position:absolute;top:10px;left:10px;z-index:2;width:34px;height:34px;border-radius:50%;border:1px solid rgba(201,185,154,.35);background:rgba(7,6,10,.72);color:var(--cream);font-size:1.1rem;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s;}
 .studio-booking-close:hover{border-color:var(--gold);color:var(--gold);}
+/* U hlavního studia je kalendář vlevo a video vpravo — křížek patří nad video. */
+.studio-booking-panel[data-room="main"] .studio-booking-close{left:auto;right:10px;}
 /* Bez tří sloupců (mobil, tablet na výšku) jde panel přes celou obrazovku. */
 .studio-booking-panel.fullscreen{position:fixed;inset:0;left:0;right:0;z-index:1200;opacity:0;transition:opacity .3s ease,visibility 0s linear .3s;}
 .studio-booking-panel.fullscreen .studio-booking-inner{transform:none;transition:none;box-shadow:none;}
@@ -1207,10 +1214,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <p class="room-text en">The main studio is located in the attic gallery, directly above the mill. Natural light enters through skylights and a large French window with a balcony overlooking the quiet pond.</p>
             <p class="room-text de">Das Hauptstudio befindet sich in der Dachgalerie direkt über der Mühle. Natürliches Licht fällt durch Dachfenster und ein großes französisches Fenster mit Balkon und Blick auf den ruhigen Teich.</p>
             <div class="room-video-wrap">
-              <div class="room-video-frame">
-                <iframe src="https://www.youtube-nocookie.com/embed/O431B93W9UY?autoplay=1&mute=1&loop=1&playlist=O431B93W9UY&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
-                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
-              </div>
+              <div class="room-video-frame" data-room-video="/videos/bg/O431B93W9UY.mp4?v=20260309c" style="background-image:url('/videos/bg/O431B93W9UY.jpg?v=20260309c')"></div>
               <div class="room-book-info">
                 <p class="cs">Součástí pronájmu studia jsou aparatury i hudební nástroje, vše je připraveno, nemusíte si nic brát sebou. Více info v <a class="section-jump" href="#equipment">sekci vybavení</a>.</p>
                 <p class="en">Studio rental includes the gear and musical instruments – everything is ready, you don't need to bring anything. More info in the <a class="section-jump" href="#equipment">Equipment section</a>.</p>
@@ -1226,10 +1230,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <p class="room-text en">High ceilings and unique acoustics of the historic mill. Ideal for acoustic recordings and experimental projects.</p>
             <p class="room-text de">Hohe Decken und die einzigartige Akustik der historischen Mühle. Ideal für akustische Aufnahmen und experimentelle Projekte.</p>
             <div class="room-video-wrap">
-              <div class="room-video-frame">
-                <iframe src="https://www.youtube-nocookie.com/embed/mndh51Ug7zg?autoplay=1&mute=1&loop=1&playlist=mndh51Ug7zg&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
-                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
-              </div>
+              <div class="room-video-frame" data-room-video="/videos/bg/mndh51Ug7zg.mp4?v=20260309c" style="background-image:url('/videos/bg/mndh51Ug7zg.jpg?v=20260309c')"></div>
             </div>
             <div class="room-book"><button type="button" class="btn-secondary" disabled aria-disabled="true"><span class="cs">Připravujeme</span><span class="en">Coming soon</span><span class="de">In Vorbereitung</span></button></div>
           </div>
@@ -1240,10 +1241,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <p class="room-text en">Apple Pro Display XDR 6K for video editing, graphics and post-production. Full Apple peripherals are available for comfortable work. The room is built for focused creative work: smoothly adjustable lighting, calm atmosphere, beautiful view and a library.</p>
             <p class="room-text de">Apple Pro Display XDR 6K für Videoschnitt, Grafik und Postproduktion. Vollständiges Apple-Peripherie-Setup für komfortables Arbeiten. Sanft regulierbares Licht, ruhige Atmosphäre, schöner Ausblick und Bibliothek.</p>
             <div class="room-video-wrap">
-              <div class="room-video-frame">
-                <iframe src="https://www.youtube-nocookie.com/embed/u2ylGCNnV50?autoplay=1&mute=1&loop=1&playlist=u2ylGCNnV50&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
-                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
-              </div>
+              <div class="room-video-frame" data-room-video="/videos/bg/gTqXu9xU_7k.mp4?v=20260309c" style="background-image:url('/videos/bg/gTqXu9xU_7k.jpg?v=20260309c')"></div>
             </div>
             <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="control" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
           </div>
@@ -2957,6 +2955,7 @@ function setPauseState(paused){
     pbtn.setAttribute('title',label);
   }
   if(picon)picon.textContent=pauseAllVideos?'>':'II';
+  window.syncRoomVideos?.();
   bgFrameBySectionId.forEach((video)=>{video.style.animationPlayState=pauseAllVideos?'paused':'running';});
   syncBackgroundVideos();
 }
@@ -3534,6 +3533,61 @@ updateNavCompactState();
   };
   window.getStudioBookingFrame=()=>frame;
   window.closeStudioBooking=close;
+})();
+
+/* Videa v kartách studia: dva přehrávače na kartu, konec se plynule prolne do začátku.
+   Hrají jen karty, které jsou vidět, a respektují pauzu webu. */
+(()=>{
+  const FADE=1.2;
+  const players=[...document.querySelectorAll('.room-video-frame[data-room-video]')].map((frame)=>{
+    const make=()=>{
+      const v=document.createElement('video');
+      v.muted=true;v.defaultMuted=true;v.playsInline=true;v.loop=false;v.preload='none';
+      v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','');v.setAttribute('aria-hidden','true');
+      v.disablePictureInPicture=true;
+      frame.appendChild(v);
+      return v;
+    };
+    return {frame,src:frame.dataset.roomVideo,videos:[make(),make()],cur:0,loaded:false,fading:false,visible:false,raf:0,timer:0};
+  });
+  if(!players.length)return;
+  const shouldPlay=(p)=>p.visible&&!pauseAllVideos&&!document.hidden;
+  const crossfade=(p)=>{
+    p.fading=true;
+    const from=p.videos[p.cur],to=p.videos[1-p.cur];
+    try{to.currentTime=0;}catch(e){}
+    to.play().catch(()=>{});
+    to.classList.add('on');
+    from.classList.remove('on');
+    p.cur=1-p.cur;
+    clearTimeout(p.timer);
+    p.timer=setTimeout(()=>{from.pause();try{from.currentTime=0;}catch(e){}p.fading=false;},FADE*1000+150);
+  };
+  const tick=(p)=>{
+    const v=p.videos[p.cur];
+    if(!p.fading&&v.duration&&v.currentTime>=v.duration-FADE)crossfade(p);
+    p.raf=requestAnimationFrame(()=>tick(p));
+  };
+  const sync=(p)=>{
+    cancelAnimationFrame(p.raf);
+    if(!shouldPlay(p)){p.videos.forEach((v)=>v.pause());return;}
+    if(!p.loaded){p.loaded=true;p.videos.forEach((v)=>{v.preload='auto';v.src=p.src;});}
+    const v=p.videos[p.cur];
+    v.classList.add('on');
+    v.play().catch(()=>{});
+    p.raf=requestAnimationFrame(()=>tick(p));
+  };
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach((entry)=>{
+      const p=players.find((item)=>item.frame===entry.target);
+      if(!p)return;
+      p.visible=entry.isIntersecting;
+      sync(p);
+    });
+  },{threshold:.15});
+  players.forEach((p)=>io.observe(p.frame));
+  window.syncRoomVideos=()=>players.forEach(sync);
+  document.addEventListener('visibilitychange',()=>window.syncRoomVideos());
 })();
 
 /* Eager přednačtení všech videí sekcí po startu (odstupňovaně) — žádné načítací kolečko při scrollu */

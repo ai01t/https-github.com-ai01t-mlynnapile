@@ -704,21 +704,6 @@ function buildYoutubeUrl(videoId: string) {
   return `https://www.youtube.com/embed/${videoId}?${params.toString()}`
 }
 
-function setYoutubeIframePlaybackRate(frame: HTMLIFrameElement | null, playbackRate: number) {
-  const target = frame?.contentWindow
-  if (!target) return
-
-  const postCommand = (func: string, args: unknown[] = []) => {
-    target.postMessage(JSON.stringify({ event: "command", func, args }), "https://www.youtube.com")
-  }
-
-  postCommand("setPlaybackRate", [playbackRate])
-  postCommand("playVideo")
-
-  window.setTimeout(() => postCommand("setPlaybackRate", [playbackRate]), 450)
-  window.setTimeout(() => postCommand("setPlaybackRate", [playbackRate]), 1200)
-}
-
 function renderGuideText(text: string) {
   if (!text.includes("LA Cham")) return text
 
@@ -851,6 +836,70 @@ function eventMatchesSelection(
   }
 
   return false
+}
+
+// YouTube přehrávač, který je vidět, jen když opravdu hraje. Při startu, pauze
+// a před koncem smyčky se schová pod náhled — nikdy tak neukáže název videa,
+// ovládání ani černé probliknutí při opakování.
+function FadingYoutube({ videoId, className }: { videoId: string; className?: string }) {
+  const frameRef = useRef<HTMLIFrameElement | null>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const frame = frameRef.current
+    if (!frame) return
+    let duration = 0
+    let state = -1
+
+    const onMessage = (event: MessageEvent) => {
+      if (event.source !== frame.contentWindow || typeof event.data !== "string") return
+      let data: { event?: string; info?: { playerState?: number; currentTime?: number; duration?: number } | number }
+      try {
+        data = JSON.parse(event.data)
+      } catch {
+        return
+      }
+      if (data.event === "onStateChange" && typeof data.info === "number") state = data.info
+      if (data.event === "infoDelivery" && data.info && typeof data.info === "object") {
+        if (typeof data.info.playerState === "number") state = data.info.playerState
+        if (typeof data.info.duration === "number" && data.info.duration > 0) duration = data.info.duration
+        const time = data.info.currentTime
+        if (typeof time === "number") {
+          const nearEnd = duration > 0 && time > duration - 0.9
+          setVisible(state === 1 && time > 0.4 && !nearEnd)
+          return
+        }
+      }
+      if (state !== 1) setVisible(false)
+    }
+
+    const listen = () => {
+      try {
+        frame.contentWindow?.postMessage(JSON.stringify({ event: "listening", id: videoId, channel: "widget" }), "*")
+      } catch {}
+    }
+
+    window.addEventListener("message", onMessage)
+    frame.addEventListener("load", listen)
+    const retry = window.setInterval(listen, 1500)
+    return () => {
+      window.removeEventListener("message", onMessage)
+      frame.removeEventListener("load", listen)
+      window.clearInterval(retry)
+    }
+  }, [videoId])
+
+  return (
+    <iframe
+      ref={frameRef}
+      className={cx(className, styles.fadingYoutube, visible && styles.fadingYoutubeOn)}
+      src={buildYoutubeUrl(videoId)}
+      title=""
+      allow="autoplay; encrypted-media; picture-in-picture"
+      referrerPolicy="strict-origin-when-cross-origin"
+      tabIndex={-1}
+    />
+  )
 }
 
 function SeamlessLoopVideo({
@@ -1428,7 +1477,14 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
   if (studioRoom) {
     return (
-      <div className={cx(styles.studioBooking, manrope.className, nightMode ? styles.nightMode : styles.dayMode)}>
+      <div
+        className={cx(
+          styles.studioBooking,
+          studioRoom === "main" && styles.studioBookingMain,
+          manrope.className,
+          nightMode ? styles.nightMode : styles.dayMode,
+        )}
+      >
         <div className={cx(styles.studioMedia, activeMonth.nightClip && styles.cardMediaNight)} aria-hidden="true">
           {!paused && activeMonth.localVideoSrc ? (
             <SeamlessLoopVideo
@@ -1443,18 +1499,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
             <div className={styles.cardLocalPoster} style={{ backgroundImage: `url("${activeMonth.localPosterSrc}")` }} />
           ) : null}
           {!paused && !activeMonth.localVideoSrc && activeMonth.youtubeId ? (
-            <iframe
-              key={activeMonth.youtubeId}
-              className={styles.cardVideo}
-              src={buildYoutubeUrl(activeMonth.youtubeId)}
-              title=""
-              allow="autoplay; encrypted-media; picture-in-picture"
-              referrerPolicy="strict-origin-when-cross-origin"
-              tabIndex={-1}
-              onLoad={(event) => {
-                setYoutubeIframePlaybackRate(event.currentTarget, 1)
-              }}
-            />
+            <FadingYoutube key={activeMonth.youtubeId} videoId={activeMonth.youtubeId} className={styles.cardVideo} />
           ) : null}
         </div>
 
@@ -1727,18 +1772,10 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                             />
                           ) : null}
                           {!paused && isFront && !month.localVideoSrc && month.youtubeId ? (
-                            <iframe
+                            <FadingYoutube
                               key={`${month.youtubeId}-${paused ? "paused" : "playing"}`}
+                              videoId={month.youtubeId}
                               className={styles.cardVideo}
-                              src={buildYoutubeUrl(month.youtubeId)}
-                              title=""
-                              allow="autoplay; encrypted-media; picture-in-picture"
-                              loading={visibleIndex <= 2 ? "eager" : "lazy"}
-                              referrerPolicy="strict-origin-when-cross-origin"
-                              tabIndex={-1}
-                              onLoad={(event) => {
-                                setYoutubeIframePlaybackRate(event.currentTarget, 1)
-                              }}
                             />
                           ) : null}
                           <div
