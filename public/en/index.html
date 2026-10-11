@@ -1141,10 +1141,10 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
 <section id="studio" style="padding:0;">
   <div class="bg-css"></div>
   <div class="bg-video">
-    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/b4tTKrUevzM.mp4?v=20260309c" type="video/mp4">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/h4IbWPSWMJE.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/h4IbWPSWMJE.mp4?v=20260309c" type="video/mp4">
     </video>
-    <img class="bg-fallback" src="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" alt="" aria-hidden="true">
+    <img class="bg-fallback" src="/videos/bg/h4IbWPSWMJE.jpg?v=20260309c" alt="" aria-hidden="true">
   </div>
 
   <!-- horizontal track -->
@@ -1731,8 +1731,8 @@ const BG_VARIANTS={
     night:{horizontal:'bPBM5J8v_aQ',vertical:'M4QkWhz7CDo'}
   },
   studio:{
-    day:{horizontal:'b4tTKrUevzM',vertical:'b4tTKrUevzM'},
-    night:{horizontal:'b4tTKrUevzM',vertical:'b4tTKrUevzM'}
+    day:{horizontal:'h4IbWPSWMJE',vertical:'h4IbWPSWMJE'},
+    night:{horizontal:'h4IbWPSWMJE',vertical:'h4IbWPSWMJE'}
   },
   location:{
     day:{horizontal:'tWtT7cB1Tus',vertical:'yYFR6g6jlaA'},
@@ -1755,11 +1755,13 @@ const BG_VARIANTS={
     night:{horizontal:'b4tTKrUevzM',vertical:'b4tTKrUevzM'}
   }
 };
+// Vodorovné klipy použité i na výšku (mobil) — ořezávají se jako běžné, ne jako svislé.
+const HORIZONTAL_ONLY_BG_IDS=new Set(['h4IbWPSWMJE']);
 const PORTRAIT_BG_ASSET_IDS=new Set(
   Object.values(BG_VARIANTS).flatMap((section)=>[
     section.day?.vertical,
     section.night?.vertical
-  ]).filter(Boolean)
+  ]).filter((id)=>id&&!HORIZONTAL_ONLY_BG_IDS.has(id))
 );
 let visualMode=localStorage.getItem('mlyn_mode')==='night'?'night':'day';
 let pauseAllVideos=false;
