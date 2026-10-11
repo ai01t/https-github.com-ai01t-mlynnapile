@@ -152,46 +152,13 @@ section{position:relative;min-height:100svh;overflow:hidden;display:flex;align-i
 
 #contact .bg-css{background:radial-gradient(ellipse 110% 85% at 28% 68%,#160f08 0%,#0b0806 50%,#07060a 100%);}
 
-/* ═══════════════════════
-   NOC — závěrečný přechod a noční režim celé stránky
-═══════════════════════ */
-#night .bg-css{background:radial-gradient(ellipse 120% 90% at 50% 105%,#0b1020 0%,#05060d 48%,#010103 100%);}
-/* hvězdy: dvě vrstvy teček, pomalu pulzují */
-.night-sky{position:absolute;inset:0;z-index:1;pointer-events:none;
-  background-image:
-    radial-gradient(1.4px 1.4px at 12% 18%,rgba(226,232,240,.9),transparent 60%),
-    radial-gradient(1.2px 1.2px at 28% 62%,rgba(226,232,240,.7),transparent 60%),
-    radial-gradient(1.6px 1.6px at 47% 26%,rgba(226,232,240,.85),transparent 60%),
-    radial-gradient(1.1px 1.1px at 63% 71%,rgba(226,232,240,.6),transparent 60%),
-    radial-gradient(1.5px 1.5px at 78% 34%,rgba(226,232,240,.8),transparent 60%),
-    radial-gradient(1.2px 1.2px at 88% 66%,rgba(226,232,240,.65),transparent 60%),
-    radial-gradient(1.3px 1.3px at 35% 88%,rgba(226,232,240,.55),transparent 60%),
-    radial-gradient(1.1px 1.1px at 70% 12%,rgba(226,232,240,.7),transparent 60%);
-  animation:nightTwinkle 7s ease-in-out infinite alternate;}
-@keyframes nightTwinkle{0%{opacity:.55;}100%{opacity:1;}}
-/* měsíční svit odspodu, ať přechod z kontaktu plyne do tmy */
-#night::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:radial-gradient(ellipse 70% 45% at 50% 100%,rgba(120,150,210,.16) 0%,transparent 70%);}
-/* footer patří na dno sekce, ne vedle textu (sekce je flex) */
-#night footer{position:absolute;left:0;right:0;bottom:0;}
-#night .content{padding-bottom:150px;}
-.night-content{text-align:center;z-index:10;}
-.night-title{font-family:var(--serif,inherit);font-size:clamp(2rem,5.2vw,3.6rem);line-height:1.15;font-weight:400;
-  color:#e8eefc;letter-spacing:.01em;margin:0;text-shadow:0 2px 26px rgba(90,120,190,.35);
-  opacity:0;}
-/* nápis se při příchodu do sekce sám rozsvítí, chvíli vydrží a zase se rozplyne ve tmě */
-#night.is-on .night-title{animation:nightTitle 7.5s cubic-bezier(.25,.46,.45,.94) forwards;}
-@keyframes nightTitle{
-  0%{opacity:0;transform:translateY(14px);}
-  24%{opacity:1;transform:translateY(0);}
-  62%{opacity:1;transform:translateY(0);}
-  100%{opacity:0;transform:translateY(-10px);}
-}
-
-@media(prefers-reduced-motion:reduce){
-  .night-sky{animation:none;}
-  #night.is-on .night-title{animation:none;opacity:1;}
-}
+/* Štítek pod tlačítkem režimu: krátce ohlásí, že web po dojetí na konec
+   pokračuje v nočním (nebo zpět v denním) režimu. */
+.btn-mode{position:relative;}
+.mode-flag{position:absolute;top:100%;left:50%;transform:translate(-50%,-4px);margin-top:4px;white-space:nowrap;
+  font-family:'Manrope',sans-serif;font-size:.5rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);
+  opacity:0;pointer-events:none;transition:opacity .6s ease,transform .6s ease;}
+.mode-flag.show{opacity:1;transform:translate(-50%,0);}
 
 #contact .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 52% 44% at 72% 42%,rgba(128,82,18,.22) 0%,transparent 58%);animation:cA 20s ease-in-out infinite alternate;}
 @keyframes cA{0%{opacity:.45;transform:scale(1);}100%{opacity:1;transform:scale(1.09);}}
@@ -1047,6 +1014,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
   <div class="nav-actions">
     <button class="btn-pause" id="pbtn" aria-pressed="false" aria-label="Pause"><span class="pause-icon" aria-hidden="true">II</span></button>
     <button class="btn-mode" id="modeBtn" aria-pressed="false" aria-label="Switch to night mode" title="Switch to night mode">
+      <span class="mode-flag" id="modeFlag" aria-live="polite"></span>
       <span class="mode-icon mode-icon-sun" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
           <circle cx="12" cy="12" r="4.2"></circle>
@@ -1512,18 +1480,11 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
       </a>
     </div>
   </div>
-</section>
-
-<section id="night">
-  <div class="bg-css"></div>
-  <div class="night-sky" aria-hidden="true"></div>
-  <div class="content night-content">
-    <h2 class="night-title"><span class="cs">Mlýn v noci 🌙</span><span class="en">The Mill at night 🌙</span><span class="de">Die Mühle bei Nacht 🌙</span></h2>
-  </div>
 <footer>
   <span class="ft-copy"><span class="cs">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="en">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="de">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span></span>
 </footer>
 </section>
+
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
 <script>
@@ -3621,47 +3582,111 @@ window.addEventListener('load',()=>{
   });
 });
 
-/* NOC — závěrečná sekce je přechod do noci: rozsvítí se nápis, web se přepne
-   do vlastního nočního režimu (ten mění i videa na noční) a vrátí nás nahoru
-   na úvod. Stránka tak pokračuje od začátku, ale v noci.
-   Běží jen z denního režimu – jinak by se cesta dolů zacyklila. */
+/* KONEC → POKRAČOVÁNÍ V NOCI: za kontaktem následuje ještě jedna stránka – kopie
+   úvodu v opačném režimu (ze dne noc, z noci den). Jakmile se začne objevovat,
+   web se přepne do toho režimu (mění i videa) a štítek pod měsícem to ohlásí.
+   Když na ni stránka dosedne, tiše se přeskočí na skutečný úvod (vypadá stejně),
+   takže se dál normálně scrolluje dolů – nic nevyjíždí zpátky nahoru. */
 (function(){
-  const nightSec=document.getElementById('night');
-  if(!nightSec)return;
-  const title=nightSec.querySelector('.night-title');
-  let pending=false;
-  let handed=false;
+  const hero=document.getElementById('hero');
+  const contact=document.getElementById('contact');
+  const flag=document.getElementById('modeFlag');
+  if(!hero||!contact)return;
+  const loop=hero.cloneNode(true);
+  loop.setAttribute('data-loop','1');
+  loop.setAttribute('aria-hidden','true');
+  loop.inert=true;
+  loop.querySelectorAll('script,.bg-yt-layer').forEach((el)=>el.remove());
+  contact.after(loop);
+  const wrap=loop.querySelector('.bg-video');
+  const video=wrap?.querySelector('video');
+  const source=video?.querySelector('source');
+  const fallback=wrap?.querySelector('.bg-fallback');
+  let switched=false;
+  let loopMode='';
+  let settleTimer=0;
+  let flagTimer=0;
 
-  function enterNight(){
-    if(handed||visualMode==='night')return;
-    handed=true;
-    visualMode='night';
+  const otherMode=()=>visualMode==='night'?'day':'night';
+  function heroIdFor(mode){
+    const byMode=BG_VARIANTS.hero?.[mode]||BG_VARIANTS.hero?.day||{};
+    return byMode[getViewportOrientation()]||byMode.horizontal||byMode.vertical||null;
+  }
+  // kopie úvodu ukazuje úvod v režimu, do kterého se přepne
+  function prepareLoop(mode){
+    if(!video||!source||loopMode===mode)return;
+    loopMode=mode;
+    const id=heroIdFor(mode);
+    if(!id)return;
+    wrap.classList.remove('is-revealed','is-playing','has-frame');
+    wrap.classList.toggle('uses-portrait-asset',PORTRAIT_BG_ASSET_IDS.has(id));
+    const poster=`/videos/bg/${id}.jpg?v=${BG_ASSET_REV}`;
+    source.setAttribute('src',`/videos/bg/${id}.mp4?v=${BG_ASSET_REV}`);
+    video.poster=poster;
+    if(fallback)fallback.setAttribute('src',poster);
+    try{video.load();}catch(e){}
+  }
+  if(video){
+    video.muted=true;
+    video.addEventListener('playing',()=>wrap.classList.add('loaded','has-frame','is-playing','is-revealed'));
+  }
+
+  function showFlag(mode){
+    if(!flag)return;
+    flag.textContent=mode==='night'?'Night mode':'Day mode';
+    flag.classList.add('show');
+    clearTimeout(flagTimer);
+    flagTimer=setTimeout(()=>flag.classList.remove('show'),5200);
+  }
+
+  function switchMode(){
+    switched=true;
+    visualMode=otherMode();
     try{localStorage.setItem('mlyn_mode',visualMode);}catch(e){}
     applyVisualMode(true);
     kickBgVideos();
-    const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    scrollToSection('hero',{behavior:reduce?'auto':'smooth'});
+    showFlag(visualMode);
   }
 
-  // nápis dohraje (rozsvítí se a zase zhasne) → teprve pak nás to vezme na úvod
-  if(title)title.addEventListener('animationend',()=>{
-    if(nightSec.classList.contains('is-on'))enterNight();
-  });
+  function teleport(){
+    switched=false;
+    const t=video&&!video.paused?video.currentTime:0;
+    const prev=document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior='auto';
+    window.scrollTo(0,0);
+    document.documentElement.style.scrollBehavior=prev;
+    try{window.history.replaceState({},'',window.location.pathname);}catch(e){}
+    handleNativeScroll();
+    // skutečný úvod navazuje ve stejném místě videa
+    const heroVideo=hero.querySelector('.bg-video video');
+    if(heroVideo&&t){try{heroVideo.currentTime=t;}catch(e){}}
+    if(video)video.pause();
+    loopMode='';
+  }
 
-  function syncNight(){
-    pending=false;
-    if(nightSec.getBoundingClientRect().top<=innerHeight*0.98){
-      nightSec.classList.add('is-on');
-      return;
+  function sync(){
+    const top=loop.getBoundingClientRect().top;
+    const near=top<innerHeight*1.6;
+    if(near){
+      prepareLoop(switched?visualMode:otherMode());
+      if(video&&video.paused&&!pauseAllVideos)video.play().catch(()=>{});
+    }else if(video&&!video.paused){
+      video.pause();
     }
-    nightSec.classList.remove('is-on');
+    if(!switched&&top<innerHeight*0.98)switchMode();
+    clearTimeout(settleTimer);
+    if(Math.abs(top)<=2)settleTimer=setTimeout(()=>{
+      if(Math.abs(loop.getBoundingClientRect().top)<=2)teleport();
+    },140);
   }
+
+  let pending=false;
   window.addEventListener('scroll',()=>{
     if(pending)return;
     pending=true;
-    requestAnimationFrame(syncNight);
+    requestAnimationFrame(()=>{pending=false;sync();});
   },{passive:true});
-  window.addEventListener('load',syncNight);
+  window.addEventListener('resize',()=>{loopMode='';sync();});
 })();
 
 /* Start: hash → sekce, jinak nahoru; aktivace výchozí sekce */

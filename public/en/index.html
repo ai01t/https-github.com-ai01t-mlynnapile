@@ -150,6 +150,14 @@ section{position:relative;min-height:100svh;overflow:hidden;display:flex;align-i
 #location .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 95% 48% at 50% 92%,rgba(110,72,18,.28) 0%,transparent 58%);animation:lA 24s ease-in-out infinite alternate;}
 @keyframes lA{0%{opacity:.55;}100%{opacity:1;transform:scaleY(1.08);}}
 
+/* Štítek pod tlačítkem režimu: krátce ohlásí, že web po dojetí na konec
+   pokračuje v nočním (nebo zpět v denním) režimu. */
+.btn-mode{position:relative;}
+.mode-flag{position:absolute;top:100%;left:50%;transform:translate(-50%,-4px);margin-top:4px;white-space:nowrap;
+  font-family:'Manrope',sans-serif;font-size:.5rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);
+  opacity:0;pointer-events:none;transition:opacity .6s ease,transform .6s ease;}
+.mode-flag.show{opacity:1;transform:translate(-50%,0);}
+
 #contact .bg-css{background:radial-gradient(ellipse 110% 85% at 28% 68%,#160f08 0%,#0b0806 50%,#07060a 100%);}
 #contact .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 52% 44% at 72% 42%,rgba(128,82,18,.22) 0%,transparent 58%);animation:cA 20s ease-in-out infinite alternate;}
 @keyframes cA{0%{opacity:.45;transform:scale(1);}100%{opacity:1;transform:scale(1.09);}}
@@ -1005,6 +1013,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
   <div class="nav-actions">
     <button class="btn-pause" id="pbtn" aria-pressed="false" aria-label="Pause"><span class="pause-icon" aria-hidden="true">II</span></button>
     <button class="btn-mode" id="modeBtn" aria-pressed="false" aria-label="Switch to night mode" title="Switch to night mode">
+      <span class="mode-flag" id="modeFlag" aria-live="polite"></span>
       <span class="mode-icon mode-icon-sun" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
           <circle cx="12" cy="12" r="4.2"></circle>
@@ -3528,6 +3537,113 @@ window.addEventListener('load',()=>{
     },400+i*350);
   });
 });
+
+/* KONEC → POKRAČOVÁNÍ V NOCI: za kontaktem následuje ještě jedna stránka – kopie
+   úvodu v opačném režimu (ze dne noc, z noci den). Jakmile se začne objevovat,
+   web se přepne do toho režimu (mění i videa) a štítek pod měsícem to ohlásí.
+   Když na ni stránka dosedne, tiše se přeskočí na skutečný úvod (vypadá stejně),
+   takže se dál normálně scrolluje dolů – nic nevyjíždí zpátky nahoru. */
+(function(){
+  const hero=document.getElementById('hero');
+  const contact=document.getElementById('contact');
+  const flag=document.getElementById('modeFlag');
+  if(!hero||!contact)return;
+  const loop=hero.cloneNode(true);
+  loop.setAttribute('data-loop','1');
+  loop.setAttribute('aria-hidden','true');
+  loop.inert=true;
+  loop.querySelectorAll('script,.bg-yt-layer').forEach((el)=>el.remove());
+  contact.after(loop);
+  const wrap=loop.querySelector('.bg-video');
+  const video=wrap?.querySelector('video');
+  const source=video?.querySelector('source');
+  const fallback=wrap?.querySelector('.bg-fallback');
+  let switched=false;
+  let loopMode='';
+  let settleTimer=0;
+  let flagTimer=0;
+
+  const otherMode=()=>visualMode==='night'?'day':'night';
+  function heroIdFor(mode){
+    const byMode=BG_VARIANTS.hero?.[mode]||BG_VARIANTS.hero?.day||{};
+    return byMode[getViewportOrientation()]||byMode.horizontal||byMode.vertical||null;
+  }
+  // kopie úvodu ukazuje úvod v režimu, do kterého se přepne
+  function prepareLoop(mode){
+    if(!video||!source||loopMode===mode)return;
+    loopMode=mode;
+    const id=heroIdFor(mode);
+    if(!id)return;
+    wrap.classList.remove('is-revealed','is-playing','has-frame');
+    wrap.classList.toggle('uses-portrait-asset',PORTRAIT_BG_ASSET_IDS.has(id));
+    const poster=`/videos/bg/${id}.jpg?v=${BG_ASSET_REV}`;
+    source.setAttribute('src',`/videos/bg/${id}.mp4?v=${BG_ASSET_REV}`);
+    video.poster=poster;
+    if(fallback)fallback.setAttribute('src',poster);
+    try{video.load();}catch(e){}
+  }
+  if(video){
+    video.muted=true;
+    video.addEventListener('playing',()=>wrap.classList.add('loaded','has-frame','is-playing','is-revealed'));
+  }
+
+  function showFlag(mode){
+    if(!flag)return;
+    flag.textContent=mode==='night'?'Night mode':'Day mode';
+    flag.classList.add('show');
+    clearTimeout(flagTimer);
+    flagTimer=setTimeout(()=>flag.classList.remove('show'),5200);
+  }
+
+  function switchMode(){
+    switched=true;
+    visualMode=otherMode();
+    try{localStorage.setItem('mlyn_mode',visualMode);}catch(e){}
+    applyVisualMode(true);
+    kickBgVideos();
+    showFlag(visualMode);
+  }
+
+  function teleport(){
+    switched=false;
+    const t=video&&!video.paused?video.currentTime:0;
+    const prev=document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior='auto';
+    window.scrollTo(0,0);
+    document.documentElement.style.scrollBehavior=prev;
+    try{window.history.replaceState({},'',window.location.pathname);}catch(e){}
+    handleNativeScroll();
+    // skutečný úvod navazuje ve stejném místě videa
+    const heroVideo=hero.querySelector('.bg-video video');
+    if(heroVideo&&t){try{heroVideo.currentTime=t;}catch(e){}}
+    if(video)video.pause();
+    loopMode='';
+  }
+
+  function sync(){
+    const top=loop.getBoundingClientRect().top;
+    const near=top<innerHeight*1.6;
+    if(near){
+      prepareLoop(switched?visualMode:otherMode());
+      if(video&&video.paused&&!pauseAllVideos)video.play().catch(()=>{});
+    }else if(video&&!video.paused){
+      video.pause();
+    }
+    if(!switched&&top<innerHeight*0.98)switchMode();
+    clearTimeout(settleTimer);
+    if(Math.abs(top)<=2)settleTimer=setTimeout(()=>{
+      if(Math.abs(loop.getBoundingClientRect().top)<=2)teleport();
+    },140);
+  }
+
+  let pending=false;
+  window.addEventListener('scroll',()=>{
+    if(pending)return;
+    pending=true;
+    requestAnimationFrame(()=>{pending=false;sync();});
+  },{passive:true});
+  window.addEventListener('resize',()=>{loopMode='';sync();});
+})();
 
 /* Start: hash → sekce, jinak nahoru; aktivace výchozí sekce */
 window.addEventListener('load',()=>{
