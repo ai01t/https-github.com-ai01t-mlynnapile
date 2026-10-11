@@ -361,6 +361,28 @@ body.pause-active section .content{filter:brightness(1.14);}
 .room-video-wrap{margin-top:auto;padding-top:20px;}
 .room-video-frame{position:relative;aspect-ratio:16 / 9;border:1px solid var(--border);background:#000;overflow:hidden;}
 .room-video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+/* Booking místnosti: zvolená karta zůstane, panel s kalendářem vyjede přes zbylé dvě. */
+.rooms-grid{position:relative;}
+.room-book{margin-top:18px;}
+.room-book .btn-secondary{padding:12px 28px;}
+.room-book .btn-secondary.on{border-color:var(--gold);color:var(--gold);}
+.room-book .btn-secondary:disabled{opacity:.42;cursor:not-allowed;}
+.room-book .btn-secondary:disabled:hover{border-color:var(--border);color:rgba(240,235,226,.7);}
+.studio-booking-panel{position:absolute;top:0;bottom:0;left:calc((100% - 2px) / 3 + 1px);right:0;z-index:6;overflow:hidden;visibility:hidden;pointer-events:none;transition:visibility 0s linear .55s;}
+.studio-booking-panel[data-room="control"]{left:0;right:calc((100% - 2px) / 3 + 1px);}
+.studio-booking-panel.open{visibility:visible;pointer-events:auto;transition:none;}
+/* Obsah vyjíždí od karty zvolené místnosti (clip-path přes iframe Chrome vykresluje jen zčásti). */
+.studio-booking-inner{position:absolute;inset:0;background:#0b0a0d;box-shadow:0 24px 60px rgba(0,0,0,.45);transform:translate3d(-100%,0,0);transition:transform .55s cubic-bezier(.22,.61,.36,1);}
+.studio-booking-panel[data-room="control"] .studio-booking-inner{transform:translate3d(100%,0,0);}
+.studio-booking-panel.open .studio-booking-inner{transform:none;}
+.studio-booking-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0b0a0d;}
+.studio-booking-close{position:absolute;top:10px;left:10px;z-index:2;width:34px;height:34px;border-radius:50%;border:1px solid rgba(201,185,154,.35);background:rgba(7,6,10,.72);color:var(--cream);font-size:1.1rem;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s;}
+.studio-booking-close:hover{border-color:var(--gold);color:var(--gold);}
+/* Bez tří sloupců (mobil, tablet na výšku) jde panel přes celou obrazovku. */
+.studio-booking-panel.fullscreen{position:fixed;inset:0;left:0;right:0;z-index:1200;opacity:0;transition:opacity .3s ease,visibility 0s linear .3s;}
+.studio-booking-panel.fullscreen .studio-booking-inner{transform:none;transition:none;box-shadow:none;}
+.studio-booking-panel.fullscreen.open{opacity:1;transition:opacity .3s ease;}
+.studio-booking-panel.fullscreen .studio-booking-close{top:calc(10px + env(safe-area-inset-top));}
 .gear-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;}
 
 /* ═══ STUDIO ═══ */
@@ -1183,6 +1205,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
                   allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
               </div>
             </div>
+            <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="main" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
           </div>
           <div class="room-card">
             <div class="room-name cs">Studio mlýnice</div><div class="room-name en">Mill Studio</div><div class="room-name de">Mühlenstudio</div>
@@ -1196,6 +1219,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
                   allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
               </div>
             </div>
+            <div class="room-book"><button type="button" class="btn-secondary" disabled aria-disabled="true"><span class="cs">Připravujeme</span><span class="en">Coming soon</span><span class="de">In Vorbereitung</span></button></div>
           </div>
           <div class="room-card">
             <div class="room-name cs">Kontrolní místnost</div><div class="room-name en">Control Room</div><div class="room-name de">Regieraum</div>
@@ -1208,6 +1232,13 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
                 <iframe src="https://www.youtube-nocookie.com/embed/u2ylGCNnV50?autoplay=1&mute=1&loop=1&playlist=u2ylGCNnV50&controls=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
                   allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>
               </div>
+            </div>
+            <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="control" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
+          </div>
+          <div class="studio-booking-panel" id="studioBookingPanel" data-room="main" aria-hidden="true">
+            <div class="studio-booking-inner">
+              <button type="button" class="studio-booking-close" data-studio-booking-close aria-label="Zavřít">×</button>
+              <iframe class="studio-booking-frame" id="studioBookingFrame" title="Booking" allow="autoplay; encrypted-media; picture-in-picture"></iframe>
             </div>
           </div>
         </div>
@@ -1388,6 +1419,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <iframe
               id="bookingEmbedFrame"
               class="residency-booking-frame"
+              allow="autoplay; encrypted-media; picture-in-picture"
               src=""
               title="Booking"
               loading="lazy"
@@ -3036,6 +3068,7 @@ function applyLang(){
     eqEmbedFrame.setAttribute('title',text.equipmentTableTitle);
     eqEmbedFrame.src=`${EQUIPMENT_EMBED_BASE}?lang=${lang}&v=20260914a`;
   }
+  window.syncStudioBookingSrc?.();
   if(bookingEmbedFrame){
     bookingEmbedFrame.setAttribute('title',text.bookingEmbedTitle);
     if(bookingEmbedFrame.getAttribute('src')){
@@ -3384,6 +3417,14 @@ updateNavCompactState();
       passthroughScroll('equipment',data.deltaY,32);
       return;
     }
+    const studioFrame=window.getStudioBookingFrame?.();
+    if(studioFrame&&event.source===studioFrame.contentWindow){
+      if(data.type==='booking-embed-wheel'){
+        if(currentSectionId!=='studio')return;
+        passthroughScroll('studio',data.deltaY,140);
+      }
+      return;
+    }
     if(bookingEmbedFrame&&event.source===bookingEmbedFrame.contentWindow){
       if(data.type==='booking-embed-height'){
         setBookingEmbedHeight(data.h);
@@ -3400,6 +3441,64 @@ updateNavCompactState();
       }
     }
   });
+})();
+
+/* Booking místností ve studiu: panel s kalendářem přes zbylé dvě karty (na počítači),
+   jinak přes celou obrazovku. Kalendář je booking v kompaktním režimu ?room=. */
+(()=>{
+  const panel=document.getElementById('studioBookingPanel');
+  const frame=document.getElementById('studioBookingFrame');
+  const grid=document.querySelector('#studio .rooms-grid');
+  const triggers=[...document.querySelectorAll('[data-studio-booking]')];
+  if(!panel||!frame||!grid||!triggers.length)return;
+  let openRoom=null;
+  const isThreeColumns=()=>{
+    const cs=getComputedStyle(grid);
+    return cs.display==='grid'&&cs.gridTemplateColumns.trim().split(/\s+/).length===3;
+  };
+  const frameSrc=(room)=>`${BOOKING_EMBED_BASE_BY_LANG[lang]||BOOKING_EMBED_BASE_BY_LANG.cs}?embed=1&room=${room}`;
+  const syncTriggers=()=>triggers.forEach((btn)=>{
+    const on=btn.dataset.studioBooking===openRoom;
+    btn.classList.toggle('on',on);
+    btn.setAttribute('aria-expanded',on?'true':'false');
+  });
+  const close=()=>{
+    if(!openRoom)return;
+    openRoom=null;
+    panel.classList.remove('open');
+    panel.setAttribute('aria-hidden','true');
+    syncTriggers();
+  };
+  const open=(room)=>{
+    const fullscreen=!isThreeColumns();
+    const host=fullscreen?document.body:grid;
+    if(panel.parentElement!==host)host.appendChild(panel);
+    panel.classList.toggle('fullscreen',fullscreen);
+    if(openRoom&&openRoom!==room){
+      // přepnutí místnosti: obsah skokem schovat a nechat vyjet od druhé karty
+      const inner=panel.querySelector('.studio-booking-inner');
+      panel.classList.remove('open');
+      if(inner){inner.style.transition='none';panel.dataset.room=room;void inner.offsetWidth;inner.style.transition='';}
+    }
+    panel.dataset.room=room;
+    const src=frameSrc(room);
+    if(frame.getAttribute('src')!==src)frame.setAttribute('src',src);
+    openRoom=room;
+    panel.setAttribute('aria-hidden','false');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>panel.classList.add('open')));
+    syncTriggers();
+  };
+  triggers.forEach((btn)=>btn.addEventListener('click',()=>{
+    const room=btn.dataset.studioBooking;
+    if(openRoom===room)close();else open(room);
+  }));
+  panel.querySelector('[data-studio-booking-close]')?.addEventListener('click',close);
+  document.addEventListener('keydown',(event)=>{if(event.key==='Escape')close();});
+  window.syncStudioBookingSrc=()=>{
+    if(openRoom)frame.setAttribute('src',frameSrc(openRoom));
+    else if(frame.getAttribute('src'))frame.setAttribute('src','');
+  };
+  window.getStudioBookingFrame=()=>frame;
 })();
 
 /* Eager přednačtení všech videí sekcí po startu (odstupňovaně) — žádné načítací kolečko při scrollu */

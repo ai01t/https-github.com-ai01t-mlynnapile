@@ -1404,3 +1404,127 @@
     letter-spacing: 0.12em;
   }
 }
+
+/* ── Kompaktní kalendář místnosti (panel v sekci Studio na hlavní stránce) ──
+   Vlevo svislé video měsíce, vpravo kalendář přes celou zbylou plochu. */
+.studioBooking {
+  --ink-rgb: 240, 235, 226;
+  --surface-rgb: 7, 6, 10;
+  --card-rgb: 16, 14, 18;
+  --edge-rgb: 201, 185, 154;
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  background: #0b0a0d;
+  color: rgba(240, 235, 226, 0.95);
+  overflow: hidden;
+}
+
+.studioMedia {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 9 / 16;
+  overflow: hidden;
+  background: #000;
+}
+
+/* YouTube přes okraje kartě nepřekryje název a logo přehrávače. */
+.studioMedia .cardVideo {
+  transform: scale(1.32);
+}
+
+.studioMedia::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(to right, rgba(11, 10, 13, 0) 72%, rgba(11, 10, 13, 0.9) 100%);
+  pointer-events: none;
+}
+
+.studioCal {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(14px, 3.4vh, 24px) clamp(16px, 3vw, 28px) clamp(10px, 2.4vh, 16px);
+}
+
+.studioHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: clamp(8px, 2vh, 14px);
+}
+
+.studioRoom {
+  display: block;
+  font-size: 0.58rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #c8a96e;
+}
+
+.studioMonth {
+  margin: 4px 0 0;
+  font-size: clamp(1.5rem, 5.4vh, 2.3rem);
+  font-weight: 400;
+  line-height: 1;
+  color: #f0ebe2;
+}
+
+.studioMonth em {
+  font-style: italic;
+  color: #c8a96e;
+}
+
+.studioBooking .weekdays {
+  margin-bottom: 4px;
+}
+
+.studioGrid {
+  flex: 1;
+  min-height: 0;
+  gap: clamp(3px, 0.8vh, 6px);
+}
+
+.studioGrid .dayButton,
+.studioGrid .dayEmpty {
+  aspect-ratio: auto;
+  height: 100%;
+  min-height: 0;
+}
+
+.studioGrid .dayButton {
+  border-radius: 8px;
+  font-size: clamp(0.72rem, 2.3vh, 0.92rem);
+}
+
+.studioBooking .calendarLegend {
+  margin-top: clamp(6px, 1.6vh, 12px);
+}
+
+.studioBooking .modalBackdrop {
+  align-items: flex-start;
+  overflow-y: auto;
+  padding: 14px;
+}
+
+/* Na výšku (mobil): video nahoře, kalendář pod ním. */
+@media (max-aspect-ratio: 1 / 1) {
+  .studioBooking {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 40vh minmax(0, 1fr);
+  }
+
+  .studioMedia {
+    width: 100%;
+    aspect-ratio: auto;
+  }
+
+  .studioMedia::after {
+    background: linear-gradient(to bottom, rgba(11, 10, 13, 0) 60%, rgba(11, 10, 13, 0.92) 100%);
+  }
+}

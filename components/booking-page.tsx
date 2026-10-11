@@ -30,6 +30,7 @@ const START_Y = CALENDAR_START.getFullYear()
 const START_M = CALENDAR_START.getMonth()
 const BOOKING_VIDEO_PLAYBACK_RATE = 0.42
 // Denní záběry natočené v daném měsíci (název videa na YouTube = měsíc).
+// Hrají v denním režimu; v nočním mají přednost lokální noční klipy.
 const VIDEOS_BY_MONTH = [
   "12wlur-ij3A", // leden
   null, // únor
@@ -41,7 +42,7 @@ const VIDEOS_BY_MONTH = [
   null, // srpen
   "9oQ3JNjBwbo", // září
   "Wnn7LyRPdyE", // říjen
-  null, // listopad
+  "NJgVqF3R8J0", // listopad
   null, // prosinec
 ] as const
 
@@ -89,6 +90,7 @@ const BOOKED_RANGES: Record<string, Array<{ start: number; end: number }>> = {
 }
 
 type Locale = "cs" | "en" | "de"
+type StudioRoom = "main" | "control"
 
 type Copy = {
   brandMill: string
@@ -120,6 +122,8 @@ type Copy = {
   bookedHint: string
   legendFree: string
   legendBooked: string
+  rooms: Record<StudioRoom, string>
+  studioInterest: (room: string) => string
   modalTitle: string
   openInEmail: string
   closeDialog: string
@@ -148,8 +152,8 @@ type CalendarMonth = {
   weeks: Array<Array<number | null>>
 }
 
-// Lokální kopie (rychlejší start). Měsíce bez vlastního měsíčního videa
-// zatím mají zástupný klip; noční z nich se v denním režimu prosvětlují.
+// Lokální klipy: v nočním režimu a u měsíců bez denního videa. Noční
+// z nich se v denním režimu prosvětlují (.cardMediaNight).
 const LOCAL_MEDIA_BY_MONTH: Partial<Record<number, { src: string; poster: string; night?: boolean }>> = {
   5: { // červen
     src: "/videos/bg/VDj9aKHnpcw_hq.mp4",
@@ -162,6 +166,16 @@ const LOCAL_MEDIA_BY_MONTH: Partial<Record<number, { src: string; poster: string
   7: { // srpen
     src: "/videos/bg/O431B93W9UY.mp4",
     poster: "/videos/bg/O431B93W9UY.jpg",
+  },
+  8: { // září
+    src: "/videos/bg/CJzYKr3JWC8.mp4",
+    poster: "/videos/bg/CJzYKr3JWC8.jpg",
+    night: true,
+  },
+  9: { // říjen
+    src: "/videos/bg/DY09nnytbjc.mp4",
+    poster: "/videos/bg/DY09nnytbjc.jpg",
+    night: true,
   },
   10: { // listopad
     src: "/videos/bg/QsHqEEj4-60.mp4",
@@ -397,6 +411,8 @@ const copyByLocale: Record<Locale, Copy> = {
     bookedHint: "Šedě označené dny jsou již obsazené.",
     legendFree: "Volno",
     legendBooked: "Obsazeno",
+    rooms: { main: "Hlavní studio", control: "Kontrolní místnost" },
+    studioInterest: (room) => `mám zájem o pronájem prostoru ${room} – Mlýn na Pile.`,
     modalTitle: "Vybraný termín",
     openInEmail: "Otevřít v e-mailu",
     closeDialog: "Zavřít dialog",
@@ -451,6 +467,8 @@ const copyByLocale: Record<Locale, Copy> = {
     bookedHint: "Days marked in grey are already booked.",
     legendFree: "Available",
     legendBooked: "Booked",
+    rooms: { main: "Main Studio", control: "Control Room" },
+    studioInterest: (room) => `I am interested in booking the ${room} – Mill at Pila.`,
     modalTitle: "Selected stay",
     openInEmail: "Open in email",
     closeDialog: "Close dialog",
@@ -505,6 +523,8 @@ const copyByLocale: Record<Locale, Copy> = {
     bookedHint: "Grau markierte Tage sind bereits belegt.",
     legendFree: "Frei",
     legendBooked: "Belegt",
+    rooms: { main: "Hauptstudio", control: "Regieraum" },
+    studioInterest: (room) => `ich interessiere mich für die Buchung: ${room} – Mühle in Pila.`,
     modalTitle: "Gewählter Aufenthalt",
     openInEmail: "Im E-Mail-Programm öffnen",
     closeDialog: "Dialog schließen",
@@ -618,11 +638,15 @@ function buildCalendarWeeks(year: number, month: number) {
   return weeks
 }
 
-function buildMonths(locale: Locale): CalendarMonth[] {
+function buildMonths(locale: Locale, nightMode: boolean): CalendarMonth[] {
   return Array.from({ length: TOTAL }, (_, offset) => {
     const date = new Date(START_Y, START_M + offset, 1)
     const year = date.getFullYear()
     const month = date.getMonth()
+    const dayVideo = VIDEOS_BY_MONTH[month] ?? null
+    const local = LOCAL_MEDIA_BY_MONTH[month]
+    // Ve dne hraje měsíční denní video (lokální kopie, pokud je), v noci lokální klip.
+    const media = !nightMode && dayVideo && !local?.src.includes(dayVideo) ? null : local
 
     return {
       index: offset,
@@ -633,13 +657,11 @@ function buildMonths(locale: Locale): CalendarMonth[] {
       shortTitle: buildCardLabel(date),
       ghostTitle: buildGhostTitle(locale, date),
       gradient: GRADIENTS_BY_MONTH[month],
-      youtubeId: VIDEOS_BY_MONTH[month] ?? null,
-      localVideoSrc: LOCAL_MEDIA_BY_MONTH[month]?.src ?? null,
-      // Svislá videa mají na YouTube náhled v původním poměru (oardefault).
-      localPosterSrc:
-        LOCAL_MEDIA_BY_MONTH[month]?.poster ??
-        (VIDEOS_BY_MONTH[month] ? `https://i.ytimg.com/vi/${VIDEOS_BY_MONTH[month]}/oardefault.jpg` : null),
-      nightClip: LOCAL_MEDIA_BY_MONTH[month]?.night ?? false,
+      youtubeId: dayVideo,
+      localVideoSrc: media?.src ?? null,
+      // Svislá videa mají na YouTube náhled v původním poměru (oar2).
+      localPosterSrc: media?.poster ?? (dayVideo ? `https://i.ytimg.com/vi/${dayVideo}/oar2.jpg` : null),
+      nightClip: media?.night ?? false,
       blockedRanges: BOOKED_RANGES[`${year}-${month}`] ?? [],
       weeks: buildCalendarWeeks(year, month),
     }
@@ -1006,15 +1028,20 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   })
   const [modalOpen, setModalOpen] = useState(false)
   const embedded = searchParams.get("embed") === "1"
+  // Kompaktní kalendář pro konkrétní místnost (panel v sekci Studio na hlavní stránce).
+  const roomParam = searchParams.get("room")
+  const studioRoom: StudioRoom | null = embedded && (roomParam === "main" || roomParam === "control") ? roomParam : null
 
   // Režim sdílíme s hlavní stránkou přes stejný klíč v localStorage,
   // aby booking (i vložený v sekci Ubytování) vypadal stejně jako web.
   useEffect(() => {
+    // Hlavní stránka bez uloženého režimu začíná ve dne, samostatný booking v noci.
     const read = () => {
       try {
-        return window.localStorage.getItem(MODE_STORAGE_KEY) !== "day"
+        const stored = window.localStorage.getItem(MODE_STORAGE_KEY)
+        return embedded ? stored === "night" : stored !== "day"
       } catch {
-        return true
+        return !embedded
       }
     }
     setNightMode(read())
@@ -1024,7 +1051,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     }
     window.addEventListener("storage", onStorage)
     return () => window.removeEventListener("storage", onStorage)
-  }, [])
+  }, [embedded])
 
   const toggleMode = () => {
     setNightMode((current) => {
@@ -1036,7 +1063,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     })
   }
 
-  const months = useMemo(() => buildMonths(locale), [locale])
+  const months = useMemo(() => buildMonths(locale, nightMode), [locale, nightMode])
   const todayStart = useMemo(() => getTodayStart(), [])
   const activeMonth = months[currentIndex]
   const activeMonthGuide = MONTH_GUIDES_CS[activeMonth.month]
@@ -1230,11 +1257,20 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const formattedArrival = arrivalDate ? formatDateForMail(locale, arrivalDate) : ""
   const formattedDeparture = departureDate ? formatDateForMail(locale, departureDate) : ""
   const formattedNights = nights ? copy.nightsLabel(nights) : ""
-  const emailSubject = arrivalDate && departureDate ? copy.emailSubject(formattedArrival, formattedDeparture) : ""
-  const emailBody =
-    arrivalDate && departureDate && nights
-      ? copy.emailBody(formattedArrival, formattedDeparture, copy.nightsLabel(nights))
+  const roomLabel = studioRoom ? copy.rooms[studioRoom] : ""
+  const emailSubject =
+    arrivalDate && departureDate
+      ? studioRoom
+        ? `${roomLabel} – ${formattedArrival} – ${formattedDeparture}`
+        : copy.emailSubject(formattedArrival, formattedDeparture)
       : ""
+  const emailBodyLines =
+    arrivalDate && departureDate && nights
+      ? copy.emailBody(formattedArrival, formattedDeparture, copy.nightsLabel(nights)).split("\n")
+      : []
+  // Ve studiu místo věty o pobytu řádek s konkrétní místností.
+  if (studioRoom && emailBodyLines.length > 2) emailBodyLines[2] = copy.studioInterest(roomLabel)
+  const emailBody = emailBodyLines.join("\n")
   const mailtoHref =
     arrivalDate && departureDate
       ? `mailto:${EMAIL}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
@@ -1300,6 +1336,45 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     })
   }
 
+  const renderDayCell = (month: CalendarMonth, day: number | null, cellIndex: number, interactive: boolean) => {
+    if (day === null) {
+      return <span key={`${month.title}-empty-${cellIndex}`} className={styles.dayEmpty} />
+    }
+
+    const isBlocked = isBlockedDay(month, day)
+    const currentDayDate = getDateAtMonthDay(months, month.index, day)
+    const isPast = currentDayDate < todayStart
+    const isArrival = selection.arrivalMonthIndex === month.index && selection.arrivalDay === day
+    const isDeparture = selection.departureMonthIndex === month.index && selection.departureDay === day
+    const isBetween =
+      arrivalDate !== null && departureDate !== null && currentDayDate > arrivalDate && currentDayDate < departureDate
+
+    return (
+      <button
+        key={`${month.title}-${day}`}
+        type="button"
+        className={cx(
+          styles.dayButton,
+          isPast && styles.dayPast,
+          isBlocked && styles.dayBlocked,
+          !isBlocked && !isPast && styles.dayFree,
+          isArrival && styles.dayArrival,
+          isDeparture && styles.dayDeparture,
+          isBetween && styles.dayBetween,
+          !interactive && styles.dayDisabled,
+        )}
+        disabled={!interactive || isBlocked || isPast}
+        onClick={(event) => {
+          event.stopPropagation()
+          if (!interactive) return
+          handleDayClick(day)
+        }}
+      >
+        <span>{day}</span>
+      </button>
+    )
+  }
+
   const onTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
     touchStartXRef.current = event.changedTouches[0]?.clientX ?? null
   }
@@ -1315,6 +1390,132 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     } else {
       goToIndex(currentIndex - 1)
     }
+  }
+
+  const modalNode =
+    modalOpen && arrivalDate && departureDate && nights ? (
+        <div className={styles.modalBackdrop} onClick={() => setModalOpen(false)}>
+          <div
+            className={styles.modal}
+            role="dialog"
+            aria-modal="true"
+            aria-label={copy.modalTitle}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className={styles.modalClose}
+              aria-label={copy.closeDialog}
+              onClick={() => setModalOpen(false)}
+            >
+              ×
+            </button>
+
+            <span className={styles.modalEyebrow}>{copy.modalTitle}</span>
+            <h2 className={cx(styles.modalTitle, cormorant.className)}>
+              {formattedArrival} <em>→ {formattedDeparture}</em>
+            </h2>
+            <p className={styles.modalMeta}>
+              {copy.selectedDates}: {formattedArrival} – {formattedDeparture} · {formattedNights}
+            </p>
+
+            <pre className={styles.emailDraft}>{emailBody}</pre>
+
+            <a href={mailtoHref} className={styles.modalCta}>
+              {copy.openInEmail}
+            </a>
+          </div>
+        </div>
+      ) : null
+
+  if (studioRoom) {
+    return (
+      <div className={cx(styles.studioBooking, manrope.className, nightMode ? styles.nightMode : styles.dayMode)}>
+        <div className={cx(styles.studioMedia, activeMonth.nightClip && styles.cardMediaNight)} aria-hidden="true">
+          {!paused && activeMonth.localVideoSrc ? (
+            <SeamlessLoopVideo
+              key={activeMonth.localVideoSrc}
+              className={styles.cardLocalVideo}
+              src={activeMonth.localVideoSrc}
+              poster={activeMonth.localPosterSrc ?? undefined}
+              playbackRate={BOOKING_VIDEO_PLAYBACK_RATE}
+            />
+          ) : null}
+          {(paused || !activeMonth.localVideoSrc) && activeMonth.localPosterSrc ? (
+            <div className={styles.cardLocalPoster} style={{ backgroundImage: `url("${activeMonth.localPosterSrc}")` }} />
+          ) : null}
+          {!paused && !activeMonth.localVideoSrc && activeMonth.youtubeId ? (
+            <iframe
+              key={activeMonth.youtubeId}
+              className={styles.cardVideo}
+              src={buildYoutubeUrl(activeMonth.youtubeId)}
+              title=""
+              allow="autoplay; encrypted-media; picture-in-picture"
+              referrerPolicy="strict-origin-when-cross-origin"
+              tabIndex={-1}
+              onLoad={(event) => {
+                setYoutubeIframePlaybackRate(event.currentTarget, BOOKING_VIDEO_PLAYBACK_RATE)
+              }}
+            />
+          ) : null}
+        </div>
+
+        <div className={styles.studioCal}>
+          <div className={styles.studioHead}>
+            <div>
+              <span className={styles.studioRoom}>{roomLabel}</span>
+              <h2 className={cx(styles.studioMonth, cormorant.className)}>
+                {activeMonth.ghostTitle} <em>{activeMonth.year}</em>
+              </h2>
+            </div>
+            <div className={styles.arrowGroup}>
+              <button
+                type="button"
+                className={styles.arrowButton}
+                aria-label={copy.previous}
+                disabled={currentIndex === 0}
+                onClick={() => goToIndex(currentIndex - 1)}
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                className={styles.arrowButton}
+                aria-label={copy.next}
+                disabled={currentIndex === months.length - 1}
+                onClick={() => goToIndex(currentIndex + 1)}
+              >
+                →
+              </button>
+            </div>
+          </div>
+
+          <div className={styles.weekdays}>
+            {copy.weekdays.map((weekday) => (
+              <span key={`studio-${weekday}`} className={styles.weekday}>
+                {weekday}
+              </span>
+            ))}
+          </div>
+
+          <div
+            className={cx(styles.calendarGrid, styles.studioGrid)}
+            style={{ gridTemplateRows: `repeat(${activeMonth.weeks.length}, minmax(0, 1fr))` }}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
+            {activeMonth.weeks.flat().map((day, cellIndex) => renderDayCell(activeMonth, day, cellIndex, true))}
+          </div>
+
+          <div className={styles.calendarLegend} aria-hidden="true">
+            <span><i className={styles.legendFree} />{copy.legendFree}</span>
+            <span><i className={styles.legendBooked} />{copy.legendBooked}</span>
+          </div>
+        </div>
+
+        {modalNode}
+      </div>
+    )
   }
 
   return (
@@ -1485,14 +1686,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               {visibleMonths.map((month, visibleIndex) => {
                 const offset = month.index - currentIndex
                 const isFront = offset === 0
-                const arrivalDateForSelection =
-                  selection.arrivalMonthIndex !== null && selection.arrivalDay !== null
-                    ? getDateAtMonthDay(months, selection.arrivalMonthIndex, selection.arrivalDay)
-                    : null
-                const departureDateForSelection =
-                  selection.departureMonthIndex !== null && selection.departureDay !== null
-                    ? getDateAtMonthDay(months, selection.departureMonthIndex, selection.departureDay)
-                    : null
 
                 return (
                   <div
@@ -1577,49 +1770,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                             </div>
 
                             <div className={styles.calendarGrid}>
-                              {month.weeks.flat().map((day, cellIndex) => {
-                                if (day === null) {
-                                  return <span key={`${month.title}-empty-${cellIndex}`} className={styles.dayEmpty} />
-                                }
-
-                                const isBlocked = isBlockedDay(month, day)
-                                const currentDayDate = getDateAtMonthDay(months, month.index, day)
-                                const isPast = currentDayDate < todayStart
-                                const isArrival =
-                                  selection.arrivalMonthIndex === month.index && selection.arrivalDay === day
-                                const isDeparture =
-                                  selection.departureMonthIndex === month.index && selection.departureDay === day
-                                const isBetween =
-                                  arrivalDateForSelection !== null &&
-                                  departureDateForSelection !== null &&
-                                  currentDayDate > arrivalDateForSelection &&
-                                  currentDayDate < departureDateForSelection
-
-                                return (
-                                  <button
-                                    key={`${month.title}-${day}`}
-                                    type="button"
-                                    className={cx(
-                                      styles.dayButton,
-                                      isPast && styles.dayPast,
-                                      isBlocked && styles.dayBlocked,
-                                      !isBlocked && !isPast && styles.dayFree,
-                                      isArrival && styles.dayArrival,
-                                      isDeparture && styles.dayDeparture,
-                                      isBetween && styles.dayBetween,
-                                      !isFront && styles.dayDisabled,
-                                    )}
-                                    disabled={!isFront || isBlocked || isPast}
-                                    onClick={(event) => {
-                                      event.stopPropagation()
-                                      if (!isFront) return
-                                      handleDayClick(day)
-                                    }}
-                                  >
-                                    <span>{day}</span>
-                                  </button>
-                                )
-                              })}
+                              {month.weeks.flat().map((day, cellIndex) => renderDayCell(month, day, cellIndex, isFront))}
                             </div>
 
                             <div className={styles.calendarLegend} aria-hidden="true">
@@ -1684,40 +1835,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
         </footer>
       )}
 
-      {modalOpen && arrivalDate && departureDate && nights ? (
-        <div className={styles.modalBackdrop} onClick={() => setModalOpen(false)}>
-          <div
-            className={styles.modal}
-            role="dialog"
-            aria-modal="true"
-            aria-label={copy.modalTitle}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              className={styles.modalClose}
-              aria-label={copy.closeDialog}
-              onClick={() => setModalOpen(false)}
-            >
-              ×
-            </button>
-
-            <span className={styles.modalEyebrow}>{copy.modalTitle}</span>
-            <h2 className={cx(styles.modalTitle, cormorant.className)}>
-              {formattedArrival} <em>→ {formattedDeparture}</em>
-            </h2>
-            <p className={styles.modalMeta}>
-              {copy.selectedDates}: {formattedArrival} – {formattedDeparture} · {formattedNights}
-            </p>
-
-            <pre className={styles.emailDraft}>{emailBody}</pre>
-
-            <a href={mailtoHref} className={styles.modalCta}>
-              {copy.openInEmail}
-            </a>
-          </div>
-        </div>
-      ) : null}
+      {modalNode}
     </div>
   )
 }
