@@ -699,7 +699,6 @@ function buildYoutubeUrl(videoId: string) {
     enablejsapi: "1",
     fs: "0",
     playsinline: "1",
-    vq: "hd1080",
   })
 
   return `https://www.youtube.com/embed/${videoId}?${params.toString()}`
@@ -1411,13 +1410,12 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               ×
             </button>
 
-            <span className={styles.modalEyebrow}>{copy.modalTitle}</span>
-            <h2 className={cx(styles.modalTitle, cormorant.className)}>
-              {formattedArrival} <em>→ {formattedDeparture}</em>
-            </h2>
-            <p className={styles.modalMeta}>
-              {copy.selectedDates}: {formattedArrival} – {formattedDeparture} · {formattedNights}
-            </p>
+            <div className={styles.modalHead}>
+              <span className={styles.modalEyebrow}>{copy.modalTitle}</span>
+              <span className={styles.modalDates}>
+                {formattedArrival} – {formattedDeparture} · {formattedNights}
+              </span>
+            </div>
 
             <pre className={styles.emailDraft}>{emailBody}</pre>
 
@@ -1454,7 +1452,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               referrerPolicy="strict-origin-when-cross-origin"
               tabIndex={-1}
               onLoad={(event) => {
-                setYoutubeIframePlaybackRate(event.currentTarget, BOOKING_VIDEO_PLAYBACK_RATE)
+                setYoutubeIframePlaybackRate(event.currentTarget, 1)
               }}
             />
           ) : null}
@@ -1500,7 +1498,6 @@ export default function BookingPage({ locale }: { locale: Locale }) {
 
           <div
             className={cx(styles.calendarGrid, styles.studioGrid)}
-            style={{ gridTemplateRows: `repeat(${activeMonth.weeks.length}, minmax(0, 1fr))` }}
             onTouchStart={onTouchStart}
             onTouchEnd={onTouchEnd}
           >
@@ -1740,7 +1737,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                               referrerPolicy="strict-origin-when-cross-origin"
                               tabIndex={-1}
                               onLoad={(event) => {
-                                setYoutubeIframePlaybackRate(event.currentTarget, BOOKING_VIDEO_PLAYBACK_RATE)
+                                setYoutubeIframePlaybackRate(event.currentTarget, 1)
                               }}
                             />
                           ) : null}

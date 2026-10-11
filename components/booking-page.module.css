@@ -1145,81 +1145,77 @@
 }
 
 .modal {
+  --ink-rgb: 240, 235, 226;
+  --edge-rgb: 201, 185, 154;
   position: relative;
-  width: min(720px, 100%);
-  padding: 34px 32px 30px;
+  width: min(540px, 100%);
+  padding: 24px 24px 22px;
   border-radius: 10px;
   border: 1px solid rgba(var(--edge-rgb), 0.18);
-  background: rgba(12, 11, 15, 0.92);
+  background: rgba(12, 11, 15, 0.94);
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46);
+  color: rgba(var(--ink-rgb), 0.86);
 }
 
 .modalClose {
   position: absolute;
-  top: 14px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
+  top: 8px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
   border: 0;
   background: none;
-  color: rgba(var(--ink-rgb), 0.68);
-  font-size: 1.7rem;
+  color: rgba(var(--ink-rgb), 0.6);
+  font-size: 1.35rem;
   cursor: pointer;
 }
 
+.modalHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+  padding-right: 34px;
+}
+
 .modalEyebrow {
-  display: inline-block;
-  margin-bottom: 16px;
-  font-size: 0.66rem;
+  font-size: 0.6rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(var(--ink-rgb), 0.58);
+  color: rgba(var(--ink-rgb), 0.56);
 }
 
-.modalTitle {
-  margin: 0;
-  font-size: clamp(2.1rem, 5vw, 3.5rem);
-  line-height: 0.94;
-  font-weight: 300;
-  color: var(--cream);
-}
-
-.modalTitle em {
-  font-style: normal;
-  color: rgba(212, 170, 114, 0.86);
-}
-
-.modalMeta {
-  margin: 16px 0 0;
+.modalDates {
   font-size: 0.86rem;
-  line-height: 1.7;
-  color: rgba(var(--ink-rgb), 0.7);
+  font-weight: 500;
+  color: #d4aa72;
+  font-variant-numeric: tabular-nums;
 }
 
 .emailDraft {
-  margin: 24px 0 0;
-  padding: 22px;
+  margin: 16px 0 0;
+  padding: 14px 16px;
   border-radius: 8px;
-  border: 1px solid rgba(var(--edge-rgb), 0.16);
+  border: 1px solid rgba(var(--edge-rgb), 0.14);
   background: rgba(255, 255, 255, 0.03);
   white-space: pre-wrap;
   font-family: "Manrope", sans-serif;
-  font-size: 0.9rem;
-  line-height: 1.8;
-  color: rgba(var(--ink-rgb), 0.78);
+  font-size: 0.78rem;
+  line-height: 1.6;
+  color: rgba(var(--ink-rgb), 0.74);
 }
 
 .modalCta {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 22px;
-  min-height: 48px;
-  padding: 0 22px;
+  margin-top: 16px;
+  min-height: 40px;
+  padding: 0 20px;
   border-radius: 8px;
   border: 1px solid rgba(212, 170, 114, 0.4);
   text-decoration: none;
-  color: var(--cream);
+  color: #f0ebe2;
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -1228,7 +1224,7 @@
 
 .modalCta:hover {
   border-color: rgba(212, 170, 114, 0.74);
-  color: var(--gold-light);
+  color: #e4c290;
   background: rgba(212, 170, 114, 0.08);
 }
 
@@ -1446,9 +1442,15 @@
 .studioCal {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
   min-height: 0;
-  padding: clamp(14px, 3.4vh, 24px) clamp(16px, 3vw, 28px) clamp(10px, 2.4vh, 16px);
+  padding: 14px clamp(16px, 3vw, 28px);
+}
+
+.studioCal > * {
+  width: min(100%, 300px);
 }
 
 .studioHead {
@@ -1456,12 +1458,12 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 12px;
-  margin-bottom: clamp(8px, 2vh, 14px);
+  margin-bottom: 14px;
 }
 
 .studioRoom {
   display: block;
-  font-size: 0.58rem;
+  font-size: 0.54rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: #c8a96e;
@@ -1469,7 +1471,7 @@
 
 .studioMonth {
   margin: 4px 0 0;
-  font-size: clamp(1.5rem, 5.4vh, 2.3rem);
+  font-size: 1.7rem;
   font-weight: 400;
   line-height: 1;
   color: #f0ebe2;
@@ -1477,33 +1479,100 @@
 
 .studioMonth em {
   font-style: italic;
+  font-size: 0.8em;
   color: #c8a96e;
 }
 
+.studioBooking .arrowButton {
+  width: 30px;
+  height: 30px;
+  font-size: 0.74rem;
+}
+
 .studioBooking .weekdays {
-  margin-bottom: 4px;
+  gap: 5px;
+  margin-bottom: 6px;
+}
+
+.studioBooking .weekday {
+  height: 14px;
+  font-size: 0.5rem;
+  font-weight: 500;
+  color: rgba(240, 235, 226, 0.42);
 }
 
 .studioGrid {
-  flex: 1;
-  min-height: 0;
-  gap: clamp(3px, 0.8vh, 6px);
-}
-
-.studioGrid .dayButton,
-.studioGrid .dayEmpty {
-  aspect-ratio: auto;
-  height: 100%;
-  min-height: 0;
+  gap: 5px;
 }
 
 .studioGrid .dayButton {
-  border-radius: 8px;
-  font-size: clamp(0.72rem, 2.3vh, 0.92rem);
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.studioGrid .dayButton:hover:not(:disabled) {
+  transform: none;
+}
+
+.studioGrid .dayFree {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(146, 214, 166, 0.42);
+  color: #e6f3e9;
+}
+
+.studioGrid .dayFree:hover:not(:disabled) {
+  background: rgba(124, 196, 144, 0.18);
+}
+
+.studioGrid .dayBlocked {
+  background: rgba(206, 88, 72, 0.2);
+  box-shadow: none;
+  color: rgba(255, 214, 204, 0.5);
+}
+
+.studioGrid .dayBlocked span {
+  text-decoration-color: rgba(255, 214, 204, 0.5);
+}
+
+.studioGrid .dayPast {
+  background: transparent;
+  box-shadow: none;
+}
+
+.studioGrid .dayBetween {
+  background: rgba(222, 180, 120, 0.22);
+  box-shadow: none;
+  color: #fff1dc;
+}
+
+.studioGrid .dayArrival,
+.studioGrid .dayDeparture {
+  background: #d4aa72;
+  box-shadow: none;
+  color: #1b1510;
+  font-weight: 700;
 }
 
 .studioBooking .calendarLegend {
-  margin-top: clamp(6px, 1.6vh, 12px);
+  margin-top: 12px;
+  font-size: 0.5rem;
+  color: rgba(240, 235, 226, 0.56);
+}
+
+.studioBooking .calendarLegend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.studioBooking .legendFree {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgba(146, 214, 166, 0.8);
+}
+
+.studioBooking .legendBooked {
+  background: rgba(206, 88, 72, 0.6);
 }
 
 .studioBooking .modalBackdrop {
