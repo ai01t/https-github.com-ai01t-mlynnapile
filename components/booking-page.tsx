@@ -70,19 +70,20 @@ const BOOKED_RANGES: Record<string, Array<{ start: number; end: number }>> = {
   "2026-9": [ // říjen 2026
     { start: 2, end: 2 },
     { start: 9, end: 9 },
-    { start: 16, end: 16 },
-    { start: 23, end: 23 },
+    { start: 16, end: 17 },
+    { start: 23, end: 24 },
     { start: 30, end: 31 },
   ],
   "2026-10": [ // listopad 2026
-    { start: 13, end: 13 },
-    { start: 21, end: 21 },
+    { start: 1, end: 1 },
+    { start: 13, end: 14 },
+    { start: 21, end: 22 },
   ],
   "2026-11": [ // prosinec 2026
-    { start: 4, end: 4 },
-    { start: 11, end: 11 },
+    { start: 4, end: 5 },
+    { start: 11, end: 12 },
     { start: 19, end: 19 },
-    { start: 21, end: 27 },
+    { start: 21, end: 28 },
   ],
 }
 
@@ -116,6 +117,10 @@ type Copy = {
   next: string
   selectionHint: string
   bookedHint: string
+  legendFree: string
+  legendBooked: string
+  availabilityTitle: string
+  noFreeDays: string
   modalTitle: string
   openInEmail: string
   closeDialog: string
@@ -394,6 +399,10 @@ const copyByLocale: Record<Locale, Copy> = {
     next: "Další měsíc",
     selectionHint: "Vyber příjezd a odjezd přímo v kalendáři přední karty.",
     bookedHint: "Šedě označené dny jsou již obsazené.",
+    legendFree: "Volno",
+    legendBooked: "Obsazeno",
+    availabilityTitle: "Termíny v tomto měsíci",
+    noFreeDays: "V tomto měsíci už není nic volného.",
     modalTitle: "Vybraný termín",
     openInEmail: "Otevřít v e-mailu",
     closeDialog: "Zavřít dialog",
@@ -446,6 +455,10 @@ const copyByLocale: Record<Locale, Copy> = {
     next: "Next month",
     selectionHint: "Choose arrival and departure directly in the calendar of the front card.",
     bookedHint: "Days marked in grey are already booked.",
+    legendFree: "Available",
+    legendBooked: "Booked",
+    availabilityTitle: "Dates this month",
+    noFreeDays: "Nothing left available this month.",
     modalTitle: "Selected stay",
     openInEmail: "Open in email",
     closeDialog: "Close dialog",
@@ -498,6 +511,10 @@ const copyByLocale: Record<Locale, Copy> = {
     next: "Nächster Monat",
     selectionHint: "Wähle An- und Abreise direkt im Kalender der vorderen Karte.",
     bookedHint: "Grau markierte Tage sind bereits belegt.",
+    legendFree: "Frei",
+    legendBooked: "Belegt",
+    availabilityTitle: "Termine in diesem Monat",
+    noFreeDays: "In diesem Monat ist nichts mehr frei.",
     modalTitle: "Gewählter Aufenthalt",
     openInEmail: "Im E-Mail-Programm öffnen",
     closeDialog: "Dialog schließen",
@@ -773,6 +790,29 @@ function isBlockedDay(month: CalendarMonth, day: number) {
   return month.blockedRanges.some((range) => day >= range.start && day <= range.end)
 }
 
+// Souvislé úseky dnů od dneška do konce měsíce, rozdělené na volné a obsazené.
+function getAvailabilityRuns(month: CalendarMonth, todayStart: Date) {
+  const daysInMonth = new Date(month.year, month.month + 1, 0).getDate()
+  const runs: Array<{ start: number; end: number; booked: boolean }> = []
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    if (new Date(month.year, month.month, day) < todayStart) continue
+    const booked = isBlockedDay(month, day)
+    const last = runs[runs.length - 1]
+    if (last && last.booked === booked && last.end === day - 1) last.end = day
+    else runs.push({ start: day, end: day, booked })
+  }
+  return runs
+}
+
+function formatDayRun(locale: Locale, month: CalendarMonth, start: number, end: number) {
+  if (locale === "en") {
+    const name = new Intl.DateTimeFormat("en", { month: "short" }).format(month.date)
+    return start === end ? `${name} ${start}` : `${name} ${start}–${end}`
+  }
+  const m = month.month + 1
+  return start === end ? `${start}. ${m}.` : `${start}.–${end}. ${m}.`
+}
+
 function rangeOverlapsBlocked(month: CalendarMonth, arrivalDay: number, departureDay: number) {
   return month.blockedRanges.some((range) => !(departureDay < range.start || arrivalDay > range.end))
 }
@@ -1030,6 +1070,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const todayStart = useMemo(() => getTodayStart(), [])
   const activeMonth = months[currentIndex]
   const activeMonthGuide = MONTH_GUIDES_CS[activeMonth.month]
+  const activeRuns = useMemo(() => getAvailabilityRuns(activeMonth, todayStart), [activeMonth, todayStart])
   const visibleMonths = months.slice(currentIndex, Math.min(currentIndex + 4, months.length))
 
   useEffect(() => {
@@ -1593,6 +1634,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                                       styles.dayButton,
                                       isPast && styles.dayPast,
                                       isBlocked && styles.dayBlocked,
+                                      !isBlocked && !isPast && styles.dayFree,
                                       isArrival && styles.dayArrival,
                                       isDeparture && styles.dayDeparture,
                                       isBetween && styles.dayBetween,
@@ -1610,6 +1652,11 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                                 )
                               })}
                             </div>
+
+                            <div className={styles.calendarLegend} aria-hidden="true">
+                              <span><i className={styles.legendFree} />{copy.legendFree}</span>
+                              <span><i className={styles.legendBooked} />{copy.legendBooked}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -1620,6 +1667,23 @@ export default function BookingPage({ locale }: { locale: Locale }) {
             </div>
 
           </div>
+
+            <section className={styles.availability} aria-label={copy.availabilityTitle}>
+              <h3>{copy.availabilityTitle}</h3>
+              {activeRuns.some((run) => !run.booked) ? null : <p className={styles.availabilityEmpty}>{copy.noFreeDays}</p>}
+              <ul className={styles.availabilityList}>
+                {activeRuns.map((run) => (
+                  <li
+                    key={`${run.start}-${run.end}`}
+                    className={run.booked ? styles.availabilityBooked : styles.availabilityFree}
+                  >
+                    <span className={styles.availabilityDot} />
+                    <span className={styles.availabilityDates}>{formatDayRun(locale, activeMonth, run.start, run.end)}</span>
+                    <span className={styles.availabilityState}>{run.booked ? copy.legendBooked : copy.legendFree}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
 
             {activeMonthGuide ? (
               <section className={styles.monthGuide}>

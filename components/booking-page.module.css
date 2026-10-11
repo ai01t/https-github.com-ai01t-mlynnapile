@@ -911,122 +911,99 @@
 }
 
 .calendarPanelFront {
-  width: fit-content;
-  max-width: 224px;
-  max-height: 294px;
-  overflow: hidden;
-  padding: 8px 8px 7px;
-  border-radius: 10px;
-  background: linear-gradient(180deg, rgba(var(--card-rgb), 0.16) 0%, rgba(var(--card-rgb), 0.24) 100%);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
+  width: 100%;
+  padding: 12px 12px 10px;
+  border-radius: 14px;
+  background: rgba(10, 9, 12, 0.6);
+  border-color: rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  backdrop-filter: blur(14px) saturate(1.15);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
 }
 
 .cardClipFront:hover .calendarPanelFront {
   transform: translateY(-2px);
-  background: linear-gradient(180deg, rgba(var(--card-rgb), 0.22) 0%, rgba(var(--card-rgb), 0.3) 100%);
-  border-color: rgba(var(--ink-rgb), 0.12);
-  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.2);
+  background: rgba(10, 9, 12, 0.66);
+  box-shadow: 0 20px 38px rgba(0, 0, 0, 0.32);
 }
 
 /* Náhledové karty ukazují celý kalendář, jen decentněji než přední. */
 .calendarPanelPreview {
   padding: 14px 14px 10px;
+  border-radius: 12px;
 }
 
 .calendarHead {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .calendarYear {
-  position: relative;
   display: inline-flex;
-  font-size: 0.44rem;
+  font-size: 0.58rem;
+  font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(var(--ink-rgb), 0.64);
-  text-align: right;
+  color: rgba(var(--ink-rgb), 0.78);
+}
+
+.weekdays,
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
 }
 
 .weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 26px);
-  gap: 3px;
-  margin-bottom: 6px;
-}
-
-.weekday {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  width: 26px;
-  height: 18px;
-  font-size: 0.46rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(var(--ink-rgb), 0.56);
-}
-
-.calendarYear::before,
-.weekday::before,
-.dayButton span::before {
-  content: "";
-  position: absolute;
-  inset: -2px -4px;
-  border-radius: 4px;
-  background: rgba(var(--card-rgb), 0.52);
-  opacity: 0;
-  transition: opacity 0.22s ease;
-  z-index: -1;
-}
-
-.cardClip:hover .calendarYear::before,
-.cardClip:hover .weekday::before,
-.cardClip:hover .dayButton span::before {
-  opacity: 1;
+  margin-bottom: 5px;
 }
 
 .calendarGrid {
-  display: grid;
-  grid-template-columns: repeat(7, 26px);
-  gap: 3px;
   align-content: start;
 }
 
+.weekday {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 18px;
+  font-size: 0.54rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(var(--ink-rgb), 0.62);
+}
+
 .dayEmpty {
-  width: 26px;
-  height: 26px;
+  aspect-ratio: 1;
 }
 
 .dayButton {
   appearance: none;
-  width: 26px;
-  height: 26px;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
   border: 0;
-  border-radius: 6px;
+  border-radius: 7px;
   background: transparent;
   color: rgba(var(--ink-rgb), 0.95);
-  font-size: 0.58rem;
-  font-weight: 400;
+  font: inherit;
+  font-size: 0.7rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: transform 0.16s ease, background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
 }
 
 .dayButton span {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.4em;
-  min-height: 1.4em;
 }
 
 .dayButton:hover:not(:disabled) {
   transform: translateY(-1px);
-  background: transparent;
 }
 
 .dayDisabled {
@@ -1037,15 +1014,23 @@
   transform: none;
 }
 
-/* Dny, které už proběhly (jen v aktuálním měsíci) */
-.dayPast {
-  opacity: 0.3;
-  cursor: default;
+/* Barvy dnů: zelená = volno, cihlová = obsazeno. Dvojitá třída kvůli
+   .dayMode .dayButton, které jinak přebíjí barvu textu. */
+.calendarGrid .dayFree {
+  background: rgba(124, 196, 144, 0.2);
+  box-shadow: inset 0 0 0 1px rgba(146, 214, 166, 0.4);
+  color: #f1fbf3;
 }
 
-.dayBlocked {
-  background: transparent;
-  color: rgba(255, 214, 195, 0.72);
+.calendarGrid .dayFree:hover:not(:disabled) {
+  background: rgba(124, 196, 144, 0.38);
+}
+
+.calendarGrid .dayBlocked {
+  background: rgba(206, 88, 72, 0.38);
+  box-shadow: inset 0 0 0 1px rgba(232, 120, 104, 0.32);
+  color: rgba(255, 224, 216, 0.72);
+  cursor: not-allowed;
 }
 
 /* Číslo dne je v inline-flex spanu, kam se text-decoration z tlačítka
@@ -1053,20 +1038,151 @@
 .dayBlocked span {
   text-decoration: line-through;
   text-decoration-thickness: 1px;
-  text-decoration-color: rgba(255, 214, 195, 0.9);
+  text-decoration-color: rgba(255, 224, 216, 0.85);
 }
 
-.dayArrival,
-.dayDeparture {
-  background: rgba(212, 170, 114, 0.86);
+/* Dny, které už proběhly (jen v aktuálním měsíci) */
+.calendarGrid .dayPast {
+  background: transparent;
+  box-shadow: none;
+  opacity: 0.32;
+  cursor: default;
+}
+
+.calendarGrid .dayArrival,
+.calendarGrid .dayDeparture {
+  background: rgba(222, 180, 120, 0.95);
+  box-shadow: 0 8px 20px rgba(176, 141, 87, 0.35);
   color: #1b1510;
-  box-shadow: 0 10px 24px rgba(176, 141, 87, 0.3);
+  font-weight: 700;
 }
 
-.dayBetween {
-  background: rgba(212, 170, 114, 0.22);
-  color: rgba(255, 238, 210, 0.96);
-  box-shadow: inset 0 0 0 1px rgba(212, 170, 114, 0.1);
+.calendarGrid .dayBetween {
+  background: rgba(222, 180, 120, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(222, 180, 120, 0.3);
+  color: #fff4e2;
+}
+
+.calendarLegend {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 9px;
+  font-size: 0.56rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(var(--ink-rgb), 0.74);
+}
+
+.calendarLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.calendarLegend i {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+}
+
+.legendFree {
+  background: rgba(124, 196, 144, 0.6);
+  box-shadow: inset 0 0 0 1px rgba(146, 214, 166, 0.8);
+}
+
+.legendBooked {
+  background: rgba(206, 88, 72, 0.75);
+}
+
+/* Přehled termínů pod kartami — čitelný i na mobilu, kde se karty zmenšují. */
+.availability {
+  margin-top: 22px;
+  max-width: 520px;
+}
+
+.availability h3 {
+  margin: 0 0 12px;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(212, 170, 114, 0.82);
+}
+
+.dayMode .availability h3 {
+  color: var(--gold-light);
+}
+
+.availabilityEmpty {
+  margin: 0 0 10px;
+  font-size: 0.76rem;
+  color: rgba(var(--ink-rgb), 0.7);
+}
+
+.availabilityList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.availabilityList li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px 6px 10px;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  line-height: 1.2;
+}
+
+.availabilityDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.availabilityDates {
+  color: rgba(var(--ink-rgb), 0.92);
+  font-variant-numeric: tabular-nums;
+}
+
+.availabilityState {
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.availabilityFree {
+  color: #7cc490;
+  border-color: rgba(124, 196, 144, 0.45);
+  background: rgba(124, 196, 144, 0.1);
+}
+
+.availabilityBooked {
+  color: #d86a5a;
+  border-color: rgba(206, 88, 72, 0.32);
+  background: rgba(206, 88, 72, 0.06);
+}
+
+.availabilityBooked .availabilityDates {
+  color: rgba(var(--ink-rgb), 0.55);
+}
+
+.dayMode .availabilityFree {
+  color: #2f7a44;
+  border-color: rgba(47, 122, 68, 0.4);
+  background: rgba(47, 122, 68, 0.08);
+}
+
+.dayMode .availabilityBooked {
+  color: #a8402f;
+  border-color: rgba(168, 64, 47, 0.3);
+  background: rgba(168, 64, 47, 0.05);
 }
 
 .footer {
@@ -1338,14 +1454,9 @@
     padding: 14px 12px 12px;
   }
 
-  .weekdays,
-  .calendarGrid {
-    gap: 5px;
-  }
-
   .dayButton {
     border-radius: 8px;
-    font-size: 0.74rem;
+    font-size: 0.78rem;
   }
 
   .modalBackdrop {
