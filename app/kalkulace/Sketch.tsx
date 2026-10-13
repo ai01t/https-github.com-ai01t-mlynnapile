@@ -6,7 +6,7 @@
 // Souřadnice jsou přímo v centimetrech (1 jednotka SVG = 1 cm).
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, Eraser, Image as ImageIcon, MousePointerClick, PenLine, Shapes, X } from "lucide-react";
+import { Check, Eraser, Image as ImageIcon, MousePointerClick, PenLine, Plus, Shapes, X } from "lucide-react";
 import { f2, n, uid } from "./core";
 
 type Pt = { x: number; y: number };
@@ -243,8 +243,24 @@ const rectFromWalls = (pts: Pt[], wallsList: any[], editedIndex: number) => {
 export default function SketchModal({ room, works, onApply, close }: any) {
   const hasPlan = room.plan?.points?.length >= 3;
   const [mode, setMode] = useState(hasPlan ? "edit" : "start"); // start | draw | edit
-  const [points, setPoints] = useState<Pt[]>(hasPlan ? room.plan.points : []);
-  const [walls, setWalls] = useState<any[]>(room.walls ?? []);
+  const [mainPoints, setMainPoints] = useState<Pt[]>(hasPlan ? room.plan.points : []);
+  const [mainWalls, setMainWalls] = useState<any[]>(room.walls ?? []);
+  // Místnosti dokreslené vedle té hlavní – po použití z nich vzniknou nové místnosti.
+  const [extras, setExtras] = useState<{ name: string; points: Pt[]; walls: any[] }[]>([]);
+  // null = upravuje se hlavní místnost, číslo = pořadí v extras
+  const [activeExtra, setActiveExtra] = useState<number | null>(null);
+
+  const points = activeExtra === null ? mainPoints : extras[activeExtra]?.points ?? [];
+  const walls = activeExtra === null ? mainWalls : extras[activeExtra]?.walls ?? [];
+  const resolve = <T,>(updater: T | ((prev: T) => T), prev: T): T => (typeof updater === "function" ? (updater as (p: T) => T)(prev) : updater);
+  const setPoints = (updater: Pt[] | ((prev: Pt[]) => Pt[])) => {
+    if (activeExtra === null) return setMainPoints((prev) => resolve(updater, prev));
+    setExtras((prev) => prev.map((item, i) => (i === activeExtra ? { ...item, points: resolve(updater, item.points) } : item)));
+  };
+  const setWalls = (updater: any[] | ((prev: any[]) => any[])) => {
+    if (activeExtra === null) return setMainWalls((prev) => resolve(updater, prev));
+    setExtras((prev) => prev.map((item, i) => (i === activeExtra ? { ...item, walls: resolve(updater, item.walls) } : item)));
+  };
   const [stroke, setStroke] = useState<Pt[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drag, setDrag] = useState<number | null>(null);
@@ -297,11 +313,12 @@ export default function SketchModal({ room, works, onApply, close }: any) {
   };
 
   const viewBox = useMemo(() => {
-    if (mode !== "edit" || points.length < 3) return `0 0 ${CANVAS.w} ${CANVAS.h}`;
-    const box = bbox(points);
+    const all = [points, mainPoints, ...extras.map((item) => item.points)].filter((pts) => pts.length >= 3).flat();
+    if (mode !== "edit" || all.length < 3) return `0 0 ${CANVAS.w} ${CANVAS.h}`;
+    const box = bbox(all);
     const pad = 130;
     return `${box.minX - pad} ${box.minY - pad} ${box.maxX - box.minX + pad * 2} ${box.maxY - box.minY + pad * 2}`;
-  }, [mode, drag === null ? points : null]); // během tažení se výřez nemění (nechvěje se)
+  }, [mode, drag === null ? points : null, mainPoints, extras]); // během tažení se výřez nemění (nechvěje se)
 
   const labels = useMemo(() => (points.length >= 3 ? wallLabels(points, walls) : []), [points, walls]);
 
@@ -355,6 +372,13 @@ export default function SketchModal({ room, works, onApply, close }: any) {
       if (i === index) return;
       if (Math.abs(p.x - x) <= MAGNET) x = p.x; // magnet drží pravé úhly
       if (Math.abs(p.y - y) <= MAGNET) y = p.y;
+    });
+    // přichycení k rohům sousedních místností – obrysy pak na sebe navazují
+    otherPlans.forEach((plan) => {
+      plan.points.forEach((p) => {
+        if (Math.abs(p.x - x) <= MAGNET) x = p.x;
+        if (Math.abs(p.y - y) <= MAGNET) y = p.y;
+      });
     });
     // délky obou dotčených stěn se přepisují rovnou při tažení, ne až po puštění
     const next = points.map((p, i) => (i === index ? { x, y } : p));
@@ -425,7 +449,41 @@ export default function SketchModal({ room, works, onApply, close }: any) {
     return () => clearTimeout(timer);
   }, [mirror, walls]);
 
-  const apply = () => onApply({ points }, walls.map((wall) => ({ ...wall, width: Math.max(1, Math.round(n(wall.width))), height: Math.max(1, Math.round(n(wall.height))) || defaultHeight })));
+  // Obrysy ostatních místností – kreslí se jako podklad a rohy k nim přichytávají.
+  const otherPlans = [
+    ...(activeExtra === null ? [] : [{ label: room.name, points: mainPoints, index: null as number | null }]),
+    ...extras.map((item, i) => ({ label: item.name, points: item.points, index: i })).filter((item) => item.index !== activeExtra),
+  ].filter((item) => item.points.length >= 3);
+
+  /** Nová místnost navazující zprava na právě upravovaný obrys. */
+  const addRoom = () => {
+    const base = points.length >= 3 ? bbox(points) : { minX: 120, minY: 90, maxX: 520, maxY: 390 };
+    const width = 400;
+    const height = Math.max(200, base.maxY - base.minY);
+    const corner = { x: base.maxX, y: base.minY };
+    const pts = [
+      { x: corner.x, y: corner.y },
+      { x: corner.x + width, y: corner.y },
+      { x: corner.x + width, y: corner.y + height },
+      { x: corner.x, y: corner.y + height },
+    ];
+    // jen popisek v náčrtu – skutečné jméno přidělí kalkulačka podle počtu místností
+    const name = extras.length ? `Nová místnost ${extras.length + 1}` : "Nová místnost";
+    setExtras((prev) => [...prev, { name, points: pts, walls: syncWalls(pts, [], null, defaultHeight) }]);
+    setActiveExtra(extras.length);
+    setSelected(null);
+    cancelMirror();
+  };
+
+  const normalizeWalls = (list: any[]) =>
+    list.map((wall) => ({ ...wall, width: Math.max(1, Math.round(n(wall.width))), height: Math.max(1, Math.round(n(wall.height))) || defaultHeight }));
+
+  const apply = () =>
+    onApply(
+      { points: mainPoints },
+      normalizeWalls(mainWalls),
+      extras.filter((item) => item.points.length >= 3).map((item) => ({ name: item.name, plan: { points: item.points }, walls: normalizeWalls(item.walls) })),
+    );
 
   const selectedWall = selected !== null ? walls[selected] : null;
 
@@ -457,9 +515,20 @@ export default function SketchModal({ room, works, onApply, close }: any) {
               </button>
             )}
             {mode === "edit" && (
+              <button
+                type="button"
+                onClick={addRoom}
+                title="Dokreslí sousední místnost navazující zprava – rohy se k sobě přichytávají"
+                className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] px-3 py-2 text-sm font-bold hover:bg-[var(--bg-soft)]"
+              >
+                <Plus className="h-4 w-4" />
+                Přikreslit místnost
+              </button>
+            )}
+            {mode === "edit" && (
               <button type="button" onClick={apply} className="inline-flex items-center gap-2 rounded-[var(--radius)] bg-[var(--brand)] px-3 py-2 text-sm font-bold text-white shadow-sm hover:bg-[var(--brand-dark)]">
                 <Check className="h-4 w-4" />
-                Použít půdorys ({points.length} stěn)
+                Použít půdorys{extras.length ? ` (${extras.length + 1} místnosti)` : ` (${points.length} stěn)`}
               </button>
             )}
             <button type="button" onClick={close} className="inline-flex items-center gap-2 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] px-3 py-2 text-sm font-bold hover:bg-[var(--bg-soft)]">
@@ -532,6 +601,16 @@ export default function SketchModal({ room, works, onApply, close }: any) {
               <svg ref={svgRef} viewBox={viewBox} className="w-full touch-none rounded-[var(--radius-sm)] border-2 border-[var(--line)] bg-white" onClick={() => setSelected(null)}>
                 {underlay && <image href={underlay} x={0} y={0} width={CANVAS.w} height={CANVAS.h} preserveAspectRatio="xMidYMid meet" opacity={underlayOpacity / 100} style={{ pointerEvents: "none" }} />}
                 <Grid />
+                {/* ostatní místnosti jako podklad – klikem se přepne úprava na ně */}
+                {otherPlans.map((plan) => {
+                  const c = centroid(plan.points);
+                  return (
+                    <g key={`plan-${plan.index ?? "main"}`} className="cursor-pointer" onClick={(event) => { event.stopPropagation(); setActiveExtra(plan.index); setSelected(null); cancelMirror(); }}>
+                      <polygon points={plan.points.map((p) => `${p.x},${p.y}`).join(" ")} fill="#94a3b8" fillOpacity="0.1" stroke="#94a3b8" strokeWidth="5" strokeLinejoin="round" />
+                      <text x={c.x} y={c.y} textAnchor="middle" fontSize="18" fontWeight="700" fill="#94a3b8">{plan.label}</text>
+                    </g>
+                  );
+                })}
                 <polygon points={points.map((p) => `${p.x},${p.y}`).join(" ")} fill="var(--brand)" fillOpacity="0.06" stroke="none" />
                 {/* stěny */}
                 {points.map((p, i) => {

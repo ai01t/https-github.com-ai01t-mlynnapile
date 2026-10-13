@@ -1305,11 +1305,15 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
         <SketchModal
           room={{ ...activeRoom, walls: activeRoom.walls.filter((wall) => !wall.ceiling) }}
           works={works}
-          onApply={(plan, sketchWalls) => {
-            // strop se náčrtem nemění – zůstává na konci seznamu
-            setRooms((prev) => prev.map((room) => (room.id === activeRoom.id ? { ...room, plan, walls: [...sketchWalls, ...room.walls.filter((wall) => wall.ceiling)] } : room)));
+          onApply={(plan, sketchWalls, extraRooms = []) => {
+            setRooms((prev) => {
+              // strop se náčrtem nemění – zůstává na konci seznamu
+              const updated = prev.map((room) => (room.id === activeRoom.id ? { ...room, plan, walls: [...sketchWalls, ...room.walls.filter((wall) => wall.ceiling)] } : room));
+              // místnosti dokreslené vedle se založí jako nové
+              return [...updated, ...extraRooms.map((extra, index) => ({ ...makeRoom(updated.length + index + 1), plan: extra.plan, walls: extra.walls }))];
+            });
             setSketchOpen(false);
-            flash("Půdorys použit ✓");
+            flash(extraRooms.length ? `Půdorys použit · ${extraRooms.length} nová místnost ✓` : "Půdorys použit ✓");
           }}
           close={() => setSketchOpen(false)}
         />
