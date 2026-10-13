@@ -3688,10 +3688,12 @@ window.addEventListener('load',()=>{
       syncBackgroundVideos();
     }
   }
-  // ruční přepnutí režimu: aktuální kolo převezme zvolený režim
+  // ruční přepnutí režimu: aktuální kolo převezme zvolený režim a ikona
+  // přepnutí ohlásí stejnou animací jako automatické
   if(modeBtn)modeBtn.addEventListener('click',()=>{
     const n=lap.get(currentSection())||0;
     baseNight=(visualMode==='night')!==(n%2===1);
+    showFlag(visualMode);
   });
   let pending=false;
   window.addEventListener('scroll',()=>{
