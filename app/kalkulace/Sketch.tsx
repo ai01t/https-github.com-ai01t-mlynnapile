@@ -248,6 +248,11 @@ export default function SketchModal({ room, works, onApply, close }: any) {
   const [stroke, setStroke] = useState<Pt[]>([]);
   const [selected, setSelected] = useState<number | null>(null);
   const [drag, setDrag] = useState<number | null>(null);
+  // Většina pokojů má protilehlé strany stejné, tak ji nabídneme – ale až po
+  // odpočtu, ať se dá zadat i místnost, která pravidelná není.
+  const [mirror, setMirror] = useState<{ target: number; value: number; left: number } | null>(null);
+  const cancelMirror = () => setMirror(null);
+
   const [underlay, setUnderlay] = useState<string | null>(null); // importovaný nákres architekta (podklad k obkreslení)
   const [underlayOpacity, setUnderlayOpacity] = useState(45);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -351,7 +356,13 @@ export default function SketchModal({ room, works, onApply, close }: any) {
       if (Math.abs(p.x - x) <= MAGNET) x = p.x; // magnet drží pravé úhly
       if (Math.abs(p.y - y) <= MAGNET) y = p.y;
     });
-    setPoints((prev) => prev.map((p, i) => (i === index ? { x, y } : p)));
+    // délky obou dotčených stěn se přepisují rovnou při tažení, ne až po puštění
+    const next = points.map((p, i) => (i === index ? { x, y } : p));
+    const touched = new Set([index, (index - 1 + next.length) % next.length]);
+    setPoints(next);
+    setWalls((prev) => syncWalls(next, prev, touched, defaultHeight));
+    // tažením si délku určuje uživatel sám – nabídnuté dorovnání protějšku padá
+    if (mirror) cancelMirror();
   };
 
   const endDrag = (index: number) => {
@@ -381,11 +392,6 @@ export default function SketchModal({ room, works, onApply, close }: any) {
 
   // Protilehlá stěna: u čtyřstěnné místnosti leží o dvě pozice dál.
   const oppositeIndex = (index: number) => (walls.length === 4 ? (index + 2) % 4 : -1);
-
-  // Většina pokojů má protilehlé strany stejné, tak ji nabídneme – ale až po
-  // odpočtu, ať se dá zadat i místnost, která pravidelná není.
-  const [mirror, setMirror] = useState<{ target: number; value: number; left: number } | null>(null);
-  const cancelMirror = () => setMirror(null);
 
   const changeWallWidth = (index: number, value: string) => {
     setWall(index, { width: value });
