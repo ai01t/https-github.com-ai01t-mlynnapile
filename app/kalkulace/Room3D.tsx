@@ -100,6 +100,7 @@ export default function Room3D({
   walls,
   works = [],
   plan,
+  context = [],
   facade = false,
   floorObjects = [],
   onSelectWall,
@@ -194,6 +195,20 @@ export default function Room3D({
     });
   }
 
+  // Sousední místnosti z téhož náčrtu – stejná soustava souřadnic, kreslí se jen jako kontext.
+  const contextSegments = context.flatMap((item: any) => {
+    const pts = item.plan?.points ?? [];
+    if (pts.length < 3 || pts.length !== item.walls.length) return [];
+    return item.walls.map((wall: any, index: number) => {
+      const a = pts[index];
+      const b = pts[(index + 1) % pts.length];
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const length = Math.max(1, Math.hypot(dx, dy));
+      return { wall, room: item.name, dir: [dx / length, dy / length], length, start: [a.x, a.y], end: [b.x, b.y], height: Math.max(1, n(wall.height)) };
+    });
+  });
+
   if (segments.length === 0) {
     return <div className="rounded-[var(--radius-sm)] border border-dashed border-[var(--line)] bg-[var(--card)] p-4 text-sm text-[var(--muted)]">Přidej alespoň jednu stěnu.</div>;
   }
@@ -231,6 +246,12 @@ export default function Room3D({
   // všechny promítnuté body kvůli výřezu (u fasády i terén)
   const allPoints: { sx: number; sy: number }[] = [];
   segments.forEach((seg: any) => {
+    [0, seg.height].forEach((z) => {
+      allPoints.push(iso(seg.start[0], seg.start[1], z));
+      allPoints.push(iso(seg.end[0], seg.end[1], z));
+    });
+  });
+  contextSegments.forEach((seg: any) => {
     [0, seg.height].forEach((z) => {
       allPoints.push(iso(seg.start[0], seg.start[1], z));
       allPoints.push(iso(seg.end[0], seg.end[1], z));
@@ -585,6 +606,38 @@ export default function Room3D({
             })}
           </>
         )}
+        {/* sousední místnosti z téhož náčrtu – jen na pohled, upravuje se vždy ta aktivní */}
+        {contextSegments.map((seg: any, index: number) => {
+          const a = iso(seg.start[0], seg.start[1], 0);
+          const b = iso(seg.end[0], seg.end[1], 0);
+          const bTop = iso(seg.end[0], seg.end[1], seg.height);
+          const aTop = iso(seg.start[0], seg.start[1], seg.height);
+          const at = (t: number, z: number) => iso(seg.start[0] + seg.dir[0] * t, seg.start[1] + seg.dir[1] * t, z);
+          return (
+            <g key={`ctx-${index}`} pointerEvents="none" opacity="0.5">
+              <polygon points={pointsAttr([a, b, bTop, aTop])} fill="#cbd5e1" fillOpacity="0.45" stroke="#94a3b8" strokeWidth="1.5" strokeLinejoin="round" />
+              {seg.wall.openings?.map((opening: any) => {
+                const ow = Math.max(0, n(opening.width));
+                const oh = Math.max(0, n(opening.height));
+                const ox = Math.min(Math.max(0, n(opening.x)), Math.max(0, seg.length - ow));
+                const oy = Math.min(Math.max(0, n(opening.y)), Math.max(0, seg.height - oh));
+                const kind = openingKind(opening);
+                const corners = [at(ox, oy), at(ox + ow, oy), at(ox + ow, oy + oh), at(ox, oy + oh)];
+                return (
+                  <polygon
+                    key={opening.id}
+                    points={pointsAttr(corners)}
+                    fill={kind === "door" ? "#fbbf24" : kind === "other" ? "#d4d4d4" : "#7dd3fc"}
+                    fillOpacity="0.7"
+                    stroke={kind === "door" ? "#92400e" : kind === "other" ? "#525252" : "#0369a1"}
+                    strokeWidth="1"
+                  />
+                );
+              })}
+            </g>
+          );
+        })}
+
         {/* podlaha / základna – zároveň plocha pro puštění podlahových objektů */}
         <polygon
           points={pointsAttr(floorPoints)}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   ChevronDown,
@@ -72,6 +72,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
   // Oddělené úložiště pro brandované instance (/jindra/bac/{ico}); výchozí instance má prostor prázdný.
   setStorageNamespace(storageNamespace);
   const [rooms, setRooms] = useState(defaultRooms);
+  // které skupiny z náčrtu se mají ukazovat v jednom 3D náhledu
+  const [combinedGroups, setCombinedGroups] = useState<Record<string, boolean>>({});
   const [activeRoomId, setActiveRoomId] = useState(defaultRooms[0].id);
   const [trash, setTrash] = useState([]);
   const [trashOpen, setTrashOpen] = useState(false);
@@ -107,6 +109,15 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
 
   // aktivní místnost (tab) – stěny na obrazovce patří jí, výpočet jde přes všechny místnosti
   const activeRoom = rooms.find((room) => room.id === activeRoomId) ?? rooms[0];
+
+  // Taby: po sobě jdoucí místnosti z jednoho náčrtu se spojí do jedné skupiny.
+  const roomTabGroups = rooms.reduce((groups: any[], room: any) => {
+    const last = groups[groups.length - 1];
+    const id = room.planGroup && rooms.filter((item: any) => item.planGroup === room.planGroup).length > 1 ? room.planGroup : null;
+    if (last && last.id === id && id) last.rooms.push(room);
+    else groups.push({ id, rooms: [room] });
+    return groups;
+  }, []);
   const walls = activeRoom?.walls ?? [];
   const setWalls = (updater) =>
     setRooms((prev) =>
@@ -790,10 +801,11 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
 
         <div className="grid min-w-0 gap-3 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,.65fr)]">
           <section className="min-w-0 space-y-3">
-            {/* taby místností */}
+            {/* taby místností – místnosti z jednoho náčrtu mají společné pozadí */}
             <div className="flex flex-wrap items-end gap-1.5">
-              {rooms.map((room) =>
-                room.id === activeRoom?.id ? (
+              {roomTabGroups.map((group) => {
+                const tabs = group.rooms.map((room) =>
+                  room.id === activeRoom?.id ? (
                   <div
                     key={room.id}
                     className="flex items-center gap-1 rounded-[var(--radius)] border-2 border-[var(--brand)] bg-[var(--card)] py-1.5 pl-3 pr-1.5 shadow-sm"
@@ -825,8 +837,27 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                     {room.name}
                     <span className="rounded-full bg-[var(--bg)] px-1.5 text-[10px] font-bold text-[var(--muted)]">{room.walls.length}</span>
                   </button>
-                ),
-              )}
+                  ),
+                );
+                if (!group.id) return <Fragment key="solo">{tabs}</Fragment>;
+                return (
+                  <div key={group.id} className="flex flex-wrap items-end gap-1.5 rounded-[var(--radius)] bg-[var(--bg-soft)] p-1.5 ring-1 ring-inset ring-[var(--line)]">
+                    {tabs}
+                    <label
+                      title="Zobrazit všechny místnosti z tohoto náčrtu v jednom 3D náhledu"
+                      className="inline-flex cursor-pointer items-center gap-1.5 self-center px-1 text-[11px] font-bold text-[var(--text-soft)]"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={combinedGroups[group.id] ?? false}
+                        onChange={(event) => setCombinedGroups((prev) => ({ ...prev, [group.id]: event.target.checked }))}
+                        className="h-3.5 w-3.5 cursor-pointer accent-[var(--brand)]"
+                      />
+                      Společné 3D
+                    </label>
+                  </div>
+                );
+              })}
               <button
                 type="button"
                 onClick={addRoom}
@@ -908,6 +939,13 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                   walls={walls.filter((wall) => !wall.ceiling).map((wall) => ({ ...wall, openings: wall.openings.map((opening) => normalizeOpening(opening, wall)) }))}
                   works={works}
                   plan={activeRoom?.plan}
+                  context={
+                    activeRoom?.planGroup && combinedGroups[activeRoom.planGroup]
+                      ? rooms
+                          .filter((room) => room.id !== activeRoom.id && room.planGroup === activeRoom.planGroup && room.plan?.points?.length >= 3)
+                          .map((room) => ({ name: room.name, plan: room.plan, walls: room.walls.filter((wall) => !wall.ceiling) }))
+                      : []
+                  }
                   facade={activeRoom?.kind === "facade"}
                   floorObjects={activeRoom?.floor ?? []}
                   onSelectWall={selectWall}
@@ -1305,15 +1343,26 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
         <SketchModal
           room={{ ...activeRoom, walls: activeRoom.walls.filter((wall) => !wall.ceiling) }}
           works={works}
+          siblings={rooms
+            .filter((room) => room.id !== activeRoom.id && room.planGroup && room.planGroup === activeRoom.planGroup && room.plan?.points?.length >= 3)
+            .map((room) => ({ id: room.id, name: room.name, plan: room.plan, walls: room.walls.filter((wall) => !wall.ceiling) }))}
           onApply={(plan, sketchWalls, extraRooms = []) => {
+            // místnosti z jednoho náčrtu drží pohromadě – sdílejí souřadnice i značku skupiny
+            const group = activeRoom.planGroup || (extraRooms.length ? `plan-${Date.now().toString(36)}` : undefined);
             setRooms((prev) => {
               // strop se náčrtem nemění – zůstává na konci seznamu
-              const updated = prev.map((room) => (room.id === activeRoom.id ? { ...room, plan, walls: [...sketchWalls, ...room.walls.filter((wall) => wall.ceiling)] } : room));
-              // místnosti dokreslené vedle se založí jako nové
-              return [...updated, ...extraRooms.map((extra, index) => ({ ...makeRoom(updated.length + index + 1), plan: extra.plan, walls: extra.walls }))];
+              const updated = prev.map((room) => {
+                if (room.id === activeRoom.id) return { ...room, plan, planGroup: group, walls: [...sketchWalls, ...room.walls.filter((wall) => wall.ceiling)] };
+                // sousedé z téhož náčrtu se přepíšou na místě, nezakládají se znovu
+                const edited = extraRooms.find((extra) => extra.id === room.id);
+                return edited ? { ...room, plan: edited.plan, planGroup: group, walls: [...edited.walls, ...room.walls.filter((wall) => wall.ceiling)] } : room;
+              });
+              const fresh = extraRooms.filter((extra) => !extra.id);
+              return [...updated, ...fresh.map((extra, index) => ({ ...makeRoom(updated.length + index + 1), plan: extra.plan, planGroup: group, walls: extra.walls }))];
             });
             setSketchOpen(false);
-            flash(extraRooms.length ? `Půdorys použit · ${extraRooms.length} nová místnost ✓` : "Půdorys použit ✓");
+            const novych = extraRooms.filter((extra) => !extra.id).length;
+            flash(novych ? `Půdorys použit · ${novych} nová místnost ✓` : "Půdorys použit ✓");
           }}
           close={() => setSketchOpen(false)}
         />

@@ -7,7 +7,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Check, Eraser, Image as ImageIcon, MousePointerClick, PenLine, Plus, Shapes, X } from "lucide-react";
-import { f2, n, uid } from "./core";
+import { clamp, f2, n, uid } from "./core";
 
 type Pt = { x: number; y: number };
 
@@ -240,13 +240,16 @@ const rectFromWalls = (pts: Pt[], wallsList: any[], editedIndex: number) => {
   }));
 };
 
-export default function SketchModal({ room, works, onApply, close }: any) {
+export default function SketchModal({ room, works, siblings = [], onApply, close }: any) {
   const hasPlan = room.plan?.points?.length >= 3;
   const [mode, setMode] = useState(hasPlan ? "edit" : "start"); // start | draw | edit
   const [mainPoints, setMainPoints] = useState<Pt[]>(hasPlan ? room.plan.points : []);
   const [mainWalls, setMainWalls] = useState<any[]>(room.walls ?? []);
   // Místnosti dokreslené vedle té hlavní – po použití z nich vzniknou nové místnosti.
-  const [extras, setExtras] = useState<{ name: string; points: Pt[]; walls: any[] }[]>([]);
+  // sousedé z téhož náčrtu se načtou zpátky, ať na sebe obrysy dál navazují
+  const [extras, setExtras] = useState<{ id?: string; name: string; points: Pt[]; walls: any[] }[]>(
+    siblings.map((item: any) => ({ id: item.id, name: item.name, points: item.plan.points, walls: item.walls })),
+  );
   // null = upravuje se hlavní místnost, číslo = pořadí v extras
   const [activeExtra, setActiveExtra] = useState<number | null>(null);
 
@@ -475,6 +478,68 @@ export default function SketchModal({ room, works, onApply, close }: any) {
     cancelMirror();
   };
 
+  /**
+   * Stěny sdílené se sousední místností. Nestačí shodné rohy – sousední pokoj
+   * bývá jinak dlouhý, takže hledáme stěny na téže přímce s dostatečným
+   * překryvem. Vrací i úsek překryvu, aby dveře padly do společné části.
+   */
+  const DOOR_W = 90;
+  const sharedWalls = new Map<number, { plan: number | null; wall: number; from: number; to: number }>();
+  points.forEach((p, i) => {
+    const q = points[(i + 1) % points.length];
+    const len = dist(p, q);
+    if (len < DOOR_W) return;
+    const ux = (q.x - p.x) / len;
+    const uy = (q.y - p.y) / len;
+    otherPlans.forEach((other) => {
+      other.points.forEach((op, j) => {
+        const oq = other.points[(j + 1) % other.points.length];
+        // obě koncové body cizí stěny musí ležet na přímce té naší
+        const offset = (pt: Pt) => Math.abs((pt.x - p.x) * uy - (pt.y - p.y) * ux);
+        if (offset(op) > 3 || offset(oq) > 3) return;
+        const along = (pt: Pt) => (pt.x - p.x) * ux + (pt.y - p.y) * uy;
+        const from = Math.max(0, Math.min(along(op), along(oq)));
+        const to = Math.min(len, Math.max(along(op), along(oq)));
+        if (to - from < DOOR_W) return; // na dveře by to nestačilo
+        sharedWalls.set(i, { plan: other.index, wall: j, from, to });
+      });
+    });
+  });
+
+  /** Přidá průchozí dveře na sdílenou stěnu – do obou místností naráz. */
+  const addDoorway = (edgeIndex: number, at: Pt) => {
+    const link = sharedWalls.get(edgeIndex);
+    if (!link) return;
+    const a = points[edgeIndex];
+    const b = points[(edgeIndex + 1) % points.length];
+    const len = Math.max(1, dist(a, b));
+    const ux = (b.x - a.x) / len;
+    const uy = (b.y - a.y) / len;
+    // průmět puštění na stěnu, oříznutý do společného úseku
+    const hit = (at.x - a.x) * ux + (at.y - a.y) * uy;
+    const from = Math.round(clamp(hit - DOOR_W / 2, link.from, link.to - DOOR_W));
+    const door = { name: "Dveře", type: "door", width: DOOR_W, height: 200, count: 1, y: 0, reveal: 0 };
+    setWalls((prev) => prev.map((wall, i) => (i === edgeIndex ? { ...wall, openings: [...(wall.openings ?? []), { ...door, id: uid(), x: from }] } : wall)));
+
+    // na druhé straně se tytéž světové body promítnou na sousední stěnu
+    const other = otherPlans.find((item) => item.index === link.plan);
+    if (!other) return;
+    const op = other.points[link.wall];
+    const oq = other.points[(link.wall + 1) % other.points.length];
+    const olen = Math.max(1, dist(op, oq));
+    const oux = (oq.x - op.x) / olen;
+    const ouy = (oq.y - op.y) / olen;
+    const world = { x: a.x + ux * from, y: a.y + uy * from };
+    const worldEnd = { x: a.x + ux * (from + DOOR_W), y: a.y + uy * (from + DOOR_W) };
+    const t1 = (world.x - op.x) * oux + (world.y - op.y) * ouy;
+    const t2 = (worldEnd.x - op.x) * oux + (worldEnd.y - op.y) * ouy;
+    const otherFrom = Math.round(clamp(Math.min(t1, t2), 0, Math.max(0, olen - DOOR_W)));
+    const addTo = (list: any[]) =>
+      list.map((wall, i) => (i === link.wall ? { ...wall, openings: [...(wall.openings ?? []), { ...door, id: uid(), x: otherFrom }] } : wall));
+    if (link.plan === null) setMainWalls(addTo);
+    else setExtras((prev) => prev.map((item, i) => (i === link.plan ? { ...item, walls: addTo(item.walls) } : item)));
+  };
+
   const normalizeWalls = (list: any[]) =>
     list.map((wall) => ({ ...wall, width: Math.max(1, Math.round(n(wall.width))), height: Math.max(1, Math.round(n(wall.height))) || defaultHeight }));
 
@@ -482,7 +547,7 @@ export default function SketchModal({ room, works, onApply, close }: any) {
     onApply(
       { points: mainPoints },
       normalizeWalls(mainWalls),
-      extras.filter((item) => item.points.length >= 3).map((item) => ({ name: item.name, plan: { points: item.points }, walls: normalizeWalls(item.walls) })),
+      extras.filter((item) => item.points.length >= 3).map((item) => ({ id: item.id, name: item.name, plan: { points: item.points }, walls: normalizeWalls(item.walls) })),
     );
 
   const selectedWall = selected !== null ? walls[selected] : null;
@@ -513,6 +578,17 @@ export default function SketchModal({ room, works, onApply, close }: any) {
                 <Eraser className="h-4 w-4" />
                 Znovu
               </button>
+            )}
+            {mode === "edit" && sharedWalls.size > 0 && (
+              <div
+                draggable
+                onDragStart={(event) => event.dataTransfer.setData("text/plain", "doorway")}
+                title="Přetáhni na zeleně čárkovanou stěnu – dveře se přidají do obou místností naráz"
+                className="inline-flex cursor-grab items-center gap-2 rounded-[var(--radius)] border border-dashed border-emerald-600 bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800 active:cursor-grabbing"
+              >
+                <span className="text-base leading-none">🚪</span>
+                Dveře mezi místnosti
+              </div>
             )}
             {mode === "edit" && (
               <button
@@ -619,13 +695,23 @@ export default function SketchModal({ room, works, onApply, close }: any) {
                   return (
                     <g key={`edge-${i}`}>
                       <line x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke={active ? "var(--brand)" : "#334155"} strokeWidth={active ? 12 : 8} strokeLinecap="round" />
+                      {/* sdílená stěna se sousední místností – sem jdou průchozí dveře */}
+                      {sharedWalls.has(i) && (
+                        <line x1={p.x} y1={p.y} x2={q.x} y2={q.y} stroke="#0f766e" strokeWidth="4" strokeDasharray="14 8" pointerEvents="none" />
+                      )}
                       <line
                         x1={p.x} y1={p.y} x2={q.x} y2={q.y}
                         stroke="transparent" strokeWidth="30" strokeLinecap="round" className="cursor-pointer"
                         onClick={(event) => { event.stopPropagation(); setSelected(i); }}
                         onDoubleClick={(event) => { event.stopPropagation(); insertVertex(i, event); }}
+                        onDragOver={(event) => { if (sharedWalls.has(i)) event.preventDefault(); }}
+                        onDrop={(event) => {
+                          if (!sharedWalls.has(i)) return;
+                          event.preventDefault();
+                          addDoorway(i, toCm(event));
+                        }}
                       >
-                        <title>{walls[i]?.name} – klik: vybrat, dvojklik: přidat roh</title>
+                        <title>{sharedWalls.has(i) ? `${walls[i]?.name} – sdílená se sousední místností, sem lze pustit dveře` : `${walls[i]?.name} – klik: vybrat, dvojklik: přidat roh`}</title>
                       </line>
                     </g>
                   );
