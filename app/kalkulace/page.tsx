@@ -228,8 +228,12 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     selectWall(ceiling.id);
   };
 
+  // Potvrzení řešíme vlastním dialogem – nativní confirm prohlížeče potlačují
+  // (Chrome po pár dialozích nabídne „nezobrazovat další“) a mazání pak tiše selže.
+  const [roomToDelete, setRoomToDelete] = useState<any>(null);
+
   const deleteRoom = (room) => {
-    if (!window.confirm(`Smazat místnost „${room.name}“ (${room.walls.length} stěn)?\n\nPřesune se do koše – odtud ji lze do týdne obnovit.`)) return;
+    setRoomToDelete(null);
     persistTrash([{ room, deletedAt: new Date().toISOString() }, ...trash]);
     setRooms((prev) => {
       const rest = prev.filter((item) => item.id !== room.id);
@@ -820,7 +824,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                     <span className="rounded-full bg-[var(--bg)] px-1.5 text-[10px] font-bold text-[var(--muted)]">{room.walls.length}</span>
                     <button
                       type="button"
-                      onClick={() => deleteRoom(room)}
+                      onClick={() => setRoomToDelete(room)}
                       title="Smazat místnost (přesune se do koše)"
                       className="grid h-6 w-6 place-items-center rounded-full text-[var(--muted)] transition hover:bg-red-50 hover:text-red-600"
                     >
@@ -839,7 +843,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                   </button>
                   ),
                 );
-                if (!group.id) return <Fragment key="solo">{tabs}</Fragment>;
+                // klíč musí být jedinečný – jinak React taby přeskládá a kliknutí míří jinam
+                if (!group.id) return <Fragment key={`solo-${group.rooms[0].id}`}>{tabs}</Fragment>;
                 return (
                   <div key={group.id} className="flex flex-wrap items-end gap-1.5 rounded-[var(--radius)] bg-[var(--bg-soft)] p-1.5 ring-1 ring-inset ring-[var(--line)]">
                     {tabs}
@@ -1375,6 +1380,33 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           close={() => setAiOpen(false)}
         />
       )}
+      {roomToDelete && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" onClick={() => setRoomToDelete(null)}>
+          <div className="w-full max-w-sm rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] p-5 shadow-xl" onClick={(event) => event.stopPropagation()}>
+            <h3 className="text-base font-black">Smazat místnost „{roomToDelete.name}"?</h3>
+            <p className="mt-1.5 text-sm text-[var(--muted)]">
+              {roomToDelete.walls.length} stěn. Přesune se do koše — odtud ji lze do {TRASH_TTL_DAYS} dnů obnovit.
+            </p>
+            <div className="mt-4 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setRoomToDelete(null)}
+                className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-3 py-2 text-sm font-bold hover:bg-[var(--bg-soft)]"
+              >
+                Zrušit
+              </button>
+              <button
+                type="button"
+                onClick={() => deleteRoom(roomToDelete)}
+                className="rounded-[var(--radius-sm)] bg-red-600 px-3 py-2 text-sm font-bold text-white hover:bg-red-700"
+              >
+                Smazat do koše
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {trashOpen && (
         <TrashModal
           trash={trash}
