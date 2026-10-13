@@ -561,6 +561,12 @@ export default function HistoryPage({ locale }: { locale: Locale }) {
   const searchParams = useSearchParams()
   const embedded = searchParams.get("embed") === "1"
   const forceHorizontalPanels = embedded && searchParams.get("horizontal") === "1"
+
+  // Vložená verze otevřená samostatně (např. z Googlu) → sekce Historie na webu.
+  useEffect(() => {
+    if (!embedded || window.top !== window.self) return
+    window.location.replace(`${locale === "cs" ? "/" : `/${locale}`}#history`)
+  }, [embedded, locale])
   const localVideoRef = useRef<HTMLVideoElement | null>(null)
   const langSwitchRef = useRef<HTMLDivElement | null>(null)
   const heroSectionRef = useRef<HTMLElement | null>(null)

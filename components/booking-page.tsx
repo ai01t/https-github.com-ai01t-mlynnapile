@@ -1070,6 +1070,12 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const roomParam = searchParams.get("room")
   const studioRoom: StudioRoom | null = embedded && (roomParam === "main" || roomParam === "control") ? roomParam : null
 
+  // Vložená verze otevřená samostatně (např. z Googlu) → příslušná sekce webu.
+  useEffect(() => {
+    if (!embedded || window.top !== window.self) return
+    window.location.replace(`${locale === "cs" ? "/" : `/${locale}`}#${studioRoom ? "studio" : "residency"}`)
+  }, [embedded, locale, studioRoom])
+
   // Režim sdílíme s hlavní stránkou přes stejný klíč v localStorage,
   // aby booking (i vložený v sekci Ubytování) vypadal stejně jako web.
   useEffect(() => {
