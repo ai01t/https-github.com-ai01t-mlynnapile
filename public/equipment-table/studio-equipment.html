@@ -142,6 +142,9 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
 .hl-icon{font-size:18px;flex-shrink:0;line-height:1.2}
 .hl-title{font-size:12px;font-weight:600;color:#d4c89a;margin-bottom:2px}
 .hl-sub{font-size:11px;color:#7a7774}
+#list-more{display:none}
+@keyframes listMoreBounce{0%,100%{transform:translateY(-2px);opacity:.6}50%{transform:translateY(2px);opacity:1}}
+@media (prefers-reduced-motion:reduce){#list-more svg{animation:none}}
 /* Portrait / mobile responsive */
 @media (orientation: portrait) {
   body{height:auto;min-height:100vh;overflow-y:auto;overflow-x:hidden}
@@ -165,11 +168,15 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
   body{background:transparent}
   #tabs{min-height:32px;background:rgba(7,6,10,.94);position:sticky;top:0;z-index:6;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
   #main{gap:0}
-  /* Seznam nad detailem ukáže jen ~5 položek (zbytek se posouvá v něm),
-     ať je hned pod ním vidět detail vybrané položky. Spodní okraj se
-     rozplývá — naznačuje, že seznam pokračuje. */
-  #list{max-height:min(46vh,178px);background:rgba(7,6,10,.92);box-shadow:0 10px 22px rgba(0,0,0,.45);
-    -webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),rgba(0,0,0,.25));mask-image:linear-gradient(to bottom,#000 calc(100% - 26px),rgba(0,0,0,.25))}
+  /* Seznam nad detailem ukáže jen 4 položky (výšku dopočítá skript, zbytek se
+     posouvá v seznamu), ať je hned pod ním vidět detail vybrané položky. */
+  #list{max-height:min(46vh,150px);background:rgba(7,6,10,.92);box-shadow:0 10px 22px rgba(0,0,0,.45)}
+  /* Ukazatel „seznam pokračuje": zlatá šipka nad rozplývajícím se okrajem,
+     přilepená ke spodku seznamu; zmizí, když je seznam dojetý na konec. */
+  #list-more{position:sticky;bottom:0;display:flex;justify-content:center;align-items:flex-end;height:30px;margin-top:-30px;padding-bottom:4px;pointer-events:none;
+    background:linear-gradient(to bottom,rgba(7,6,10,0),rgba(7,6,10,.97) 72%);opacity:0;transition:opacity .25s}
+  #list-more.on{opacity:1}
+  #list-more svg{width:18px;height:18px;color:var(--acc);animation:listMoreBounce 1.6s ease-in-out infinite}
   body.picked #list{display:none}
   body.picked .backlist{display:inline-flex}
   .backlist{display:none;align-items:center;gap:7px;position:sticky;top:var(--tabsH);z-index:5;margin:0 0 10px;padding:9px 12px;min-height:38px;background:rgba(7,6,10,.92);border:1px solid var(--brd);color:var(--acc);font:600 10px/1 -apple-system,'Segoe UI',system-ui,sans-serif;letter-spacing:1.6px;text-transform:uppercase;cursor:pointer}
@@ -207,7 +214,8 @@ body{height:100%;display:flex;flex-direction:column;background:var(--bg);color:v
   #tabs{min-height:44px}
   .tb{font-size:11px;padding:0 14px;letter-spacing:1.4px}
   .tb em{font-size:10px;padding:2px 7px}
-  #list{max-height:min(38vh,232px)}
+  #list{max-height:min(38vh,200px)}
+  #list-more{height:36px;margin-top:-36px}
   .row{min-height:40px;padding:8px 22px;font-size:14px}
   .row.sel{padding-left:20px}
   .row-thumb{width:38px;height:38px}
@@ -1198,6 +1206,39 @@ window.addEventListener('touchend',function(e){
   if(Math.abs(dy)<56||Math.abs(dy)<Math.abs(dx))return;
   window.parent.postMessage({type:'equipment-embed-swipe',deltaY:-dy},parentMessageOrigin());
 },{passive:true,capture:true});
+
+/* Seznam nad detailem (mobil, tablet na výšku): přesně 4 položky + ukazatel,
+   že seznam pokračuje. Seznam se překresluje při přepnutí záložky, proto
+   ukazatel vrací zpět a výšku přepočítává po každé změně obsahu. */
+(function(){
+  const list=document.getElementById('list');
+  if(!list)return;
+  const stacked=window.matchMedia('(max-width: 760px), (orientation: portrait)');
+  const more=document.createElement('div');
+  more.id='list-more';
+  more.setAttribute('aria-hidden','true');
+  more.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+  let busy=false;
+  function sync(){
+    if(busy)return;
+    busy=true;
+    if(list.lastElementChild!==more)list.appendChild(more);
+    if(stacked.matches){
+      const rows=[...list.querySelectorAll('.row')].filter((r)=>r.offsetParent!==null);
+      const fourth=rows[3];
+      list.style.maxHeight=fourth&&rows.length>4?(fourth.offsetTop+fourth.offsetHeight+(more.offsetHeight||30)-6)+'px':'';
+    }else{
+      list.style.maxHeight='';
+    }
+    const rest=list.scrollHeight-list.clientHeight-list.scrollTop;
+    more.classList.toggle('on',stacked.matches&&rest>8);
+    busy=false;
+  }
+  new MutationObserver(()=>requestAnimationFrame(sync)).observe(list,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+  list.addEventListener('scroll',sync,{passive:true});
+  window.addEventListener('resize',sync);
+  sync();
+})();
 </script>
 </body>
 </html>
