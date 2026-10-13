@@ -150,13 +150,35 @@ section{position:relative;min-height:100svh;overflow:hidden;display:flex;align-i
 #location .bg-css::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 95% 48% at 50% 92%,rgba(110,72,18,.28) 0%,transparent 58%);animation:lA 24s ease-in-out infinite alternate;}
 @keyframes lA{0%{opacity:.55;}100%{opacity:1;transform:scaleY(1.08);}}
 
-/* Štítek pod tlačítkem režimu: krátce ohlásí, že web po dojetí na konec
-   pokračuje v nočním (nebo zpět v denním) režimu. */
+/* Ohlášení automatického přepnutí režimu (pás sekcí za kontaktem): slunce se
+   rozzáří a paprsky vystřelí, měsíc se zhoupne a hvězdička u něj zabliká. */
 .btn-mode{position:relative;}
-.mode-flag{position:absolute;top:100%;left:50%;transform:translate(-50%,-4px);margin-top:4px;white-space:nowrap;
-  font-family:'Manrope',sans-serif;font-size:.5rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);
-  opacity:0;pointer-events:none;transition:opacity .6s ease,transform .6s ease;}
-.mode-flag.show{opacity:1;transform:translate(-50%,0);}
+.mode-icon svg{overflow:visible;}
+.btn-mode.mode-anim-day,.btn-mode.mode-anim-night{color:var(--gold);}
+.btn-mode.mode-anim-day .mode-icon-sun svg{transform-origin:50% 50%;animation:modeSunBurst 2.6s cubic-bezier(.22,.61,.36,1);}
+.btn-mode.mode-anim-day .mode-icon-sun path{transform-box:view-box;transform-origin:12px 12px;animation:modeSunRays .65s ease-in-out 4;}
+@keyframes modeSunBurst{
+  0%{transform:scale(1) rotate(0);filter:none;}
+  22%{transform:scale(1.6) rotate(50deg);filter:drop-shadow(0 0 5px rgba(244,204,120,.95));}
+  60%{transform:scale(1.4) rotate(120deg);filter:drop-shadow(0 0 9px rgba(244,204,120,.75));}
+  100%{transform:scale(1) rotate(180deg);filter:none;}
+}
+@keyframes modeSunRays{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.32);opacity:.55;}}
+.btn-mode.mode-anim-night .mode-icon-moon svg{transform-origin:50% 8%;animation:modeMoonSwing 2.8s ease-in-out;}
+.btn-mode.mode-anim-night .mode-icon-moon path:nth-child(2){transform-box:view-box;transform-origin:18.3px 6.2px;animation:modeStarTwinkle .7s ease-in-out .35s 3;}
+@keyframes modeMoonSwing{
+  0%{transform:rotate(0) scale(1);filter:none;}
+  14%{transform:rotate(-24deg) scale(1.4);filter:drop-shadow(0 0 6px rgba(176,198,255,.9));}
+  34%{transform:rotate(17deg) scale(1.4);}
+  54%{transform:rotate(-10deg) scale(1.32);filter:drop-shadow(0 0 8px rgba(176,198,255,.7));}
+  74%{transform:rotate(5deg) scale(1.16);}
+  100%{transform:rotate(0) scale(1);filter:none;}
+}
+@keyframes modeStarTwinkle{0%,100%{opacity:1;transform:scale(1);}45%{opacity:.1;transform:scale(.4);}70%{opacity:1;transform:scale(2.1);}}
+@media(prefers-reduced-motion:reduce){
+  .btn-mode.mode-anim-day .mode-icon-sun svg,.btn-mode.mode-anim-day .mode-icon-sun path,
+  .btn-mode.mode-anim-night .mode-icon-moon svg,.btn-mode.mode-anim-night .mode-icon-moon path{animation:none;}
+}
 .mode-filler{display:block;width:100%;pointer-events:none;}
 
 #contact .bg-css{background:radial-gradient(ellipse 110% 85% at 28% 68%,#160f08 0%,#0b0806 50%,#07060a 100%);}
@@ -1014,7 +1036,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
   <div class="nav-actions">
     <button class="btn-pause" id="pbtn" aria-pressed="false" aria-label="Pause"><span class="pause-icon" aria-hidden="true">II</span></button>
     <button class="btn-mode" id="modeBtn" aria-pressed="false" aria-label="Switch to night mode" title="Switch to night mode">
-      <span class="mode-flag" id="modeFlag" aria-live="polite"></span>
       <span class="mode-icon mode-icon-sun" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
           <circle cx="12" cy="12" r="4.2"></circle>
@@ -3547,10 +3568,9 @@ window.addEventListener('load',()=>{
    se obsah ani posuvník nepohne. Sekce zůstávají skutečné (videa, booking, odkazy
    fungují), jen se mění jejich pořadí. Při návratu nahoru se to děje obráceně.
    Režim se přepne, když přes polovinu obrazovky přejde sekce z dalšího kola;
-   štítek pod měsícem to krátce ohlásí. */
+   ikona režimu to ohlásí krátkou animací. */
 (function(){
   if(!secs.length)return;
-  const flag=document.getElementById('modeFlag');
   const filler=document.createElement('div');
   filler.className='mode-filler';
   filler.setAttribute('aria-hidden','true');
@@ -3567,12 +3587,14 @@ window.addEventListener('load',()=>{
     secs.forEach((s)=>{if(s.getBoundingClientRect().top<=innerHeight*.55)cur=s;});
     return cur;
   }
+  // místo nápisu krátká animace ikony režimu (slunce / měsíc s hvězdou)
   function showFlag(mode){
-    if(!flag)return;
-    flag.textContent=mode==='night'?'Night mode':'Day mode';
-    flag.classList.add('show');
+    if(!modeBtn)return;
+    modeBtn.classList.remove('mode-anim-day','mode-anim-night');
+    void modeBtn.offsetWidth;
+    modeBtn.classList.add(mode==='night'?'mode-anim-night':'mode-anim-day');
     clearTimeout(flagTimer);
-    flagTimer=setTimeout(()=>flag.classList.remove('show'),5200);
+    flagTimer=setTimeout(()=>modeBtn.classList.remove('mode-anim-day','mode-anim-night'),3000);
   }
   function setFiller(h){
     fillerH=Math.max(0,h);
