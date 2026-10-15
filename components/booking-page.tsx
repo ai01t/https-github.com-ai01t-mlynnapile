@@ -160,6 +160,7 @@ type Copy = {
   outingsTitle: string
   eventsTitle: string
   eventsInTerm: (label: string) => string
+  eventsShow: (label: string) => string
   eventsNone: string
   eventsAlso: string
   pastDay: { title: string; question: string; yes: string; no: string }
@@ -699,6 +700,7 @@ const copyByLocale: Record<Locale, Copy> = {
     outingsTitle: "Teslou na akce v okolí (v ceně pobytu)",
     eventsTitle: "Akce v okolí",
     eventsInTerm: (label) => `Ve vybraném termínu ${label}`,
+    eventsShow: (label) => `Zobrazit akce ve vybraném termínu ${label}`,
     eventsNone: "V tomto termínu jsme nic nenašli – v okolí je ale vždy:",
     eventsAlso: "A navíc v okolí:",
     pastDay: { title: "Tenhle den už proběhl.", question: "Chcete se vrátit do minulosti?", yes: "Ano", no: "Ne" },
@@ -785,6 +787,7 @@ const copyByLocale: Record<Locale, Copy> = {
     outingsTitle: "By Tesla to events nearby (included in your stay)",
     eventsTitle: "Events nearby",
     eventsInTerm: (label) => `During your dates ${label}`,
+    eventsShow: (label) => `Show events during your dates ${label}`,
     eventsNone: "Nothing listed for these dates – but there is always:",
     eventsAlso: "Also nearby:",
     pastDay: { title: "This day is already history.", question: "Want to travel back in time?", yes: "Yes", no: "No" },
@@ -871,6 +874,7 @@ const copyByLocale: Record<Locale, Copy> = {
     outingsTitle: "Mit dem Tesla zu Veranstaltungen in der Nähe (im Aufenthalt inklusive)",
     eventsTitle: "Veranstaltungen in der Nähe",
     eventsInTerm: (label) => `In Ihrem Zeitraum ${label}`,
+    eventsShow: (label) => `Veranstaltungen im Zeitraum ${label} anzeigen`,
     eventsNone: "Für diesen Zeitraum ist nichts eingetragen – in der Nähe gibt es aber immer:",
     eventsAlso: "Außerdem in der Nähe:",
     pastDay: { title: "Dieser Tag ist schon Geschichte.", question: "Möchten Sie in die Vergangenheit reisen?", yes: "Ja", no: "Nein" },
@@ -1435,6 +1439,8 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const [studioMode, setStudioMode] = useState<"stay" | "hourly">("stay")
   // klik na den v minulosti: přátelská bublina s odkazem na Historii (číslo = restart časovače)
   const [pastHint, setPastHint] = useState(0)
+  // akce ve vybraném termínu se ukážou až na klik (klíč = vybraný termín)
+  const [eventsShownFor, setEventsShownFor] = useState("")
   const [timeTravel, setTimeTravel] = useState(false)
   const [hourlyDay, setHourlyDay] = useState<{ monthIndex: number; day: number } | null>(null)
   const [hours, setHours] = useState(STUDIO_HOURLY_MIN_HOURS)
@@ -2118,10 +2124,12 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     (event) => event.date <= rangeEndIso && (event.end ?? event.date) >= rangeStartIso && (event.end ?? event.date) >= todayIso,
   )
   // konkrétní akce až po výběru data, do té doby obecné tipy na měsíc
-  const listedEvents = pickStart ? eventsInRange : []
+  const pickKey = pickStart ? `${isoDate(pickStart)}_${pickEnd ? isoDate(pickEnd) : ""}` : ""
+  const eventsShown = Boolean(pickKey) && eventsShownFor === pickKey
+  const listedEvents = eventsShown ? eventsInRange : []
   const generalMonth = pickStart ? pickStart.getMonth() : activeMonth.month
   const generalOutings = [...(STUDIO_OUTINGS[generalMonth] ?? []), CERCHOV_OUTING]
-  const showGeneral = !pickStart || listedEvents.length < 3
+  const showGeneral = !eventsShown || listedEvents.length < 3
   const pickLabel = pickStart
     ? pickEnd && isoDate(pickEnd) !== isoDate(pickStart)
       ? `${shortDayFormat.format(pickStart)}–${shortDayFormat.format(pickEnd)}`
@@ -2281,9 +2289,11 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               <span className={styles.studioOutingsTitle}>
                 {hourlyMode ? copy.eventsTitle : copy.outingsTitle}
               </span>
-              <span className={styles.studioOutingsTerm}>
-                {pickStart ? copy.eventsInTerm(pickLabel) : null}
-              </span>
+              {pickStart && !eventsShown ? (
+                <button type="button" className={styles.eventsShow} onClick={() => setEventsShownFor(pickKey)}>
+                  {copy.eventsShow(pickLabel)} →
+                </button>
+              ) : null}
               {listedEvents.length ? (
                 <ul className={styles.eventList}>
                   {listedEvents.map((event) => (
@@ -2307,7 +2317,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               {showGeneral ? (
                 <>
                   <span className={styles.studioOutingsTerm}>
-                    {listedEvents.length ? copy.eventsAlso : pickStart ? copy.eventsNone : null}
+                    {listedEvents.length ? copy.eventsAlso : eventsShown ? copy.eventsNone : null}
                   </span>
                   <ul>
                     {generalOutings.map((item) => (

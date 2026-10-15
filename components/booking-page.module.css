@@ -2303,3 +2303,24 @@
   }
 }
 
+
+/* tlačítko „Zobrazit akce ve vybraném termínu" */
+.eventsShow {
+  display: inline-block;
+  margin: 0 0 10px;
+  padding: 7px 14px;
+  border: 1px solid rgba(200, 169, 110, 0.45);
+  border-radius: 999px;
+  background: transparent;
+  color: #e4c290;
+  font: inherit;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.eventsShow:hover {
+  border-color: #c8a96e;
+  background: rgba(200, 169, 110, 0.12);
+}
