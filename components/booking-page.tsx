@@ -85,12 +85,12 @@ const BOOKED_RANGES: Record<string, Array<{ start: number; end: number }>> = {
 
 // Hlavní studio: den s přespáním (studio, přespání pod studiem, plná penze),
 // ceny včetně DPH. Základ platí pro 1–2 osoby, každá další osoba se připlácí.
-const STUDIO_DAY_PRICE = 9000
+const STUDIO_DAY_PRICE = 12000
 const STUDIO_DAY_INCLUDED_PERSONS = 2
-const STUDIO_EXTRA_PERSON_PRICE = 3500
+const STUDIO_EXTRA_PERSON_PRICE = 4700
 const STUDIO_MAX_PERSONS = 5
 // Studio po hodinách bez přespání — na dotáčky a zkoušky, nejvýš pro 2 lidi.
-const STUDIO_HOURLY_PRICE = 800
+const STUDIO_HOURLY_PRICE = 1100
 const STUDIO_HOURLY_MIN_HOURS = 3
 const STUDIO_HOURLY_MAX_HOURS = 12
 const STUDIO_HOURLY_MAX_PERSONS = 2
@@ -100,8 +100,8 @@ const STUDIO_HOURLY_MAX_PERSONS = 2
 // Účtuje se v Kč; ceny v cizí měně jsou orientační.
 const STUDIO_PRICES: Record<Locale, { currency: string; day: number; extra: number; hourly: number }> = {
   cs: { currency: "CZK", day: STUDIO_DAY_PRICE, extra: STUDIO_EXTRA_PERSON_PRICE, hourly: STUDIO_HOURLY_PRICE },
-  en: { currency: "USD", day: 420, extra: 170, hourly: 40 },
-  de: { currency: "EUR", day: 380, extra: 150, hourly: 35 },
+  en: { currency: "USD", day: 560, extra: 230, hourly: 55 },
+  de: { currency: "EUR", day: 510, extra: 200, hourly: 50 },
 }
 
 type Locale = "cs" | "en" | "de"
@@ -162,7 +162,6 @@ type Copy = {
   eventsInTerm: (label: string) => string
   eventsNone: string
   eventsAlso: string
-  eventsPickHint: string
   pastDay: { title: string; question: string; yes: string; no: string }
   tentative: string
   upsellText: (price: string) => string
@@ -702,7 +701,6 @@ const copyByLocale: Record<Locale, Copy> = {
     eventsInTerm: (label) => `Ve vybraném termínu ${label}`,
     eventsNone: "V tomto termínu jsme nic nenašli – v okolí je ale vždy:",
     eventsAlso: "A navíc v okolí:",
-    eventsPickHint: "Klikněte na datum a ukážeme konkrétní akce.",
     pastDay: { title: "Tenhle den už proběhl.", question: "Chcete se vrátit do minulosti?", yes: "Ano", no: "Ne" },
     tentative: "nepotvrzeno",
     upsellText: (price) => `Den s přespáním, snídaní s kváskovým chlebem, plnou penzí a saunou · ${price} pro 1–2 osoby`,
@@ -789,7 +787,6 @@ const copyByLocale: Record<Locale, Copy> = {
     eventsInTerm: (label) => `During your dates ${label}`,
     eventsNone: "Nothing listed for these dates – but there is always:",
     eventsAlso: "Also nearby:",
-    eventsPickHint: "Pick a date to see specific events.",
     pastDay: { title: "This day is already history.", question: "Want to travel back in time?", yes: "Yes", no: "No" },
     tentative: "tbc",
     upsellText: (price) => `Day with overnight stay, sourdough breakfast, full board and sauna · ${price} for 1–2 people`,
@@ -876,7 +873,6 @@ const copyByLocale: Record<Locale, Copy> = {
     eventsInTerm: (label) => `In Ihrem Zeitraum ${label}`,
     eventsNone: "Für diesen Zeitraum ist nichts eingetragen – in der Nähe gibt es aber immer:",
     eventsAlso: "Außerdem in der Nähe:",
-    eventsPickHint: "Wählen Sie ein Datum für konkrete Veranstaltungen.",
     pastDay: { title: "Dieser Tag ist schon Geschichte.", question: "Möchten Sie in die Vergangenheit reisen?", yes: "Ja", no: "Nein" },
     tentative: "unbestätigt",
     upsellText: (price) => `Tag mit Übernachtung, Sauerteig-Frühstück, Vollpension und Sauna · ${price} für 1–2 Personen`,
@@ -2274,7 +2270,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                 {hourlyMode ? copy.eventsTitle : copy.outingsTitle}
               </span>
               <span className={styles.studioOutingsTerm}>
-                {pickStart ? copy.eventsInTerm(pickLabel) : copy.eventsPickHint}
+                {pickStart ? copy.eventsInTerm(pickLabel) : null}
               </span>
               {listedEvents.length ? (
                 <ul className={styles.eventList}>
