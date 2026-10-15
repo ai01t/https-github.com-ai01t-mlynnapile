@@ -103,6 +103,10 @@ nav.scrolled{background:rgba(7,6,10,.9);backdrop-filter:blur(16px);padding:14px 
 .lang-icon svg{width:14px;height:14px;display:block;}
 .lang-caret{font-size:8px;line-height:1;opacity:.72;transform:translateY(-1px);}
 .lang-switch{position:relative;}
+/* aktuální jazyk jako vlajka (na mobilu místo glóbu) */
+.lang-flag{display:none;font-size:1.05rem;line-height:1;}
+.lang-option-flag{margin-right:9px;font-size:.95rem;letter-spacing:0;}
+@media(max-width:960px){.btn-lang .lang-icon{display:none;}.lang-flag{display:inline-block;}}
 .lang-menu{
   position:absolute;
   top:calc(100% + 8px);
@@ -1194,12 +1198,13 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <path d="M12 3a14 14 0 0 0 0 18"></path>
           </svg>
         </span>
+        <span class="lang-flag" id="langFlag" aria-hidden="true"></span>
         <span class="lang-caret" aria-hidden="true">▾</span>
       </button>
       <div class="lang-menu" id="langMenu" role="menu" aria-label="Language menu">
-        <button type="button" class="lang-option" data-lang="cs" role="menuitem">Čeština</button>
-        <button type="button" class="lang-option" data-lang="en" role="menuitem">English</button>
-        <button type="button" class="lang-option" data-lang="de" role="menuitem">Deutsch</button>
+        <button type="button" class="lang-option" data-lang="cs" role="menuitem"><span class="lang-option-flag">🇨🇿</span>Čeština</button>
+        <button type="button" class="lang-option" data-lang="en" role="menuitem"><span class="lang-option-flag">🇬🇧</span>English</button>
+        <button type="button" class="lang-option" data-lang="de" role="menuitem"><span class="lang-option-flag">🇩🇪</span>Deutsch</button>
       </div>
     </div>
     <button class="hamburger" id="hbtn" aria-label="Menu"><span class="hamburger-label">MENU</span></button>
@@ -3206,6 +3211,8 @@ function updateLanguageMenuState(){
 }
 
 function applyLang(){
+  const flagEl=document.getElementById('langFlag');
+  if(flagEl)flagEl.textContent={cs:'🇨🇿',en:'🇬🇧',de:'🇩🇪'}[lang]||'🇨🇿';
   const text=UI_TEXTS[lang]||UI_TEXTS.cs;
   document.body.classList.remove('en','de');
   if(lang==='en')document.body.classList.add('en');
