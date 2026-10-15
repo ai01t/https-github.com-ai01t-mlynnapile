@@ -2194,7 +2194,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
           </div>
 
           {studioRoom === "main" ? (
-            <div className={styles.studioModes} role="tablist">
+            <div className={cx(styles.studioModes, studioMode === "hourly" && styles.studioModesHourly)} role="tablist">
               {(["stay", "hourly"] as const).map((mode) => (
                 <button
                   key={mode}

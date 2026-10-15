@@ -2,6 +2,30 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
+<script>
+/* Výchozí jazyk podle prohlížeče: čeština → česky, němčina → německy, jinak anglicky.
+   Jen na úvodní adrese „/" bez ?lang a jen dokud si návštěvník jazyk sám nevybral (mlyn_lang_chosen). */
+(function(){
+  try{
+    var path=location.pathname.replace(/\/+$/,'')||'/';
+    if(path!=='/'&&path!=='/index.html'&&path!=='/mlynnapile.html')return;
+    if(/[?&]lang=/.test(location.search))return;
+    if(/bot|crawl|spider|slurp|lighthouse/i.test(navigator.userAgent))return;
+    var pick=localStorage.getItem('mlyn_lang_chosen');
+    if(!pick){
+      var langs=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'']);
+      pick='en';
+      for(var i=0;i<langs.length;i++){
+        var l=String(langs[i]).toLowerCase().slice(0,2);
+        if(l==='cs'||l==='sk'){pick='cs';break;}
+        if(l==='de'){pick='de';break;}
+        if(l==='en'){pick='en';break;}
+      }
+    }
+    if(pick==='en'||pick==='de')location.replace('/'+pick+location.hash);
+  }catch(e){}
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
@@ -402,6 +426,12 @@ body.pause-active section .content{filter:brightness(1.14);}
 .room-book .btn-secondary{padding:10px 20px;}
 .room-book .btn-secondary.on{border-color:var(--gold);color:var(--gold);}
 .room-book .btn-secondary:disabled{opacity:.42;cursor:not-allowed;}
+.room-book .btn-secondary.room-book-main{background:var(--gold);border-color:var(--gold);color:#0b0a0d;font-weight:600;transition:background .25s,color .25s,border-color .25s;}
+.room-book .btn-secondary.room-book-main::after{content:" →";}
+.room-book .btn-secondary.room-book-main:hover{background:var(--gold-light,#d7b47d);border-color:var(--gold-light,#d7b47d);}
+.room-book .btn-secondary.room-book-main.on{background:transparent;color:var(--gold);}
+.room-book .btn-secondary.room-book-main.on::after{content:"";}
+.rooms-grid.booking-main .room-price-main{display:none;}
 .room-book .btn-secondary:disabled:hover{border-color:var(--border);color:rgba(240,235,226,.7);}
 .studio-booking-panel{position:absolute;top:0;bottom:0;left:calc((100% - 2px) / 3);right:0;z-index:6;overflow:hidden;visibility:hidden;pointer-events:none;transition:visibility 0s linear .55s;}
 .studio-booking-panel[data-room="control"]{left:0;right:calc((100% - 2px) / 3);}
@@ -767,6 +797,22 @@ footer{
   pointer-events:auto;
 }
 .ft-copy{font-size:.6rem;letter-spacing:.12em;color:var(--muted);}
+/* Kontakt bez vodorovných čar; ikony sítí dole na videu (nad černou patičkou), větší */
+#contact .contact-slider,#contact .con-detail,#contact .founder-block,#contact .founders-bio .founder-block,#contact #resFaqList *{border-top:0;border-bottom:0;}
+#contact .contact-social-icons{gap:22px;}
+#contact .soc-icon{width:44px;height:44px;}
+#contact .soc-icon svg{width:24px;height:24px;stroke-width:1.6;}
+footer{display:grid;place-items:center;overflow:hidden;}
+footer > .ft-copy,footer > .night-tour{grid-area:1 / 1;transition:opacity .6s ease,transform .6s cubic-bezier(.22,1,.36,1);}
+footer > .night-tour{margin:0;opacity:0;transform:translateY(120%);pointer-events:none;}
+footer.tour-on > .ft-copy{opacity:0;transform:translateY(-120%);}
+footer.tour-on > .night-tour{opacity:1;transform:none;pointer-events:auto;}
+body.en .night-tour{display:inline-flex;}
+/* EN: pozvánka do nočního režimu pod copyrightem */
+.night-tour{display:inline-flex;align-items:center;gap:8px;margin-top:6px;padding:4px 2px;border:0;background:none;font:inherit;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);cursor:pointer;}
+.night-tour:hover{color:var(--gold-light);}
+.night-tour svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;fill:none;animation:nightTourBob 1.8s ease-in-out infinite;}
+@keyframes nightTourBob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 .ft-link{color:inherit;text-decoration:none;transition:color .2s;}
 .ft-link:hover{color:var(--gold-light);}
 .ft-mark{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:rgba(176,141,87,.3);letter-spacing:.08em;}
@@ -1073,7 +1119,7 @@ body.de .de{display:revert;}
 }
 html{-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;}
 section{scroll-snap-align:start;scroll-snap-stop:always;}
-#contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:56px;padding:12px 60px;}
+#contact footer{position:absolute;left:0;right:0;bottom:0;margin:0;min-height:44px;padding:10px 60px;}
 #contact .content{position:relative;z-index:10;}
 .residency-booking-trigger{background:rgba(7,6,10,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);}
 .bg-video video.bg-loop-clone{z-index:1;}
@@ -1281,7 +1327,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
                 <div class="room-name cs">Hlavní studio</div><div class="room-name en">Main Studio</div><div class="room-name de">Hauptstudio</div>
                 <span class="room-size">64 m²</span>
               </div>
-              <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="main" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
+              <div class="room-book"><button type="button" class="btn-secondary room-book-main" data-studio-booking="main" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
             </div>
             <div class="room-package">
               <div class="pkg-when-stay">
@@ -1326,6 +1372,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <p class="room-text cs">Hlavní studio se nachází v podkrovní galerii, přímo nad mlýnicí. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník.</p>
             <p class="room-text en">The main studio is located in the attic gallery, directly above the mill. Natural light enters through skylights and a large French window with a balcony overlooking the quiet pond.</p>
             <p class="room-text de">Das Hauptstudio befindet sich in der Dachgalerie direkt über der Mühle. Natürliches Licht fällt durch Dachfenster und ein großes französisches Fenster mit Balkon und Blick auf den ruhigen Teich.</p>
+            <p class="room-price room-price-main"><strong class="cs">9 000 Kč</strong><strong class="en">$420</strong><strong class="de">380 €</strong> <span class="cs">/ den s přespáním ·</span><span class="en">/ day with overnight stay ·</span><span class="de">/ Tag mit Übernachtung ·</span> <strong class="cs">800 Kč</strong><strong class="en">$40</strong><strong class="de">35 €</strong> <span class="cs">/ hodina · vč. DPH</span><span class="en">/ hour · VAT incl.</span><span class="de">/ Stunde · inkl. MwSt.</span></p>
             <div class="room-video-wrap">
               <div class="room-video-frame" data-room-video="/videos/bg/O431B93W9UY.mp4?v=20260309c" style="background-image:url('/videos/bg/O431B93W9UY.jpg?v=20260309c')"></div>
               <figure class="room-book-info">
@@ -1505,6 +1552,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
         </div>
       </div>
     </div>
+  </div>
     <div class="socials contact-social-icons rev rev-d2">
       <a href="https://www.instagram.com/mlynnapile" target="_blank" rel="noopener noreferrer" class="soc-icon" aria-label="Instagram" title="Instagram">
         <svg viewBox="0 0 24 24"><rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5"></rect><circle cx="12" cy="12" r="4.1"></circle><circle cx="17.3" cy="6.7" r="1"></circle></svg>
@@ -1516,9 +1564,9 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
         <svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3c-2.8 0-5 2.2-5 5v3H6v4h3v4h4v-4h3l1-4h-4V9c0-.6.4-1 1-1Z"></path></svg>
       </a>
     </div>
-  </div>
 <footer>
   <span class="ft-copy"><span class="cs">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="en">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="de">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span></span>
+  <button type="button" class="night-tour en" id="nightTourBtn">Take a tour in night mode <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
 </footer>
 </section>
 
@@ -2007,7 +2055,8 @@ function detectLangFromLocation(){
   if(path.endsWith('/en'))return'en';
   if(path.endsWith('/de'))return'de';
   try{
-    const stored=localStorage.getItem(LANG_STORAGE_KEY);
+    // jen jazyk, který si návštěvník sám vybral (ne automaticky uložený z /en, /de)
+    const stored=localStorage.getItem('mlyn_lang_chosen');
     if(stored&&SUPPORTED_LANGS.includes(stored))return stored;
   }catch(error){}
   return'cs';
@@ -3153,6 +3202,7 @@ function applyLang(){
 function switchToLanguage(nextLang){
   if(!SUPPORTED_LANGS.includes(nextLang))return;
   localStorage.setItem(LANG_STORAGE_KEY,nextLang);
+  try{localStorage.setItem('mlyn_lang_chosen',nextLang);}catch(error){}
   const targetPath=getPathForLang(nextLang);
   const hash=window.location.hash||'';
   const nextUrl=`${targetPath}${hash}`;
@@ -3810,6 +3860,24 @@ window.addEventListener('load',()=>{
   },{passive:true});
   window.addEventListener('resize',sync);
   sync();
+})();
+
+/* EN „Take a tour in night mode": sjede dál pod kontakt, kde web pokračuje v nočním režimu */
+document.getElementById('nightTourBtn')?.addEventListener('click',()=>{
+  window.scrollBy({top:window.innerHeight,behavior:'smooth'});
+});
+// copyright v patičce po 5 s viditelnosti vystřídá pozvánka (jen EN)
+(function(){
+  const btn=document.getElementById('nightTourBtn');
+  const foot=btn?.closest('footer');
+  if(!foot||!('IntersectionObserver' in window))return;
+  let timer=0;
+  new IntersectionObserver(([entry])=>{
+    clearTimeout(timer);
+    if(entry.isIntersecting&&document.body.classList.contains('en')&&!foot.classList.contains('tour-on')){
+      timer=setTimeout(()=>foot.classList.add('tour-on'),5000);
+    }
+  },{threshold:.6}).observe(foot);
 })();
 
 /* Start: hash → sekce, jinak nahoru; aktivace výchozí sekce */
