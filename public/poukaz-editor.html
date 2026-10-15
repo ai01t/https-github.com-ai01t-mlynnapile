@@ -45,7 +45,7 @@ a{color:inherit;}
 .step{margin-top:26px;}
 .step-t{display:flex;align-items:center;gap:10px;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
 .step-t i{display:inline-grid;place-items:center;width:20px;height:20px;border:1px solid var(--gold);border-radius:50%;font-style:normal;font-size:.6rem;letter-spacing:0;}
-.variants{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.variants{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 .variant{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:border-color .2s,background .2s;}
 .variant:hover{border-color:rgba(176,141,87,.5);}
 .variant.on{border-color:var(--gold);background:rgba(176,141,87,.1);}
@@ -252,7 +252,7 @@ body.is-admin .v-sample{display:none;}
 
 <script>
 const EMAIL='mlynnapile@gmail.com';
-const VARIANTS=['guitar','duo','band','hours'];
+const VARIANTS=['guitar','band','hours'];
 const T={
   cs:{home:'/',brand:'Mlýn <em>na Pile</em>',back:'← Zpět na web',kicker:'Dárkový poukaz',title:'Darujte čas <em>v mlýně</em>',
     lead:'Vyberte poukaz, napište jméno a věnování a hned uvidíte, jak bude vypadat. Platnost 12 měsíců, termín podle volného kalendáře.',
@@ -265,7 +265,6 @@ const T={
     vk:'Dárkový poukaz',vfor:'Pro',code:'Kód',valid:'Platí do',vfrom:'Od',price:'Hodnota',codeLater:'po zaplacení',
     namePh:'Jan Novák',msgPh:'Ať ti to v mlýně hraje. Všechno nejlepší!',
     v:{guitar:['Pro kytaristu','1 osoba · den s přespáním','12 000 Kč','Den v mlýně pro kytaristu','Hlavní studio s přespáním v mlýnici · plná penze · 1 osoba'],
-       duo:['Pro duo','2 osoby · den s přespáním','12 000 Kč','Den v mlýně pro duo','Hlavní studio s přespáním v mlýnici · plná penze · 2 osoby'],
        band:['Pro kapelu','4 osoby · den s přespáním','21 400 Kč','Den v mlýně pro kapelu','Hlavní studio s přespáním v mlýnici · plná penze · 4 osoby'],
        hours:['3 hodiny ve studiu','bez přespání','3 300 Kč','3 hodiny ve studiu','Hlavní studio s kompletním vybavením · bez přespání']},
     mail:(o)=>[`Dobrý den,`,``,`objednávám dárkový poukaz „${o.v[0]}“ (${o.v[1]}, ${o.v[2]}).`,``,`Jméno obdarovaného: ${o.name}`,`Věnování: ${o.msg||'—'}`,`Od koho: ${o.from||'—'}`,`Styl poukazu: ${o.style}`,`Doručení: ${o.del}`,``,`Prosím o platební údaje.`,``,`Děkuji.`,`S pozdravem,`,o.buyer||'[Vaše jméno]'].join('\n'),
@@ -281,7 +280,6 @@ const T={
     vk:'Gift voucher',vfor:'For',code:'Code',valid:'Valid until',vfrom:'From',price:'Value',codeLater:'after payment',
     namePh:'Jane Smith',msgPh:'Have a great time at the mill. Happy birthday!',
     v:{guitar:['For a guitarist','1 person · day with overnight stay','$560','A day at the mill for a guitarist','Main studio with an overnight stay in the mill room · full board · 1 person'],
-       duo:['For a duo','2 people · day with overnight stay','$560','A day at the mill for a duo','Main studio with an overnight stay in the mill room · full board · 2 people'],
        band:['For a band','4 people · day with overnight stay','$1 020','A day at the mill for a band','Main studio with an overnight stay in the mill room · full board · 4 people'],
        hours:['3 hours in the studio','no overnight stay','$165','3 hours in the studio','Main studio with full equipment · no overnight stay']},
     mail:(o)=>[`Hello,`,``,`I would like to order the gift voucher “${o.v[0]}” (${o.v[1]}, ${o.v[2]}).`,``,`Recipient’s name: ${o.name}`,`Dedication: ${o.msg||'—'}`,`From: ${o.from||'—'}`,`Voucher style: ${o.style}`,`Delivery: ${o.del}`,``,`Please send me the payment details.`,``,`Thank you.`,`Best regards,`,o.buyer||'[Your name]'].join('\n'),
@@ -297,7 +295,6 @@ const T={
     vk:'Gutschein',vfor:'Für',code:'Code',valid:'Gültig bis',vfrom:'Von',price:'Wert',codeLater:'nach Zahlung',
     namePh:'Max Mustermann',msgPh:'Viel Spaß in der Mühle. Alles Gute!',
     v:{guitar:['Für Gitarristen','1 Person · Tag mit Übernachtung','510 €','Ein Tag in der Mühle für Gitarristen','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 1 Person'],
-       duo:['Für ein Duo','2 Personen · Tag mit Übernachtung','510 €','Ein Tag in der Mühle für ein Duo','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 2 Personen'],
        band:['Für eine Band','4 Personen · Tag mit Übernachtung','910 €','Ein Tag in der Mühle für eine Band','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 4 Personen'],
        hours:['3 Stunden im Studio','ohne Übernachtung','150 €','3 Stunden im Studio','Hauptstudio mit kompletter Ausstattung · ohne Übernachtung']},
     mail:(o)=>[`Guten Tag,`,``,`ich möchte den Gutschein „${o.v[0]}“ bestellen (${o.v[1]}, ${o.v[2]}).`,``,`Name der beschenkten Person: ${o.name}`,`Widmung: ${o.msg||'—'}`,`Von: ${o.from||'—'}`,`Stil: ${o.style}`,`Zustellung: ${o.del}`,``,`Bitte senden Sie mir die Zahlungsdaten.`,``,`Vielen Dank.`,`Mit freundlichen Grüßen`,o.buyer||'[Ihr Name]'].join('\n'),
