@@ -2006,11 +2006,14 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                   </div>
                 </div>
                 <span className={styles.estimateValue}>
-                  {copy.estimateLabel}: <strong>{formatCzk(hourlyEstimate)}</strong>
-                  <small>
-                    {hourlyEstimateText}
-                    {copy.billedInCzk ? ` · ${copy.billedInCzk}` : ""}
-                  </small>
+                  <span className={styles.estimateLabel}>
+                    {copy.estimateLabel}
+                    <small>
+                      {hourlyEstimateText}
+                      {copy.billedInCzk ? ` · ${copy.billedInCzk}` : ""}
+                    </small>
+                  </span>
+                  <strong>{formatCzk(hourlyEstimate)}</strong>
                 </span>
               </div>
             ) : null}
@@ -2040,11 +2043,14 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                   </button>
                 </div>
                 <span className={styles.estimateValue}>
-                  {copy.estimateLabel}: <strong>{formatCzk(studioEstimate)}</strong>
-                  <small>
-                    {studioEstimateText}
-                    {copy.billedInCzk ? ` · ${copy.billedInCzk}` : ""}
-                  </small>
+                  <span className={styles.estimateLabel}>
+                    {copy.estimateLabel}
+                    <small>
+                      {studioEstimateText}
+                      {copy.billedInCzk ? ` · ${copy.billedInCzk}` : ""}
+                    </small>
+                  </span>
+                  <strong>{formatCzk(studioEstimate)}</strong>
                 </span>
               </div>
             ) : null}

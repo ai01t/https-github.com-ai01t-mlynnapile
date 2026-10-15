@@ -1831,24 +1831,40 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* cena: vlevo popisek s výpočtem, vpravo výsledná částka — přes celou šířku pod počtem osob */
 .estimateValue {
   display: flex;
-  flex-direction: column;
+  flex-basis: 100%;
   align-items: flex-end;
-  gap: 2px;
-  font-size: 0.72rem;
-  color: rgba(var(--ink-rgb), 0.7);
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(200, 169, 110, 0.16);
 }
 
-.estimateValue strong {
-  font-size: 0.95rem;
-  color: #d4aa72;
+.estimateLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(var(--ink-rgb), 0.62);
+}
+
+.estimateLabel small {
+  font-size: 0.66rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(var(--ink-rgb), 0.5);
   font-variant-numeric: tabular-nums;
 }
 
-.estimateValue small {
-  font-size: 0.62rem;
-  color: rgba(var(--ink-rgb), 0.5);
+.estimateValue strong {
+  font-size: 1.15rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: #d4aa72;
   font-variant-numeric: tabular-nums;
 }
 
