@@ -1462,6 +1462,12 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     window.parent.postMessage({ type: "studio-booking-mode", mode: studioMode }, window.location.origin)
   }, [studioRoom, studioMode])
 
+  // Otevřená poptávka má vlastní křížek → hlavní stránka schová svůj zavírací kroužek, ať se nepřekrývají.
+  useEffect(() => {
+    if (!studioRoom || window.parent === window) return
+    window.parent.postMessage({ type: "studio-inquiry", open: modalOpen }, window.location.origin)
+  }, [studioRoom, modalOpen])
+
   // Vložená verze otevřená samostatně (např. z Googlu) → příslušná sekce webu.
   useEffect(() => {
     if (!embedded || window.top !== window.self) return

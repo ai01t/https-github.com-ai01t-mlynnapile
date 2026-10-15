@@ -443,6 +443,8 @@ body.pause-active section .content{filter:brightness(1.14);}
 .studio-booking-frame{position:absolute;inset:0;width:100%;height:100%;border:0;background:#0b0a0d;}
 .studio-booking-close{position:absolute;top:10px;left:10px;z-index:2;width:34px;height:34px;border-radius:50%;border:1px solid rgba(201,185,154,.35);background:rgba(7,6,10,.72);color:var(--cream);font-size:1.1rem;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:border-color .2s,color .2s;}
 .studio-booking-close:hover{border-color:var(--gold);color:var(--gold);}
+.studio-booking-close{transition:border-color .2s,color .2s,opacity .25s;}
+.studio-booking-panel.inquiry-open .studio-booking-close{opacity:0;pointer-events:none;}
 /* U hlavního studia je kalendář vlevo a video vpravo — křížek patří nad video. */
 .studio-booking-panel[data-room="main"] .studio-booking-close{left:auto;right:10px;}
 /* Bez tří sloupců (mobil, tablet na výšku) jde panel přes celou obrazovku. */
@@ -3581,6 +3583,10 @@ updateNavCompactState();
       }
       if(data.type==='studio-card-query'){
         window.tellStudioCard?.();
+        return;
+      }
+      if(data.type==='studio-inquiry'){
+        document.getElementById('studioBookingPanel')?.classList.toggle('inquiry-open',!!data.open);
         return;
       }
       if(data.type==='studio-booking-mode'){
