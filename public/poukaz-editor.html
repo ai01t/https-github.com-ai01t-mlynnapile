@@ -107,6 +107,8 @@ body.is-admin .admin{display:block;}
 .v-desc{font-size:1.45cqw;color:var(--v-soft);margin:.8cqw 0 0;}
 .v-msg{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2cqw;line-height:1.35;margin:2.2cqw 0 0;max-width:62%;white-space:pre-line;}
 .v-msg:empty{display:none;}
+.v-msg.long{font-size:1.85cqw;max-width:76%;}
+.v-msg.xlong{font-size:1.65cqw;line-height:1.3;max-width:84%;}
 .v-foot{display:flex;align-items:flex-end;gap:4cqw;font-size:1.1cqw;letter-spacing:.12em;text-transform:uppercase;color:var(--v-soft);}
 .v-foot b{display:block;margin-top:.4cqw;font-weight:600;letter-spacing:.08em;color:var(--v-ink);font-size:1.3cqw;}
 .v-price{margin-left:auto;text-align:right;}
@@ -158,7 +160,7 @@ body.is-admin .v-sample{display:none;}
       <label for="fName" data-t="name"></label>
       <input id="fName" maxlength="40" autocomplete="off">
       <label for="fMsg"><span data-t="msg"></span><span class="count" id="msgCount"></span></label>
-      <textarea id="fMsg" maxlength="160"></textarea>
+      <textarea id="fMsg" maxlength="420" style="min-height:120px"></textarea>
       <label for="fFrom" data-t="from"></label>
       <input id="fFrom" maxlength="40" autocomplete="off">
     </div>
@@ -263,7 +265,10 @@ const T={
     sent:'Otevřeli jsme e-mail s objednávkou. Pokud se nic neotevřelo, použijte „Zkopírovat objednávku" a pošlete ji na mlynnapile@gmail.com.',
     copied:'Zkopírováno ✓',sample:'VZOR',
     vk:'Dárkový poukaz',vfor:'Pro',code:'Kód',valid:'Platí do',vfrom:'Od',price:'Hodnota',codeLater:'po zaplacení',
-    namePh:'Jan Novák',msgPh:'Ať ti to v mlýně hraje. Všechno nejlepší!',
+    namePh:'Jirka',msgPh:'Ať ti to v mlýně hraje. Všechno nejlepší!',
+    ex:{guitar:'Jirko, užij si dárek od nás – vyzkoušej studio na mlýně, vymysli nějaký songy a zjisti, jestli to není ten správný prostor na soustředění s tvojí kapelou. Porovnej, jestli je lepší stará kytara, nebo Custom Shop – obojí tam bude nachystáno ;-) Krom super kytar máš k dispozici i bicí a basu a nápady si tam můžeš rovnou nahrát. Užij si to :-)',
+       band:'Kluci, tohle je pro vás – celý den ve studiu na mlýně i s přespáním. Zahrajte si, vymyslete nový songy a rovnou si je nahrajte. Bicí, basa, kytary i aparáty jsou nachystané, jídlo a kafe taky. Tak ať to šlape :-)',
+       hours:'Na tři hodiny je studio na mlýně jen tvoje – zkus si kytary, zesilovače i bicí, porovnej zvuk a nápady si rovnou nahraj. Užij si to :-)'},
     v:{guitar:['Pro kytaristu','1 osoba · den s přespáním','12 000 Kč','Den v mlýně pro kytaristu','Hlavní studio s přespáním v mlýnici · plná penze · 1 osoba'],
        band:['Pro kapelu','4 osoby · den s přespáním','21 400 Kč','Den v mlýně pro kapelu','Hlavní studio s přespáním v mlýnici · plná penze · 4 osoby'],
        hours:['3 hodiny ve studiu','bez přespání','3 300 Kč','3 hodiny ve studiu','Hlavní studio s kompletním vybavením · bez přespání']},
@@ -279,6 +284,9 @@ const T={
     copied:'Copied ✓',sample:'SAMPLE',
     vk:'Gift voucher',vfor:'For',code:'Code',valid:'Valid until',vfrom:'From',price:'Value',codeLater:'after payment',
     namePh:'Jane Smith',msgPh:'Have a great time at the mill. Happy birthday!',
+    ex:{guitar:'Enjoy this gift from us – try out the studio at the mill, write some songs and see if it’s the right place to focus with your band. Compare a vintage guitar with a Custom Shop one – both will be ready for you ;-) Besides great guitars there are drums and bass too, and you can record your ideas right away. Have fun :-)',
+       band:'This one’s for the whole band – a full day in the studio at the mill, overnight stay included. Jam, write new songs and record them on the spot. Drums, bass, guitars and amps are all set up, food and coffee too. Rock on :-)',
+       hours:'For three hours the studio at the mill is all yours – try the guitars, amps and drums, compare sounds and record your ideas right away. Enjoy :-)'},
     v:{guitar:['For a guitarist','1 person · day with overnight stay','$560','A day at the mill for a guitarist','Main studio with an overnight stay in the mill room · full board · 1 person'],
        band:['For a band','4 people · day with overnight stay','$1 020','A day at the mill for a band','Main studio with an overnight stay in the mill room · full board · 4 people'],
        hours:['3 hours in the studio','no overnight stay','$165','3 hours in the studio','Main studio with full equipment · no overnight stay']},
@@ -294,6 +302,9 @@ const T={
     copied:'Kopiert ✓',sample:'MUSTER',
     vk:'Gutschein',vfor:'Für',code:'Code',valid:'Gültig bis',vfrom:'Von',price:'Wert',codeLater:'nach Zahlung',
     namePh:'Max Mustermann',msgPh:'Viel Spaß in der Mühle. Alles Gute!',
+    ex:{guitar:'Genieß dein Geschenk – probier das Studio in der Mühle aus, schreib ein paar Songs und finde heraus, ob das der richtige Ort ist, um dich mit deiner Band zu konzentrieren. Vergleich eine Vintage-Gitarre mit einer Custom Shop – beide stehen bereit ;-) Neben tollen Gitarren gibt es auch Schlagzeug und Bass, und deine Ideen kannst du gleich aufnehmen. Viel Spaß :-)',
+       band:'Das ist für die ganze Band – ein ganzer Tag im Studio in der Mühle mit Übernachtung. Jammt, schreibt neue Songs und nehmt sie gleich auf. Schlagzeug, Bass, Gitarren und Amps stehen bereit, Essen und Kaffee auch. Rockt los :-)',
+       hours:'Drei Stunden gehört das Studio in der Mühle nur dir – probier Gitarren, Amps und Schlagzeug aus, vergleiche den Sound und nimm deine Ideen gleich auf. Viel Spaß :-)'},
     v:{guitar:['Für Gitarristen','1 Person · Tag mit Übernachtung','510 €','Ein Tag in der Mühle für Gitarristen','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 1 Person'],
        band:['Für eine Band','4 Personen · Tag mit Übernachtung','910 €','Ein Tag in der Mühle für eine Band','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 4 Personen'],
        hours:['3 Stunden im Studio','ohne Übernachtung','150 €','3 Stunden im Studio','Hauptstudio mit kompletter Ausstattung · ohne Übernachtung']},
@@ -335,6 +346,8 @@ function renderTexts(){
   document.querySelectorAll('[data-t]').forEach((el)=>{const v=t[el.dataset.t];if(typeof v==='string')el.innerHTML=v;});
   $('brandTxt').innerHTML=t.brand; $('homeLink').href=t.home; $('backLink').href=`${t.home}#studio`;
   $('fName').placeholder=t.namePh; $('fMsg').placeholder=t.msgPh;
+  // ukázkové věnování podle varianty (vysvětlí, co se s poukazem dá dělat), dokud ho zákazník nepřepíše
+  if(!msgTouched)$('fMsg').value=t.ex[state.variant];
   document.querySelectorAll('#langs button').forEach((b)=>b.classList.toggle('on',b.dataset.l===state.lang));
   $('variants').innerHTML=VARIANTS.map((k)=>{const v=t.v[k];return `<button type="button" class="variant${k===state.variant?' on':''}" data-v="${k}"><b>${v[0]}</b><small>${v[1]}</small><strong>${v[2]}</strong></button>`;}).join('');
   document.title=`${t.kicker} – ${t.brand.replace(/<[^>]+>/g,'')}`;
@@ -346,13 +359,14 @@ function renderVoucher(){
   const name=$('fName').value.trim()||t.namePh;
   $('vName').textContent=name; $('vName').classList.toggle('long',name.length>22);
   $('vTitle').textContent=v[3]; $('vDesc').textContent=v[4]; $('vPrice').textContent=v[2];
-  $('vMsg').textContent=$('fMsg').value.trim();
+  const msg=$('fMsg').value.trim();
+  $('vMsg').textContent=msg; $('vMsg').classList.toggle('long',msg.length>140&&msg.length<=280); $('vMsg').classList.toggle('xlong',msg.length>280);
   $('vCode').textContent=isAdmin?$('fCode').value:'— '+t.codeLater;
   $('vValid').textContent=isAdmin?fmtDate($('fValid').value):fmtDate($('fValid').value);
   $('vFrom').textContent=$('fFrom').value.trim();
   $('vFromWrap').style.display=$('fFrom').value.trim()?'':'none';
   $('vPriceWrap').style.visibility=isAdmin&&$('fPrice').checked?'visible':'hidden';
-  $('msgCount').textContent=`${$('fMsg').value.length}/160`;
+  $('msgCount').textContent=`${$('fMsg').value.length}/420`;
   const o=order();
   $('btnOrder').href=`mailto:${EMAIL}?subject=${encodeURIComponent(o.subject)}&body=${encodeURIComponent(o.body)}`;
 }
@@ -363,6 +377,8 @@ newCode();
 const until=new Date();until.setFullYear(until.getFullYear()+1);
 $('fValid').value=`${until.getFullYear()}-${String(until.getMonth()+1).padStart(2,'0')}-${String(until.getDate()).padStart(2,'0')}`;
 
+let msgTouched=false;
+$('fMsg').addEventListener('input',()=>{msgTouched=true;});
 document.addEventListener('input',renderVoucher);
 $('variants').addEventListener('click',(e)=>{const b=e.target.closest('[data-v]');if(!b)return;state.variant=b.dataset.v;render();});
 $('langs').addEventListener('click',(e)=>{const b=e.target.closest('[data-l]');if(!b)return;state.lang=b.dataset.l;render();});
