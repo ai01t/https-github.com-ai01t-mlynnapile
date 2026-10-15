@@ -303,7 +303,7 @@ body.pause-active section .content{filter:brightness(1.14);}
 }
 
 /* PLACE */
-#place .content{display:grid;grid-template-columns:1fr;gap:80px;align-items:start;padding-top:150px;}
+#place > .content{display:grid;grid-template-columns:1fr;gap:80px;align-items:start;padding-top:150px;}
 /* Text sedí ve spodní části videa, horní část nechává záběru volnou.
    Na mobilu se obsah vejde přesně na obrazovku, tam se neposouvá. */
 @media(min-width:601px) and (orientation:landscape){
@@ -312,10 +312,10 @@ body.pause-active section .content{filter:brightness(1.14);}
   #place .bg-video{bottom:var(--place-band);}
   #place .bg-video::after{content:'';position:absolute;left:0;right:0;bottom:0;height:120px;
     background:linear-gradient(to bottom,rgba(5,5,6,0),#050506);pointer-events:none;z-index:3;}
-  #place .content{padding-top:0;padding-bottom:clamp(16px,2.6vh,30px);}
+  #place > .content{padding-top:0;padding-bottom:clamp(16px,2.6vh,30px);}
   #place .values-block{margin-top:calc(var(--place-band) - 92px);}
 }
-#place .content > div{max-width:760px;}
+#place > .content > div{max-width:760px;}
 .place-intro{font-size:.9rem;line-height:1.88;color:rgba(240,235,226,.62);margin-top:32px;max-width:460px;font-weight:300;}
 .place-quote{margin-top:44px;border-left:2px solid var(--gold);padding-left:26px;font-family:'Cormorant Garamond',serif;font-size:1.22rem;font-style:italic;line-height:1.75;color:var(--stone);font-weight:300;}
 .place-right{padding-top:22px;position:relative;align-self:center;max-width:540px;margin-inline:auto;}
@@ -348,8 +348,11 @@ body.pause-active section .content{filter:brightness(1.14);}
 .rooms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:64px;}
 .room-card{background:rgba(7,6,10,.8);padding:40px 32px;transition:background .35s;display:flex;flex-direction:column;}
 .room-card:hover{background:rgba(28,22,14,.92);}
-.room-name{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:400;color:var(--cream);margin-bottom:8px;}
-.room-size{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:block;}
+.room-name{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:400;line-height:1.1;color:var(--cream);margin-bottom:8px;}
+.room-size{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:block;}
+/* Hlavička karty: název a velikost vlevo, Booking vpravo (videa pak končí v jedné rovině). */
+.room-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px;}
+.room-head-text{min-width:0;}
 .room-text{font-size:.79rem;line-height:1.78;color:rgba(240,235,226,.5);}
 .room-video-wrap{margin-top:auto;padding-top:20px;}
 .room-video-frame{position:relative;aspect-ratio:16 / 9;border:1px solid var(--border);background:#000;overflow:hidden;}
@@ -361,10 +364,10 @@ body.pause-active section .content{filter:brightness(1.14);}
 .room-video-frame video.on{opacity:1;}
 /* Booking místnosti: zvolená karta zůstane, panel s kalendářem vyjede přes zbylé dvě. */
 .rooms-grid{position:relative;}
-.room-book{margin-top:18px;}
+.room-book{flex-shrink:0;}
 .room-price{margin:14px 0 0;font-size:.62rem;letter-spacing:.08em;color:rgba(240,235,226,.6);}
 .room-price strong{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--gold);letter-spacing:0;}
-.room-incl{display:flex;align-items:center;min-height:41px;margin:18px 0 0;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);}
+.room-incl{margin:8px 0 0;font-size:.6rem;letter-spacing:.16em;line-height:1.5;text-transform:uppercase;color:rgba(240,235,226,.6);}
 /* Při otevřeném bookingu hlavního studia nahradí video karty text o vybavení v ceně. */
 /* Booking hlavního studia: karta se promění v souhrn balíčku — cena, co je v ceně
    a místo videa fotka snídaně s kváskovým chlebem. */
@@ -379,9 +382,7 @@ body.pause-active section .content{filter:brightness(1.14);}
 .pkg-incl a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(200,169,110,.45);text-underline-offset:.2em;}
 .pkg-incl a:hover{color:var(--gold-light);}
 .room-book-info{display:none;margin:0;}
-.room-book-info img{display:block;width:100%;aspect-ratio:16 / 9;object-fit:cover;object-position:50% 74%;border:1px solid var(--border);}
-.room-book-info figcaption{margin-top:8px;}
-.room-book-info p{margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.98rem;line-height:1.35;color:rgba(240,235,226,.78);}
+.room-book-info img{display:block;width:100%;aspect-ratio:16 / 9;object-fit:cover;object-position:50% 68%;border:1px solid var(--border);}
 .rooms-grid.booking-main .room-card:first-child .room-text{display:none;}
 .rooms-grid.booking-main .room-card:first-child .room-package{display:block;}
 /* Studio po hodinách (přepínač v kalendáři): bez přespání, penze a sauny,
@@ -395,7 +396,7 @@ body.pause-active section .content{filter:brightness(1.14);}
 .rooms-grid.booking-main .room-card:first-child .room-book-info{display:block;}
 .rooms-grid.booking-main .room-card:first-child,
 .rooms-grid.booking-control .room-card:nth-child(3){background:#0b0a0d;}
-.room-book .btn-secondary{padding:12px 28px;}
+.room-book .btn-secondary{padding:10px 20px;}
 .room-book .btn-secondary.on{border-color:var(--gold);color:var(--gold);}
 .room-book .btn-secondary:disabled{opacity:.42;cursor:not-allowed;}
 .room-book .btn-secondary:disabled:hover{border-color:var(--border);color:rgba(240,235,226,.7);}
@@ -784,7 +785,7 @@ body.de .de{display:revert;}
 /* RESPONSIVE — layout */
 @media(max-width:1024px){
   .content{padding:110px 28px 60px;}
-  #place .content,#location .content,#contact .content{grid-template-columns:1fr;gap:44px;}
+  #place > .content,#location .content,#contact .content{grid-template-columns:1fr;gap:44px;}
   .place-right{padding-top:0;align-self:auto;max-width:none;margin-inline:0;}
   #location .loc-text-fx{height:74%;}
   #contact .contact-text-fx{height:82%;}
@@ -908,7 +909,7 @@ body.de .de{display:revert;}
   #studio .studio-intro{font-size:.78rem;line-height:1.55;margin-bottom:20px;}
   #studio .content{padding-top:96px;padding-bottom:28px;}
   /* --- sekce s textem: vejít se na jednu obrazovku --- */
-  #place .content,#location .content,#contact .content{padding-top:96px;padding-bottom:28px;}
+  #place > .content,#location .content,#contact .content{padding-top:96px;padding-bottom:28px;}
   #place .tl-label,#place .val-label{margin-bottom:14px;}
   #place .tl-item{padding:10px 0;gap:14px;grid-template-columns:60px 1fr;}
   #place .tl-year{font-size:1.15rem;}
@@ -953,7 +954,7 @@ body.de .de{display:revert;}
   .carousel-dots button[aria-current="true"]::after{background:var(--gold);transform:scale(1.35);}
 
   /* --- 2. čitelnost textu nad videem --- */
-  #hero .content,#place .content,#location .content{position:relative;isolation:isolate;}
+  #hero .content,#place > .content,#location .content{position:relative;isolation:isolate;}
   #location .content::before{
     content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
     background:linear-gradient(180deg,rgba(7,6,10,.16) 0%,rgba(7,6,10,.56) 24%,rgba(7,6,10,.70) 100%);
@@ -1010,6 +1011,33 @@ body.de .de{display:revert;}
   #residency .residency-panel::-webkit-scrollbar{display:none;}
 
 }
+
+/* PILA + VYBAVENÍ — jedna scéna na dvě obrazovky. Video zůstává přichycené,
+   nadpis Pily vyjede nahoru, černý pás se seznamem zajede za video a zpod něj
+   vyjede tabulka vybavení přes běžící video; „1653" se prolne na „Vybavení".
+   Průběh řídí --pe-p (0 = Pila, 1 = Vybavení), nastavuje ho skript podle scrollu. */
+#place{display:block;min-height:200svh;overflow:clip;}
+#place > .bg-css{position:sticky;top:0;height:100svh;margin-bottom:-100svh;}
+#place .pe-sticky{position:sticky;top:0;height:100svh;margin-bottom:-100svh;z-index:2;pointer-events:none;overflow:hidden;}
+#place > .content{z-index:auto;min-height:100svh;align-content:end;}
+#place .big-n,#place .sec-title,#place .place-intro{position:relative;z-index:3;}
+#place .values-block{position:relative;z-index:3;}
+#place .big-n{display:grid;}
+#place .big-n > span{grid-area:1 / 1;white-space:nowrap;}
+#place .bn-year{opacity:calc(1 - var(--pe-p,0) * 2.4);}
+#place .bn-eq{font-size:.62em;align-self:end;opacity:calc(var(--pe-p,0) * 2.4 - .5);}
+#equipment.pe-eq{position:relative;z-index:3;display:flex;align-items:center;scroll-snap-align:start;scroll-snap-stop:always;}
+@media(min-width:601px) and (orientation:landscape){
+  /* pás se seznamem leží pod videem — při scrollu zajede za něj;
+     video se zároveň roztáhne přes celou výšku */
+  #place .values-block{z-index:1;}
+  #place .pe-sticky .bg-video{bottom:calc(var(--place-band) * (1 - var(--pe-p,0)));}
+}
+@media(max-width:600px),(orientation:portrait){
+  #place{min-height:200dvh;}
+  #place > .bg-css,#place .pe-sticky{height:100dvh;margin-bottom:-100dvh;}
+  #place > .content{min-height:100dvh;isolation:auto;}
+}
 </style>
 <style id="native-scroll-overrides">
 /* Mobil / na výšku: jedno souvislé video přes celou obrazovku, text dole.
@@ -1017,7 +1045,7 @@ body.de .de{display:revert;}
    jen za blokem textu a video nad a pod ním vypadalo jako dva různé záběry. */
 @media(max-width:600px),(orientation:portrait){
   #place{align-items:flex-end;}
-  #place .content{padding-top:0;padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));}
+  #place > .content{padding-top:0;padding-bottom:calc(30px + env(safe-area-inset-bottom,0px));}
   #place .bg-video::after{content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
     background:linear-gradient(to bottom,rgba(7,6,10,0) 0%,rgba(7,6,10,0) 38%,rgba(7,6,10,.55) 66%,rgba(7,6,10,.86) 100%);}
 }
@@ -1056,7 +1084,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
     <li><a href="#place" data-s="place"><span class="cs">Mlýn</span><span class="en">The Mill</span><span class="de">Mühle</span></a></li>
     <li><a href="#studio" data-s="studio"><span class="cs">Studio</span><span class="en">Studio</span><span class="de">Studio</span></a></li>
     <li><a href="#equipment" data-s="equipment"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></a></li>
-    <li><a href="#residency" data-s="residency"><span class="cs">Ubytování</span><span class="en">Accommodation</span><span class="de">Unterkunft</span></a></li>
     <li><a href="#location" data-s="location"><span class="cs">Lokalita</span><span class="en">Location</span><span class="de">Lage</span></a></li>
     <li><a href="#history" data-s="history"><span class="cs">Historie</span><span class="en">History</span><span class="de">Geschichte</span></a></li>
     <li><a href="#contact" data-s="contact"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></a></li>
@@ -1108,7 +1135,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
   <a href="#place" onclick="closeMobileNav()"><span class="cs">Mlýn</span><span class="en">The Mill</span><span class="de">Mühle</span></a>
   <a href="#studio" onclick="closeMobileNav()"><span class="cs">Studio</span><span class="en">Studio</span><span class="de">Studio</span></a>
   <a href="#equipment" onclick="closeMobileNav()"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></a>
-  <a href="#residency" onclick="closeMobileNav()"><span class="cs">Ubytování</span><span class="en">Accommodation</span><span class="de">Unterkunft</span></a>
   <a href="#location" onclick="closeMobileNav()"><span class="cs">Lokalita</span><span class="en">Location</span><span class="de">Lage</span></a>
   <a href="#history" onclick="closeMobileNav()"><span class="cs">Historie</span><span class="en">History</span><span class="de">Geschichte</span></a>
   <a href="#contact" onclick="closeMobileNav()"><span class="cs">Kontakt</span><span class="en">Contact</span><span class="de">Kontakt</span></a>
@@ -1119,7 +1145,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
   <div class="dot" data-t="place"></div>
   <div class="dot" data-t="studio"></div>
   <div class="dot" data-t="equipment"></div>
-  <div class="dot" data-t="residency"></div>
   <div class="dot" data-t="location"></div>
   <div class="dot" data-t="history"></div>
   <div class="dot" data-t="contact"></div>
@@ -1179,28 +1204,47 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
 <!-- ══ PLACE ══ -->
 <section id="place">
   <div class="bg-css"></div>
-  <div class="bg-video">
-    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/b4tTKrUevzM.mp4?v=20260309c" type="video/mp4">
-    </video>
-    <img class="bg-fallback" src="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" alt="" aria-hidden="true">
-    <video class="history-overlay" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny">
-      <source src="/videos/bg/M4QapdIvjkM.mp4?v=20260221e" type="video/mp4">
-    </video>
-    <img class="bg-fallback history-overlay-fallback" src="/videos/bg/M4QapdIvjkM.gif?v=20260221e" alt="" aria-hidden="true">
+  <div class="pe-sticky">
+    <div class="bg-video">
+      <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+        <source src="/videos/bg/b4tTKrUevzM.mp4?v=20260309c" type="video/mp4">
+      </video>
+      <img class="bg-fallback" src="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" alt="" aria-hidden="true">
+      <video class="history-overlay" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny">
+        <source src="/videos/bg/M4QapdIvjkM.mp4?v=20260221e" type="video/mp4">
+      </video>
+      <img class="bg-fallback history-overlay-fallback" src="/videos/bg/M4QapdIvjkM.gif?v=20260221e" alt="" aria-hidden="true">
+    </div>
   </div>
   <div class="content">
     <div>
-      <div class="big-n">1653</div>
+      <div class="big-n"><span class="bn-year">1653</span><span class="bn-eq"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></span></div>
       <h2 class="sec-title rev">Pila <span class="alias-small">alias</span> <em>Šnajberk</em></h2>
       <p class="place-intro en rev rev-d1">Three unique spaces for your creativity. From the main studio through the mill studio to the control room.</p>
       <p class="place-intro de rev rev-d1">Drei einzigartige Räume für eure Kreativität. Vom Hauptstudio über das Mühlenstudio bis zum Regieraum.</p>
       <div class="values-block rev rev-d3">
         <ul class="val-list">
-          <li><span class="cs">Vintage nástroje — 60s–80s Fender, Gibson, VOX.</span><span class="en">Vintage instruments — 60s–80s Fender, Gibson, VOX.</span><span class="de">Vintage-Instrumente — 60er–80er Fender, Gibson, VOX.</span></li>
-          <li><span class="cs">Butikové efekty, moderní technologie</span><span class="en">Boutique effects, modern technology</span><span class="de">Boutique-Effekte, moderne Technik</span></li>
+          <li><span class="cs">Vintage nástroje — 60s–80s Fender, Gibson</span><span class="en">Vintage instruments — 60s–80s Fender, Gibson</span><span class="de">Vintage-Instrumente — 60er–80er Fender, Gibson</span></li>
+          <li><span class="cs">Butikové efekty, lampové zesilovače</span><span class="en">Boutique effects, tube amplifiers</span><span class="de">Boutique-Effekte, Röhrenverstärker</span></li>
+          <li><span class="cs">Marshall, Mesa Boogie, Ampeg…</span><span class="en">Marshall, Mesa Boogie, Ampeg…</span><span class="de">Marshall, Mesa Boogie, Ampeg…</span></li>
+          <li><span class="cs">Možnost nahrávání až 8 stop UA Apollo x8p</span><span class="en">Record up to 8 tracks on a UA Apollo x8p</span><span class="de">Aufnahme von bis zu 8 Spuren über UA Apollo x8p</span></li>
         </ul>
       </div>
+    </div>
+  </div>
+  <div id="equipment" class="pe-eq">
+    <div class="content">
+      <span class="sec-label cs">Vybavení</span><span class="sec-label en">Equipment</span><span class="sec-label de">Ausstattung</span>
+      <h2 class="sec-title rev"><span class="cs">Vybavení<br><em>studia</em></span><span class="en">Studio<br><em>equipment</em></span><span class="de">Studio-<br><em>Ausstattung</em></span></h2>
+      <p class="eq-intro en rev rev-d1">Equipment overview in text format with examples of key instruments and studio technologies.</p>
+      <p class="eq-intro de rev rev-d1">Ausstattungsübersicht in Textform mit Beispielen wichtiger Instrumente und Studiotechnologien.</p>
+  
+      <div class="eq-embed-wrap rev rev-d2">
+        <iframe class="eq-embed-frame" src="/equipment-table/studio-equipment.html?lang=de&amp;v=20260914a" title="Studio equipment"></iframe>
+      </div>
+      <p class="eq-thanks cs">Děkujeme kytaristovi Radkovi Fořtovi z kapely <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> za zapůjčení nástrojů z jeho sbírky.</p>
+      <p class="eq-thanks en">We thank guitarist Radek Fort from the band <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> for lending instruments from his collection.</p>
+      <p class="eq-thanks de">Wir danken dem Gitarristen Radek Fořt von der Band <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> für das Leihen von Instrumenten aus seiner Sammlung.</p>
     </div>
   </div>
 </section>
@@ -1227,8 +1271,13 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
         <p class="studio-intro de">Oben aufnehmen, unten schlafen, dazwischen der Wintergarten. Die Instrumente werden regelmäßig gewartet und sind jederzeit einsatzbereit.</p>
         <div class="rooms-grid">
           <div class="room-card">
-            <div class="room-name cs">Hlavní studio</div><div class="room-name en">Main Studio</div><div class="room-name de">Hauptstudio</div>
-            <span class="room-size">64 m²</span>
+            <div class="room-head">
+              <div class="room-head-text">
+                <div class="room-name cs">Hlavní studio</div><div class="room-name en">Main Studio</div><div class="room-name de">Hauptstudio</div>
+                <span class="room-size">64 m²</span>
+              </div>
+              <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="main" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
+            </div>
             <div class="room-package">
               <div class="pkg-when-stay">
               <div class="pkg-price-line"><strong class="cs">9 000 Kč</strong><strong class="en">$420</strong><strong class="de">380 €</strong><span class="cs">den s přespáním · 1–2 osoby · vč. DPH</span><span class="en">day with overnight stay · 1–2 people · VAT incl.</span><span class="de">Tag mit Übernachtung · 1–2 Personen · inkl. MwSt.</span></div>
@@ -1239,34 +1288,31 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
               <p class="pkg-extra cs">Minimálně 3 hodiny – na dotáčky, zkoušky nebo porovnání zvuku.</p><p class="pkg-extra en">Minimum 3 hours – for overdubs, try-outs or comparing sounds.</p><p class="pkg-extra de">Mindestens 3 Stunden – für Overdubs, Tests oder Klangvergleiche.</p>
               </div>
               <ul class="pkg-incl cs">
-                <li>Hlavní studio</li>
                 <li>Kompletní <a class="section-jump" href="#equipment">vybavení</a> – vše zapojené a připravené, včetně podpory</li>
                 <li>Nahrávání až 8 stop současně (Apollo x8p)</li>
                 <li class="pkg-stay">Přespání pod studiem v bývalé mlýnici, případně i pokoj navíc</li>
                 <li class="pkg-stay">Plná penze, káva a nápoje</li>
-                <li class="pkg-stay">Sauna</li>
-                <li class="pkg-stay">Zimní zahrada</li>
-                <li class="pkg-stay">Svezení Teslou do Domažlic a zpět</li>
+                <li class="pkg-stay">Sauna · Zimní zahrada</li>
+                <li class="pkg-stay">Svezení Teslou ze mlýna po Domažlicku a zpět</li>
+                <li><a href="/chleba">Náš čerstvý kváskový chléb</a></li>
               </ul>
               <ul class="pkg-incl en">
-                <li>Main studio</li>
                 <li>Full <a class="section-jump" href="#equipment">equipment</a> – everything wired and ready, with support</li>
                 <li>Record up to 8 tracks at once (Apollo x8p)</li>
                 <li class="pkg-stay">Overnight stay below the studio in the former mill room, an extra room on request</li>
                 <li class="pkg-stay">Full board, coffee and drinks</li>
-                <li class="pkg-stay">Sauna</li>
-                <li class="pkg-stay">Winter garden</li>
-                <li class="pkg-stay">Tesla ride to and from Domažlice</li>
+                <li class="pkg-stay">Sauna · Winter garden</li>
+                <li class="pkg-stay">Tesla rides from the mill around the Domažlice area and back</li>
+                <li><a href="/en/chleba">Our fresh sourdough bread</a></li>
               </ul>
               <ul class="pkg-incl de">
-                <li>Hauptstudio</li>
                 <li>Komplette <a class="section-jump" href="#equipment">Ausstattung</a> – alles verkabelt und bereit, inklusive Betreuung</li>
                 <li>Aufnahme von bis zu 8 Spuren gleichzeitig (Apollo x8p)</li>
                 <li class="pkg-stay">Übernachtung unter dem Studio im ehemaligen Mühlenraum, auf Wunsch ein zusätzliches Zimmer</li>
                 <li class="pkg-stay">Vollpension, Kaffee und Getränke</li>
-                <li class="pkg-stay">Sauna</li>
-                <li class="pkg-stay">Wintergarten</li>
-                <li class="pkg-stay">Fahrt mit dem Tesla nach Domažlice und zurück</li>
+                <li class="pkg-stay">Sauna · Wintergarten</li>
+                <li class="pkg-stay">Fahrten mit dem Tesla von der Mühle rund um Domažlice und zurück</li>
+                <li><a href="/de/chleba">Unser frisches Sauerteigbrot</a></li>
               </ul>
             </div>
             <p class="room-text cs">Hlavní studio se nachází v podkrovní galerii, přímo nad mlýnicí. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník.</p>
@@ -1275,30 +1321,33 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <div class="room-video-wrap">
               <div class="room-video-frame" data-room-video="/videos/bg/O431B93W9UY.mp4?v=20260309c" style="background-image:url('/videos/bg/O431B93W9UY.jpg?v=20260309c')"></div>
               <figure class="room-book-info">
-                <img src="/images/snidane-kvaskovy-chleb.jpg" alt="" loading="lazy" decoding="async">
-                <figcaption>
-                  <p class="cs">Čerstvý kváskový chléb, ke každé snídani.</p>
-                  <p class="en">Fresh sourdough bread, with every breakfast.</p>
-                  <p class="de">Frisches Sauerteigbrot, zu jedem Frühstück.</p>
-                </figcaption>
+                <img src="/images/snidane-chleb-stul.jpg" alt="" loading="lazy" decoding="async">
               </figure>
             </div>
-            <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="main" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
           </div>
           <div class="room-card">
-            <div class="room-name cs">Mlýnice</div><div class="room-name en">The Mill Room</div><div class="room-name de">Mühlenraum</div>
-            <span class="room-size">25 m²</span>
+            <div class="room-head">
+              <div class="room-head-text">
+                <div class="room-name cs">Mlýnice</div><div class="room-name en">The Mill Room</div><div class="room-name de">Mühlenraum</div>
+                <span class="room-size">25 m²</span>
+                <p class="room-incl"><span class="cs">V ceně pronájmu studia na 1 a více dní.</span><span class="en">Included when renting the studio for 1 day or more.</span><span class="de">Im Preis der Studiomiete ab 1 Tag enthalten.</span></p>
+              </div>
+            </div>
             <p class="room-text cs">Místo k přespání přímo pod studiem, v bývalé mlýnici s vysokými stropy. Z jedné strany navazuje na zimní zahradu, z druhé vede ven – k velké peci, k rybníku a do vlastní zahrady o rozloze 6 500 m².</p>
             <p class="room-text en">A place to sleep right below the studio, in the former mill room with its high ceilings. On one side it opens onto the winter garden, on the other it leads outside – to the large oven, the pond and our own 6,500 m² garden.</p>
             <p class="room-text de">Ein Schlafplatz direkt unter dem Studio, im ehemaligen Mühlenraum mit hohen Decken. Auf der einen Seite schließt der Wintergarten an, auf der anderen geht es hinaus – zum großen Ofen, zum Teich und in den eigenen 6.500 m² großen Garten.</p>
             <div class="room-video-wrap">
               <div class="room-video-frame" data-room-video="/videos/bg/uQiXLcspREY.mp4?v=20260309c" style="background-image:url('/videos/bg/uQiXLcspREY.jpg?v=20260309c')"></div>
             </div>
-            <p class="room-incl"><span class="cs">V ceně pronájmu studia na 1 a více dní.</span><span class="en">Included when renting the studio for 1 day or more.</span><span class="de">Im Preis der Studiomiete ab 1 Tag enthalten.</span></p>
           </div>
           <div class="room-card">
-            <div class="room-name cs">Kontrolní místnost</div><div class="room-name en">Control Room</div><div class="room-name de">Regieraum</div>
-            <span class="room-size">27 m²</span>
+            <div class="room-head">
+              <div class="room-head-text">
+                <div class="room-name cs">Kontrolní místnost</div><div class="room-name en">Control Room</div><div class="room-name de">Regieraum</div>
+                <span class="room-size">27 m²</span>
+              </div>
+              <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="control" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
+            </div>
             <p class="room-text cs">Apple Pro Display XDR 6K pro střih videa, grafiku i postprodukci. K dispozici plná Apple sestava periferií pro pohodlnou práci. Prostor je dělaný pro soustředěnou kreativní tvorbu: plynule regulovatelné osvětlení, klidná atmosféra, krásný výhled a knihovna.</p>
             <p class="room-text en">Apple Pro Display XDR 6K for video editing, graphics and post-production. Full Apple peripherals are available for comfortable work. The room is built for focused creative work: smoothly adjustable lighting, calm atmosphere, beautiful view and a library.</p>
             <p class="room-text de">Apple Pro Display XDR 6K für Videoschnitt, Grafik und Postproduktion. Vollständiges Apple-Peripherie-Setup für komfortables Arbeiten. Sanft regulierbares Licht, ruhige Atmosphäre, schöner Ausblick und Bibliothek.</p>
@@ -1306,7 +1355,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <div class="room-video-wrap">
               <div class="room-video-frame" data-room-video="/videos/bg/gTqXu9xU_7k.mp4?v=20260309c" style="background-image:url('/videos/bg/gTqXu9xU_7k.jpg?v=20260309c')"></div>
             </div>
-            <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="control" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
           </div>
           <div class="studio-booking-panel" id="studioBookingPanel" data-room="main" aria-hidden="true">
             <div class="studio-booking-inner">
@@ -1322,30 +1370,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
 
 </section>
 
-
-<!-- ══ EQUIPMENT ══ -->
-<section id="equipment">
-  <div class="bg-css"></div>
-  <div class="bg-video">
-    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/MczOR3DstPg.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/MczOR3DstPg.mp4?v=20260309c" type="video/mp4">
-    </video>
-    <img class="bg-fallback" src="/videos/bg/MczOR3DstPg.jpg?v=20260309c" alt="" aria-hidden="true">
-  </div>
-  <div class="content">
-    <span class="sec-label cs">Vybavení</span><span class="sec-label en">Equipment</span><span class="sec-label de">Ausstattung</span>
-    <h2 class="sec-title rev"><span class="cs">Vybavení<br><em>studia</em></span><span class="en">Studio<br><em>equipment</em></span><span class="de">Studio-<br><em>Ausstattung</em></span></h2>
-    <p class="eq-intro en rev rev-d1">Equipment overview in text format with examples of key instruments and studio technologies.</p>
-    <p class="eq-intro de rev rev-d1">Ausstattungsübersicht in Textform mit Beispielen wichtiger Instrumente und Studiotechnologien.</p>
-
-    <div class="eq-embed-wrap rev rev-d2">
-      <iframe class="eq-embed-frame" src="/equipment-table/studio-equipment.html?lang=de&amp;v=20260914a" title="Studio equipment"></iframe>
-    </div>
-    <p class="eq-thanks cs">Děkujeme kytaristovi Radkovi Fořtovi z kapely <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> za zapůjčení nástrojů z jeho sbírky.</p>
-    <p class="eq-thanks en">We thank guitarist Radek Fort from the band <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> for lending instruments from his collection.</p>
-    <p class="eq-thanks de">Wir danken dem Gitarristen Radek Fořt von der Band <a class="anteater-link" href="https://open.spotify.com/track/1jzCR4iPOo3bCEo67VsvaW?si=fb770e4a9679489f&amp;nd=1&amp;dlsi=1ca88705a71d401c" target="_blank" rel="noopener noreferrer">NORA</a> für das Leihen von Instrumenten aus seiner Sammlung.</p>
-  </div>
-</section>
 
 <!-- ══ LOCATION ══ -->
 <section id="location">
@@ -1418,94 +1442,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
 </section>
 
 <!-- ══ RESIDENCY ══ -->
-<section id="residency">
-  <div class="bg-css"></div>
-  <div class="bg-video">
-    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/b4tTKrUevzM.mp4?v=20260309c" type="video/mp4">
-    </video>
-    <img class="bg-fallback" src="/videos/bg/b4tTKrUevzM.jpg?v=20260309c" alt="" aria-hidden="true">
-    <video class="chleba-overlay" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/NYqybmh85G4.mp4?v=20260221e" type="video/mp4">
-    </video>
-    <img class="bg-fallback chleba-overlay-fallback" src="/videos/bg/NYqybmh85G4.gif?v=20260221e" alt="" aria-hidden="true">
-    <video class="pkg-overlay pkg-overlay-into" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/7RVXPBnHb-c.mp4?v=20260224a" type="video/mp4">
-    </video>
-    <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-into" src="/videos/bg/7RVXPBnHb-c.gif?v=20260224a" alt="" aria-hidden="true">
-    <video class="pkg-overlay pkg-overlay-underwater" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/uQiXLcspREY.mp4?v=20260224a" type="video/mp4">
-    </video>
-    <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-underwater" src="/videos/bg/uQiXLcspREY.gif?v=20260224a" alt="" aria-hidden="true">
-    <video class="pkg-overlay pkg-overlay-otherside" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/X7lvikbWnMQ.mp4?v=20260224a" type="video/mp4">
-    </video>
-    <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-otherside" src="/videos/bg/X7lvikbWnMQ.gif?v=20260224a" alt="" aria-hidden="true">
-    <video class="pkg-overlay pkg-overlay-fuel" muted loop playsinline webkit-playsinline preload="metadata" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/5INpfHr0lu4.mp4?v=20260224a" type="video/mp4">
-    </video>
-    <img class="bg-fallback pkg-overlay-fallback pkg-overlay-fallback-fuel" src="/videos/bg/5INpfHr0lu4.gif?v=20260224a" alt="" aria-hidden="true">
-  </div>
-  <div class="residency-dim" aria-hidden="true"></div>
-  <div class="content">
-    <div class="residency-stage" id="residencyStage">
-      <div class="residency-track">
-        <div class="residency-panel residency-main-panel">
-          <div class="big-n">6500<span style="font-size:.35em;opacity:.5">m²</span></div>
-          <span class="sec-label cs">Nahrávání + Ubytování</span><span class="sec-label en">Recording + Accommodation</span><span class="sec-label de">Recording + Unterkunft</span>
-          <h2 class="sec-title rev"><span class="cs">Čtyři<br><em>balíčky</em></span><span class="en">Four<br><em>packages</em></span><span class="de">Vier<br><em>Pakete</em></span></h2>
-          <p class="res-intro cs rev rev-d1">Čtyři cesty, jak si užít nahrávání naplno: soukromý park 6 500 m² s potůčkem, snídaně/brunch v zimní zahradě z lokálních surovin a domácí <a class="chleba-trigger" href="/chleba">chléb</a> z pece, vlastní zdroj energie. Balíčky jsou pojmenované podle songů <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-          <p class="res-intro en rev rev-d1">Four ways to enjoy recording to the fullest: a private 6,500 m² park with a stream, breakfast/brunch in the winter garden from local ingredients and homemade oven-baked <a class="chleba-trigger" href="/chleba">bread</a>, plus an independent power source. The packages are named after songs by our band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a>. 🙂</p>
-          <p class="res-intro de rev rev-d1">Vier Wege, Recording voll auszukosten: privater Park mit 6.500 m² und Bach, Frühstück/Brunch im Wintergarten aus lokalen Zutaten und hausgebackenes <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Ofen, eigene Energiequelle. Die Pakete sind nach Songs unserer Band <a class="anteater-link" href="https://www.anteaterofficial.com" target="_blank" rel="noopener noreferrer">Anteater</a> benannt. 🙂</p>
-          <div class="pkg-stage">
-          <div class="residency-actions rev rev-d2">
-            <button type="button" class="btn-secondary residency-booking-trigger" data-open-booking="1">
-              <span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span>
-            </button>
-          </div>
-          <div class="pkg-grid rev rev-d2">
-      <div class="pkg-card" data-pkg="into"><div class="pkg-num">01</div><div class="pkg-name">Main Studio / In To The Wild</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Snídaně v zimní zahradě</span><span class="en">#Main studio #Breakfast in winter garden</span><span class="de">#Hauptstudio #Frühstück im Wintergarten</span></span><p class="pkg-text cs">Nejekonomičtější — stanování v parku, zapůjčení pouze studia, pro dobrodruhy a nadšence. Usínejte a probouzejte se do světa hudby s přírodou.</p><p class="pkg-text en">The most economical — camping in the park, studio rental only, for adventurers and enthusiasts. Fall asleep and wake up to music and nature.</p><p class="pkg-text de">Die wirtschaftlichste Variante — Camping im Park, nur Studiomiete, für Abenteurer und Enthusiasten. Einschlafen und aufwachen in Musik und Natur.</p></div>
-      <div class="pkg-card" data-pkg="underwater"><div class="pkg-num">02</div><div class="pkg-name">Underwater</div><span class="pkg-tags"><span class="cs">#Hlavní studio #Sauna</span><span class="en">#Main studio #Sauna</span><span class="de">#Hauptstudio #Sauna</span></span><p class="pkg-text cs">Nejblíže k hudbě, spaní doslova pod podlahou studia a také i pod hladinou rybníka. Skromné ale stylové a útulné přespání přímo v prostorách bývalé mlýnice.</p><p class="pkg-text en">Closest to the music, sleeping literally beneath the studio floor and below the pond level. Modest but stylish accommodation in the former mill.</p><p class="pkg-text de">Ganz nah an der Musik: Schlafen direkt unter dem Studioboden und unter der Teichoberfläche. Schlicht, aber stilvoll und gemütlich in der ehemaligen Mühle.</p></div>
-      <div class="pkg-card" data-pkg="otherside"><div class="pkg-num">03</div><div class="pkg-name">Otherside</div><span class="pkg-tags"><span class="cs">#Kontrolní místnost #Staročeská světnice #Dva pokoje #TV</span><span class="en">#Control room #Traditional Czech room #Two rooms #TV</span><span class="de">#Regieraum #Traditionelle Stube #Zwei Zimmer #TV</span></span><p class="pkg-text cs">Pro postprodukci 6K Apple Pro XDR včetně komplet periferií od Apple + ubytování ve staročeské světnici. Vhodné i pro nehudební kreativní aktivity.</p><p class="pkg-text en">For post-production: 6K Apple Pro XDR with full Apple peripherals + accommodation in a traditional Czech room. Suitable for non-musical creative activities too.</p><p class="pkg-text de">Für Postproduktion: 6K Apple Pro XDR inkl. kompletter Apple-Peripherie + Unterkunft in einer traditionellen tschechischen Stube. Auch für nicht-musikalische Kreativarbeit geeignet.</p></div>
-      <div class="pkg-card" data-pkg="fuel"><div class="pkg-num">04</div><div class="pkg-name">Fuel</div><span class="pkg-tags"><span class="cs">#VIP balíček</span><span class="en">#VIP package</span><span class="de">#VIP-Paket</span></span><p class="pkg-text cs">VIP pronájem celé nemovitosti s plným servisem, včetně zimní zahrady a zapůjčení Tesla Model X. Profi catering, roztopení velké pece, pizza i <a class="chleba-trigger" href="/chleba">chleba</a> z pece.</p><p class="pkg-text en">VIP rental of the entire property with full service, including the winter garden and Tesla Model X. Professional catering, pizza and <a class="chleba-trigger" href="/chleba">bread</a> from the stone oven.</p><p class="pkg-text de">VIP-Miete der gesamten Anlage mit Full-Service inklusive Wintergarten und Tesla Model X. Professionelles Catering, Pizza und <a class="chleba-trigger" href="/chleba">Brot</a> aus dem Steinofen.</p></div>
-    </div>
-    </div>
-    <div class="rules-box rules-list-tight rev rev-d3">
-      <span class="rules-label"><span class="cs">DŮLEŽITÉ</span><span class="en">IMPORTANT</span><span class="de">WICHTIG</span></span>
-      <ul class="rules-list">
-        <li><span class="cs">Ubytování je součástí pobytu ve studiu během kreativní práce.</span><span class="en">Accommodation is part of the studio stay during creative work.</span><span class="de">Die Unterkunft ist Teil des Studioaufenthalts während der kreativen Arbeit.</span></li>
-        <li><span class="cs">Energetická nezávislost - zřízena dostatečná kapacita pro nerušený provoz studia.</span><span class="en">Energy independence — sufficient capacity is installed for uninterrupted studio operation.</span><span class="de">Energieunabhängigkeit — ausreichende Kapazität für einen ungestörten Studiobetrieb ist vorhanden.</span></li>
-        <li><span class="cs">U všech balíčků je možnost parkovat v areálu mlýna, který je pod kamerovým systémem.</span><span class="en">All packages include parking in the mill area under CCTV surveillance.</span><span class="de">Bei allen Paketen ist Parken im kameragesicherten Mühlenareal möglich.</span></li>
-      </ul>
-    </div>
-        </div>
-        <div class="residency-panel residency-booking-panel">
-          <div class="residency-booking-toolbar rev rev-d1">
-            <button type="button" class="btn-secondary residency-booking-back" data-close-booking="1">
-              <span class="cs">Zpět na ubytování</span><span class="en">Back to accommodation</span><span class="de">Zurück zur Unterkunft</span>
-            </button>
-            <span class="residency-booking-caption">
-              <span class="cs">Booking uvnitř sekce ubytování</span><span class="en">Booking inside the accommodation section</span><span class="de">Booking innerhalb der Unterkunftssektion</span>
-            </span>
-          </div>
-          <div class="residency-booking-shell rev rev-d2">
-            <iframe
-              id="bookingEmbedFrame"
-              class="residency-booking-frame"
-              allow="autoplay; encrypted-media; picture-in-picture"
-              src=""
-              title="Booking"
-              loading="lazy"
-              scrolling="no"
-              tabindex="-1"
-            ></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ══ CONTACT ══ -->
 <section id="contact">
   <div class="bg-css"></div>
@@ -1653,7 +1589,8 @@ function scrollToSection(sectionId,{behavior='smooth',closeMenu=false}={}){
   const section=document.getElementById(sectionId);
   if(!section)return false;
   const performScroll=()=>{
-    currentSectionId=sectionId;
+    // #equipment je druhá obrazovka sekce Pila, ne vlastní sekce
+    currentSectionId=section.closest('section')?.id||sectionId;
     if(sectionId!=='place')hidePlaceHistoryOverlay(true);
     if(sectionId!=='residency'){
       hideResidencyChlebaOverlay(true);
@@ -1854,10 +1791,10 @@ const BG_VARIANTS={
   },
   equipment:{
     day:{horizontal:'MczOR3DstPg',vertical:'PNnMOPbABZo'},
-    night:{horizontal:'h4IbWPSWMJE',vertical:'DY09nnytbjc'}
+    night:{horizontal:'b4tTKrUevzM',vertical:'b4tTKrUevzM'}
   },
   place:{
-    day:{horizontal:'b4tTKrUevzM',vertical:'b4tTKrUevzM'},
+    day:{horizontal:'MczOR3DstPg',vertical:'PNnMOPbABZo'},
     night:{horizontal:'b4tTKrUevzM',vertical:'b4tTKrUevzM'}
   },
   contact:{
@@ -2525,6 +2462,39 @@ function resolveSectionYouTubeId(sectionId){
   return/^[A-Za-z0-9_-]{11}$/.test(youtubeId)?youtubeId:null;
 }
 
+/* YouTube vrstvy na pozadí jsou vidět, jen když video opravdu hraje — při startu,
+   pauze a před koncem smyčky YouTube ukazuje ovládání (pauza, přeskočit) a název.
+   Mezitím je vidět lokální video pod nimi. */
+const ytWatch=new Map();
+function watchYoutubeLayer(iframe,wrap,cls){
+  const st={wrap,cls,state:-1,time:0,duration:0,timer:0};
+  ytWatch.set(iframe,st);
+  const listen=()=>{
+    if(!iframe.isConnected){clearInterval(st.timer);ytWatch.delete(iframe);return;}
+    try{iframe.contentWindow.postMessage(JSON.stringify({event:'listening',id:cls,channel:'widget'}),'*');}catch(e){}
+  };
+  iframe.addEventListener('load',listen);
+  st.timer=setInterval(listen,1500);
+}
+window.addEventListener('message',(event)=>{
+  if(!/^https:\/\/www\.youtube(-nocookie)?\.com$/.test(event.origin))return;
+  for(const [iframe,st] of ytWatch){
+    if(event.source!==iframe.contentWindow)continue;
+    let data;
+    try{data=typeof event.data==='string'?JSON.parse(event.data):event.data;}catch(e){return;}
+    if(!data)return;
+    if(data.event==='onStateChange'&&typeof data.info==='number')st.state=data.info;
+    if(data.event==='infoDelivery'&&data.info&&typeof data.info==='object'){
+      if(typeof data.info.playerState==='number')st.state=data.info.playerState;
+      if(data.info.duration>0)st.duration=data.info.duration;
+      if(typeof data.info.currentTime==='number')st.time=data.info.currentTime;
+    }
+    const show=st.state===1&&st.time>3&&!(st.duration&&st.time>st.duration-1.2);
+    st.wrap?.classList.toggle(st.cls,show);
+    return;
+  }
+});
+
 function buildBgYoutubeUrl(videoId,quality='hd1080'){
   const params=new URLSearchParams({
     autoplay:'1',
@@ -2538,6 +2508,8 @@ function buildBgYoutubeUrl(videoId,quality='hd1080'){
     iv_load_policy:'3',
     disablekb:'1',
     fs:'0',
+    enablejsapi:'1',
+    origin:window.location.origin,
     vq:quality
   });
   return`https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
@@ -2567,11 +2539,8 @@ function ensurePlaceHistoryYoutube(){
   iframe.tabIndex=-1;
   iframe.setAttribute('aria-hidden','true');
   iframe.setAttribute('allowfullscreen','');
-  iframe.addEventListener('load',()=>{
-    if(activePlaceHistoryYoutubeIframe!==iframe)return;
-    placeBgWrap?.classList.add('history-yt-ready');
-  });
   placeBgWrap?.appendChild(iframe);
+  watchYoutubeLayer(iframe,placeBgWrap,'history-yt-ready');
   activePlaceHistoryYoutubeIframe=iframe;
 }
 
@@ -2618,7 +2587,8 @@ function clearActiveBgYoutube(){
   if(activeBgYoutubeIframe){
     const wrap=activeBgYoutubeIframe.closest('.bg-video');
     wrap?.classList.remove('yt-ready','yt-suppressed');
-    activeBgYoutubeIframe.remove();
+    // při přeskupování sekcí (pás za kontaktem) může být iframe zrovna v pohybu
+    try{activeBgYoutubeIframe.remove();}catch(e){}
   }
   activeBgYoutubeIframe=null;
   activeBgYoutubeSectionId='';
@@ -2668,10 +2638,10 @@ function ensureActiveBgYoutube(){
   iframe.setAttribute('allowfullscreen','');
   iframe.addEventListener('load',()=>{
     if(activeBgYoutubeIframe!==iframe)return;
-    wrap.classList.add('yt-ready');
     syncBgYoutubeVisibility();
   });
   wrap.appendChild(iframe);
+  watchYoutubeLayer(iframe,wrap,'yt-ready');
   activeBgYoutubeIframe=iframe;
   activeBgYoutubeSectionId=currentSectionId;
   activeBgYoutubeVideoId=videoId;
@@ -3455,19 +3425,32 @@ updateNavCompactState();
       return;
     }
     if(data.type==='equipment-embed-wheel'){
-      if(currentSectionId!=='equipment')return;
-      passthroughScroll('equipment',data.deltaY,140);
+      if(currentSectionId!=='place')return;
+      passthroughScroll('place',data.deltaY,140);
       return;
     }
     if(data.type==='equipment-embed-swipe'){
-      if(currentSectionId!=='equipment')return;
-      passthroughScroll('equipment',data.deltaY,32);
+      if(currentSectionId!=='place')return;
+      passthroughScroll('place',data.deltaY,32);
       return;
     }
     const studioFrame=window.getStudioBookingFrame?.();
     if(studioFrame&&event.source===studioFrame.contentWindow){
+      if(data.type==='studio-goto-section'){
+        // klik na „Historii" v bublině u minulého dne
+        const target=String(data.section||'');
+        if(!/^[a-z-]+$/.test(target)||!document.getElementById(target))return;
+        window.closeStudioBooking?.();
+        scrollToSection(target,{behavior:'smooth'});
+        return;
+      }
+      if(data.type==='studio-card-query'){
+        window.tellStudioCard?.();
+        return;
+      }
       if(data.type==='studio-booking-mode'){
         document.querySelector('#studio .rooms-grid')?.classList.toggle('booking-hourly',data.mode==='hourly');
+        window.holdStudioGridHeight?.();
         return;
       }
       if(data.type==='booking-embed-wheel'){
@@ -3515,9 +3498,26 @@ updateNavCompactState();
     syncBgYoutubeVisibility();
   };
   window.isStudioBookingOpen=()=>Boolean(openRoom);
+  // na počítači je vedle kalendáře karta s cenou — kalendář ji pak neopakuje
+  const tellCard=()=>{
+    try{frame.contentWindow.postMessage({type:'studio-card-visible',visible:!panel.classList.contains('fullscreen')},window.location.origin);}catch(e){}
+  };
+  frame.addEventListener('load',tellCard);
+  window.tellStudioCard=tellCard;
+  // Karta má v režimu pobyt / po hodinách jinou výšku; mřížka si při otevřeném
+  // bookingu drží tu větší, jinak by se celá sekce (vycentrovaná) posouvala.
+  const holdGridHeight=()=>{
+    if(!openRoom){grid.style.minHeight='';return;}
+    requestAnimationFrame(()=>{
+      const prev=parseFloat(grid.style.minHeight)||0;
+      grid.style.minHeight=Math.max(prev,grid.offsetHeight)+'px';
+    });
+  };
+  window.holdStudioGridHeight=holdGridHeight;
   const syncCards=()=>{
     grid.classList.toggle('booking-main',openRoom==='main');
     grid.classList.toggle('booking-control',openRoom==='control');
+    holdGridHeight();
   };
   grid.querySelectorAll('.room-package a').forEach((link)=>link.addEventListener('click',()=>close()));
   const syncTriggers=()=>triggers.forEach((btn)=>{
@@ -3546,6 +3546,7 @@ updateNavCompactState();
       if(inner){inner.style.transition='none';panel.dataset.room=room;void inner.offsetWidth;inner.style.transition='';}
     }
     panel.dataset.room=room;
+    tellCard();
     const src=frameSrc(room);
     if(frame.getAttribute('src')!==src)frame.setAttribute('src',src);
     openRoom=room;
@@ -3733,6 +3734,31 @@ window.addEventListener('load',()=>{
     pending=true;
     requestAnimationFrame(()=>{pending=false;sync();});
   },{passive:true});
+})();
+
+/* PILA + VYBAVENÍ: průběh přechodu (--pe-p) a zvýraznění „Vybavení" v menu,
+   když je vidět tabulka (sekce je pro web pořád jedna — „place"). */
+(function(){
+  const place=document.getElementById('place');
+  const eq=document.getElementById('equipment');
+  if(!place||!eq)return;
+  let pending=false;
+  function sync(){
+    pending=false;
+    const p=Math.min(1,Math.max(0,-place.getBoundingClientRect().top/innerHeight));
+    place.style.setProperty('--pe-p',p.toFixed(3));
+    if(currentSectionId!=='place')return;
+    const target=eq.getBoundingClientRect().top<=innerHeight*.55?'equipment':'place';
+    dots.forEach((d)=>d.classList.toggle('active',d.dataset.t===target));
+    links.forEach((a)=>a.classList.toggle('active',a.dataset.s===target));
+  }
+  window.addEventListener('scroll',()=>{
+    if(pending)return;
+    pending=true;
+    requestAnimationFrame(sync);
+  },{passive:true});
+  window.addEventListener('resize',sync);
+  sync();
 })();
 
 /* Start: hash → sekce, jinak nahoru; aktivace výchozí sekce */

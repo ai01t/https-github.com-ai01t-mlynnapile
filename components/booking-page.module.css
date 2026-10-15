@@ -1499,17 +1499,17 @@
 
 .studioRoom {
   display: block;
-  font-size: 0.54rem;
-  letter-spacing: 0.22em;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: #c8a96e;
 }
 
 .studioMonth {
-  margin: 0 0 6px;
-  font-size: 1.7rem;
+  margin: 0 0 8px;
+  font-size: 1.55rem;
+  line-height: 1.1;
   font-weight: 400;
-  line-height: 1;
   color: #f0ebe2;
 }
 
@@ -1613,9 +1613,54 @@
 
 /* V panelu studia je okno termínu omezené výškou panelu: celé se vejde,
    posouvá se jen text e-mailu uvnitř, tlačítka zůstávají vždy vidět. */
+/* Poptávka nevyskakuje přes kalendář: vyjede zpod něj a zakryje video
+   (u hlavního studia doprava, u kontrolní místnosti doleva). Kalendář i akce
+   pod ním zůstávají vidět a dají se dál používat. */
 .studioBooking .modalBackdrop {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: min(50vw, 86vh);
+  z-index: 1;
   align-items: center;
   padding: 12px;
+  background: #0b0a0d;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  animation: studioInquiryFromRight 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.studioBookingMain .modalBackdrop {
+  inset: 0 0 0 auto;
+  animation-name: studioInquiryFromLeft;
+}
+
+.studioBooking .modal {
+  width: 100%;
+}
+
+@keyframes studioInquiryFromLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0.3;
+  }
+}
+
+@keyframes studioInquiryFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0.3;
+  }
+}
+
+/* kalendář leží nad vyjíždějícím panelem, ten se tak vysouvá zpod něj */
+.studioCal {
+  position: relative;
+  z-index: 2;
+  background: #0b0a0d;
+}
+
+.studioMedia {
+  z-index: 0;
 }
 
 .studioBooking .modal {
@@ -1658,31 +1703,50 @@
   margin-top: 8px;
 }
 
-/* Na výšku (mobil): video nahoře, kalendář pod ním. */
-@media (max-aspect-ratio: 1 / 1) {
+/* Pod sebou (video nahoře, kalendář pod ním) jen na úzkém displeji — v panelu
+   na počítači zůstává kalendář vedle videa, i když je panel spíš na výšku. */
+@media (max-width: 560px) and (max-aspect-ratio: 1 / 1) {
+  /* Úzký panel (telefon, úzké okno): video jde jako ztmavené pozadí pod
+     kalendář, ať se celý kalendář i akce vejdou bez ořezu. */
   .studioBooking {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: 40vh minmax(0, 1fr);
-  }
-
-  .studioBookingMain .studioMedia {
-    order: 0;
+    grid-template-rows: minmax(0, 1fr);
   }
 
   .studioMedia {
-    width: 100%;
-    aspect-ratio: auto;
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    z-index: 0;
   }
 
-  .studioMedia::after {
+  .studioMedia::after,
+  .studioBookingMain .studioMedia::after {
+    transform: none;
     background: linear-gradient(
       to bottom,
-      rgba(11, 10, 13, 0) 35%,
-      rgba(11, 10, 13, 0.18) 55%,
-      rgba(11, 10, 13, 0.5) 72%,
-      rgba(11, 10, 13, 0.82) 88%,
-      #0b0a0d 100%
+      rgba(11, 10, 13, 0.8) 0%,
+      rgba(11, 10, 13, 0.9) 30%,
+      rgba(11, 10, 13, 0.95) 100%
     );
+  }
+
+  .studioCal {
+    position: relative;
+    z-index: 1;
+    padding-top: 28px;
+    background: transparent;
+  }
+
+  .studioBooking .modalBackdrop,
+  .studioBookingMain .modalBackdrop {
+    position: fixed;
+    inset: 0;
+    width: auto;
+    z-index: 160;
+    background: rgba(7, 6, 10, 0.78);
+    animation: none;
   }
 }
 
@@ -1704,7 +1768,7 @@
   font-size: 0.6rem;
   line-height: 1.5;
   letter-spacing: 0.08em;
-  color: rgba(200, 169, 110, 0.9);
+  color: rgba(240, 235, 226, 0.82);
   font-variant-numeric: tabular-nums;
 }
 
@@ -1895,4 +1959,174 @@
 .modalUpsell button:hover {
   background: rgba(200, 169, 110, 0.12);
   border-color: rgba(228, 194, 144, 0.8);
+}
+
+/* Akce v okolí pod kalendářem studia — kam vás ze mlýna svezeme Teslou. */
+.studioOutings {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(201, 185, 154, 0.14);
+}
+
+.studioOutingsTitle {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #c8a96e;
+}
+
+.studioOutings ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+
+.studioOutings li {
+  position: relative;
+  padding-left: 14px;
+  font-size: 0.68rem;
+  line-height: 1.45;
+  color: rgba(240, 235, 226, 0.74);
+}
+
+.studioOutings li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 7px;
+  height: 1px;
+  background: #c8a96e;
+}
+
+/* Na úzkém displeji se může kalendář s akcemi posouvat. */
+.studioCal {
+  overflow-y: auto;
+}
+
+.studioOutingsTerm {
+  display: block;
+  margin: -2px 0 8px;
+  font-size: 0.66rem;
+  color: rgba(240, 235, 226, 0.62);
+}
+
+.studioOutingsTerm:empty {
+  display: none;
+}
+
+/* Seznam konkrétních akcí: datum, název, místo; dlouhý seznam se posouvá. */
+.studioOutings .eventList {
+  max-height: 210px;
+  overflow-y: auto;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-right: 4px;
+}
+
+.studioOutings .eventList li {
+  display: grid;
+  gap: 1px;
+  padding-left: 0;
+}
+
+.studioOutings .eventList li::before {
+  display: none;
+}
+
+.eventWhen {
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c8a96e;
+  font-variant-numeric: tabular-nums;
+}
+
+.eventTitle {
+  font-size: 0.74rem;
+  color: rgba(240, 235, 226, 0.92);
+}
+
+.eventTitle em {
+  font-style: normal;
+  color: rgba(240, 235, 226, 0.5);
+}
+
+.studioOutings .eventList small {
+  font-size: 0.62rem;
+  color: rgba(240, 235, 226, 0.5);
+}
+
+/* Den, kdy se v okolí něco děje: drobná zlatá tečka pod číslem. */
+.studioGrid .dayHasEvent {
+  position: relative;
+}
+
+.studioGrid .dayHasEvent::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 14%;
+  width: 4px;
+  height: 4px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: #c8a96e;
+  pointer-events: none;
+}
+
+.studioGrid .dayArrival.dayHasEvent::after,
+.studioGrid .dayDeparture.dayHasEvent::after {
+  background: #1b1510;
+}
+
+
+/* Klik na den v minulosti: krátká bublina přes spodek kalendáře (sama zmizí). */
+.studioGrid {
+  position: relative;
+}
+
+.calendarGrid .dayPast:not(:disabled) {
+  cursor: pointer;
+}
+
+.pastHint {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  z-index: 3;
+  width: min(94%, 400px);
+  margin: 0;
+  padding: 14px 18px;
+  transform: translateX(-50%);
+  border: 1px solid rgba(176, 141, 87, 0.55);
+  background: rgba(11, 10, 13, 0.95);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+  font-size: 0.8rem;
+  line-height: 1.55;
+  text-align: center;
+  color: rgba(240, 235, 226, 0.92);
+  cursor: pointer;
+  animation: pastHintIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pastHint a {
+  color: var(--gold-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@keyframes pastHintIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
 }

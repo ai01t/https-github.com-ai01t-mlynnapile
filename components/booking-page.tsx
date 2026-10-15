@@ -12,6 +12,8 @@ const MODE_STORAGE_KEY = "mlyn_mode"
 const LANG_STORAGE_KEY = "mlyn_lang"
 
 const EMAIL = "mlynnapile@gmail.com"
+// stejné číslo jako v sekci Kontakt na hlavní stránce
+const PHONE = "+420 724 050 093"
 // Kalendář se roluje: začíná vždy aktuálním měsícem a pokračuje 12 měsíců dopředu.
 const TOTAL = 12
 const CALENDAR_START = new Date()
@@ -138,6 +140,7 @@ type Copy = {
   rooms: Record<StudioRoom, string>
   roomMainWithMill: string
   studioInterest: (room: string) => string
+  studioStayInterest: string
   studioPriceNote: string
   billedInCzk: string
   studioExtraNote: (price: string) => string
@@ -145,6 +148,7 @@ type Copy = {
   copyText: string
   copied: string
   orWriteTo: string
+  orCall: string
   modeStay: string
   modeHourly: string
   hourlyPriceNote: string
@@ -153,6 +157,14 @@ type Copy = {
   dateLabel: string
   hourlyInterest: (room: string) => string
   upsellTitle: string
+  outingsTitle: string
+  eventsTitle: string
+  eventsInTerm: (label: string) => string
+  eventsNone: string
+  eventsAlso: string
+  eventsPickHint: string
+  pastDay: { before: string; link: string; after: string }
+  tentative: string
   upsellText: (price: string) => string
   upsellCta: string
   personsLabel: string
@@ -413,6 +425,226 @@ const MONTH_GUIDES_CS: Record<number, MonthGuide> = {
   },
 }
 
+
+// Akce a místa v okolí pro booking studia — ke každému měsíci 2–3 tipy, kam vás
+// ze mlýna svezeme Teslou. Bez konkrétních dat, ať platí každý rok.
+type Outing = Record<Locale, string>
+const STUDIO_OUTINGS: Record<number, Outing[]> = {
+  0: [
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+    { cs: "Bad Kötzting (25 min) · wellness a sauny", en: "Bad Kötzting (25 min) · spa and saunas", de: "Bad Kötzting (25 Min.) · Wellness und Saunen" },
+    { cs: "Pivovar Domažlice (8 min) · ochutnávka piva", en: "Domažlice brewery (8 min) · beer tasting", de: "Brauerei Domažlice (8 Min.) · Bierverkostung" },
+  ],
+  1: [
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+    { cs: "Kino Čakan Domažlice (8 min) · filmový program", en: "Čakan cinema, Domažlice (8 min) · film programme", de: "Kino Čakan, Domažlice (8 Min.) · Filmprogramm" },
+    { cs: "Bad Kötzting (25 min) · wellness a sauny", en: "Bad Kötzting (25 min) · spa and saunas", de: "Bad Kötzting (25 Min.) · Wellness und Saunen" },
+  ],
+  2: [
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+    { cs: "Pivovar Domažlice (8 min) · prohlídka a degustace", en: "Domažlice brewery (8 min) · tour and tasting", de: "Brauerei Domažlice (8 Min.) · Führung und Verkostung" },
+    { cs: "Bad Kötzting (25 min) · wellness a sauny", en: "Bad Kötzting (25 min) · spa and saunas", de: "Bad Kötzting (25 Min.) · Wellness und Saunen" },
+  ],
+  3: [
+    { cs: "Zámek Horšovský Týn (15 min) · začátek sezóny", en: "Horšovský Týn castle (15 min) · season opening", de: "Schloss Horšovský Týn (15 Min.) · Saisonstart" },
+    { cs: "Stavění máje · Domažlice (8 min) · konec dubna", en: "Maypole raising · Domažlice (8 min) · end of April", de: "Maibaumaufstellen · Domažlice (8 Min.) · Ende April" },
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+  ],
+  4: [
+    { cs: "Oslavy osvobození · Domažlice (8 min) · začátek května", en: "Liberation celebrations · Domažlice (8 min) · early May", de: "Befreiungsfeier · Domažlice (8 Min.) · Anfang Mai" },
+    { cs: "Zámek Horšovský Týn (15 min) · prohlídky", en: "Horšovský Týn castle (15 min) · guided tours", de: "Schloss Horšovský Týn (15 Min.) · Führungen" },
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+  ],
+  5: [
+    { cs: "Letní kino Babylon (10 min) · filmy pod hvězdami", en: "Babylon open-air cinema (10 min) · films under the stars", de: "Sommerkino Babylon (10 Min.) · Filme unter Sternen" },
+    { cs: "Letní koncerty na náměstí · Domažlice (8 min)", en: "Summer concerts on the square · Domažlice (8 min)", de: "Sommerkonzerte am Marktplatz · Domažlice (8 Min.)" },
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+  ],
+  6: [
+    { cs: "Divadelní léto na zámku · Horšovský Týn (15 min)", en: "Summer theatre at the castle · Horšovský Týn (15 min)", de: "Theatersommer im Schloss · Horšovský Týn (15 Min.)" },
+    { cs: "LA Cham Summerstage (20 min) · letní koncerty", en: "LA Cham Summerstage (20 min) · summer concerts", de: "LA Cham Summerstage (20 Min.) · Sommerkonzerte" },
+    { cs: "Letní kino Babylon (10 min) · filmy pod hvězdami", en: "Babylon open-air cinema (10 min) · films under the stars", de: "Sommerkino Babylon (10 Min.) · Filme unter Sternen" },
+  ],
+  7: [
+    { cs: "Chodské slavnosti · Domažlice (8 min) · největší folklorní festival v ČR", en: "Chod Festival · Domažlice (8 min) · the largest folk festival in Czechia", de: "Chodenfest · Domažlice (8 Min.) · größtes Folklorefest Tschechiens" },
+    { cs: "Drachenstich · Furth im Wald (25 min) · středověké slavnosti", en: "Drachenstich · Furth im Wald (25 min) · medieval festival", de: "Drachenstich · Furth im Wald (25 Min.) · mittelalterliches Fest" },
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+  ],
+  8: [
+    { cs: "Vinobraní · Domažlice (8 min)", en: "Wine harvest festival · Domažlice (8 min)", de: "Weinlesefest · Domažlice (8 Min.)" },
+    { cs: "Zámek Horšovský Týn (15 min) · bez letních davů", en: "Horšovský Týn castle (15 min) · without the summer crowds", de: "Schloss Horšovský Týn (15 Min.) · ohne Sommerandrang" },
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+  ],
+  9: [
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+    { cs: "Kino Čakan Domažlice (8 min) · podzimní program", en: "Čakan cinema, Domažlice (8 min) · autumn programme", de: "Kino Čakan, Domažlice (8 Min.) · Herbstprogramm" },
+    { cs: "Pivovar Domažlice (8 min) · ochutnávka piva", en: "Domažlice brewery (8 min) · beer tasting", de: "Brauerei Domažlice (8 Min.) · Bierverkostung" },
+  ],
+  10: [
+    { cs: "Rozsvícení vánočního stromu · Domažlice (8 min) · konec listopadu", en: "Christmas tree lighting · Domažlice (8 min) · end of November", de: "Weihnachtsbaum-Beleuchtung · Domažlice (8 Min.) · Ende November" },
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+    { cs: "Pivovar Domažlice (8 min) · ochutnávka piva", en: "Domažlice brewery (8 min) · beer tasting", de: "Brauerei Domažlice (8 Min.) · Bierverkostung" },
+  ],
+  11: [
+    { cs: "Adventní trhy a koncerty · Domažlice (8 min)", en: "Advent market and concerts · Domažlice (8 min)", de: "Adventsmarkt und Konzerte · Domažlice (8 Min.)" },
+    { cs: "Furth im Wald (25 min) · vánoční nákupy", en: "Furth im Wald (25 min) · Christmas shopping", de: "Furth im Wald (25 Min.) · Weihnachtseinkäufe" },
+    { cs: "LA Cham (20 min) · živé koncerty každý týden", en: "LA Cham (20 min) · live concerts every week", de: "LA Cham (20 Min.) · jede Woche Livekonzerte" },
+  ],
+}
+
+// Konkrétní akce v okolí (kalendář studia): po výběru termínu se ukáže, co se
+// v něm děje; při listování měsíci akce daného měsíce. Kino a dětské akce jen
+// u vybraného termínu, v přehledu měsíce by ho zahltily.
+type EventKind =
+  | "concert" | "cinema" | "rock" | "dance" | "kids" | "travel" | "show" | "social" | "museum"
+  | "theatre" | "town" | "party" | "film" | "talk" | "gastro" | "other" | "advent"
+type LocalEvent = {
+  date: string
+  end?: string
+  time?: string
+  tentative?: boolean
+  title: string
+  place: string
+  kind: EventKind
+}
+const LOCAL_EVENTS: LocalEvent[] = [
+  { date: "2026-10-15", time: "19:00", title: "Swing Melody (První republika)", place: "Domažlice, MKS", kind: "concert" },
+  { date: "2026-10-15", time: "20:00", title: "Proč bychom se nezabili", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-16", time: "17:00", title: "Šipkaři", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-16", time: "19:00", title: "Eternit, klubový koncert", place: "Horšovský Týn", kind: "rock" },
+  { date: "2026-10-16", time: "20:00", title: "Vzhlížet ke hvězdám", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-17", time: "17:00", title: "Pat a Mat: Zpátky na venkově", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-17", time: "20:00", title: "Velrybí pád", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-17", time: "20:00", title: "Morčata na útěku + Zvlášňý škola", place: "Mrákov, KD", kind: "rock" },
+  { date: "2026-10-17", time: "20:00", title: "RMC (Rammstein tribute) + Impulz", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-10-17", time: "20:00", title: "Roztanči se! (taneční večer)", place: "Kdyně, Sokolovna", kind: "dance" },
+  { date: "2026-10-18", time: "14:00", title: "Pejsek Fešák", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-18", time: "17:00", title: "Zpráva pro Minervu 2", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-18", time: "18:00", title: "Varhanní koncert", place: "Klenčí, kostel sv. Martina", kind: "concert" },
+  { date: "2026-10-18", time: "19:30", title: "Xandria", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-10-18", time: "20:00", title: "Resident Evil", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-20", time: "19:00", title: "Švanci show – Já su já", place: "Domažlice, MKS", kind: "show" },
+  { date: "2026-10-21", time: "18:00", title: "Martin Loew: Japonsko", place: "Domažlice, Kino Čakan", kind: "travel" },
+  { date: "2026-10-22", time: "19:00", title: "Kruh přátel hudby: Brno Percussion Duo", place: "Domažlice, MKS", kind: "concert" },
+  { date: "2026-10-22", time: "22:00", title: "Rodina", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-23", time: "17:00", title: "Šipkaři", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-23", time: "19:00", title: "Robert Křesťan a Druhá tráva + Jan Kořínek", place: "Domažlice, MKS", kind: "concert" },
+  { date: "2026-10-23", time: "20:00", title: "Rozum a cit", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-23", time: "20:00", title: "Andreas Kümmert & The Electric Circus", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-10-24", title: "Sára Milfajtová", place: "Nemanice, kostel", kind: "concert" },
+  { date: "2026-10-24", title: "Hry světel a stínů", place: "Domažlice, Muzeum Chodska", kind: "museum" },
+  { date: "2026-10-24", time: "17:00", title: "Pejsek Fešák", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-24", time: "18:00", title: "Vibes & Voices (mládežnický bandcontest)", place: "L.A. Cham", kind: "concert" },
+  { date: "2026-10-24", time: "20:00", title: "Kluci to vidí jinak než holky", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-25", time: "14:00", title: "Dívka v oblacích", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-25", time: "20:00", title: "Milovník, ne bojovník", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-25", time: "20:00", title: "Rozum a cit", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-26", time: "19:00", title: "Pocta varhanám", place: "Domažlice, klášterní kostel", kind: "concert" },
+  { date: "2026-10-27", time: "19:00", title: "Divadlo Jedeme dál!", place: "Horšovský Týn, kino", kind: "theatre" },
+  { date: "2026-10-28", time: "20:00", title: "Fjord", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-29", time: "20:00", title: "Fantom opery", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-30", time: "17:00", title: "Kluci to vidí jinak než holky", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-30", time: "19:00", title: "Dvořák: Requiem (sbor Čerchovan)", place: "Domažlice, arciděkanský kostel", kind: "concert" },
+  { date: "2026-10-30", time: "20:00", title: "Velrybí pád", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-31", time: "17:00", title: "Dívka v oblacích", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-10-31", time: "19:00", title: "Halloween party (vstup zdarma)", place: "L.A. Cham", kind: "party" },
+  { date: "2026-10-31", time: "20:00", title: "Karel Kahovec, Michal Šindelář, Beatles Revival", place: "Mrákov, KD", kind: "rock" },
+  { date: "2026-10-31", time: "20:00", title: "DOA Rock, 40 let na scéně", place: "Kdyně, Sokolovna", kind: "rock" },
+  { date: "2026-10-31", time: "20:00", title: "Město otců", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-11-01", time: "14:00", title: "Mia a škola monster", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-11-01", time: "17:00", title: "Vzhlížet ke hvězdám", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-11-01", time: "20:00", title: "Tango pro 3", place: "Domažlice, Kino Čakan", kind: "cinema" },
+  { date: "2026-11-02", time: "17:00", title: "Jiří Štědroň", place: "Kdyně, kino", kind: "concert" },
+  { date: "2026-11-04", end: "2026-11-09", title: "Juniorfest", place: "Horšovský Týn", kind: "film" },
+  { date: "2026-11-04", time: "19:00", title: "Dva nahatí chlapi", place: "Kdyně, Sokolovna", kind: "theatre" },
+  { date: "2026-11-05", time: "17:00", title: "Cestopisná beseda Filipíny", place: "Horšovský Týn, knihovna", kind: "travel" },
+  { date: "2026-11-06", time: "20:00", title: "Dust Bolt + Zerre", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-11-07", time: "20:00", title: "Phil Campbell's Bastard Sons", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-11-12", time: "19:00", title: "7 pádů Honzy Dědka", place: "Horšovský Týn, kino", kind: "talk" },
+  { date: "2026-11-13", time: "20:00", title: "Olympic: Bombarďák tour", place: "Domažlice, MKS", kind: "rock" },
+  { date: "2026-11-14", time: "15:00", title: "Ochutnávka svatomartinských vín", place: "Horšovský Týn, konírna", kind: "gastro" },
+  { date: "2026-11-14", time: "20:00", title: "Divokej Bill akusticky", place: "Kdyně, Sokolovna", kind: "rock" },
+  { date: "2026-11-14", time: "20:00", title: "Rauhbein + Liebe & Krawall", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-11-19", time: "19:00", title: "Divadlo Slané polibky", place: "Domažlice, MKS", kind: "theatre" },
+  { date: "2026-11-19", time: "19:00", title: "Rozhlas jede za vámi", place: "Horšovský Týn, kino", kind: "talk" },
+  { date: "2026-11-20", time: "18:30", title: "Wormed, Necrotted, Cutterred Flesh, Neurotic Machinery", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-11-21", time: "19:00", title: "Cimbálová muzika Milana Broučka", place: "Klenčí, sál U nádraží", kind: "concert" },
+  { date: "2026-11-21", time: "20:00", title: "Marco Schober Band", place: "L.A. Cham", kind: "concert" },
+  { date: "2026-11-24", time: "19:00", title: "Nerez & Lucia", place: "Domažlice, Kino Čakan", kind: "concert" },
+  { date: "2026-11-25", title: "Vetřelci na obzoru (výstava)", place: "Domažlice, Muzeum Chodska", kind: "museum" },
+  { date: "2026-11-27", time: "20:00", title: "Milking The Goatmachine + Endseeker", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-11-28", time: "16:00", tentative: true, title: "Rozsvícení vánočního stromu", place: "Domažlice, náměstí", kind: "town" },
+  { date: "2026-11-28", time: "18:30", title: "Seasons in Black Indoor Festival", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-11-29", time: "17:00", title: "Adventní koncert kytarového kvarteta", place: "Horšovský Týn, kino", kind: "concert" },
+  { date: "2026-12-03", time: "19:00", title: "Adventní koncert Lenky Filipové", place: "Domažlice, MKS", kind: "concert" },
+  { date: "2026-12-04", time: "19:00", title: "Rybičky 48", place: "Kdyně", kind: "rock" },
+  { date: "2026-12-06", time: "19:00", title: "Vánoční koncert Inflagranti", place: "Horšovský Týn, kino", kind: "concert" },
+  { date: "2026-12-09", time: "19:00", title: "Divadlo Dobře rozehraná partie", place: "Horšovský Týn, kino", kind: "theatre" },
+  { date: "2026-12-11", time: "20:00", title: "S.A.D. (Metallica tribute)", place: "L.A. Cham", kind: "rock" },
+  { date: "2026-12-13", time: "19:00", title: "Láďa Křížek: Best of akusticky", place: "Domažlice, Kino Čakan", kind: "concert" },
+  { date: "2026-12-13", time: "20:00", title: "Pokáč", place: "Kdyně, Sokolovna", kind: "rock" },
+  { date: "2026-12-16", end: "2026-12-23", tentative: true, title: "Hudba u stromečku", place: "Domažlice, náměstí", kind: "advent" },
+  { date: "2026-12-18", time: "19:00", title: "Vánoční koncert Karel Svoboda", place: "Kdyně, kino", kind: "concert" },
+  { date: "2026-12-28", time: "20:00", title: "Motörblöck / Mad Sabbath", place: "L.A. Cham", kind: "rock" },
+  { date: "2027-01-01", time: "18:00", tentative: true, title: "Novoroční ohňostroj", place: "Domažlice", kind: "town" },
+  { date: "2027-01-14", time: "19:00", title: "Cavewoman", place: "Domažlice, MKS", kind: "theatre" },
+  { date: "2027-01-29", time: "20:00", title: "Subliminal Verses (Slipknot tribute) + Never in Chains", place: "L.A. Cham", kind: "rock" },
+  { date: "2027-01-30", time: "20:00", title: "Blutgott – Blutfest", place: "L.A. Cham", kind: "rock" },
+  { date: "2027-02-11", time: "19:00", title: "Muzikálový koktejl", place: "Kdyně, kino", kind: "concert" },
+  { date: "2027-02-15", time: "19:00", title: "Dasha a Pajky Pajk", place: "Kdyně, Sokolovna", kind: "concert" },
+  { date: "2027-02-19", time: "20:00", title: "Opium fürs Volk (Toten Hosen tribute)", place: "L.A. Cham", kind: "rock" },
+  { date: "2027-02-20", time: "20:00", title: "De Waltons", place: "L.A. Cham", kind: "concert" },
+  { date: "2027-02-24", time: "19:45", title: "Dritte Wahl", place: "L.A. Cham", kind: "rock" },
+  { date: "2027-02-27", time: "20:00", title: "Nirvana tribute", place: "L.A. Cham", kind: "rock" },
+]
+
+const EVENT_KIND_LABELS: Record<EventKind, Outing> = {
+  concert: { cs: "koncert", en: "concert", de: "Konzert" },
+  cinema: { cs: "kino", en: "cinema", de: "Kino" },
+  rock: { cs: "rock", en: "rock", de: "Rock" },
+  dance: { cs: "tanec", en: "dance", de: "Tanz" },
+  kids: { cs: "pro děti", en: "for kids", de: "für Kinder" },
+  travel: { cs: "cestopis", en: "travel talk", de: "Reisevortrag" },
+  show: { cs: "show", en: "show", de: "Show" },
+  social: { cs: "společenský večer", en: "social evening", de: "Gesellschaftsabend" },
+  museum: { cs: "muzeum", en: "museum", de: "Museum" },
+  theatre: { cs: "divadlo", en: "theatre", de: "Theater" },
+  town: { cs: "městská akce", en: "town event", de: "Stadtveranstaltung" },
+  party: { cs: "party", en: "party", de: "Party" },
+  film: { cs: "filmový festival", en: "film festival", de: "Filmfestival" },
+  talk: { cs: "talk show", en: "talk show", de: "Talkshow" },
+  gastro: { cs: "víno a jídlo", en: "food & wine", de: "Wein & Kulinarik" },
+  other: { cs: "akce", en: "event", de: "Veranstaltung" },
+  advent: { cs: "advent", en: "Advent", de: "Advent" },
+}
+
+// Obecný tip platný kdykoli v roce.
+const CERCHOV_OUTING: Outing = {
+  cs: "Čerchov (1042 m) · nejvyšší vrchol Českého lesa – ten už musíte zvládnout pěšky ;)",
+  en: "Čerchov (1,042 m) · the highest peak of the Český les hills – that one you'll have to walk ;)",
+  de: "Čerchov (1042 m) · höchster Gipfel des Český les – den müssen Sie zu Fuß schaffen ;)",
+}
+
+// Dny s akcí (mimo kino a dětské akce) — v kalendáři studia je označí tečka.
+const EVENT_DAYS = new Set<string>()
+for (const event of LOCAL_EVENTS) {
+  if (event.kind === "cinema" || event.kind === "kids") continue
+  const [y, m, d] = event.date.split("-").map(Number)
+  const last = event.end ?? event.date
+  for (let day = new Date(y, m - 1, d); ; day.setDate(day.getDate() + 1)) {
+    const iso = `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(2, "0")}-${String(day.getDate()).padStart(2, "0")}`
+    EVENT_DAYS.add(iso)
+    if (iso >= last) break
+  }
+}
+
+const isoDate = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+const fromIso = (iso: string) => {
+  const [y, m, d] = iso.split("-").map(Number)
+  return new Date(y, m - 1, d)
+}
+
 const copyByLocale: Record<Locale, Copy> = {
   cs: {
     brandMill: "Mlýn",
@@ -448,6 +680,7 @@ const copyByLocale: Record<Locale, Copy> = {
     rooms: { main: "Hlavní studio", control: "Kontrolní místnost" },
     roomMainWithMill: "Hlavní studio + mlýnice",
     studioInterest: (room) => `mám zájem o pronájem prostoru ${room} – Mlýn na Pile.`,
+    studioStayInterest: "mám zájem o pronájem Hlavního studia s přespáním v mlýnici.",
     studioPriceNote: "den s přespáním · 1–2 osoby · plná penze · vč. DPH",
     billedInCzk: "",
     studioExtraNote: (price) => `další osoba +${price} / den (max. 5 osob)`,
@@ -455,6 +688,7 @@ const copyByLocale: Record<Locale, Copy> = {
     copyText: "Zkopírovat text",
     copied: "Zkopírováno ✓",
     orWriteTo: "nebo napište na",
+    orCall: "nebo volejte",
     modeStay: "Den s přespáním",
     modeHourly: "Po hodinách",
     hourlyPriceNote: "hod · bez přespání · max. 2 osoby · min. 3 hod · vč. DPH",
@@ -463,10 +697,18 @@ const copyByLocale: Record<Locale, Copy> = {
     dateLabel: "Datum",
     hourlyInterest: (room) => `mám zájem o pronájem prostoru ${room} po hodinách (bez přespání) – Mlýn na Pile.`,
     upsellTitle: "Zůstat přes noc?",
+    outingsTitle: "Teslou na akce v okolí (v ceně pobytu)",
+    eventsTitle: "Akce v okolí",
+    eventsInTerm: (label) => `Ve vybraném termínu ${label}`,
+    eventsNone: "V tomto termínu jsme nic nenašli – v okolí je ale vždy:",
+    eventsAlso: "A navíc v okolí:",
+    eventsPickHint: "Klikněte na datum a ukážeme konkrétní akce.",
+    pastDay: { before: "Tenhle den už patří minulosti. Chcete-li se do ní vrátit, mrkněte do ", link: "Historie", after: " 😉" },
+    tentative: "nepotvrzeno",
     upsellText: (price) => `Den s přespáním, snídaní s kváskovým chlebem, plnou penzí a saunou · ${price} pro 1–2 osoby`,
     upsellCta: "Přepnout na pobyt",
     personsLabel: "Počet osob",
-    estimateLabel: "Orientační cena",
+    estimateLabel: "Cena",
     daysLabel: (days) => `${days} ${days === 1 ? "den" : days > 1 && days < 5 ? "dny" : "dní"}`,
     modalTitle: "Vybraný termín",
     openInEmail: "Otevřít v e-mailu",
@@ -484,7 +726,7 @@ const copyByLocale: Record<Locale, Copy> = {
         "",
         "Prosím o informace k dostupnosti a podmínkám.",
         "",
-        "Děkuji a těším se na odpověď.",
+        "Děkuji.",
         "S pozdravem,",
         "[Vaše jméno]",
       ].join("\n"),
@@ -525,6 +767,7 @@ const copyByLocale: Record<Locale, Copy> = {
     rooms: { main: "Main Studio", control: "Control Room" },
     roomMainWithMill: "Main Studio + Mill Room",
     studioInterest: (room) => `I am interested in booking the ${room} – Mill at Pila.`,
+    studioStayInterest: "I am interested in booking the Main Studio with an overnight stay in the mill room.",
     studioPriceNote: "day with overnight stay · 1–2 people · full board · VAT incl.",
     billedInCzk: "approx., invoiced in CZK",
     studioExtraNote: (price) => `each extra person +${price} / day (max. 5 people)`,
@@ -532,6 +775,7 @@ const copyByLocale: Record<Locale, Copy> = {
     copyText: "Copy text",
     copied: "Copied ✓",
     orWriteTo: "or write to",
+    orCall: "or call",
     modeStay: "Day with overnight stay",
     modeHourly: "By the hour",
     hourlyPriceNote: "hour · no overnight stay · max. 2 people · min. 3 hours · VAT incl.",
@@ -540,10 +784,18 @@ const copyByLocale: Record<Locale, Copy> = {
     dateLabel: "Date",
     hourlyInterest: (room) => `I am interested in booking the ${room} by the hour (no overnight stay) – Mill at Pila.`,
     upsellTitle: "Stay overnight?",
+    outingsTitle: "By Tesla to events nearby (included in your stay)",
+    eventsTitle: "Events nearby",
+    eventsInTerm: (label) => `During your dates ${label}`,
+    eventsNone: "Nothing listed for these dates – but there is always:",
+    eventsAlso: "Also nearby:",
+    eventsPickHint: "Pick a date to see specific events.",
+    pastDay: { before: "This day is already history. Fancy a trip back in time? Take a look at our ", link: "History", after: " 😉" },
+    tentative: "tbc",
     upsellText: (price) => `Day with overnight stay, sourdough breakfast, full board and sauna · ${price} for 1–2 people`,
     upsellCta: "Switch to stay",
     personsLabel: "Guests",
-    estimateLabel: "Estimated price",
+    estimateLabel: "Price",
     daysLabel: (days) => `${days} ${days === 1 ? "day" : "days"}`,
     modalTitle: "Selected stay",
     openInEmail: "Open in email",
@@ -561,7 +813,7 @@ const copyByLocale: Record<Locale, Copy> = {
         "",
         "Please send me information about availability and conditions.",
         "",
-        "Thank you and I look forward to your reply.",
+        "Thank you.",
         "Best regards,",
         "[Your name]",
       ].join("\n"),
@@ -602,6 +854,7 @@ const copyByLocale: Record<Locale, Copy> = {
     rooms: { main: "Hauptstudio", control: "Regieraum" },
     roomMainWithMill: "Hauptstudio + Mühlenraum",
     studioInterest: (room) => `ich interessiere mich für die Buchung: ${room} – Mühle in Pila.`,
+    studioStayInterest: "ich interessiere mich für das Hauptstudio mit Übernachtung im Mühlenraum.",
     studioPriceNote: "Tag mit Übernachtung · 1–2 Personen · Vollpension · inkl. MwSt.",
     billedInCzk: "ca., Abrechnung in CZK",
     studioExtraNote: (price) => `jede weitere Person +${price} / Tag (max. 5 Personen)`,
@@ -609,6 +862,7 @@ const copyByLocale: Record<Locale, Copy> = {
     copyText: "Text kopieren",
     copied: "Kopiert ✓",
     orWriteTo: "oder schreiben Sie an",
+    orCall: "oder rufen Sie an:",
     modeStay: "Tag mit Übernachtung",
     modeHourly: "Stundenweise",
     hourlyPriceNote: "Std. · ohne Übernachtung · max. 2 Personen · mind. 3 Std. · inkl. MwSt.",
@@ -617,10 +871,18 @@ const copyByLocale: Record<Locale, Copy> = {
     dateLabel: "Datum",
     hourlyInterest: (room) => `ich interessiere mich für die stundenweise Buchung: ${room} (ohne Übernachtung) – Mühle in Pila.`,
     upsellTitle: "Über Nacht bleiben?",
+    outingsTitle: "Mit dem Tesla zu Veranstaltungen in der Nähe (im Aufenthalt inklusive)",
+    eventsTitle: "Veranstaltungen in der Nähe",
+    eventsInTerm: (label) => `In Ihrem Zeitraum ${label}`,
+    eventsNone: "Für diesen Zeitraum ist nichts eingetragen – in der Nähe gibt es aber immer:",
+    eventsAlso: "Außerdem in der Nähe:",
+    eventsPickHint: "Wählen Sie ein Datum für konkrete Veranstaltungen.",
+    pastDay: { before: "Dieser Tag ist schon Geschichte. Lust auf eine Zeitreise? Schauen Sie in unsere ", link: "Geschichte", after: " 😉" },
+    tentative: "unbestätigt",
     upsellText: (price) => `Tag mit Übernachtung, Sauerteig-Frühstück, Vollpension und Sauna · ${price} für 1–2 Personen`,
     upsellCta: "Zum Aufenthalt wechseln",
     personsLabel: "Personen",
-    estimateLabel: "Richtpreis",
+    estimateLabel: "Preis",
     daysLabel: (days) => `${days} ${days === 1 ? "Tag" : "Tage"}`,
     modalTitle: "Gewählter Aufenthalt",
     openInEmail: "Im E-Mail-Programm öffnen",
@@ -638,7 +900,7 @@ const copyByLocale: Record<Locale, Copy> = {
         "",
         "Bitte senden Sie mir Informationen zur Verfügbarkeit und zu den Bedingungen.",
         "",
-        "Vielen Dank, ich freue mich auf Ihre Antwort.",
+        "Vielen Dank.",
         "Mit freundlichen Grüßen",
         "[Ihr Name]",
       ].join("\n"),
@@ -795,7 +1057,6 @@ function buildYoutubeUrl(videoId: string) {
     disablekb: "1",
     enablejsapi: "1",
     fs: "0",
-    playsinline: "1",
   })
 
   return `https://www.youtube.com/embed/${videoId}?${params.toString()}`
@@ -1176,12 +1437,28 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const [persons, setPersons] = useState(2)
   const [copied, setCopied] = useState(false)
   const [studioMode, setStudioMode] = useState<"stay" | "hourly">("stay")
+  // klik na den v minulosti: přátelská bublina s odkazem na Historii (číslo = restart časovače)
+  const [pastHint, setPastHint] = useState(0)
   const [hourlyDay, setHourlyDay] = useState<{ monthIndex: number; day: number } | null>(null)
   const [hours, setHours] = useState(STUDIO_HOURLY_MIN_HOURS)
   const embedded = searchParams.get("embed") === "1"
   // Kompaktní kalendář pro konkrétní místnost (panel v sekci Studio na hlavní stránce).
   const roomParam = searchParams.get("room")
   const studioRoom: StudioRoom | null = embedded && (roomParam === "main" || roomParam === "control") ? roomParam : null
+  // Je-li vedle kalendáře vidět karta s cenou (panel na počítači), cena se tu neopakuje.
+  const [cardVisible, setCardVisible] = useState(false)
+  useEffect(() => {
+    if (!studioRoom) return
+    const onMessage = (event: MessageEvent) => {
+      if (event.source !== window.parent || event.origin !== window.location.origin) return
+      if (event.data?.type === "studio-card-visible") setCardVisible(Boolean(event.data.visible))
+    }
+    window.addEventListener("message", onMessage)
+    // rodič odpoví, jestli je karta vidět (load event mohl proběhnout dřív)
+    if (window.parent !== window) window.parent.postMessage({ type: "studio-card-query" }, window.location.origin)
+    return () => window.removeEventListener("message", onMessage)
+  }, [studioRoom])
+
   // Karta Hlavní studio na hlavní stránce přizpůsobí obsah zvolenému režimu.
   useEffect(() => {
     if (studioRoom !== "main" || window.parent === window) return
@@ -1191,7 +1468,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   // Vložená verze otevřená samostatně (např. z Googlu) → příslušná sekce webu.
   useEffect(() => {
     if (!embedded || window.top !== window.self) return
-    window.location.replace(`${locale === "cs" ? "/" : `/${locale}`}#${studioRoom ? "studio" : "residency"}`)
+    window.location.replace(`${locale === "cs" ? "/" : `/${locale}`}#studio`)
   }, [embedded, locale, studioRoom])
 
   // Režim sdílíme s hlavní stránkou přes stejný klíč v localStorage,
@@ -1472,10 +1749,10 @@ export default function BookingPage({ locale }: { locale: Locale }) {
       : copy.emailSubject(formattedArrival, formattedDeparture)
     emailBodyLines = copy.emailBody(formattedArrival, formattedDeparture, copy.nightsLabel(nights)).split("\n")
     // Ve studiu místo věty o pobytu řádek s konkrétní místností.
-    if (studioRoom && emailBodyLines.length > 2) emailBodyLines[2] = copy.studioInterest(roomLabel)
-    if (emailBodyLines.length > 5) emailBodyLines.splice(5, 0, copy.checkInOut)
+    if (studioRoom && emailBodyLines.length > 2)
+      emailBodyLines[2] = studioRoom === "main" ? copy.studioStayInterest : copy.studioInterest(roomLabel)
     if (studioEstimate && emailBodyLines.length > 5) {
-      emailBodyLines.splice(6, 0, `${copy.personsLabel}: ${persons}`, `${copy.estimateLabel}: ${studioEstimateText}${copy.billedInCzk ? ` (${copy.billedInCzk})` : ""}`)
+      emailBodyLines.splice(5, 0, `${copy.personsLabel}: ${persons}`, `${copy.estimateLabel}: ${studioEstimateText}${copy.billedInCzk ? ` (${copy.billedInCzk})` : ""}`)
     }
   }
   const emailBody = emailBodyLines.join("\n")
@@ -1515,6 +1792,12 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     // s odjezdem rovnou okno pobytu, jinak zpět do kalendáře vybrat odjezd
     if (!canDepart) setModalOpen(false)
   }
+
+  useEffect(() => {
+    if (!pastHint) return
+    const timer = window.setTimeout(() => setPastHint(0), 6000)
+    return () => window.clearTimeout(timer)
+  }, [pastHint])
 
   const handleDayClick = (day: number) => {
     if (isBlockedDay(activeMonth, day)) return
@@ -1606,11 +1889,17 @@ export default function BookingPage({ locale }: { locale: Locale }) {
           isDeparture && styles.dayDeparture,
           isBetween && styles.dayBetween,
           !interactive && styles.dayDisabled,
+          studioRoom === "main" && !isPast && EVENT_DAYS.has(isoDate(currentDayDate)) && styles.dayHasEvent,
         )}
-        disabled={!interactive || isBlocked || isPast}
+        disabled={!interactive || isBlocked || (isPast && !studioRoom)}
         onClick={(event) => {
           event.stopPropagation()
           if (!interactive) return
+          if (isPast) {
+            setPastHint((n) => n + 1)
+            return
+          }
+          setPastHint(0)
           handleDayClick(day)
         }}
       >
@@ -1766,10 +2055,43 @@ export default function BookingPage({ locale }: { locale: Locale }) {
             </div>
             <p className={styles.modalMail}>
               {copy.orWriteTo} <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+              <br />
+              {copy.orCall} <a href={`tel:${PHONE.replace(/\s/g, "")}`}>{PHONE}</a>
             </p>
           </div>
         </div>
       ) : null
+
+  // Akce v okolí: vybraný termín (den / pobyt), jinak nadcházející akce měsíce.
+  const localeTag = getLocaleTag(locale)
+  const eventDayFormat = new Intl.DateTimeFormat(localeTag, { weekday: "short", day: "numeric", month: "numeric" })
+  const shortDayFormat = new Intl.DateTimeFormat(localeTag, { day: "numeric", month: "numeric" })
+  const todayIso = isoDate(todayStart)
+  const monthFirstIso = isoDate(new Date(activeMonth.year, activeMonth.month, 1))
+  const monthLastIso = isoDate(new Date(activeMonth.year, activeMonth.month + 1, 0))
+  const rawPickStart = hourlyMode ? hourlyDate : arrivalDate
+  const rawPickEnd = hourlyMode ? hourlyDate : departureDate ?? arrivalDate
+  // vybraný termín platí, jen když zasahuje do zobrazeného měsíce — při listování
+  // jinými měsíci se ukážou jejich akce
+  const pickVisible =
+    rawPickStart && rawPickEnd && isoDate(rawPickStart) <= monthLastIso && isoDate(rawPickEnd) >= monthFirstIso
+  const pickStart = pickVisible ? rawPickStart : null
+  const pickEnd = pickVisible ? rawPickEnd : null
+  const rangeStartIso = pickStart ? isoDate(pickStart) : monthFirstIso > todayIso ? monthFirstIso : todayIso
+  const rangeEndIso = pickEnd ? isoDate(pickEnd) : monthLastIso
+  const eventsInRange = LOCAL_EVENTS.filter(
+    (event) => event.date <= rangeEndIso && (event.end ?? event.date) >= rangeStartIso && (event.end ?? event.date) >= todayIso,
+  )
+  // konkrétní akce až po výběru data, do té doby obecné tipy na měsíc
+  const listedEvents = pickStart ? eventsInRange : []
+  const generalMonth = pickStart ? pickStart.getMonth() : activeMonth.month
+  const generalOutings = [...(STUDIO_OUTINGS[generalMonth] ?? []), CERCHOV_OUTING]
+  const showGeneral = !pickStart || listedEvents.length < 3
+  const pickLabel = pickStart
+    ? pickEnd && isoDate(pickEnd) !== isoDate(pickStart)
+      ? `${shortDayFormat.format(pickStart)}–${shortDayFormat.format(pickEnd)}`
+      : shortDayFormat.format(pickStart)
+    : ""
 
   if (studioRoom) {
     return (
@@ -1808,7 +2130,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               <span className={styles.studioRoom}>
                 {studioRoom === "main" && !hourlyMode ? copy.roomMainWithMill : roomLabel}
               </span>
-              {studioRoom === "main" ? (
+              {studioRoom === "main" && !cardVisible ? (
                 <span className={styles.studioPrice}>
                   {hourlyMode ? (
                     hourlyPriceLabel
@@ -1879,6 +2201,24 @@ export default function BookingPage({ locale }: { locale: Locale }) {
             onTouchEnd={onTouchEnd}
           >
             {activeMonth.weeks.flat().map((day, cellIndex) => renderDayCell(activeMonth, day, cellIndex, true))}
+            {pastHint ? (
+              <p key={pastHint} className={styles.pastHint} role="status" onClick={() => setPastHint(0)}>
+                {copy.pastDay.before}
+                <a
+                  href={getSectionHref(locale, "history")}
+                  target="_top"
+                  onClick={(event) => {
+                    // ve vloženém kalendáři posune stránku na Historii bez znovunačtení
+                    if (window.parent === window) return
+                    event.preventDefault()
+                    window.parent.postMessage({ type: "studio-goto-section", section: "history" }, "*")
+                  }}
+                >
+                  {copy.pastDay.link}
+                </a>
+                {copy.pastDay.after}
+              </p>
+            ) : null}
           </div>
 
           <div className={styles.calendarLegend} aria-hidden="true">
@@ -1886,6 +2226,49 @@ export default function BookingPage({ locale }: { locale: Locale }) {
             <span><i className={styles.legendFree} />{copy.legendFree}</span>
             <span><i className={styles.legendBooked} />{copy.legendBooked}</span>
           </div>
+
+          {studioRoom === "main" ? (
+            <div className={styles.studioOutings}>
+              <span className={styles.studioOutingsTitle}>
+                {hourlyMode ? copy.eventsTitle : copy.outingsTitle}
+              </span>
+              <span className={styles.studioOutingsTerm}>
+                {pickStart ? copy.eventsInTerm(pickLabel) : copy.eventsPickHint}
+              </span>
+              {listedEvents.length ? (
+                <ul className={styles.eventList}>
+                  {listedEvents.map((event) => (
+                    <li key={`${event.date}-${event.time ?? ""}-${event.title}`}>
+                      <span className={styles.eventWhen}>
+                        {eventDayFormat.format(fromIso(event.date))}
+                        {event.end ? `–${shortDayFormat.format(fromIso(event.end))}` : ""}
+                        {event.time ? ` · ${event.time}` : ""}
+                      </span>
+                      <span className={styles.eventTitle}>
+                        {event.title}
+                        {event.tentative ? <em> ({copy.tentative})</em> : null}
+                      </span>
+                      <small>
+                        {event.place} · {EVENT_KIND_LABELS[event.kind][locale]}
+                      </small>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {showGeneral ? (
+                <>
+                  <span className={styles.studioOutingsTerm}>
+                    {listedEvents.length ? copy.eventsAlso : pickStart ? copy.eventsNone : null}
+                  </span>
+                  <ul>
+                    {generalOutings.map((item) => (
+                      <li key={item.cs}>{item[locale]}</li>
+                    ))}
+                  </ul>
+                </>
+              ) : null}
+            </div>
+          ) : null}
         </div>
 
         {modalNode}
