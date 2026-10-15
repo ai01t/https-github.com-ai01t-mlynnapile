@@ -389,6 +389,8 @@ body.pause-active section .content{filter:brightness(1.14);}
    s hodinovou cenou; místo fotky snídaně zase video studia. */
 .pkg-when-hourly{display:none;}
 .rooms-grid.booking-hourly .pkg-when-stay,.rooms-grid.booking-hourly .pkg-stay{display:none;}
+.pkg-hourly{display:none;}
+.rooms-grid.booking-hourly .pkg-hourly{display:block;}
 .rooms-grid.booking-hourly .pkg-when-hourly{display:block;}
 .rooms-grid.booking-main.booking-hourly .room-card:first-child .room-book-info{display:none;}
 .rooms-grid.booking-main.booking-hourly .room-card:first-child .room-video-frame{display:block;}
@@ -1038,6 +1040,8 @@ body.de .de{display:revert;}
   #place > .bg-css,#place .pe-sticky{height:100dvh;margin-bottom:-100dvh;}
   #place > .content{min-height:100dvh;isolation:auto;}
 }
+
+@keyframes timeGo{0%{opacity:.2}15%{opacity:.6;filter:sepia(.6) brightness(1.4)}22%{opacity:.35}30%{opacity:.6}100%{opacity:.5;filter:sepia(.6) brightness(.9)}}
 </style>
 <style id="native-scroll-overrides">
 /* Mobil / na výšku: jedno souvislé video přes celou obrazovku, text dole.
@@ -1292,6 +1296,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
                 <li>Nahrávání až 8 stop současně (Apollo x8p)</li>
                 <li class="pkg-stay">Přespání pod studiem v bývalé mlýnici, případně i pokoj navíc</li>
                 <li class="pkg-stay">Plná penze, káva a nápoje</li>
+                <li class="pkg-hourly">Drobné občerstvení, káva a pití</li>
                 <li class="pkg-stay">Sauna · Zimní zahrada</li>
                 <li class="pkg-stay">Svezení Teslou ze mlýna po Domažlicku a zpět</li>
                 <li><a href="/chleba">Náš čerstvý kváskový chléb</a></li>
@@ -1301,6 +1306,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
                 <li>Record up to 8 tracks at once (Apollo x8p)</li>
                 <li class="pkg-stay">Overnight stay below the studio in the former mill room, an extra room on request</li>
                 <li class="pkg-stay">Full board, coffee and drinks</li>
+                <li class="pkg-hourly">Light refreshments, coffee and drinks</li>
                 <li class="pkg-stay">Sauna · Winter garden</li>
                 <li class="pkg-stay">Tesla rides from the mill around the Domažlice area and back</li>
                 <li><a href="/en/chleba">Our fresh sourdough bread</a></li>
@@ -1310,6 +1316,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
                 <li>Aufnahme von bis zu 8 Spuren gleichzeitig (Apollo x8p)</li>
                 <li class="pkg-stay">Übernachtung unter dem Studio im ehemaligen Mühlenraum, auf Wunsch ein zusätzliches Zimmer</li>
                 <li class="pkg-stay">Vollpension, Kaffee und Getränke</li>
+                <li class="pkg-hourly">Kleine Snacks, Kaffee und Getränke</li>
                 <li class="pkg-stay">Sauna · Wintergarten</li>
                 <li class="pkg-stay">Fahrten mit dem Tesla von der Mühle rund um Domažlice und zurück</li>
                 <li><a href="/de/chleba">Unser frisches Sauerteigbrot</a></li>

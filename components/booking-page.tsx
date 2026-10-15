@@ -163,7 +163,7 @@ type Copy = {
   eventsNone: string
   eventsAlso: string
   eventsPickHint: string
-  pastDay: { before: string; link: string; after: string }
+  pastDay: { title: string; question: string; yes: string; no: string }
   tentative: string
   upsellText: (price: string) => string
   upsellCta: string
@@ -703,7 +703,7 @@ const copyByLocale: Record<Locale, Copy> = {
     eventsNone: "V tomto termínu jsme nic nenašli – v okolí je ale vždy:",
     eventsAlso: "A navíc v okolí:",
     eventsPickHint: "Klikněte na datum a ukážeme konkrétní akce.",
-    pastDay: { before: "Tenhle den už patří minulosti. Chcete-li se do ní vrátit, mrkněte do ", link: "Historie", after: " 😉" },
+    pastDay: { title: "Tenhle den už proběhl.", question: "Chcete se vrátit do minulosti?", yes: "Ano", no: "Ne" },
     tentative: "nepotvrzeno",
     upsellText: (price) => `Den s přespáním, snídaní s kváskovým chlebem, plnou penzí a saunou · ${price} pro 1–2 osoby`,
     upsellCta: "Přepnout na pobyt",
@@ -790,7 +790,7 @@ const copyByLocale: Record<Locale, Copy> = {
     eventsNone: "Nothing listed for these dates – but there is always:",
     eventsAlso: "Also nearby:",
     eventsPickHint: "Pick a date to see specific events.",
-    pastDay: { before: "This day is already history. Fancy a trip back in time? Take a look at our ", link: "History", after: " 😉" },
+    pastDay: { title: "This day is already history.", question: "Want to travel back in time?", yes: "Yes", no: "No" },
     tentative: "tbc",
     upsellText: (price) => `Day with overnight stay, sourdough breakfast, full board and sauna · ${price} for 1–2 people`,
     upsellCta: "Switch to stay",
@@ -877,7 +877,7 @@ const copyByLocale: Record<Locale, Copy> = {
     eventsNone: "Für diesen Zeitraum ist nichts eingetragen – in der Nähe gibt es aber immer:",
     eventsAlso: "Außerdem in der Nähe:",
     eventsPickHint: "Wählen Sie ein Datum für konkrete Veranstaltungen.",
-    pastDay: { before: "Dieser Tag ist schon Geschichte. Lust auf eine Zeitreise? Schauen Sie in unsere ", link: "Geschichte", after: " 😉" },
+    pastDay: { title: "Dieser Tag ist schon Geschichte.", question: "Möchten Sie in die Vergangenheit reisen?", yes: "Ja", no: "Nein" },
     tentative: "unbestätigt",
     upsellText: (price) => `Tag mit Übernachtung, Sauerteig-Frühstück, Vollpension und Sauna · ${price} für 1–2 Personen`,
     upsellCta: "Zum Aufenthalt wechseln",
@@ -1439,6 +1439,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const [studioMode, setStudioMode] = useState<"stay" | "hourly">("stay")
   // klik na den v minulosti: přátelská bublina s odkazem na Historii (číslo = restart časovače)
   const [pastHint, setPastHint] = useState(0)
+  const [timeTravel, setTimeTravel] = useState(false)
   const [hourlyDay, setHourlyDay] = useState<{ monthIndex: number; day: number } | null>(null)
   const [hours, setHours] = useState(STUDIO_HOURLY_MIN_HOURS)
   const embedded = searchParams.get("embed") === "1"
@@ -1794,10 +1795,35 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   }
 
   useEffect(() => {
-    if (!pastHint) return
-    const timer = window.setTimeout(() => setPastHint(0), 6000)
+    if (!pastHint || timeTravel) return
+    const timer = window.setTimeout(() => setPastHint(0), 9000)
     return () => window.clearTimeout(timer)
-  }, [pastHint])
+  }, [pastHint, timeTravel])
+
+  // klik kamkoli mimo bublinu ji zavře a ukáže zase celý kalendář
+  useEffect(() => {
+    if (!pastHint || timeTravel) return
+    const onDown = (event: PointerEvent) => {
+      if ((event.target as Element | null)?.closest?.("[data-past-hint]")) return
+      setPastHint(0)
+    }
+    document.addEventListener("pointerdown", onDown, true)
+    return () => document.removeEventListener("pointerdown", onDown, true)
+  }, [pastHint, timeTravel])
+
+  // „Ano": auto odjede, pak stránka sjede na Historii
+  const travelToHistory = () => {
+    setTimeTravel(true)
+    window.setTimeout(() => {
+      if (window.parent !== window) {
+        window.parent.postMessage({ type: "studio-goto-section", section: "history" }, "*")
+      } else {
+        window.location.href = getSectionHref(locale, "history")
+      }
+      setTimeTravel(false)
+      setPastHint(0)
+    }, 1100)
+  }
 
   const handleDayClick = (day: number) => {
     if (isBlockedDay(activeMonth, day)) return
@@ -2024,7 +2050,8 @@ export default function BookingPage({ locale }: { locale: Locale }) {
             <pre className={styles.emailDraft}>{emailBody}</pre>
 
             <div className={styles.modalActions}>
-              <a href={mailtoHref} className={styles.modalCta}>
+              {/* ve vloženém kalendáři (iframe) prohlížeč mailto blokuje — otevřít přes hlavní okno */}
+              <a href={mailtoHref} target="_top" className={styles.modalCta}>
                 {copy.openInEmail}
               </a>
               <button
@@ -2054,9 +2081,9 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               </button>
             </div>
             <p className={styles.modalMail}>
-              {copy.orWriteTo} <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+              {copy.orWriteTo} <a href={`mailto:${EMAIL}`} target="_top">{EMAIL}</a>
               <br />
-              {copy.orCall} <a href={`tel:${PHONE.replace(/\s/g, "")}`}>{PHONE}</a>
+              {copy.orCall} <a href={`tel:${PHONE.replace(/\s/g, "")}`} target="_top">{PHONE}</a>
             </p>
           </div>
         </div>
@@ -2202,22 +2229,36 @@ export default function BookingPage({ locale }: { locale: Locale }) {
           >
             {activeMonth.weeks.flat().map((day, cellIndex) => renderDayCell(activeMonth, day, cellIndex, true))}
             {pastHint ? (
-              <p key={pastHint} className={styles.pastHint} role="status" onClick={() => setPastHint(0)}>
-                {copy.pastDay.before}
-                <a
-                  href={getSectionHref(locale, "history")}
-                  target="_top"
-                  onClick={(event) => {
-                    // ve vloženém kalendáři posune stránku na Historii bez znovunačtení
-                    if (window.parent === window) return
-                    event.preventDefault()
-                    window.parent.postMessage({ type: "studio-goto-section", section: "history" }, "*")
-                  }}
-                >
-                  {copy.pastDay.link}
-                </a>
-                {copy.pastDay.after}
-              </p>
+              <div key={pastHint} className={cx(styles.pastHint, timeTravel && styles.pastHintGo)} role="dialog" aria-live="polite" data-past-hint>
+                <span className={styles.pastCar} aria-hidden="true">
+                  <i />
+                  <i />
+                  <img src="/images/delorean.webp?v=2" alt="" />
+                </span>
+                <p>
+                  {copy.pastDay.title}
+                  <br />
+                  <strong>{copy.pastDay.question}</strong>
+                </p>
+                <div className={styles.pastHintActions}>
+                  <button
+                    type="button"
+                    onClick={travelToHistory}
+                    disabled={timeTravel}
+                  >
+                    {copy.pastDay.yes}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPastHint(0)
+                    }}
+                    disabled={timeTravel}
+                  >
+                    {copy.pastDay.no}
+                  </button>
+                </div>
+              </div>
             ) : null}
           </div>
 

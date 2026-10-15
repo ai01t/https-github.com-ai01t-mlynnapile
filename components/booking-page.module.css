@@ -2096,29 +2096,112 @@
 
 .pastHint {
   position: absolute;
+  isolation: isolate;
   left: 50%;
-  bottom: 4px;
+  bottom: 0;
   z-index: 3;
-  width: min(94%, 400px);
-  margin: 0;
-  padding: 14px 18px;
+  width: min(100%, 380px);
+  padding: 6px 18px 18px;
   transform: translateX(-50%);
-  border: 1px solid rgba(176, 141, 87, 0.55);
-  background: rgba(11, 10, 13, 0.95);
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
-  font-size: 0.8rem;
-  line-height: 1.55;
+  /* bez rámečku: jen měkké ztmavení, které se rozplyne do kalendáře */
+  background: radial-gradient(ellipse 70% 62% at 50% 55%, rgba(11, 10, 13, 0.97) 45%, rgba(11, 10, 13, 0.85) 70%, rgba(11, 10, 13, 0) 100%);
   text-align: center;
-  color: rgba(240, 235, 226, 0.92);
-  cursor: pointer;
-  animation: pastHintIn 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  color: rgba(240, 235, 226, 0.9);
+  animation: pastHintIn 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.pastHint a {
-  color: var(--gold-light);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+.pastHint p {
+  margin: 2px 0 10px;
+  font-size: 0.78rem;
+  line-height: 1.5;
 }
+
+.pastHint strong {
+  font-weight: 400;
+  color: var(--gold-light);
+}
+
+/* auto levituje jako v bread.sk */
+.pastCar {
+  position: relative;
+  display: block;
+  width: 170px;
+  margin: 0 auto;
+  animation: pastFloat 3.4s ease-in-out infinite;
+}
+
+.pastCar img {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.55));
+}
+
+/* ohnivé stopy po odjezdu */
+.pastCar i {
+  position: absolute;
+  right: 20%;
+  height: 2px;
+  width: 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #ff7a1a 60%, #ffd27a);
+  box-shadow: 0 0 8px #ff7a1a;
+  opacity: 0;
+}
+
+.pastCar i:first-child {
+  bottom: 8%;
+}
+
+.pastCar i:nth-child(2) {
+  bottom: 14%;
+  right: 62%;
+}
+
+.pastHintActions {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+}
+
+.pastHintActions button {
+  padding: 4px 2px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: none;
+  color: rgba(240, 235, 226, 0.6);
+  font: inherit;
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.pastHintActions button:first-child {
+  color: var(--gold-light);
+  border-bottom-color: rgba(215, 180, 125, 0.5);
+}
+
+.pastHintActions button:hover:not(:disabled) {
+  color: #fff;
+  border-bottom-color: currentColor;
+}
+
+/* „Ano": auto se rozzáří a vystřelí, za sebou nechá ohnivé stopy */
+.pastHintGo .pastCar {
+  animation: none;
+}
+
+.pastHintGo .pastCar img {
+  animation: pastCarGo 0.9s cubic-bezier(0.55, 0, 0.8, 0.2) forwards;
+}
+
+.pastHintGo .pastCar i {
+  animation: pastFire 0.9s ease-out forwards;
+}
+
 
 @keyframes pastHintIn {
   from {
@@ -2130,3 +2213,43 @@
     transform: translate(-50%, 0);
   }
 }
+
+@keyframes pastFloat {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(2%, -7px);
+  }
+}
+
+@keyframes pastCarGo {
+  0% {
+    transform: none;
+  }
+  70% {
+    filter: brightness(1.8) drop-shadow(0 0 12px #8fd3ff);
+  }
+  100% {
+    transform: translateX(-420px);
+    opacity: 0;
+    filter: brightness(2.4) drop-shadow(0 0 18px #8fd3ff);
+  }
+}
+
+@keyframes pastFire {
+  0% {
+    width: 0;
+    opacity: 1;
+  }
+  60% {
+    width: 340px;
+    opacity: 1;
+  }
+  100% {
+    width: 340px;
+    opacity: 0;
+  }
+}
+
