@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Editor poukazů</title>
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* Editor dárkových poukazů Mlýn na Pile — jen pro majitele (noindex).
+   Vlevo formulář, vpravo náhled poukazu A5 na šířku; tisk = jen poukaz, PDF = přímé stažení. */
+:root{
+  --bg:#0b0a0d; --panel:#141217; --line:rgba(201,185,154,.18); --text:#f0ebe2; --muted:rgba(240,235,226,.6);
+  --gold:#b08d57; --gold-light:#d7b47d;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;font-weight:300;}
+.app{display:grid;grid-template-columns:340px 1fr;min-height:100vh;}
+.side{padding:28px 24px;border-right:1px solid var(--line);background:var(--panel);}
+.side h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.7rem;margin:0 0 4px;}
+.side .sub{font-size:.72rem;color:var(--muted);margin:0 0 22px;}
+label{display:block;font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin:16px 0 6px;}
+input,select,textarea{width:100%;padding:9px 10px;background:#0b0a0d;border:1px solid var(--line);color:var(--text);font:inherit;font-size:.85rem;}
+textarea{min-height:64px;resize:vertical;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.styles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.styles button{padding:10px 6px;border:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:.68rem;cursor:pointer;}
+.styles button.on{border-color:var(--gold);color:var(--gold-light);}
+.check{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.78rem;color:var(--muted);}
+.check input{width:auto;}
+.actions{display:grid;gap:8px;margin-top:24px;}
+.actions button{padding:12px;border:1px solid var(--gold);background:var(--gold);color:#0b0a0d;font:inherit;font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;}
+.actions button.ghost{background:none;color:var(--gold-light);}
+.stage{display:flex;align-items:center;justify-content:center;padding:32px;overflow:auto;}
+.stage-inner{width:min(100%,900px);}
+
+/* ── poukaz: A5 na šířku (210 × 148 mm) ── */
+.voucher{position:relative;width:100%;aspect-ratio:210 / 148;overflow:hidden;container-type:inline-size;
+  --v-bg:#0b0a0d; --v-ink:#f0ebe2; --v-soft:rgba(240,235,226,.62); --v-accent:#c8a96e; --v-frame:rgba(200,169,110,.5);
+  background:var(--v-bg);color:var(--v-ink);box-shadow:0 30px 80px rgba(0,0,0,.5);}
+.voucher.s-paper{--v-bg:#f4ecdc;--v-ink:#2a2118;--v-soft:rgba(42,33,24,.62);--v-accent:#9a7238;--v-frame:rgba(154,114,56,.55);
+  background:radial-gradient(ellipse 90% 80% at 50% 45%,#f8f1e3 0%,#efe4cf 70%,#e6d7bb 100%);}
+.voucher.s-minimal{--v-bg:#fff;--v-ink:#111;--v-soft:#666;--v-accent:#111;--v-frame:#111;}
+.v-frame{position:absolute;inset:3.2cqw;border:.18cqw solid var(--v-frame);}
+.v-frame::after{content:"";position:absolute;inset:.8cqw;border:.09cqw solid var(--v-frame);opacity:.6;}
+.s-minimal .v-frame::after{display:none;}
+.v-wheel{position:absolute;right:-9cqw;bottom:-11cqw;width:46cqw;color:var(--v-accent);opacity:.09;}
+.s-minimal .v-wheel{opacity:.06;}
+.v-body{position:absolute;inset:7cqw 8cqw;display:flex;flex-direction:column;}
+.v-top{display:flex;align-items:center;gap:1.6cqw;}
+.v-logo{width:5.2cqw;color:var(--v-accent);}
+.v-brand{font-family:'Cormorant Garamond',serif;font-size:2.3cqw;letter-spacing:.04em;}
+.v-brand em{color:var(--v-accent);font-style:normal;}
+.v-kicker{margin-left:auto;font-size:1.15cqw;letter-spacing:.32em;text-transform:uppercase;color:var(--v-accent);}
+.v-main{margin-top:auto;margin-bottom:auto;}
+.v-for{font-size:1.25cqw;letter-spacing:.28em;text-transform:uppercase;color:var(--v-soft);margin-bottom:1cqw;}
+.v-name{font-family:'Cormorant Garamond',serif;font-size:6.4cqw;line-height:1.02;font-weight:400;margin:0;}
+.v-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:3cqw;color:var(--v-accent);margin:1.4cqw 0 0;}
+.v-desc{font-size:1.45cqw;color:var(--v-soft);margin:.8cqw 0 0;}
+.v-msg{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2cqw;line-height:1.35;margin:2.2cqw 0 0;max-width:62%;}
+.v-msg:empty{display:none;}
+.v-foot{display:flex;align-items:flex-end;gap:4cqw;font-size:1.1cqw;letter-spacing:.12em;text-transform:uppercase;color:var(--v-soft);}
+.v-foot b{display:block;margin-top:.4cqw;font-weight:600;letter-spacing:.08em;color:var(--v-ink);font-size:1.3cqw;}
+.v-price{margin-left:auto;text-align:right;}
+.v-price b{text-transform:none;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:2.6cqw;letter-spacing:0;color:var(--v-accent);}
+
+@media (max-width:860px){.app{grid-template-columns:1fr}.side{border-right:0;border-bottom:1px solid var(--line)}}
+@page{size:A5 landscape;margin:0;}
+@media print{
+  body{background:#fff;}
+  .side{display:none;}
+  .app{display:block;}
+  .stage{padding:0;}
+  .stage-inner{width:210mm;}
+  .voucher{box-shadow:none;width:210mm;height:148mm;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <h1>Dárkové poukazy</h1>
+    <p class="sub">Vyplňte, vyberte styl a vytiskněte nebo stáhněte PDF.</p>
+
+    <label for="fVariant">Varianta</label>
+    <select id="fVariant">
+      <option value="guitar">Pro kytaristu</option>
+      <option value="duo">Pro duo</option>
+      <option value="band">Pro kapelu</option>
+      <option value="hours">3 hodiny ve studiu</option>
+    </select>
+
+    <label for="fLang">Jazyk poukazu</label>
+    <select id="fLang">
+      <option value="cs">Čeština</option>
+      <option value="en">English</option>
+      <option value="de">Deutsch</option>
+    </select>
+
+    <label for="fName">Jméno obdarovaného</label>
+    <input id="fName" value="Jan Novák" autocomplete="off">
+
+    <label for="fMsg">Věnování</label>
+    <textarea id="fMsg">Ať ti to v mlýně hraje. Všechno nejlepší!</textarea>
+
+    <label for="fFrom">Od koho</label>
+    <input id="fFrom" value="" placeholder="nepovinné" autocomplete="off">
+
+    <div class="row">
+      <div><label for="fCode">Kód</label><input id="fCode" autocomplete="off"></div>
+      <div><label for="fValid">Platí do</label><input id="fValid" type="date"></div>
+    </div>
+
+    <label>Styl</label>
+    <div class="styles" id="styles">
+      <button type="button" data-s="night" class="on">Noc</button>
+      <button type="button" data-s="paper">Papír</button>
+      <button type="button" data-s="minimal">Minimal</button>
+    </div>
+    <p class="sub" style="margin-top:8px">Minimal šetří barvu při tisku doma.</p>
+
+    <label class="check"><input type="checkbox" id="fPrice"> Zobrazit cenu na poukazu</label>
+
+    <div class="actions">
+      <button type="button" id="btnPdf">Stáhnout PDF</button>
+      <button type="button" class="ghost" id="btnPrint">Tisk</button>
+      <button type="button" class="ghost" id="btnCode">Nový kód</button>
+    </div>
+  </aside>
+
+  <main class="stage">
+    <div class="stage-inner">
+      <div class="voucher" id="voucher">
+        <svg class="v-wheel" viewBox="0 0 100 100" aria-hidden="true"><use href="#wheel"/></svg>
+        <div class="v-frame"></div>
+        <div class="v-body">
+          <div class="v-top">
+            <svg class="v-logo" viewBox="0 0 100 100" aria-hidden="true"><use href="#wheel"/></svg>
+            <span class="v-brand" id="vBrand">Mlýn <em>na Pile</em></span>
+            <span class="v-kicker" id="vKicker">Dárkový poukaz</span>
+          </div>
+          <div class="v-main">
+            <div class="v-for" id="vFor">Pro</div>
+            <h2 class="v-name" id="vName"></h2>
+            <p class="v-title" id="vTitle"></p>
+            <p class="v-desc" id="vDesc"></p>
+            <p class="v-msg" id="vMsg"></p>
+          </div>
+          <div class="v-foot">
+            <div><span id="lCode">Kód</span><b id="vCode"></b></div>
+            <div><span id="lValid">Platí do</span><b id="vValid"></b></div>
+            <div id="vFromWrap"><span id="lFrom">Od</span><b id="vFrom"></b></div>
+            <div class="v-price" id="vPriceWrap"><span id="lPrice">Hodnota</span><b id="vPrice"></b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="wheel" stroke="currentColor" fill="none">
+      <line x1="76.79" y1="61.10" x2="87.88" y2="65.69" stroke-width="8"/><line x1="61.10" y1="76.79" x2="65.69" y2="87.88" stroke-width="8"/><line x1="38.90" y1="76.79" x2="34.31" y2="87.88" stroke-width="8"/><line x1="23.21" y1="61.10" x2="12.12" y2="65.69" stroke-width="8"/><line x1="23.21" y1="38.90" x2="12.12" y2="34.31" stroke-width="8"/><line x1="38.90" y1="23.21" x2="34.31" y2="12.12" stroke-width="8"/><line x1="61.10" y1="23.21" x2="65.69" y2="12.12" stroke-width="8"/><line x1="76.79" y1="38.90" x2="87.88" y2="34.31" stroke-width="8"/>
+      <line x1="79" y1="50" x2="21" y2="50" stroke-width="4.2"/><line x1="70.51" y1="70.51" x2="29.49" y2="29.49" stroke-width="4.2"/><line x1="50" y1="79" x2="50" y2="21" stroke-width="4.2"/><line x1="29.49" y1="70.51" x2="70.51" y2="29.49" stroke-width="4.2"/>
+      <circle cx="50" cy="50" r="29" stroke-width="6.5"/>
+      <circle cx="50" cy="50" r="8.5" fill="currentColor" stroke="none"/>
+    </g>
+  </defs>
+</svg>
+
+<script>
+const T={
+  cs:{brand:'Mlýn <em>na Pile</em>',kicker:'Dárkový poukaz',for:'Pro',code:'Kód',valid:'Platí do',from:'Od',price:'Hodnota',
+    v:{guitar:['Den v mlýně pro kytaristu','Hlavní studio s přespáním v mlýnici · plná penze · 1 osoba','9 000 Kč'],
+       duo:['Den v mlýně pro duo','Hlavní studio s přespáním v mlýnici · plná penze · 2 osoby','9 000 Kč'],
+       band:['Den v mlýně pro kapelu','Hlavní studio s přespáním v mlýnici · plná penze · 4 osoby','16 000 Kč'],
+       hours:['3 hodiny ve studiu','Hlavní studio s kompletním vybavením · bez přespání','2 400 Kč']}},
+  en:{brand:'Mill <em>at Pila</em>',kicker:'Gift voucher',for:'For',code:'Code',valid:'Valid until',from:'From',price:'Value',
+    v:{guitar:['A day at the mill for a guitarist','Main studio with an overnight stay in the mill room · full board · 1 person','$420'],
+       duo:['A day at the mill for a duo','Main studio with an overnight stay in the mill room · full board · 2 people','$420'],
+       band:['A day at the mill for a band','Main studio with an overnight stay in the mill room · full board · 4 people','$760'],
+       hours:['3 hours in the studio','Main studio with full equipment · no overnight stay','$120']}},
+  de:{brand:'Mühle <em>an der Pila</em>',kicker:'Gutschein',for:'Für',code:'Code',valid:'Gültig bis',from:'Von',price:'Wert',
+    v:{guitar:['Ein Tag in der Mühle für Gitarristen','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 1 Person','380 €'],
+       duo:['Ein Tag in der Mühle für ein Duo','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 2 Personen','380 €'],
+       band:['Ein Tag in der Mühle für eine Band','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 4 Personen','680 €'],
+       hours:['3 Stunden im Studio','Hauptstudio mit kompletter Ausstattung · ohne Übernachtung','105 €']}},
+};
+const $=(id)=>document.getElementById(id);
+const voucher=$('voucher');
+
+function newCode(){
+  const abc='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c='';for(let i=0;i<4;i++)c+=abc[Math.floor(Math.random()*abc.length)];
+  $('fCode').value=`MNP-${new Date().getFullYear()}-${c}`;
+}
+function fmtDate(iso,lang){
+  if(!iso)return'';
+  const [y,m,d]=iso.split('-').map(Number);
+  return new Intl.DateTimeFormat({cs:'cs-CZ',en:'en-GB',de:'de-DE'}[lang],{day:'numeric',month:'numeric',year:'numeric'}).format(new Date(y,m-1,d));
+}
+function render(){
+  const lang=$('fLang').value, t=T[lang], v=t.v[$('fVariant').value];
+  $('vBrand').innerHTML=t.brand; $('vKicker').textContent=t.kicker; $('vFor').textContent=t.for;
+  $('lCode').textContent=t.code; $('lValid').textContent=t.valid; $('lFrom').textContent=t.from; $('lPrice').textContent=t.price;
+  $('vName').textContent=$('fName').value||' ';
+  $('vTitle').textContent=v[0]; $('vDesc').textContent=v[1]; $('vPrice').textContent=v[2];
+  $('vMsg').textContent=$('fMsg').value.trim();
+  $('vCode').textContent=$('fCode').value; $('vValid').textContent=fmtDate($('fValid').value,lang);
+  $('vFrom').textContent=$('fFrom').value.trim();
+  $('vFromWrap').style.display=$('fFrom').value.trim()?'':'none';
+  $('vPriceWrap').style.visibility=$('fPrice').checked?'visible':'hidden';
+}
+
+// výchozí hodnoty: nový kód, platnost 12 měsíců
+newCode();
+const until=new Date();until.setFullYear(until.getFullYear()+1);
+$('fValid').value=`${until.getFullYear()}-${String(until.getMonth()+1).padStart(2,'0')}-${String(until.getDate()).padStart(2,'0')}`;
+document.querySelectorAll('input,select,textarea').forEach((el)=>el.addEventListener('input',render));
+document.querySelectorAll('#styles button').forEach((b)=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#styles button').forEach((x)=>x.classList.toggle('on',x===b));
+  voucher.classList.remove('s-paper','s-minimal');
+  if(b.dataset.s!=='night')voucher.classList.add(`s-${b.dataset.s}`);
+}));
+$('btnCode').addEventListener('click',()=>{newCode();render();});
+$('btnPrint').addEventListener('click',()=>window.print());
+$('btnPdf').addEventListener('click',async()=>{
+  const btn=$('btnPdf'); btn.disabled=true; btn.textContent='Připravuji…';
+  try{
+    await document.fonts.ready;
+    const canvas=await html2canvas(voucher,{scale:3,backgroundColor:null,useCORS:true});
+    const pdf=new jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a5'});
+    pdf.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',0,0,210,148);
+    const who=($('fName').value||'poukaz').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'');
+    pdf.save(`poukaz-${who||'mlyn'}-${$('fCode').value}.pdf`);
+  }finally{btn.disabled=false;btn.textContent='Stáhnout PDF';}
+});
+render();
+</script>
+</body>
+</html>
