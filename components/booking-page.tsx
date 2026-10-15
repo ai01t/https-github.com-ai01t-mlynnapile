@@ -76,6 +76,30 @@ const BOOKED_RANGES: Record<string, Array<{ start: number; end: number }>> = {
     { start: 19, end: 19 },
     { start: 21, end: 28 },
   ],
+  "2027-1": [ // únor 2027
+    { start: 12, end: 13 },
+  ],
+}
+
+// Hlavní studio: den s přespáním (studio, přespání pod studiem, plná penze),
+// ceny včetně DPH. Základ platí pro 1–2 osoby, každá další osoba se připlácí.
+const STUDIO_DAY_PRICE = 9000
+const STUDIO_DAY_INCLUDED_PERSONS = 2
+const STUDIO_EXTRA_PERSON_PRICE = 3500
+const STUDIO_MAX_PERSONS = 5
+// Studio po hodinách bez přespání — na dotáčky a zkoušky, nejvýš pro 2 lidi.
+const STUDIO_HOURLY_PRICE = 800
+const STUDIO_HOURLY_MIN_HOURS = 3
+const STUDIO_HOURLY_MAX_HOURS = 12
+const STUDIO_HOURLY_MAX_PERSONS = 2
+
+// Ceny pro cizojazyčné verze: angličtina v USD, němčina v EUR — přepočet kurzem
+// ČNB ze 14. 10. 2026 (1 EUR = 24,355 Kč, 1 USD = 21,754 Kč), zaokrouhleno.
+// Účtuje se v Kč; ceny v cizí měně jsou orientační.
+const STUDIO_PRICES: Record<Locale, { currency: string; day: number; extra: number; hourly: number }> = {
+  cs: { currency: "CZK", day: STUDIO_DAY_PRICE, extra: STUDIO_EXTRA_PERSON_PRICE, hourly: STUDIO_HOURLY_PRICE },
+  en: { currency: "USD", day: 415, extra: 160, hourly: 37 },
+  de: { currency: "EUR", day: 370, extra: 145, hourly: 33 },
 }
 
 type Locale = "cs" | "en" | "de"
@@ -112,7 +136,28 @@ type Copy = {
   legendFree: string
   legendBooked: string
   rooms: Record<StudioRoom, string>
+  roomMainWithMill: string
   studioInterest: (room: string) => string
+  studioPriceNote: string
+  billedInCzk: string
+  studioExtraNote: (price: string) => string
+  checkInOut: string
+  copyText: string
+  copied: string
+  orWriteTo: string
+  modeStay: string
+  modeHourly: string
+  hourlyPriceNote: string
+  hoursLabel: string
+  hoursShort: (hours: number) => string
+  dateLabel: string
+  hourlyInterest: (room: string) => string
+  upsellTitle: string
+  upsellText: (price: string) => string
+  upsellCta: string
+  personsLabel: string
+  estimateLabel: string
+  daysLabel: (days: number) => string
   modalTitle: string
   openInEmail: string
   closeDialog: string
@@ -401,7 +446,28 @@ const copyByLocale: Record<Locale, Copy> = {
     legendFree: "Volno",
     legendBooked: "Obsazeno",
     rooms: { main: "Hlavní studio", control: "Kontrolní místnost" },
+    roomMainWithMill: "Hlavní studio + mlýnice",
     studioInterest: (room) => `mám zájem o pronájem prostoru ${room} – Mlýn na Pile.`,
+    studioPriceNote: "den s přespáním · 1–2 osoby · plná penze · vč. DPH",
+    billedInCzk: "",
+    studioExtraNote: (price) => `další osoba +${price} / den (max. 5 osob)`,
+    checkInOut: "Příjezd 14:00 · odjezd 11:00",
+    copyText: "Zkopírovat text",
+    copied: "Zkopírováno ✓",
+    orWriteTo: "nebo napište na",
+    modeStay: "Den s přespáním",
+    modeHourly: "Po hodinách",
+    hourlyPriceNote: "hod · bez přespání · max. 2 osoby · min. 3 hod · vč. DPH",
+    hoursLabel: "Počet hodin",
+    hoursShort: (hours) => `${hours} hod`,
+    dateLabel: "Datum",
+    hourlyInterest: (room) => `mám zájem o pronájem prostoru ${room} po hodinách (bez přespání) – Mlýn na Pile.`,
+    upsellTitle: "Zůstat přes noc?",
+    upsellText: (price) => `Den s přespáním, snídaní s kváskovým chlebem, plnou penzí a saunou · ${price} pro 1–2 osoby`,
+    upsellCta: "Přepnout na pobyt",
+    personsLabel: "Počet osob",
+    estimateLabel: "Orientační cena",
+    daysLabel: (days) => `${days} ${days === 1 ? "den" : days > 1 && days < 5 ? "dny" : "dní"}`,
     modalTitle: "Vybraný termín",
     openInEmail: "Otevřít v e-mailu",
     closeDialog: "Zavřít dialog",
@@ -457,7 +523,28 @@ const copyByLocale: Record<Locale, Copy> = {
     legendFree: "Available",
     legendBooked: "Booked",
     rooms: { main: "Main Studio", control: "Control Room" },
+    roomMainWithMill: "Main Studio + Mill Room",
     studioInterest: (room) => `I am interested in booking the ${room} – Mill at Pila.`,
+    studioPriceNote: "day with overnight stay · 1–2 people · full board · VAT incl.",
+    billedInCzk: "approx., invoiced in CZK",
+    studioExtraNote: (price) => `each extra person +${price} / day (max. 5 people)`,
+    checkInOut: "Check-in 14:00 · check-out 11:00",
+    copyText: "Copy text",
+    copied: "Copied ✓",
+    orWriteTo: "or write to",
+    modeStay: "Day with overnight stay",
+    modeHourly: "By the hour",
+    hourlyPriceNote: "hour · no overnight stay · max. 2 people · min. 3 hours · VAT incl.",
+    hoursLabel: "Hours",
+    hoursShort: (hours) => `${hours} h`,
+    dateLabel: "Date",
+    hourlyInterest: (room) => `I am interested in booking the ${room} by the hour (no overnight stay) – Mill at Pila.`,
+    upsellTitle: "Stay overnight?",
+    upsellText: (price) => `Day with overnight stay, sourdough breakfast, full board and sauna · ${price} for 1–2 people`,
+    upsellCta: "Switch to stay",
+    personsLabel: "Guests",
+    estimateLabel: "Estimated price",
+    daysLabel: (days) => `${days} ${days === 1 ? "day" : "days"}`,
     modalTitle: "Selected stay",
     openInEmail: "Open in email",
     closeDialog: "Close dialog",
@@ -513,7 +600,28 @@ const copyByLocale: Record<Locale, Copy> = {
     legendFree: "Frei",
     legendBooked: "Belegt",
     rooms: { main: "Hauptstudio", control: "Regieraum" },
+    roomMainWithMill: "Hauptstudio + Mühlenraum",
     studioInterest: (room) => `ich interessiere mich für die Buchung: ${room} – Mühle in Pila.`,
+    studioPriceNote: "Tag mit Übernachtung · 1–2 Personen · Vollpension · inkl. MwSt.",
+    billedInCzk: "ca., Abrechnung in CZK",
+    studioExtraNote: (price) => `jede weitere Person +${price} / Tag (max. 5 Personen)`,
+    checkInOut: "Anreise 14:00 · Abreise 11:00",
+    copyText: "Text kopieren",
+    copied: "Kopiert ✓",
+    orWriteTo: "oder schreiben Sie an",
+    modeStay: "Tag mit Übernachtung",
+    modeHourly: "Stundenweise",
+    hourlyPriceNote: "Std. · ohne Übernachtung · max. 2 Personen · mind. 3 Std. · inkl. MwSt.",
+    hoursLabel: "Stunden",
+    hoursShort: (hours) => `${hours} Std.`,
+    dateLabel: "Datum",
+    hourlyInterest: (room) => `ich interessiere mich für die stundenweise Buchung: ${room} (ohne Übernachtung) – Mühle in Pila.`,
+    upsellTitle: "Über Nacht bleiben?",
+    upsellText: (price) => `Tag mit Übernachtung, Sauerteig-Frühstück, Vollpension und Sauna · ${price} für 1–2 Personen`,
+    upsellCta: "Zum Aufenthalt wechseln",
+    personsLabel: "Personen",
+    estimateLabel: "Richtpreis",
+    daysLabel: (days) => `${days} ${days === 1 ? "Tag" : "Tage"}`,
     modalTitle: "Gewählter Aufenthalt",
     openInEmail: "Im E-Mail-Programm öffnen",
     closeDialog: "Dialog schließen",
@@ -1065,10 +1173,20 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     departureDay: null,
   })
   const [modalOpen, setModalOpen] = useState(false)
+  const [persons, setPersons] = useState(2)
+  const [copied, setCopied] = useState(false)
+  const [studioMode, setStudioMode] = useState<"stay" | "hourly">("stay")
+  const [hourlyDay, setHourlyDay] = useState<{ monthIndex: number; day: number } | null>(null)
+  const [hours, setHours] = useState(STUDIO_HOURLY_MIN_HOURS)
   const embedded = searchParams.get("embed") === "1"
   // Kompaktní kalendář pro konkrétní místnost (panel v sekci Studio na hlavní stránce).
   const roomParam = searchParams.get("room")
   const studioRoom: StudioRoom | null = embedded && (roomParam === "main" || roomParam === "control") ? roomParam : null
+  // Karta Hlavní studio na hlavní stránce přizpůsobí obsah zvolenému režimu.
+  useEffect(() => {
+    if (studioRoom !== "main" || window.parent === window) return
+    window.parent.postMessage({ type: "studio-booking-mode", mode: studioMode }, window.location.origin)
+  }, [studioRoom, studioMode])
 
   // Vložená verze otevřená samostatně (např. z Googlu) → příslušná sekce webu.
   useEffect(() => {
@@ -1302,23 +1420,68 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const formattedDeparture = departureDate ? formatDateForMail(locale, departureDate) : ""
   const formattedNights = nights ? copy.nightsLabel(nights) : ""
   const roomLabel = studioRoom ? copy.rooms[studioRoom] : ""
-  const emailSubject =
-    arrivalDate && departureDate
-      ? studioRoom
-        ? `${roomLabel} – ${formattedArrival} – ${formattedDeparture}`
-        : copy.emailSubject(formattedArrival, formattedDeparture)
-      : ""
-  const emailBodyLines =
-    arrivalDate && departureDate && nights
-      ? copy.emailBody(formattedArrival, formattedDeparture, copy.nightsLabel(nights)).split("\n")
-      : []
-  // Ve studiu místo věty o pobytu řádek s konkrétní místností.
-  if (studioRoom && emailBodyLines.length > 2) emailBodyLines[2] = copy.studioInterest(roomLabel)
+  const prices = STUDIO_PRICES[locale]
+  const formatCzk = (value: number) =>
+    new Intl.NumberFormat(getLocaleTag(locale), {
+      style: "currency",
+      currency: prices.currency,
+      maximumFractionDigits: 0,
+    }).format(value)
+
+  // Hlavní studio — den s přespáním: základ pro 1–2 osoby + příplatek za další, dny = noci.
+  const studioPriceLabel = `${formatCzk(prices.day)} / ${copy.studioPriceNote}`
+  const extraPersons = Math.max(0, persons - STUDIO_DAY_INCLUDED_PERSONS)
+  const studioDayTotal = prices.day + extraPersons * prices.extra
+  const studioEstimate = studioRoom === "main" && nights ? nights * studioDayTotal : null
+  const studioEstimateText = studioEstimate
+    ? extraPersons
+      ? `${copy.daysLabel(nights ?? 0)} × (${formatCzk(prices.day)} + ${extraPersons} × ${formatCzk(prices.extra)}) = ${formatCzk(studioEstimate)}`
+      : `${copy.daysLabel(nights ?? 0)} × ${formatCzk(prices.day)} = ${formatCzk(studioEstimate)}`
+    : ""
+
+  // Hlavní studio — po hodinách: jeden den, počet hodin, max. 2 osoby.
+  const hourlyMode = studioRoom === "main" && studioMode === "hourly"
+  const hourlyPriceLabel = `${formatCzk(prices.hourly)} / ${copy.hourlyPriceNote}`
+  const hourlyDate = hourlyMode && hourlyDay ? getDateAtMonthDay(months, hourlyDay.monthIndex, hourlyDay.day) : null
+  const formattedHourlyDate = hourlyDate ? formatDateForMail(locale, hourlyDate) : ""
+  const hourlyPersons = Math.min(persons, STUDIO_HOURLY_MAX_PERSONS)
+  const hourlyEstimate = hourlyDate ? hours * prices.hourly : null
+  const hourlyEstimateText = hourlyEstimate
+    ? `${copy.hoursShort(hours)} × ${formatCzk(prices.hourly)} = ${formatCzk(hourlyEstimate)}`
+    : ""
+
+  let emailSubject = ""
+  let emailBodyLines: string[] = []
+  if (hourlyDate) {
+    emailSubject = `${roomLabel} – ${copy.modeHourly} – ${formattedHourlyDate}`
+    emailBodyLines = copy.emailBody(formattedHourlyDate, formattedHourlyDate, "").split("\n")
+    if (emailBodyLines.length > 4) {
+      emailBodyLines[2] = copy.hourlyInterest(roomLabel)
+      emailBodyLines.splice(
+        4,
+        1,
+        `${copy.dateLabel}: ${formattedHourlyDate}`,
+        `${copy.hoursLabel}: ${hours}`,
+        `${copy.personsLabel}: ${hourlyPersons}`,
+        `${copy.estimateLabel}: ${hourlyEstimateText}${copy.billedInCzk ? ` (${copy.billedInCzk})` : ""}`,
+      )
+    }
+  } else if (arrivalDate && departureDate && nights) {
+    emailSubject = studioRoom
+      ? `${roomLabel} – ${formattedArrival} – ${formattedDeparture}`
+      : copy.emailSubject(formattedArrival, formattedDeparture)
+    emailBodyLines = copy.emailBody(formattedArrival, formattedDeparture, copy.nightsLabel(nights)).split("\n")
+    // Ve studiu místo věty o pobytu řádek s konkrétní místností.
+    if (studioRoom && emailBodyLines.length > 2) emailBodyLines[2] = copy.studioInterest(roomLabel)
+    if (emailBodyLines.length > 5) emailBodyLines.splice(5, 0, copy.checkInOut)
+    if (studioEstimate && emailBodyLines.length > 5) {
+      emailBodyLines.splice(6, 0, `${copy.personsLabel}: ${persons}`, `${copy.estimateLabel}: ${studioEstimateText}${copy.billedInCzk ? ` (${copy.billedInCzk})` : ""}`)
+    }
+  }
   const emailBody = emailBodyLines.join("\n")
-  const mailtoHref =
-    arrivalDate && departureDate
-      ? `mailto:${EMAIL}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
-      : `mailto:${EMAIL}`
+  const mailtoHref = emailSubject
+    ? `mailto:${EMAIL}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
+    : `mailto:${EMAIL}`
 
   const switchLanguage = (nextLocale: Locale) => {
     setLangOpen(false)
@@ -1330,9 +1493,39 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     setCurrentIndex(Math.max(0, Math.min(months.length - 1, nextIndex)))
   }
 
+  const switchHourlyToStay = () => {
+    if (!hourlyDay) return
+    const { monthIndex, day } = hourlyDay
+    const month = months[monthIndex]
+    const daysInMonth = new Date(month.year, month.month + 1, 0).getDate()
+    const nextMonthIndex = day < daysInMonth ? monthIndex : monthIndex + 1
+    const nextDay = day < daysInMonth ? day + 1 : 1
+    const arrival = getDateAtMonthDay(months, monthIndex, day)
+    const canDepart =
+      nextMonthIndex < months.length &&
+      !rangeOverlapsAnyBlocked(months, arrival, getDateAtMonthDay(months, nextMonthIndex, nextDay))
+    setStudioMode("stay")
+    setHourlyDay(null)
+    setSelection({
+      arrivalMonthIndex: monthIndex,
+      arrivalDay: day,
+      departureMonthIndex: canDepart ? nextMonthIndex : null,
+      departureDay: canDepart ? nextDay : null,
+    })
+    // s odjezdem rovnou okno pobytu, jinak zpět do kalendáře vybrat odjezd
+    if (!canDepart) setModalOpen(false)
+  }
+
   const handleDayClick = (day: number) => {
     if (isBlockedDay(activeMonth, day)) return
     if (getDateAtMonthDay(months, currentIndex, day) < todayStart) return
+
+    if (hourlyMode) {
+      setHourlyDay({ monthIndex: currentIndex, day })
+      setPersons((p) => Math.min(p, STUDIO_HOURLY_MAX_PERSONS))
+      setModalOpen(true)
+      return
+    }
 
     const clickedDate = getDateAtMonthDay(months, currentIndex, day)
 
@@ -1388,10 +1581,17 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     const isBlocked = isBlockedDay(month, day)
     const currentDayDate = getDateAtMonthDay(months, month.index, day)
     const isPast = currentDayDate < todayStart
-    const isArrival = selection.arrivalMonthIndex === month.index && selection.arrivalDay === day
-    const isDeparture = selection.departureMonthIndex === month.index && selection.departureDay === day
+    const isHourlyPick = hourlyMode && hourlyDay?.monthIndex === month.index && hourlyDay?.day === day
+    const isArrival =
+      isHourlyPick || (!hourlyMode && selection.arrivalMonthIndex === month.index && selection.arrivalDay === day)
+    const isDeparture =
+      !hourlyMode && selection.departureMonthIndex === month.index && selection.departureDay === day
     const isBetween =
-      arrivalDate !== null && departureDate !== null && currentDayDate > arrivalDate && currentDayDate < departureDate
+      !hourlyMode &&
+      arrivalDate !== null &&
+      departureDate !== null &&
+      currentDayDate > arrivalDate &&
+      currentDayDate < departureDate
 
     return (
       <button
@@ -1437,7 +1637,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   }
 
   const modalNode =
-    modalOpen && arrivalDate && departureDate && nights ? (
+    modalOpen && (hourlyDate || (!hourlyMode && arrivalDate && departureDate && nights)) ? (
         <div className={styles.modalBackdrop} onClick={() => setModalOpen(false)}>
           <div
             className={styles.modal}
@@ -1458,15 +1658,115 @@ export default function BookingPage({ locale }: { locale: Locale }) {
             <div className={styles.modalHead}>
               <span className={styles.modalEyebrow}>{copy.modalTitle}</span>
               <span className={styles.modalDates}>
-                {formattedArrival} – {formattedDeparture} · {formattedNights}
+                {hourlyDate
+                  ? `${formattedHourlyDate} · ${copy.modeHourly}`
+                  : `${formattedArrival} – ${formattedDeparture} · ${formattedNights}`}
               </span>
             </div>
 
+            {hourlyEstimate ? (
+              <div className={styles.modalEstimate}>
+                <div className={styles.modalSteppers}>
+                  <div className={styles.personsStepper} role="group" aria-label={copy.hoursLabel}>
+                    <span>{copy.hoursLabel}</span>
+                    <button type="button" aria-label="−" disabled={hours <= STUDIO_HOURLY_MIN_HOURS} onClick={() => setHours((h) => Math.max(STUDIO_HOURLY_MIN_HOURS, h - 1))}>
+                      −
+                    </button>
+                    <strong>{hours}</strong>
+                    <button type="button" aria-label="+" disabled={hours >= STUDIO_HOURLY_MAX_HOURS} onClick={() => setHours((h) => Math.min(STUDIO_HOURLY_MAX_HOURS, h + 1))}>
+                      +
+                    </button>
+                  </div>
+                  <div className={styles.personsStepper} role="group" aria-label={copy.personsLabel}>
+                    <span>{copy.personsLabel}</span>
+                    <button type="button" aria-label="−" disabled={hourlyPersons <= 1} onClick={() => setPersons((p) => Math.max(1, Math.min(p, STUDIO_HOURLY_MAX_PERSONS) - 1))}>
+                      −
+                    </button>
+                    <strong>{hourlyPersons}</strong>
+                    <button type="button" aria-label="+" disabled={hourlyPersons >= STUDIO_HOURLY_MAX_PERSONS} onClick={() => setPersons((p) => Math.min(STUDIO_HOURLY_MAX_PERSONS, p + 1))}>
+                      +
+                    </button>
+                  </div>
+                </div>
+                <span className={styles.estimateValue}>
+                  {copy.estimateLabel}: <strong>{formatCzk(hourlyEstimate)}</strong>
+                  <small>
+                    {hourlyEstimateText}
+                    {copy.billedInCzk ? ` · ${copy.billedInCzk}` : ""}
+                  </small>
+                </span>
+              </div>
+            ) : null}
+
+            {hourlyEstimate ? (
+              <div className={styles.modalUpsell}>
+                <span>
+                  <strong>{copy.upsellTitle}</strong>
+                  {copy.upsellText(formatCzk(prices.day))}
+                </span>
+                <button type="button" onClick={switchHourlyToStay}>
+                  {copy.upsellCta} <span aria-hidden="true">→</span>
+                </button>
+              </div>
+            ) : null}
+
+            {!hourlyDate && studioEstimate ? (
+              <div className={styles.modalEstimate}>
+                <div className={styles.personsStepper} role="group" aria-label={copy.personsLabel}>
+                  <span>{copy.personsLabel}</span>
+                  <button type="button" aria-label="−" disabled={persons <= 1} onClick={() => setPersons((p) => Math.max(1, p - 1))}>
+                    −
+                  </button>
+                  <strong>{persons}</strong>
+                  <button type="button" aria-label="+" disabled={persons >= STUDIO_MAX_PERSONS} onClick={() => setPersons((p) => Math.min(STUDIO_MAX_PERSONS, p + 1))}>
+                    +
+                  </button>
+                </div>
+                <span className={styles.estimateValue}>
+                  {copy.estimateLabel}: <strong>{formatCzk(studioEstimate)}</strong>
+                  <small>
+                    {studioEstimateText}
+                    {copy.billedInCzk ? ` · ${copy.billedInCzk}` : ""}
+                  </small>
+                </span>
+              </div>
+            ) : null}
+
             <pre className={styles.emailDraft}>{emailBody}</pre>
 
-            <a href={mailtoHref} className={styles.modalCta}>
-              {copy.openInEmail}
-            </a>
+            <div className={styles.modalActions}>
+              <a href={mailtoHref} className={styles.modalCta}>
+                {copy.openInEmail}
+              </a>
+              <button
+                type="button"
+                className={cx(styles.modalCta, styles.modalCtaSecondary)}
+                onClick={() => {
+                  const text = `${emailSubject}\n\n${emailBody}`
+                  const done = () => {
+                    setCopied(true)
+                    window.setTimeout(() => setCopied(false), 2200)
+                  }
+                  navigator.clipboard?.writeText(text).then(done, () => {
+                    // starší prohlížeče: výběr textu a execCommand
+                    const area = document.createElement("textarea")
+                    area.value = text
+                    document.body.appendChild(area)
+                    area.select()
+                    try {
+                      document.execCommand("copy")
+                      done()
+                    } catch {}
+                    area.remove()
+                  })
+                }}
+              >
+                {copied ? copy.copied : copy.copyText}
+              </button>
+            </div>
+            <p className={styles.modalMail}>
+              {copy.orWriteTo} <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+            </p>
           </div>
         </div>
       ) : null
@@ -1502,10 +1802,25 @@ export default function BookingPage({ locale }: { locale: Locale }) {
         <div className={styles.studioCal}>
           <div className={styles.studioHead}>
             <div>
-              <span className={styles.studioRoom}>{roomLabel}</span>
               <h2 className={cx(styles.studioMonth, cormorant.className)}>
                 {activeMonth.ghostTitle} <em>{activeMonth.year}</em>
               </h2>
+              <span className={styles.studioRoom}>
+                {studioRoom === "main" && !hourlyMode ? copy.roomMainWithMill : roomLabel}
+              </span>
+              {studioRoom === "main" ? (
+                <span className={styles.studioPrice}>
+                  {hourlyMode ? (
+                    hourlyPriceLabel
+                  ) : (
+                    <>
+                      {studioPriceLabel}
+                      <br />
+                      {copy.studioExtraNote(formatCzk(prices.extra))}
+                    </>
+                  )}
+                </span>
+              ) : null}
             </div>
             <div className={styles.arrowGroup}>
               <button
@@ -1529,6 +1844,27 @@ export default function BookingPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
+          {studioRoom === "main" ? (
+            <div className={styles.studioModes} role="tablist">
+              {(["stay", "hourly"] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  role="tab"
+                  aria-selected={studioMode === mode}
+                  className={cx(styles.studioMode, studioMode === mode && styles.studioModeOn)}
+                  onClick={() => {
+                    setStudioMode(mode)
+                    setHourlyDay(null)
+                    setSelection({ arrivalMonthIndex: null, arrivalDay: null, departureMonthIndex: null, departureDay: null })
+                  }}
+                >
+                  {mode === "stay" ? copy.modeStay : copy.modeHourly}
+                </button>
+              ))}
+            </div>
+          ) : null}
+
           <div className={styles.weekdays}>
             {copy.weekdays.map((weekday) => (
               <span key={`studio-${weekday}`} className={styles.weekday}>
@@ -1546,6 +1882,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
           </div>
 
           <div className={styles.calendarLegend} aria-hidden="true">
+            {hourlyMode ? null : <span className={styles.legendCheck}>{copy.checkInOut}</span>}
             <span><i className={styles.legendFree} />{copy.legendFree}</span>
             <span><i className={styles.legendBooked} />{copy.legendBooked}</span>
           </div>
@@ -1804,6 +2141,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
                             </div>
 
                             <div className={styles.calendarLegend} aria-hidden="true">
+                              {isFront ? <span className={styles.legendCheck}>{copy.checkInOut}</span> : null}
                               <span><i className={styles.legendFree} />{copy.legendFree}</span>
                               <span><i className={styles.legendBooked} />{copy.legendBooked}</span>
                             </div>

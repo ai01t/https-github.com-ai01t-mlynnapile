@@ -362,13 +362,37 @@ body.pause-active section .content{filter:brightness(1.14);}
 /* Booking místnosti: zvolená karta zůstane, panel s kalendářem vyjede přes zbylé dvě. */
 .rooms-grid{position:relative;}
 .room-book{margin-top:18px;}
+.room-price{margin:14px 0 0;font-size:.62rem;letter-spacing:.08em;color:rgba(240,235,226,.6);}
+.room-price strong{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--gold);letter-spacing:0;}
+.room-incl{display:flex;align-items:center;min-height:41px;margin:18px 0 0;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);}
 /* Při otevřeném bookingu hlavního studia nahradí video karty text o vybavení v ceně. */
-.room-book-info{display:none;aspect-ratio:16 / 9;border:1px solid var(--border);background:rgba(200,169,110,.06);padding:clamp(16px,2vw,26px);flex-direction:column;justify-content:center;gap:12px;}
-.room-book-info p{margin:0;font-family:'Cormorant Garamond',serif;font-size:clamp(1rem,1.25vw,1.2rem);line-height:1.45;color:var(--cream);}
-.room-book-info a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(200,169,110,.45);text-underline-offset:.2em;}
-.room-book-info a:hover{color:var(--gold-light);}
+/* Booking hlavního studia: karta se promění v souhrn balíčku — cena, co je v ceně
+   a místo videa fotka snídaně s kváskovým chlebem. */
+.room-package{display:none;margin:2px 0 14px;}
+.pkg-price-line{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin-bottom:4px;}
+.pkg-extra{margin:0 0 12px;font-size:.66rem;line-height:1.5;color:rgba(240,235,226,.5);}
+.pkg-price-line strong{font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-weight:400;line-height:1;color:var(--gold);font-variant-numeric:lining-nums;}
+.pkg-price-line span{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:rgba(240,235,226,.62);}
+.pkg-incl{list-style:none;margin:0;padding:0;display:grid;gap:5px;}
+.pkg-incl li{position:relative;padding-left:16px;font-size:.74rem;line-height:1.45;color:rgba(240,235,226,.74);}
+.pkg-incl li::before{content:'';position:absolute;left:0;top:.62em;width:8px;height:1px;background:var(--gold);}
+.pkg-incl a{color:var(--gold);text-decoration:underline;text-decoration-color:rgba(200,169,110,.45);text-underline-offset:.2em;}
+.pkg-incl a:hover{color:var(--gold-light);}
+.room-book-info{display:none;margin:0;}
+.room-book-info img{display:block;width:100%;aspect-ratio:16 / 9;object-fit:cover;object-position:50% 74%;border:1px solid var(--border);}
+.room-book-info figcaption{margin-top:8px;}
+.room-book-info p{margin:0;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.98rem;line-height:1.35;color:rgba(240,235,226,.78);}
+.rooms-grid.booking-main .room-card:first-child .room-text{display:none;}
+.rooms-grid.booking-main .room-card:first-child .room-package{display:block;}
+/* Studio po hodinách (přepínač v kalendáři): bez přespání, penze a sauny,
+   s hodinovou cenou; místo fotky snídaně zase video studia. */
+.pkg-when-hourly{display:none;}
+.rooms-grid.booking-hourly .pkg-when-stay,.rooms-grid.booking-hourly .pkg-stay{display:none;}
+.rooms-grid.booking-hourly .pkg-when-hourly{display:block;}
+.rooms-grid.booking-main.booking-hourly .room-card:first-child .room-book-info{display:none;}
+.rooms-grid.booking-main.booking-hourly .room-card:first-child .room-video-frame{display:block;}
 .rooms-grid.booking-main .room-card:first-child .room-video-frame{display:none;}
-.rooms-grid.booking-main .room-card:first-child .room-book-info{display:flex;}
+.rooms-grid.booking-main .room-card:first-child .room-book-info{display:block;}
 .rooms-grid.booking-main .room-card:first-child,
 .rooms-grid.booking-control .room-card:nth-child(3){background:#0b0a0d;}
 .room-book .btn-secondary{padding:12px 28px;}
@@ -1142,7 +1166,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
   </div>
   <div class="hero-stats">
     <span><span class="cs">64 m² — Hlavní studio</span><span class="en">64 m² — Main Studio</span><span class="de">64 m² — Hauptstudio</span></span>
-    <span><span class="cs">25 m² — Studio mlýnice</span><span class="en">25 m² — Mill Studio</span><span class="de">25 m² — Mühlenstudio</span></span>
+    <span><span class="cs">25 m² — Mlýnice</span><span class="en">25 m² — The Mill Room</span><span class="de">25 m² — Mühlenraum</span></span>
     <span><span class="cs">27 m² — Kontrolní místnost</span><span class="en">27 m² — Control Room</span><span class="de">27 m² — Regieraum</span></span>
     <span><span class="cs">63 m² — Zimní zahrada</span><span class="en">63 m² — Winter Garden</span><span class="de">63 m² — Wintergarten</span></span>
   </div>
@@ -1197,37 +1221,80 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
     <!-- PANEL 1 — přehled -->
     <div class="studio-panel studio-main-panel">
       <div class="content">
-        <span class="sec-label cs">Studio a technologie</span><span class="sec-label en">Studio & Technology</span><span class="sec-label de">Studio & Technologie</span>
-        <h2 class="sec-title"><span class="cs">Tři unikátní<br><em>prostory</em></span><span class="en">Three unique<br><em>spaces</em></span><span class="de">Drei einzigartige<br><em>Räume</em></span></h2>
-        <p class="studio-intro en">From the main studio through the mill studio to the control room. Instruments are regularly serviced and ready for use.</p>
-        <p class="studio-intro de">Vom Hauptstudio über das Mühlenstudio bis zum Regieraum. Die Instrumente werden regelmäßig gewartet und sind jederzeit einsatzbereit.</p>
+        <span class="sec-label cs">Unikátní prostory</span><span class="sec-label en">Unique spaces</span><span class="sec-label de">Einzigartige Räume</span>
+        <h2 class="sec-title"><span class="cs">Studio, zázemí<br><em>a klid</em></span><span class="en">Studio, comfort<br><em>and calm</em></span><span class="de">Studio, Komfort<br><em>und Ruhe</em></span></h2>
+        <p class="studio-intro en">Record upstairs, sleep downstairs, with the winter garden in between. Instruments are regularly serviced and ready for use.</p>
+        <p class="studio-intro de">Oben aufnehmen, unten schlafen, dazwischen der Wintergarten. Die Instrumente werden regelmäßig gewartet und sind jederzeit einsatzbereit.</p>
         <div class="rooms-grid">
           <div class="room-card">
             <div class="room-name cs">Hlavní studio</div><div class="room-name en">Main Studio</div><div class="room-name de">Hauptstudio</div>
             <span class="room-size">64 m²</span>
+            <div class="room-package">
+              <div class="pkg-when-stay">
+              <div class="pkg-price-line"><strong class="cs">9 000 Kč</strong><strong class="en">$415</strong><strong class="de">370 €</strong><span class="cs">den s přespáním · 1–2 osoby · vč. DPH</span><span class="en">day with overnight stay · 1–2 people · VAT incl.</span><span class="de">Tag mit Übernachtung · 1–2 Personen · inkl. MwSt.</span></div>
+              <p class="pkg-extra cs">Další osoba +3 500 Kč / den, max. 5 osob<br>Po hodinách bez přespání: 800 Kč / hod, min. 3 hod, max. 2 osoby</p><p class="pkg-extra en">Each extra person +$160 / day, max. 5 people<br>By the hour, no overnight stay: $37 / hour, min. 3 hours, max. 2 people<br>Prices approx., invoiced in CZK.</p><p class="pkg-extra de">Jede weitere Person +145 € / Tag, max. 5 Personen<br>Stundenweise ohne Übernachtung: 33 € / Std., mind. 3 Std., max. 2 Personen<br>Preise ca., Abrechnung in CZK.</p>
+              </div>
+              <div class="pkg-when-hourly">
+              <div class="pkg-price-line"><strong class="cs">800 Kč</strong><strong class="en">$37</strong><strong class="de">33 €</strong><span class="cs">hodina · bez přespání · max. 2 osoby · vč. DPH</span><span class="en">hour · no overnight stay · max. 2 people · VAT incl.</span><span class="de">Stunde · ohne Übernachtung · max. 2 Personen · inkl. MwSt.</span></div>
+              <p class="pkg-extra cs">Minimálně 3 hodiny – na dotáčky, zkoušky nebo porovnání zvuku.</p><p class="pkg-extra en">Minimum 3 hours – for overdubs, try-outs or comparing sounds.</p><p class="pkg-extra de">Mindestens 3 Stunden – für Overdubs, Tests oder Klangvergleiche.</p>
+              </div>
+              <ul class="pkg-incl cs">
+                <li>Hlavní studio</li>
+                <li>Kompletní <a class="section-jump" href="#equipment">vybavení</a> – vše zapojené a připravené, včetně podpory</li>
+                <li>Nahrávání až 8 stop současně (Apollo x8p)</li>
+                <li class="pkg-stay">Přespání pod studiem v bývalé mlýnici, případně i pokoj navíc</li>
+                <li class="pkg-stay">Plná penze, káva a nápoje</li>
+                <li class="pkg-stay">Sauna</li>
+                <li class="pkg-stay">Zimní zahrada</li>
+                <li class="pkg-stay">Svezení Teslou do Domažlic a zpět</li>
+              </ul>
+              <ul class="pkg-incl en">
+                <li>Main studio</li>
+                <li>Full <a class="section-jump" href="#equipment">equipment</a> – everything wired and ready, with support</li>
+                <li>Record up to 8 tracks at once (Apollo x8p)</li>
+                <li class="pkg-stay">Overnight stay below the studio in the former mill room, an extra room on request</li>
+                <li class="pkg-stay">Full board, coffee and drinks</li>
+                <li class="pkg-stay">Sauna</li>
+                <li class="pkg-stay">Winter garden</li>
+                <li class="pkg-stay">Tesla ride to and from Domažlice</li>
+              </ul>
+              <ul class="pkg-incl de">
+                <li>Hauptstudio</li>
+                <li>Komplette <a class="section-jump" href="#equipment">Ausstattung</a> – alles verkabelt und bereit, inklusive Betreuung</li>
+                <li>Aufnahme von bis zu 8 Spuren gleichzeitig (Apollo x8p)</li>
+                <li class="pkg-stay">Übernachtung unter dem Studio im ehemaligen Mühlenraum, auf Wunsch ein zusätzliches Zimmer</li>
+                <li class="pkg-stay">Vollpension, Kaffee und Getränke</li>
+                <li class="pkg-stay">Sauna</li>
+                <li class="pkg-stay">Wintergarten</li>
+                <li class="pkg-stay">Fahrt mit dem Tesla nach Domažlice und zurück</li>
+              </ul>
+            </div>
             <p class="room-text cs">Hlavní studio se nachází v podkrovní galerii, přímo nad mlýnicí. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník.</p>
             <p class="room-text en">The main studio is located in the attic gallery, directly above the mill. Natural light enters through skylights and a large French window with a balcony overlooking the quiet pond.</p>
             <p class="room-text de">Das Hauptstudio befindet sich in der Dachgalerie direkt über der Mühle. Natürliches Licht fällt durch Dachfenster und ein großes französisches Fenster mit Balkon und Blick auf den ruhigen Teich.</p>
             <div class="room-video-wrap">
               <div class="room-video-frame" data-room-video="/videos/bg/O431B93W9UY.mp4?v=20260309c" style="background-image:url('/videos/bg/O431B93W9UY.jpg?v=20260309c')"></div>
-              <div class="room-book-info">
-                <p class="cs">Součástí pronájmu studia jsou aparatury i hudební nástroje, vše je připraveno, nemusíte si nic brát sebou. Více info v <a class="section-jump" href="#equipment">sekci vybavení</a>.</p>
-                <p class="en">Studio rental includes the gear and musical instruments – everything is ready, you don't need to bring anything. More info in the <a class="section-jump" href="#equipment">Equipment section</a>.</p>
-                <p class="de">Zur Studiomiete gehören die Technik und die Musikinstrumente – alles ist vorbereitet, Sie müssen nichts mitbringen. Mehr Infos im <a class="section-jump" href="#equipment">Bereich Ausstattung</a>.</p>
-              </div>
+              <figure class="room-book-info">
+                <img src="/images/snidane-kvaskovy-chleb.jpg" alt="" loading="lazy" decoding="async">
+                <figcaption>
+                  <p class="cs">Čerstvý kváskový chléb, ke každé snídani.</p>
+                  <p class="en">Fresh sourdough bread, with every breakfast.</p>
+                  <p class="de">Frisches Sauerteigbrot, zu jedem Frühstück.</p>
+                </figcaption>
+              </figure>
             </div>
             <div class="room-book"><button type="button" class="btn-secondary" data-studio-booking="main" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
           </div>
           <div class="room-card">
-            <div class="room-name cs">Studio mlýnice</div><div class="room-name en">Mill Studio</div><div class="room-name de">Mühlenstudio</div>
+            <div class="room-name cs">Mlýnice</div><div class="room-name en">The Mill Room</div><div class="room-name de">Mühlenraum</div>
             <span class="room-size">25 m²</span>
-            <p class="room-text cs">Vysoké stropy a unikátní akustika historické mlýnice. Ideální pro akustické nahrávky a experimentální projekty.</p>
-            <p class="room-text en">High ceilings and unique acoustics of the historic mill. Ideal for acoustic recordings and experimental projects.</p>
-            <p class="room-text de">Hohe Decken und die einzigartige Akustik der historischen Mühle. Ideal für akustische Aufnahmen und experimentelle Projekte.</p>
+            <p class="room-text cs">Místo k přespání přímo pod studiem, v bývalé mlýnici s vysokými stropy. Z jedné strany navazuje na zimní zahradu, z druhé vede ven – k velké peci, k rybníku a do vlastní zahrady o rozloze 6 500 m².</p>
+            <p class="room-text en">A place to sleep right below the studio, in the former mill room with its high ceilings. On one side it opens onto the winter garden, on the other it leads outside – to the large oven, the pond and our own 6,500 m² garden.</p>
+            <p class="room-text de">Ein Schlafplatz direkt unter dem Studio, im ehemaligen Mühlenraum mit hohen Decken. Auf der einen Seite schließt der Wintergarten an, auf der anderen geht es hinaus – zum großen Ofen, zum Teich und in den eigenen 6.500 m² großen Garten.</p>
             <div class="room-video-wrap">
-              <div class="room-video-frame" data-room-video="/videos/bg/mndh51Ug7zg.mp4?v=20260309c" style="background-image:url('/videos/bg/mndh51Ug7zg.jpg?v=20260309c')"></div>
+              <div class="room-video-frame" data-room-video="/videos/bg/uQiXLcspREY.mp4?v=20260309c" style="background-image:url('/videos/bg/uQiXLcspREY.jpg?v=20260309c')"></div>
             </div>
-            <div class="room-book"><button type="button" class="btn-secondary" disabled aria-disabled="true"><span class="cs">Připravujeme</span><span class="en">Coming soon</span><span class="de">In Vorbereitung</span></button></div>
+            <p class="room-incl"><span class="cs">V ceně pronájmu studia na 1 a více dní.</span><span class="en">Included when renting the studio for 1 day or more.</span><span class="de">Im Preis der Studiomiete ab 1 Tag enthalten.</span></p>
           </div>
           <div class="room-card">
             <div class="room-name cs">Kontrolní místnost</div><div class="room-name en">Control Room</div><div class="room-name de">Regieraum</div>
@@ -1235,6 +1302,7 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
             <p class="room-text cs">Apple Pro Display XDR 6K pro střih videa, grafiku i postprodukci. K dispozici plná Apple sestava periferií pro pohodlnou práci. Prostor je dělaný pro soustředěnou kreativní tvorbu: plynule regulovatelné osvětlení, klidná atmosféra, krásný výhled a knihovna.</p>
             <p class="room-text en">Apple Pro Display XDR 6K for video editing, graphics and post-production. Full Apple peripherals are available for comfortable work. The room is built for focused creative work: smoothly adjustable lighting, calm atmosphere, beautiful view and a library.</p>
             <p class="room-text de">Apple Pro Display XDR 6K für Videoschnitt, Grafik und Postproduktion. Vollständiges Apple-Peripherie-Setup für komfortables Arbeiten. Sanft regulierbares Licht, ruhige Atmosphäre, schöner Ausblick und Bibliothek.</p>
+            <p class="room-price"><strong class="cs">+3 500 Kč</strong><strong class="en">+$160</strong><strong class="de">+145 €</strong> <span class="cs">/ den (8 hodin) k pronájmu studia · vč. DPH</span><span class="en">/ day (8 hours) on top of the studio rental · VAT incl.</span><span class="de">/ Tag (8 Stunden) zusätzlich zur Studiomiete · inkl. MwSt.</span></p>
             <div class="room-video-wrap">
               <div class="room-video-frame" data-room-video="/videos/bg/gTqXu9xU_7k.mp4?v=20260309c" style="background-image:url('/videos/bg/gTqXu9xU_7k.jpg?v=20260309c')"></div>
             </div>
@@ -3398,6 +3466,10 @@ updateNavCompactState();
     }
     const studioFrame=window.getStudioBookingFrame?.();
     if(studioFrame&&event.source===studioFrame.contentWindow){
+      if(data.type==='studio-booking-mode'){
+        document.querySelector('#studio .rooms-grid')?.classList.toggle('booking-hourly',data.mode==='hourly');
+        return;
+      }
       if(data.type==='booking-embed-wheel'){
         if(currentSectionId!=='studio')return;
         passthroughScroll('studio',data.deltaY,140);
@@ -3447,7 +3519,7 @@ updateNavCompactState();
     grid.classList.toggle('booking-main',openRoom==='main');
     grid.classList.toggle('booking-control',openRoom==='control');
   };
-  grid.querySelectorAll('.room-book-info a').forEach((link)=>link.addEventListener('click',()=>close()));
+  grid.querySelectorAll('.room-package a').forEach((link)=>link.addEventListener('click',()=>close()));
   const syncTriggers=()=>triggers.forEach((btn)=>{
     const on=btn.dataset.studioBooking===openRoom;
     btn.classList.toggle('on',on);
