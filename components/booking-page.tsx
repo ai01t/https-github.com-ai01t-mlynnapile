@@ -94,12 +94,12 @@ const STUDIO_HOURLY_MAX_HOURS = 12
 const STUDIO_HOURLY_MAX_PERSONS = 2
 
 // Ceny pro cizojazyčné verze: angličtina v USD, němčina v EUR — přepočet kurzem
-// ČNB ze 14. 10. 2026 (1 EUR = 24,355 Kč, 1 USD = 21,754 Kč), zaokrouhleno.
+// ČNB ze 14. 10. 2026 (1 EUR = 24,355 Kč, 1 USD = 21,754 Kč), zaokrouhleno nahoru.
 // Účtuje se v Kč; ceny v cizí měně jsou orientační.
 const STUDIO_PRICES: Record<Locale, { currency: string; day: number; extra: number; hourly: number }> = {
   cs: { currency: "CZK", day: STUDIO_DAY_PRICE, extra: STUDIO_EXTRA_PERSON_PRICE, hourly: STUDIO_HOURLY_PRICE },
-  en: { currency: "USD", day: 415, extra: 160, hourly: 37 },
-  de: { currency: "EUR", day: 370, extra: 145, hourly: 33 },
+  en: { currency: "USD", day: 420, extra: 170, hourly: 40 },
+  de: { currency: "EUR", day: 380, extra: 150, hourly: 35 },
 }
 
 type Locale = "cs" | "en" | "de"
