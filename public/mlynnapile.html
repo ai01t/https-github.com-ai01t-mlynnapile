@@ -451,6 +451,9 @@ body.pause-active section .content{filter:brightness(1.14);}
 .studio-booking-panel.fullscreen{position:fixed;inset:0;left:0;right:0;z-index:1200;opacity:0;transition:opacity .3s ease,visibility 0s linear .3s;}
 .studio-booking-panel.fullscreen .studio-booking-inner{transform:none;transition:none;box-shadow:none;}
 .studio-booking-panel.fullscreen.open{opacity:1;transition:opacity .3s ease;}
+.studio-booking-frame{opacity:0;transition:opacity .35s ease;}
+.studio-booking-frame.loaded{opacity:1;}
+html.booking-locked,html.booking-locked body{overflow:hidden;overscroll-behavior:none;}
 .studio-booking-panel.fullscreen .studio-booking-close{top:calc(10px + env(safe-area-inset-top));}
 .gear-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;}
 
@@ -3669,6 +3672,7 @@ updateNavCompactState();
   const close=()=>{
     if(!openRoom)return;
     openRoom=null;
+    document.documentElement.classList.remove('booking-locked');
     panel.classList.remove('open');
     panel.setAttribute('aria-hidden','true');
     syncTriggers();
@@ -3680,6 +3684,8 @@ updateNavCompactState();
     const host=fullscreen?document.body:grid;
     if(panel.parentElement!==host)host.appendChild(panel);
     panel.classList.toggle('fullscreen',fullscreen);
+    // na celé obrazovce se stránka za bookingem nesmí posouvat
+    document.documentElement.classList.toggle('booking-locked',fullscreen);
     if(openRoom&&openRoom!==room){
       // přepnutí místnosti: obsah skokem schovat a nechat vyjet od druhé karty
       const inner=panel.querySelector('.studio-booking-inner');
@@ -3689,7 +3695,11 @@ updateNavCompactState();
     panel.dataset.room=room;
     tellCard();
     const src=frameSrc(room);
-    if(frame.getAttribute('src')!==src)frame.setAttribute('src',src);
+    if(frame.getAttribute('src')!==src){
+      // než se kalendář načte, rámeček je skrytý (žádný bílý záblesk)
+      frame.classList.remove('loaded');
+      frame.setAttribute('src',src);
+    }
     openRoom=room;
     panel.setAttribute('aria-hidden','false');
     requestAnimationFrame(()=>requestAnimationFrame(()=>panel.classList.add('open')));
@@ -3707,6 +3717,7 @@ updateNavCompactState();
     if(openRoom)frame.setAttribute('src',frameSrc(openRoom));
     else if(frame.getAttribute('src'))frame.setAttribute('src','');
   };
+  frame.addEventListener('load',()=>{if(frame.getAttribute('src'))setTimeout(()=>frame.classList.add('loaded'),120);});
   window.getStudioBookingFrame=()=>frame;
   window.closeStudioBooking=close;
 })();

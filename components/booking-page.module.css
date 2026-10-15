@@ -1735,8 +1735,16 @@
   .studioCal {
     position: relative;
     z-index: 1;
-    padding-top: 28px;
+    /* nahoře místo pro zavírací kroužek hlavní stránky */
+    padding-top: calc(68px + env(safe-area-inset-top, 0px));
     background: transparent;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* na telefonu bez akcí v okolí — jen kalendář */
+  .studioOutings {
+    display: none;
   }
 
   .studioBooking .modalBackdrop,
