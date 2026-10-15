@@ -474,12 +474,16 @@ $('btnPdf').addEventListener('click',async()=>{
 });
 // zavření: zpět na web (na sekci Studio), z webu přes historii prohlížeče
 function closeEditor(){
+  // otevřeno jako vrstva přes web → jen ji zavřít
+  if(params.has('embed')&&window.parent!==window){window.parent.postMessage({type:'gift-close'},location.origin);return;}
   try{
     if(document.referrer&&new URL(document.referrer).origin===location.origin&&history.length>1){history.back();return;}
   }catch(e){}
   location.href=`${T[state.lang].home}#studio`;
 }
 $('btnClose').addEventListener('click',closeEditor);
+$('backLink').addEventListener('click',(e)=>{if(params.has('embed')&&window.parent!==window){e.preventDefault();closeEditor();}});
+$('homeLink').addEventListener('click',(e)=>{if(params.has('embed')&&window.parent!==window){e.preventDefault();closeEditor();}});
 document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||''))closeEditor();});
 render();
 </script>

@@ -1104,6 +1104,11 @@ body.de .de{display:revert;}
 body :is(.gift-bar.en,.gift-bar.de){display:none;}
 body.en .gift-bar.en,body.de .gift-bar.de{display:grid;}
 body.en .gift-bar.cs,body.de .gift-bar.cs{display:none;}
+/* editor poukazu jako vrstva přes stránku (po zavření zůstane stránka tam, kde byla) */
+.gift-overlay{position:fixed;inset:0;z-index:9999;background:#0b0a0d;opacity:0;transition:opacity .35s ease;}
+.gift-overlay.on{opacity:1;}
+.gift-overlay iframe{width:100%;height:100%;border:0;display:block;}
+html.gift-open,html.gift-open body{overflow:hidden;}
 </style>
 <style id="native-scroll-overrides">
 /* Mobil / na výšku: jedno souvislé video přes celou obrazovku, text dole.
@@ -3863,6 +3868,39 @@ document.getElementById('nightTourBtn')?.addEventListener('click',()=>{
       timer=setTimeout(()=>foot.classList.add('tour-on'),5000);
     }
   },{threshold:.6}).observe(foot);
+})();
+
+/* Dárkové poukazy: editor se otevře přes stránku, zavřením se vrátí zpět beze změny polohy */
+(function(){
+  let overlay=null;
+  function closeGift(){
+    if(!overlay)return;
+    const el=overlay;overlay=null;
+    el.classList.remove('on');
+    document.documentElement.classList.remove('gift-open');
+    setTimeout(()=>el.remove(),350);
+  }
+  document.addEventListener('click',(e)=>{
+    const a=e.target.closest('a.gift-item');
+    if(!a||e.metaKey||e.ctrlKey||e.shiftKey)return;
+    e.preventDefault();
+    if(overlay)return;
+    overlay=document.createElement('div');
+    overlay.className='gift-overlay';
+    const fr=document.createElement('iframe');
+    fr.title='Dárkový poukaz';
+    fr.src=`${a.getAttribute('href')}&embed=1`;
+    overlay.appendChild(fr);
+    document.body.appendChild(overlay);
+    document.documentElement.classList.add('gift-open');
+    requestAnimationFrame(()=>overlay&&overlay.classList.add('on'));
+    fr.addEventListener('load',()=>{try{fr.contentWindow.focus();}catch(err){}});
+  });
+  window.addEventListener('message',(e)=>{
+    if(e.origin!==location.origin||!overlay)return;
+    if(e.data&&e.data.type==='gift-close')closeGift();
+  });
+  document.addEventListener('keydown',(e)=>{if(e.key==='Escape')closeGift();});
 })();
 
 /* Start: hash → sekce, jinak nahoru; aktivace výchozí sekce */
