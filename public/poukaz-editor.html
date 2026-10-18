@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" data-mode="day">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,38 +8,52 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Manrope:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
-/* Dárkový poukaz Mlýn na Pile.
-   Zákazník (odkaz z webu, ?v=varianta&lang=…): vybere variantu a styl, napíše jméno a věnování,
-   vidí živý náhled (se značkou VZOR) a odešle objednávku e-mailem.
-   Majitel (?admin): navíc kód, platnost, cena, tisk A5 a stažení PDF bez značky. */
+/* Dárkový poukaz Mlýn na Pile – skládaná karta A4 (titulka, vnitřek, zadní strana) podle návrhu
+   z „poukaz-aplikace.html" a jeho exportu (poukaz-nastaveni.json).
+   Zákazník (?v=…&lang=…): vybere poukaz, napíše Pro / vzkaz / Od, vidí kartu se značkou VZOR a objedná e-mailem.
+   Majitel (?admin): číslo poukazu, platnost, tisk na A4 (2 strany, přeložit napůl) = i uložení do PDF.
+   Denní (světlý) a noční (tmavý) vzhled – přepínač vpravo nahoře, výchozí je denní. */
+
+/* ── rozhraní: denní / noční ── */
 :root{
+  --bg:#f3eee6; --panel:#fbf8f3; --line:rgba(70,52,34,.16); --text:#26211c; --muted:#7d7166;
+  --gold:#a8844f; --gold-ink:#8a6a34; --field:#fff; --btn-ink:#fff; --stage:#e9e2d7;
+  /* poukaz – denní */
+  --ink:#1f1a16; --ink-soft:#4b4038; --brass:#a8844f; --sketch:#4a3c30; --paper:#ffffff; --hair:#cfc4b4;
+}
+html[data-mode="night"]{
   --bg:#0b0a0d; --panel:#121015; --line:rgba(201,185,154,.18); --text:#f0ebe2; --muted:rgba(240,235,226,.6);
-  --gold:#b08d57; --gold-light:#d7b47d;
+  --gold:#b08d57; --gold-ink:#d7b47d; --field:#0b0a0d; --btn-ink:#0b0a0d; --stage:#08070a;
+  /* poukaz – noční */
+  --ink:#efe8dc; --ink-soft:#b9ae9f; --brass:#c8a96e; --sketch:#cbbd9f; --paper:#141217; --hair:#3e3833;
 }
 *{box-sizing:border-box;}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;font-weight:300;}
+[hidden]{display:none !important;}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Manrope',sans-serif;font-weight:300;transition:background .4s,color .4s;}
 a{color:inherit;}
 
-.top{display:flex;align-items:center;gap:16px;padding:18px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);}
+.top{display:flex;align-items:center;gap:14px;padding:16px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);}
 .top .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Cormorant Garamond',serif;font-size:1.35rem;}
 .top .brand svg{width:26px;color:var(--gold);}
 .top .brand em{font-style:normal;color:var(--gold);}
-.top .back{margin-left:auto;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;}
-.top .back:hover{color:var(--gold-light);}
-.close{width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:none;color:var(--text);font-size:1.3rem;line-height:1;cursor:pointer;transition:border-color .2s,color .2s;}
-.close:hover{border-color:var(--gold);color:var(--gold-light);}
+.top .backlink{margin-left:auto;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;}
+.top .backlink:hover{color:var(--gold-ink);}
+.iconbtn{width:40px;height:40px;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:50%;background:none;color:var(--text);font-size:1.3rem;line-height:1;cursor:pointer;transition:border-color .2s,color .2s;}
+.iconbtn:hover{border-color:var(--gold);color:var(--gold-ink);}
+.iconbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
+html[data-mode="day"] .ico-sun,html[data-mode="night"] .ico-moon{display:none;}
 .langs{display:flex;gap:4px;}
 .langs button{padding:6px 9px;border:1px solid transparent;background:none;color:var(--muted);font:inherit;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;}
-.langs button.on{border-color:var(--line);color:var(--gold-light);}
+.langs button.on{border-color:var(--line);color:var(--gold-ink);}
 
-.wrap{display:grid;grid-template-columns:minmax(320px,400px) 1fr;gap:clamp(24px,4vw,56px);max-width:1380px;margin:0 auto;padding:clamp(20px,4vw,48px);}
+.wrap{display:grid;grid-template-columns:minmax(320px,400px) 1fr;gap:clamp(24px,4vw,56px);max-width:1440px;margin:0 auto;padding:clamp(20px,4vw,48px);}
 .intro .kicker{font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);}
 .intro h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(2rem,3.4vw,2.8rem);line-height:1.05;margin:8px 0 10px;}
-.intro h1 em{color:var(--gold-light);}
+.intro h1 em{color:var(--gold-ink);}
 .intro p{margin:0 0 6px;font-size:.82rem;line-height:1.6;color:var(--muted);}
 
 .step{margin-top:26px;}
@@ -49,106 +63,183 @@ a{color:inherit;}
 .variant{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:border-color .2s,background .2s;}
 .variant:hover{border-color:rgba(176,141,87,.5);}
 .variant.on{border-color:var(--gold);background:rgba(176,141,87,.1);}
-.variant b{font-weight:400;font-size:.8rem;}
+.variant b{font-weight:500;font-size:.8rem;}
 .variant small{font-size:.62rem;color:var(--muted);}
+.variant strong{margin-top:4px;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;color:var(--gold-ink);}
 .config{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;padding:14px;border:1px solid var(--line);}
 .stepper span{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
 .stepper div{display:flex;align-items:center;gap:10px;}
 .stepper button{width:30px;height:30px;border:1px solid var(--line);border-radius:50%;background:none;color:var(--text);font:inherit;font-size:1rem;line-height:1;cursor:pointer;}
-.stepper button:hover:not(:disabled){border-color:var(--gold);color:var(--gold-light);}
+.stepper button:hover:not(:disabled){border-color:var(--gold);color:var(--gold-ink);}
 .stepper button:disabled{opacity:.3;cursor:default;}
 .stepper b{min-width:22px;text-align:center;font-weight:400;font-size:1rem;}
 .total{grid-column:1 / -1;display:flex;align-items:baseline;justify-content:space-between;padding-top:10px;border-top:1px solid var(--line);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
-.total strong{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.5rem;letter-spacing:0;text-transform:none;color:var(--gold-light);}
-.variant strong{margin-top:4px;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;color:var(--gold);}
-.styles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.styles button{display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 6px;border:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:.66rem;cursor:pointer;}
-.styles button span{width:100%;aspect-ratio:210/148;border:1px solid rgba(0,0,0,.2);}
-.styles button[data-s="night"] span{background:#0b0a0d;box-shadow:inset 0 0 0 3px #0b0a0d,inset 0 0 0 4px #c8a96e;}
-.styles button[data-s="paper"] span{background:#f1e7d3;box-shadow:inset 0 0 0 3px #f1e7d3,inset 0 0 0 4px #9a7238;}
-.styles button[data-s="minimal"] span{background:#fff;box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 4px #111;}
-.styles button.on{border-color:var(--gold);color:var(--gold-light);}
+.total strong{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.5rem;letter-spacing:0;text-transform:none;color:var(--gold-ink);}
+.looks{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.looks button{display:flex;flex-direction:column;align-items:center;gap:7px;padding:10px 6px;border:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:.68rem;cursor:pointer;}
+.looks button span{width:100%;aspect-ratio:210/148.5;border:1px solid rgba(0,0,0,.12);}
+.looks button[data-m="day"] span{background:#fff;box-shadow:inset 0 0 0 4px #fff,inset 0 0 0 5px #a8844f;}
+.looks button[data-m="night"] span{background:#141217;box-shadow:inset 0 0 0 4px #141217,inset 0 0 0 5px #c8a96e;}
+.looks button.on{border-color:var(--gold);color:var(--gold-ink);}
 label{display:block;font-size:.66rem;color:var(--muted);margin:12px 0 5px;}
-input,textarea,select{width:100%;padding:10px 12px;background:#0b0a0d;border:1px solid var(--line);color:var(--text);font:inherit;font-size:.86rem;}
+input,textarea{width:100%;padding:10px 12px;background:var(--field);border:1px solid var(--line);color:var(--text);font:inherit;font-size:.86rem;}
 textarea{min-height:70px;resize:vertical;}
-input:focus,textarea:focus,select:focus{outline:none;border-color:var(--gold);}
+#fMsg{min-height:132px;font:italic 400 1.02rem/1.4 'Cormorant Garamond',serif;}
+input:focus,textarea:focus{outline:none;border-color:var(--gold);}
 .count{float:right;font-size:.6rem;}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .delivery{display:flex;gap:8px;}
 .delivery button{flex:1;padding:10px;border:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:.72rem;cursor:pointer;}
-.delivery button.on{border-color:var(--gold);color:var(--gold-light);background:rgba(176,141,87,.1);}
-.check{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.76rem;color:var(--muted);}
-.check input{width:auto;}
-.admin{display:none;margin-top:26px;padding:16px;border:1px dashed rgba(176,141,87,.4);}
+.delivery button.on{border-color:var(--gold);color:var(--gold-ink);background:rgba(176,141,87,.1);}
+.admin{display:none;margin-top:26px;padding:16px;border:1px dashed rgba(176,141,87,.5);}
 body.is-admin .admin{display:block;}
 .actions{display:grid;gap:8px;margin-top:22px;}
-.btn{padding:14px;border:1px solid var(--gold);background:var(--gold);color:#0b0a0d;font:inherit;font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;transition:background .2s;}
-.btn:hover{background:var(--gold-light);}
-.btn.ghost{background:none;color:var(--gold-light);}
-.btn.ghost:hover{background:rgba(176,141,87,.1);}
+.cta{padding:14px;border:1px solid var(--gold);background:var(--gold);color:var(--btn-ink);font:inherit;font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;transition:background .2s,color .2s;}
+.cta:hover{background:var(--gold-ink);border-color:var(--gold-ink);}
+.cta.ghost{background:none;color:var(--gold-ink);}
+.cta.ghost:hover{background:rgba(176,141,87,.1);}
 .fine{margin-top:10px;font-size:.66rem;line-height:1.6;color:var(--muted);}
-
-.preview{position:sticky;top:24px;align-self:start;}
-.preview-t{display:flex;justify-content:space-between;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
-
-/* ── poukaz: A5 na šířku (210 × 148 mm), velikosti v cqw ať sedí v náhledu i v tisku ── */
-.voucher{position:relative;width:100%;aspect-ratio:210 / 148;overflow:hidden;container-type:inline-size;
-  --v-ink:#f0ebe2; --v-soft:rgba(240,235,226,.62); --v-accent:#c8a96e; --v-frame:rgba(200,169,110,.5);
-  background:radial-gradient(ellipse 80% 70% at 30% 40%,#17141a 0%,#0b0a0d 70%);color:var(--v-ink);box-shadow:0 30px 80px rgba(0,0,0,.55);transition:background .4s,color .4s;}
-.voucher.s-paper{--v-ink:#2a2118;--v-soft:rgba(42,33,24,.62);--v-accent:#9a7238;--v-frame:rgba(154,114,56,.55);
-  background:radial-gradient(ellipse 90% 80% at 50% 45%,#f8f1e3 0%,#efe4cf 70%,#e6d7bb 100%);}
-.voucher.s-minimal{--v-ink:#111;--v-soft:#666;--v-accent:#111;--v-frame:#111;background:#fff;}
-.v-frame{position:absolute;inset:3.2cqw;border:.18cqw solid var(--v-frame);}
-.v-frame::after{content:"";position:absolute;inset:.8cqw;border:.09cqw solid var(--v-frame);opacity:.6;}
-.s-minimal .v-frame::after{display:none;}
-.v-wheel{position:absolute;right:-9cqw;bottom:-11cqw;width:46cqw;color:var(--v-accent);opacity:.08;}
-.v-body{position:absolute;inset:7cqw 8cqw;display:flex;flex-direction:column;}
-.v-top{display:flex;align-items:center;gap:1.6cqw;}
-.v-logo{width:5.2cqw;color:var(--v-accent);}
-.v-brand{font-family:'Cormorant Garamond',serif;font-size:2.3cqw;letter-spacing:.04em;}
-.v-brand em{color:var(--v-accent);font-style:normal;}
-.v-kicker{margin-left:auto;font-size:1.15cqw;letter-spacing:.32em;text-transform:uppercase;color:var(--v-accent);}
-.v-main{margin-top:auto;margin-bottom:auto;}
-.v-for{font-size:1.25cqw;letter-spacing:.28em;text-transform:uppercase;color:var(--v-soft);margin-bottom:1cqw;}
-.v-name{font-family:'Cormorant Garamond',serif;font-size:6.4cqw;line-height:1.02;font-weight:400;margin:0;overflow-wrap:anywhere;}
-.v-name.long{font-size:4.8cqw;}
-.v-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:3cqw;color:var(--v-accent);margin:1.4cqw 0 0;}
-.v-desc{font-size:1.45cqw;color:var(--v-soft);margin:.8cqw 0 0;}
-.v-msg{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2cqw;line-height:1.35;margin:2.2cqw 0 0;max-width:62%;white-space:pre-line;}
-.v-msg:empty{display:none;}
-.v-msg.long{font-size:1.85cqw;max-width:76%;}
-.v-msg.xlong{font-size:1.65cqw;line-height:1.3;max-width:84%;}
-.v-foot{display:flex;align-items:flex-end;gap:4cqw;font-size:1.1cqw;letter-spacing:.12em;text-transform:uppercase;color:var(--v-soft);}
-.v-foot b{display:block;margin-top:.4cqw;font-weight:600;letter-spacing:.08em;color:var(--v-ink);font-size:1.3cqw;}
-.v-price{margin-left:auto;text-align:right;}
-.v-price b{text-transform:none;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:2.6cqw;letter-spacing:0;color:var(--v-accent);}
-/* značka VZOR v náhledu pro zákazníka */
-.v-sample{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-18deg);font-family:'Cormorant Garamond',serif;font-size:13cqw;letter-spacing:.2em;color:var(--v-accent);opacity:.08;pointer-events:none;white-space:nowrap;}
-body.is-admin .v-sample{display:none;}
 .sent{display:none;margin-top:14px;padding:12px 14px;border:1px solid rgba(176,141,87,.4);font-size:.76rem;line-height:1.55;color:var(--muted);}
 .sent.on{display:block;}
 
-@media (max-width:900px){
+/* ── náhled: 3D karta ── */
+.preview{position:sticky;top:20px;align-self:start;}
+.preview-t{display:flex;justify-content:space-between;align-items:center;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.views{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px;}
+.views button{padding:7px 13px;border:0;border-radius:999px;background:none;color:var(--muted);font:inherit;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .25s,color .25s;}
+.views button.on{background:rgba(176,141,87,.16);color:var(--gold-ink);}
+.stage{position:relative;height:min(76vh,760px);min-height:340px;overflow:hidden;user-select:none;-webkit-user-select:none;background:
+  radial-gradient(ellipse 65% 55% at 50% 40%,rgba(255,255,255,.55),rgba(255,255,255,0) 72%),var(--stage);transition:background .4s;}
+html[data-mode="night"] .stage{background:radial-gradient(ellipse 65% 55% at 50% 40%,rgba(200,169,110,.07),rgba(0,0,0,0) 72%),var(--stage);}
+.stage-hint{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);pointer-events:none;}
+.scene{position:absolute;inset:0;perspective:2400px;perspective-origin:50% 42%;}
+.rig{position:absolute;left:50%;top:calc(50% - 10px);width:0;height:0;transform-style:preserve-3d;will-change:transform;}
+.card{position:absolute;left:-105mm;top:0;width:210mm;height:148.5mm;transform-style:preserve-3d;cursor:pointer;}
+.ground{position:absolute;left:50%;top:calc(50% - 10px);width:220mm;margin-left:-110mm;height:22mm;pointer-events:none;transform-origin:50% 0;background:radial-gradient(closest-side,rgba(70,52,34,.34),rgba(70,52,34,0));filter:blur(5px);}
+html[data-mode="night"] .ground{background:radial-gradient(closest-side,rgba(0,0,0,.7),rgba(0,0,0,0));}
+.leaf{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 0;}
+.face{position:absolute;inset:0;overflow:hidden;background:var(--paper);backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  box-shadow:0 0 0 .2mm rgba(120,100,80,.14),0 1px 2px rgba(60,45,30,.08),0 22px 44px -14px rgba(60,45,30,.30);}
+.face.inside{transform:rotateX(180deg);}
+.face.outer{transform:rotateY(180deg);}
+.face::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:4;opacity:.7;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+html[data-mode="night"] .face::after{opacity:.45;mix-blend-mode:screen;}
+.shade{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:3;}
+.face.front .shade{background:linear-gradient(to bottom,rgba(40,30,20,.06),rgba(40,30,20,.5));}
+.face.inside .shade{background:linear-gradient(to top,rgba(40,30,20,.45),rgba(40,30,20,.04));}
+.face.inner .shade{background:linear-gradient(to bottom,rgba(40,30,20,.55),rgba(40,30,20,0) 78%);}
+.crease{position:absolute;left:0;right:0;height:8mm;pointer-events:none;z-index:3;}
+.face.inside .crease{bottom:0;background:linear-gradient(to top,rgba(60,45,30,.11),rgba(60,45,30,0));}
+.face.inner .crease{top:0;background:linear-gradient(to bottom,rgba(60,45,30,.13),rgba(60,45,30,0));}
+
+/* ── poukaz: panely 210 × 148,5 mm (návrh + export: titulka se vzkazem, nadpis na jeden řádek) ── */
+.vc{--display:'Cormorant Garamond',serif;--serif:'Cormorant Garamond',serif;--sans:Manrope,sans-serif;--sketch-cover:.72;--sketch-in:.8;}
+.vc .panel{position:absolute;left:0;top:0;width:210mm;height:148.5mm;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans);}
+.vc .label{font:600 6.6pt/1.2 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--brass);}
+/* 1 · titulka */
+.vc .sketch-wrap{position:absolute;inset:0;}
+.vc .sketch-wrap svg{position:absolute;inset:0;width:100%;height:100%;}
+.vc #mill > g{opacity:var(--sketch-cover);}
+.vc #millRoot{mask:none;}
+.vc #millPan{transform-box:view-box;transform-origin:1000px 950px;}
+.vc #house{transform:translate(-815px,318px) scale(.84);}
+.vc #sky{transform:translate(-903px,310px);}
+.vc .cover .txt{position:absolute;left:0;right:0;top:10mm;width:max-content;margin:0 auto;text-align:center;}
+.vc .cover .txt > *{width:fit-content;margin-left:auto;margin-right:auto;}
+.vc .cover h1{margin:5mm auto 0;font:300 47pt/.9 var(--display);letter-spacing:-.01em;color:var(--ink);white-space:nowrap;transform:translateY(-.5mm);}
+.vc .cover h1 em{font-style:normal;}
+.vc .cover .sub{margin:4.2mm auto 0;font:italic 400 14.5pt/1.2 var(--serif);color:var(--ink-soft);text-align:center;transform:translateY(-.5mm);}
+.vc .cover-msg{display:flex;position:absolute;left:97mm;right:16mm;top:62mm;bottom:15mm;flex-direction:column;justify-content:center;}
+.vc .cover-msg-inner{position:relative;padding:.5mm 0 .5mm 8mm;}
+.vc .msg{position:relative;max-height:58mm;overflow:hidden;padding:0 1mm;font:italic 400 12pt/1.36 var(--serif);color:var(--ink);white-space:pre-wrap;}
+/* 0 · zadní strana */
+.vc .back{padding:15mm 16mm 13mm;display:flex;flex-direction:column;justify-content:space-between;}
+.vc .back-head{display:flex;justify-content:space-between;align-items:flex-start;}
+.vc .back h3{margin:2.6mm 0 0;font:300 31pt/1 var(--display);color:var(--ink);}
+.vc .back h3 em{font-style:italic;}
+.vc .back .no{margin-left:2mm;}
+.vc .seal-wrap{margin-top:-3mm;}
+.vc #seal{width:24mm;height:24mm;display:block;}
+.vc .back-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:14mm;}
+.vc .fields{font-size:13pt;}
+.vc .f{display:flex;align-items:baseline;gap:3mm;margin-bottom:2.6mm;}
+.vc .fields .f{margin-bottom:6.4mm;}
+.vc .f > span:first-child{font:italic 400 1em/1 var(--serif);color:var(--ink-soft);min-width:15mm;flex:none;white-space:nowrap;}
+.vc .field{flex:1;min-height:7.5mm;border-bottom:.25mm dotted var(--ink-soft);font:400 1em/1.3 var(--serif);color:var(--ink);padding:0 1mm;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.vc .field.short{display:inline-block;min-height:0;vertical-align:baseline;padding:0 1mm .4mm;min-width:26mm;font:600 8pt/1.4 var(--sans);letter-spacing:.1em;color:var(--ink);border-color:var(--brass);}
+.vc .opts{font-size:9pt;}
+.vc .opts .label{margin-bottom:3mm;font-size:.733em;}
+.vc .opts .f{margin:4mm 0 0;font-size:1.444em;}
+.vc .opt{display:grid;grid-template-columns:5mm 1fr;column-gap:2.5mm;margin-bottom:3.6mm;}
+.vc .opt .box{grid-row:span 2;width:3.6mm;height:3.6mm;margin-top:.6mm;border:.25mm solid var(--ink-soft);position:relative;}
+.vc .opt.on .box::before,.vc .opt.on .box::after{content:'';position:absolute;left:50%;top:50%;width:.4mm;height:5.4mm;background:var(--ink);transform:translate(-50%,-50%) rotate(45deg);}
+.vc .opt.on .box::after{transform:translate(-50%,-50%) rotate(-45deg);}
+.vc .opt b{font:500 1em/1.25 var(--sans);}
+.vc .opt small{font:400 .845em/1.35 var(--sans);color:var(--ink-soft);}
+.vc .back-foot{padding-top:4mm;border-top:.2mm solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:10mm;}
+.vc .how{font:400 7.6pt/1.6 var(--sans);color:var(--ink-soft);}
+.vc .how b{display:block;font:italic 400 1.58em/1.3 var(--serif);color:var(--ink);margin-bottom:.6mm;}
+.vc .how .c{color:var(--ink);font-weight:500;}
+.vc .qr{text-align:center;flex:none;}
+.vc .qr svg{width:17mm;height:17mm;display:block;}
+html[data-mode="night"] .vc .qr svg{background:#f4efe7;padding:1mm;border-radius:.5mm;}
+.vc #qr path{fill:#1a1714;}
+.vc .qr small{display:block;font:500 6.4pt/1 var(--sans);letter-spacing:.14em;margin-top:1.4mm;color:var(--ink-soft);}
+/* 2 + 3 · vnitřek */
+.vc .inside-art{position:absolute;inset:0;width:100%;height:100%;}
+.vc .inside-art > g{opacity:var(--sketch-in);}
+.vc .in{padding:16mm 16mm 12mm;}
+.vc .in .col{width:104mm;position:relative;margin-left:auto;}
+.vc .in h2{margin:2.8mm 0 0;font:300 34pt/1 var(--display);color:var(--ink);}
+.vc .in h2 em{font-style:italic;}
+.vc .lead{margin:3.8mm 0 0;font:400 13pt/1.34 var(--serif);color:var(--ink);}
+.vc .spec{display:grid;grid-template-columns:1fr 1fr;gap:4.4mm 7mm;margin:6.4mm 0 0;font-size:8.4pt;}
+.vc .spec dt{font:600 .738em/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:1mm;}
+.vc .spec dd{margin:0;font:400 1em/1.45 var(--sans);color:var(--ink);}
+/* značka VZOR v náhledu pro zákazníka (na všech stranách, i při tisku) */
+.vc .sample{position:absolute;left:50%;top:50%;z-index:5;transform:translate(-50%,-50%) rotate(-18deg);font:300 64pt/1 var(--display);letter-spacing:.3em;color:var(--brass);opacity:.12;pointer-events:none;white-space:nowrap;}
+body.is-admin .vc .sample{display:none;}
+
+/* ── tisk: 2 × A4, přeložit napůl ── */
+#print{display:none;}
+.sheet{width:210mm;height:297mm;position:relative;overflow:hidden;background:var(--paper);break-after:page;}
+.slot{position:absolute;left:0;width:210mm;height:148.5mm;overflow:hidden;}
+.slot.top{top:0;} .slot.bottom{top:148.5mm;}
+.slot.rot{transform:rotate(180deg);}
+.foldmark{position:absolute;top:148.5mm;width:4mm;border-top:.2mm solid #b9b0a3;}
+.foldmark.l{left:4.5mm;} .foldmark.r{right:4.5mm;}
+@page{size:A4;margin:0;}
+@media print{
+  html,body{background:var(--paper);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .top,.wrap{display:none !important;}
+  #print{display:block;}
+}
+
+@media (max-width:960px){
   .wrap{grid-template-columns:1fr;}
   .preview{position:static;order:-1;}
-}
-@page{size:A5 landscape;margin:0;}
-@media print{
-  html,body{background:#fff;}
-  .top,.form,.preview-t{display:none !important;}
-  .wrap{display:block;padding:0;max-width:none;}
-  .voucher{box-shadow:none;width:210mm;height:148mm;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .stage{height:min(112vw,540px);min-height:300px;}
+  .top{gap:10px;}
+  .top .brand{font-size:1.1rem;white-space:nowrap;}
+  .preview-t > span{display:none;}
+  .top .backlink{display:none;}
+  .top .langs{margin-left:auto;}
 }
 </style>
 </head>
 <body>
 <header class="top">
   <a class="brand" href="/" id="homeLink"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#wheel"/></svg><span id="brandTxt">Mlýn <em>na Pile</em></span></a>
-  <a class="back" href="/#studio" id="backLink" data-t="back"></a>
+  <a class="backlink" href="/#studio" id="backLink" data-t="back"></a>
   <div class="langs" id="langs">
     <button type="button" data-l="cs">CZ</button><button type="button" data-l="en">EN</button><button type="button" data-l="de">DE</button>
   </div>
-  <button type="button" class="close" id="btnClose" aria-label="Zavřít">×</button>
+  <button type="button" class="iconbtn" id="btnMode" aria-label="Den / noc">
+    <svg class="ico-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+    <svg class="ico-moon" viewBox="0 0 24 24"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+  </button>
+  <button type="button" class="iconbtn" id="btnClose" aria-label="Zavřít">×</button>
 </header>
 
 <div class="wrap">
@@ -170,17 +261,16 @@ body.is-admin .v-sample{display:none;}
       <label for="fName" data-t="name"></label>
       <input id="fName" maxlength="40" autocomplete="off">
       <label for="fMsg"><span data-t="msg"></span><span class="count" id="msgCount"></span></label>
-      <textarea id="fMsg" maxlength="420" style="min-height:120px"></textarea>
+      <textarea id="fMsg" maxlength="420"></textarea>
       <label for="fFrom" data-t="from"></label>
       <input id="fFrom" maxlength="40" autocomplete="off">
     </div>
 
     <div class="step">
       <div class="step-t"><i>3</i><span data-t="s3"></span></div>
-      <div class="styles" id="styles">
-        <button type="button" data-s="night" class="on"><span></span><em data-t="stNight"></em></button>
-        <button type="button" data-s="paper"><span></span><em data-t="stPaper"></em></button>
-        <button type="button" data-s="minimal"><span></span><em data-t="stMin"></em></button>
+      <div class="looks" id="looks">
+        <button type="button" data-m="day"><span></span><em data-t="lookDay"></em></button>
+        <button type="button" data-m="night"><span></span><em data-t="lookNight"></em></button>
       </div>
     </div>
 
@@ -199,8 +289,8 @@ body.is-admin .v-sample{display:none;}
     </div>
 
     <div class="actions">
-      <a class="btn" id="btnOrder" href="#" data-t="order"></a>
-      <button type="button" class="btn ghost" id="btnCopy" data-t="copy"></button>
+      <a class="cta" id="btnOrder" href="#" target="_top" data-t="order"></a>
+      <button type="button" class="cta ghost" id="btnCopy" data-t="copy"></button>
     </div>
     <p class="fine" data-t="fine"></p>
     <p class="sent" id="sent" data-t="sent"></p>
@@ -208,47 +298,125 @@ body.is-admin .v-sample{display:none;}
     <!-- jen pro majitele: ?admin -->
     <div class="admin">
       <div class="step-t" style="margin-bottom:4px"><span>Vydání poukazu (admin)</span></div>
-      <div class="row">
-        <div><label for="fCode">Kód</label><input id="fCode" autocomplete="off"></div>
-        <div><label for="fValid">Platí do</label><input id="fValid" type="date"></div>
+      <div class="row2">
+        <div><label for="fCode">Číslo poukazu</label><input id="fCode" autocomplete="off"></div>
+        <div><label for="fValid">Platí do</label><input id="fValid" autocomplete="off"></div>
       </div>
-      <label class="check"><input type="checkbox" id="fPrice"> Zobrazit cenu na poukazu</label>
       <div class="actions">
-        <button type="button" class="btn" id="btnPdf">Stáhnout PDF</button>
-        <button type="button" class="btn ghost" id="btnPrint">Tisk (A5 na šířku)</button>
-        <button type="button" class="btn ghost" id="btnCode">Nový kód</button>
+        <button type="button" class="cta" id="btnPrint">Tisk / uložit PDF (A4, přeložit napůl)</button>
+        <button type="button" class="cta ghost" id="btnCode">Nové číslo</button>
       </div>
+      <p class="fine">V tiskovém okně zvolte „Uložit jako PDF", velikost A4, okraje žádné. Strana 1 = titulka a zadní strana, strana 2 = vnitřek.</p>
     </div>
   </section>
 
   <aside class="preview">
-    <div class="preview-t"><span data-t="prev"></span><span>A5</span></div>
-    <div class="voucher" id="voucher">
-      <svg class="v-wheel" viewBox="0 0 100 100" aria-hidden="true"><use href="#wheel"/></svg>
-      <div class="v-frame"></div>
-      <div class="v-sample" id="vSample"></div>
-      <div class="v-body">
-        <div class="v-top">
-          <svg class="v-logo" viewBox="0 0 100 100" aria-hidden="true"><use href="#wheel"/></svg>
-          <span class="v-brand" id="vBrand"></span>
-          <span class="v-kicker" id="vKicker"></span>
-        </div>
-        <div class="v-main">
-          <div class="v-for" id="vFor"></div>
-          <h2 class="v-name" id="vName"></h2>
-          <p class="v-title" id="vTitle"></p>
-          <p class="v-desc" id="vDesc"></p>
-          <p class="v-msg" id="vMsg"></p>
-        </div>
-        <div class="v-foot">
-          <div><span id="lCode"></span><b id="vCode"></b></div>
-          <div><span id="lValid"></span><b id="vValid"></b></div>
-          <div id="vFromWrap"><span id="lFrom"></span><b id="vFrom"></b></div>
-          <div class="v-price" id="vPriceWrap"><span id="lPrice"></span><b id="vPrice"></b></div>
-        </div>
+    <div class="preview-t">
+      <span data-t="prev"></span>
+      <div class="views" id="views">
+        <button type="button" data-view="front" class="on" data-t="vFront"></button>
+        <button type="button" data-view="open" data-t="vOpen"></button>
+        <button type="button" data-view="back" data-t="vBack"></button>
       </div>
     </div>
+    <div class="stage vc" id="stage">
+      <div class="scene" id="scene">
+        <div class="ground" id="ground"></div>
+        <div class="rig" id="rig">
+          <div class="card" id="card">
+            <div class="leaf">
+              <div class="face inner" id="face3"><div class="crease"></div><div class="shade" id="shade3"></div></div>
+              <div class="face outer" id="face0"><div class="shade"></div></div>
+            </div>
+            <div class="leaf" id="frontLeaf">
+              <div class="face front" id="face1"><div class="shade" id="shade1"></div></div>
+              <div class="face inside" id="face2"><div class="crease"></div><div class="shade" id="shade2"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="stage-hint" data-t="hint"></div>
+    </div>
   </aside>
+</div>
+
+<!-- panely poukazu (do karty, při tisku do listů A4) -->
+<div hidden id="panelStore" class="vc">
+  <section class="panel back" id="panel0">
+    <div class="back-head">
+      <div>
+        <div class="label"><span data-p="bLabel"></span> <span class="no"><span data-p="bNo"></span> <span class="field short" id="f-no"></span></span></div>
+        <h3 data-p="bTitle"></h3>
+      </div>
+      <div class="seal-wrap"><svg id="seal" viewBox="0 0 300 300" aria-hidden="true"></svg></div>
+    </div>
+    <div class="back-grid">
+      <div class="fields">
+        <div class="f"><span data-p="pro"></span><span class="field" id="f-pro"></span></div>
+        <div class="f"><span data-p="od"></span><span class="field" id="f-od"></span></div>
+      </div>
+      <div class="opts">
+        <div class="label" data-p="optsLabel"></div>
+        <div class="opt" data-typ="guitar"><i class="box"></i><b></b><small></small></div>
+        <div class="opt" data-typ="band"><i class="box"></i><b></b><small></small></div>
+        <div class="opt" data-typ="hours"><i class="box"></i><b></b><small></small></div>
+        <div class="f"><span data-p="valid"></span><span class="field" id="f-platnost"></span></div>
+      </div>
+    </div>
+    <div class="back-foot">
+      <div class="how" data-p="how"></div>
+      <div class="qr"><svg id="qr" aria-label="QR kód mlynnapile.cz"></svg><small>MLYNNAPILE.CZ</small></div>
+    </div>
+  </section>
+
+  <section class="panel cover" id="panel1">
+    <div class="sketch-wrap">
+      <svg id="mill" viewBox="0 0 2000 1414" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <radialGradient id="millFadeG" cx=".6" cy=".64" r=".62">
+            <stop offset="0" stop-color="#fff"/><stop offset=".66" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+          </radialGradient>
+          <mask id="millFade" maskUnits="userSpaceOnUse" x="0" y="0" width="2000" height="1414"><rect width="2000" height="1414" fill="url(#millFadeG)"/></mask>
+        </defs>
+      </svg>
+    </div>
+    <div class="txt">
+      <div class="label" data-p="cLabel"></div>
+      <h1 id="coverTitle"></h1>
+      <p class="sub" data-p="cSub"></p>
+    </div>
+    <div class="cover-msg"><div class="cover-msg-inner"><div class="msg" id="f-vzkaz"></div></div></div>
+  </section>
+
+  <section class="panel in" id="panel2">
+    <svg class="inside-art" id="inside" viewBox="0 0 2100 1485" aria-hidden="true">
+      <defs>
+        <linearGradient id="inFadeG" x1="660" y1="0" x2="860" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+        <mask id="inFade" maskUnits="userSpaceOnUse" x="0" y="0" width="2100" height="2970"><rect width="2100" height="2970" fill="url(#inFadeG)"/></mask>
+      </defs>
+    </svg>
+    <div class="col">
+      <div class="label" data-p="sLabel"></div>
+      <h2 data-p="sTitle"></h2>
+      <p class="lead" data-p="sLead"></p>
+      <dl class="spec" data-p="sSpec"></dl>
+    </div>
+  </section>
+
+  <section class="panel in" id="panel3">
+    <svg class="inside-art" id="inside3" viewBox="0 1485 2100 1485" aria-hidden="true"></svg>
+    <div class="col">
+      <div class="label" data-p="pLabel"></div>
+      <h2 data-p="pTitle"></h2>
+      <p class="lead" data-p="pLead"></p>
+      <dl class="spec" data-p="pSpec"></dl>
+    </div>
+  </section>
+</div>
+
+<div id="print" class="vc">
+  <div class="sheet"><div class="slot top rot" id="slot0"></div><div class="slot bottom" id="slot1"></div></div>
+  <div class="sheet"><div class="slot top" id="slot2"></div><div class="slot bottom" id="slot3"></div><i class="foldmark l"></i><i class="foldmark r"></i></div>
 </div>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -263,6 +431,335 @@ body.is-admin .v-sample{display:none;}
 </svg>
 
 <script>
+/* ===================== kresby z návrhu poukazu (rough.js) ===================== */
+const NS = 'http://www.w3.org/2000/svg';
+const INK = '#4a3c30', BRASS = '#a8844f';
+let SEED = 11;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rnd = mulberry32(1653);
+function el(tag, attrs, parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+
+// hand-drawn pen bound to one <g>
+function pen(svg, group, base){
+  const rc = rough.svg(svg);
+  const o = x => Object.assign({seed: SEED++}, base, x || {});
+  const add = (n, x) => { if (x && x.opacity != null) n.setAttribute('opacity', x.opacity); group.appendChild(n); return n; };
+  return {
+    line: (x1,y1,x2,y2,x) => add(rc.line(x1,y1,x2,y2,o(x)), x),
+    rect: (x0,y0,w,h,x) => add(rc.rectangle(x0,y0,w,h,o(x)), x),
+    poly: (p,x) => add(rc.polygon(p,o(x)), x),
+    lines: (p,x) => add(rc.linearPath(p,o(x)), x),
+    curve: (p,x) => add(rc.curve(p,o(x)), x),
+    path: (d,x) => add(rc.path(d,o(x)), x),
+    ell: (cx,cy,w,h,x) => add(rc.ellipse(cx,cy,w,h,o(x)), x),
+    arc: (cx,cy,w,h,a,b,x) => add(rc.arc(cx,cy,w,h,a,b,false,o(x)), x),
+  };
+}
+const lerp = (a,b,t) => a + (b-a)*t;
+
+// scalloped tree crown, open at the bottom (angles in degrees, 90 = down)
+function crown(P, cx, cy, rx, ry, n, a0, a1, x){
+  let d = '';
+  for (let i = 0; i <= n; i++){
+    const a = (a0 + (a1-a0)*i/n) * Math.PI/180, j = .88 + rnd()*.2;
+    const px = cx + Math.cos(a)*rx*j, py = cy + Math.sin(a)*ry*j;
+    if (!i){ d = `M${px.toFixed(1)} ${py.toFixed(1)}`; continue; }
+    const am = (a0 + (a1-a0)*(i-.5)/n) * Math.PI/180;
+    d += ` Q${(cx + Math.cos(am)*rx*1.28).toFixed(1)} ${(cy + Math.sin(am)*ry*1.28).toFixed(1)} ${px.toFixed(1)} ${py.toFixed(1)}`;
+  }
+  P.path(d, x);
+}
+
+/* ===================== 1 · mlýn zvenku ===================== */
+function drawMill(){
+  const svg = document.getElementById('mill');
+  const root = el('g', {id: 'millRoot', mask: 'url(#millFade)', opacity: .72}, svg);
+  const pan = el('g', {id: 'millPan'}, root);
+  const sky = el('g', {id: 'sky'}, pan);
+  const hs = el('g', {id: 'house', transform: 'translate(318 318) scale(.84)'}, pan);
+  const S = pen(svg, sky, {stroke: INK, strokeWidth: 2, roughness: 1.3, bowing: 1.5});
+  const P = pen(svg, hs, {stroke: INK, strokeWidth: 2.9, roughness: 1.6, bowing: 1.8});
+  const thin = {strokeWidth: 1.7, roughness: 1.5};
+  const hair = {strokeWidth: 1.2, roughness: 1.8, opacity: .6};
+  const hatch = (g, a) => ({stroke: 'none', fill: INK, fillStyle: 'hachure', hachureGap: g || 11, fillWeight: 1.1, hachureAngle: a == null ? -50 : a, roughness: 1.4});
+
+  // sky: cloud, birds
+  S.path('M1330 330 q 8 -44 58 -38 q 22 -48 84 -34 q 40 -36 90 0 q 50 -6 56 38 q 38 14 16 42 l -290 4 q -38 -4 -14 -12 z', {strokeWidth: 1.6, roughness: 1.6, opacity: .5}).id = 'cloud';
+  S.path('M1150 268 q 14 -15 28 0 q 14 -15 28 0', thin);
+  S.path('M1226 236 q 10 -11 20 0 q 10 -11 20 0', thin);
+
+  // background trees (kept clear of the roof)
+  const tree = {strokeWidth: 1.7, roughness: 1.3, opacity: .62};
+  crown(P, 160,520,105,85, 9, 200, 520, tree);
+  crown(P, 30,690,90,95, 8, 200, 520, tree);
+  crown(P, 1730,560,78,66, 8, 200, 520, tree);
+  crown(P, 1885,650,96,86, 9, 200, 520, tree);
+  crown(P, 2020,520,72,70, 8, 200, 520, tree);
+  [[165,600,168,800],[40,780,44,860],[1885,730,1880,884],[1990,585,1986,884]].forEach(([a,b,c,d]) => P.line(a,b,c,d, {strokeWidth: 1.8, roughness: 1, opacity: .7}));
+  [[150,560,175,530],[1880,690,1905,662],[1990,640,2012,610]].forEach(([a,b,c,d]) => P.line(a,b,c,d, hair));
+  [700,740,790,830].forEach(y => P.line(1874,y,1886,y-4, hair));
+
+  // hip roof with tiles
+  P.poly([[495,398],[938,290],[1008,290],[1422,392]], {strokeWidth: 3.2});
+  const hipL = y => 938 - (y-290)*(443/108), hipR = y => 1008 + (y-290)*(414/102);
+  const rows = [290,316,342,368,396];
+  rows.slice(1,-1).forEach(y => P.line(hipL(y)+8, y, hipR(y)-8, y+1, thin));
+  for (let r = 0; r < 4; r++){
+    const y0 = rows[r], y1 = rows[r+1];
+    for (let x = hipL(y1)+34; x < hipR(y1)-26; x += 36){ if (rnd() < .5) continue; P.line(x, y0+5, x-3, y1-4, hair); }
+  }
+  // gutter, fascia, soffit
+  P.line(466,404,1448,397, {strokeWidth: 3.6});
+  P.line(472,415,1442,408, thin);
+  P.line(500,432,1420,427, thin);
+  P.line(652,470,1266,467, thin);
+  P.line(655,498,1262,496);
+  for (let x = 700; x < 1240; x += 30){ if (rnd() < .3) continue; P.line(x,434,x,466, hair); }
+  P.poly([[648,445],[690,445],[690,505],[668,523],[648,505]], Object.assign({fill: INK, fillStyle: 'hachure', hachureGap: 7, fillWeight: .9}, thin));
+  P.poly([[1238,442],[1280,442],[1280,500],[1260,518],[1238,500]], Object.assign({fill: INK, fillStyle: 'hachure', hachureGap: 7, fillWeight: .9}, thin));
+
+  // main roof slopes – left
+  P.line(500,430,26,846, {strokeWidth: 3.4});
+  P.line(518,452,46,868, thin);
+  P.line(650,500,290,802);
+  P.poly([[518,452],[650,500],[290,802],[46,868]], hatch(13, -38));
+  P.line(lerp(518,650,.5), lerp(452,500,.5), lerp(46,290,.5), lerp(868,802,.5), hair);
+  P.line(26,846,46,870, thin);
+  P.line(46,870,292,810, thin);
+  // main roof slopes – right
+  P.line(1402,414,1808,828, {strokeWidth: 3.4});
+  P.line(1386,436,1790,848, thin);
+  P.line(1262,500,1672,762);
+  P.poly([[1386,436],[1262,500],[1672,762],[1790,848]], hatch(13, 38));
+  P.line(lerp(1386,1262,.5), lerp(436,500,.5), lerp(1790,1672,.5), lerp(848,762,.5), hair);
+  P.line(1808,828,1790,850, thin);
+  P.line(1790,850,1672,792, thin);
+
+  // wall
+  P.line(290,800,292,986);
+  P.line(1672,762,1676,1030);
+  P.line(292,986,1676,1030, {strokeWidth: 2.4});
+  P.poly([[656,500],[1262,498],[1252,532],[664,534]], hatch(9, -40));
+  P.ell(634,542,16,16, thin);
+  [[420,880],[560,640],[1120,940],[1500,700],[1560,960],[380,930],[1380,600]].forEach(([x,y]) => P.path(`M${x} ${y} q 14 -12 28 -2 q 10 8 22 2`, hair));
+
+  // window + balcony door
+  P.rect(722,510,488,166, {strokeWidth: 3});
+  P.rect(735,522,172,150, thin);
+  P.rect(916,522,104,154, thin);
+  P.rect(1030,522,170,150, thin);
+  P.poly([[920,526],[972,530],[972,668],[920,672]], hatch(7, 60));
+  P.poly([[974,530],[1012,522],[1012,676],[974,668]], thin);
+  [760,800,840,880,1060,1100,1140,1180].forEach(x => P.line(x,530,x+2,664, hair));
+  P.line(760,600,820,546, hair); P.line(1080,610,1150,548, hair);
+
+  // balcony
+  P.rect(655,676,680,14, {strokeWidth: 2.6});
+  P.rect(660,822,670,12, thin);
+  P.rect(640,842,672,18, {strokeWidth: 2.6});
+  const posts = [662, 868, 1072, 1270, 1326];
+  posts.forEach(x => P.rect(x-7,690,14,132, thin));
+  for (let x = 684; x < 1316; x += 25){
+    if (posts.some(p => Math.abs(p-x) < 14)) continue;
+    P.line(x,692,x,820, {strokeWidth: 1.9, roughness: .9});
+  }
+  P.rect(668,860,24,160, {strokeWidth: 2.4});
+  P.rect(1243,860,24,186, {strokeWidth: 2.4});
+  P.rect(656,1016,50,16, thin);
+  P.rect(1230,1042,50,16, thin);
+  P.line(692,936,790,862, {strokeWidth: 2.4}); P.line(692,952,806,862, thin);
+  P.line(1243,946,1160,862, {strokeWidth: 2.4}); P.line(1243,962,1144,862, thin);
+
+  // stairs + handrail
+  P.line(428,1020,662,846, {strokeWidth: 2.8});
+  P.line(458,1036,690,862, {strokeWidth: 2.8});
+  for (let i = 1; i < 9; i++){
+    const t = i/9, x = lerp(428,662,t), y = lerp(1020,846,t);
+    P.line(x-4, y, x+32, y, thin);
+  }
+  P.line(498,858,662,724, {strokeWidth: 3});
+  P.line(520,842,524,852, thin); P.line(620,760,624,770, thin);
+
+  // millstone
+  P.ell(1454,858,144,132, {strokeWidth: 3, fill: INK, fillStyle: 'hachure', hachureGap: 13, fillWeight: .8, hachureAngle: 62});
+  P.ell(1454,858,100,92, hair);
+  P.ell(1452,856,38,36, {strokeWidth: 2.6, fill: '#fff', fillStyle: 'solid'});
+
+  // left: lean-to + winter garden
+  P.rect(176,790,150,26, thin);
+  P.rect(150,862,18,140, thin);
+  P.line(286,924,46,986, thin);
+  P.line(288,942,52,1002, thin);
+  [240,190,140,95].forEach((x,i) => P.line(x,936-i*1, x-6, 952, hair));
+
+  // right: fence + small roof
+  P.line(1676,850,1955,872, thin);
+  P.line(1680,906,1955,912, thin);
+  P.line(1680,1048,1955,1056, thin);
+  P.rect(1764,872,24,204, thin);
+  for (let x = 1694; x < 1955; x += 20){ if (Math.abs(x-1776) < 18) continue; P.line(x,890,x+1,1066, {strokeWidth: 1.6, roughness: 1}); }
+
+  // stone post
+  P.poly([[236,992],[302,976],[362,982],[378,1176],[244,1184]], {strokeWidth: 2.8, fill: INK, fillStyle: 'hachure', hachureGap: 20, fillWeight: .8, hachureAngle: -70});
+  P.line(244,1080,372,1074, hair);
+
+  // paving
+  for (let i = 0; i < 46; i++){
+    const x = -120 + rnd()*2200, y = 1050 + rnd()*120, k = .7 + (y-1040)/260, w = 34*k, h = 14*k;
+    if (x > 200 && x < 400 && y < 1150) continue;
+    const pts = [[x-w,y],[x,y-h],[x+w,y],[x,y+h]];
+    const n = 2 + Math.floor(rnd()*3);
+    P.lines(pts.concat([pts[0]]).slice(0, n+1), {strokeWidth: 1.2, roughness: 1.4, opacity: .42});
+  }
+  P.poly([[292,986],[1676,1030],[1676,1058],[292,1012]], hatch(10, -30));
+  P.curve([[-300,1186],[600,1182],[1400,1190],[2300,1196]], thin);
+
+  // grass + road
+  for (let i = 0; i < 46; i++){
+    const x = -250 + rnd()*2500, y = 1204 + rnd()*150, s = .7 + rnd()*.9, n = 3 + Math.floor(rnd()*3);
+    for (let k = 0; k < n; k++){
+      const c = k - (n-1)/2, h = (14 + rnd()*10)*s;
+      P.path(`M${(x + c*4*s).toFixed(1)} ${y} q ${(c*2*s).toFixed(1)} ${(-h*.6).toFixed(1)} ${(c*8*s).toFixed(1)} ${(-h).toFixed(1)}`, {strokeWidth: 1.2, roughness: .6, opacity: .55});
+    }
+  }
+  P.line(-300,1376,2300,1394, thin);
+}
+
+/* ===================== 0 · pečeť s mlýnským kamenem ===================== */
+function drawSeal(){
+  const svg = document.getElementById('seal');
+  const g = el('g', {}, svg);
+  const P = pen(svg, g, {stroke: BRASS, strokeWidth: 3, roughness: 1.1, bowing: 1});
+  P.ell(150,150,282,282, {strokeWidth: 3.4});
+  P.ell(150,150,214,214, {strokeWidth: 2});
+  // millstone
+  P.ell(150,150,150,146, {strokeWidth: 3.2});
+  P.ell(150,150,40,40, {strokeWidth: 3});
+  for (let i = 0; i < 10; i++){
+    const a = i/10*Math.PI*2, a2 = a + .5;
+    P.line(150+Math.cos(a)*24, 150+Math.sin(a)*24, 150+Math.cos(a2)*72, 150+Math.sin(a2)*70, {strokeWidth: 1.8, roughness: 1});
+  }
+  el('path', {id: 'sealCircle', d: 'M150 150 m-116 0 a116 116 0 1 1 232 0 a116 116 0 1 1 -232 0', fill: 'none'}, svg);
+  const t = el('text', {fill: BRASS, 'font-family': 'Manrope, sans-serif', 'font-weight': 600, 'font-size': 18, 'letter-spacing': 2}, svg);
+  const tp = el('textPath', {href: '#sealCircle', textLength: 716, lengthAdjust: 'spacing'}, t);
+  tp.id = 'sealText';   // text podle jazyka doplní renderPanels()
+}
+
+/* ===================== 2 + 3 · řez: mlýnice → schody → studio ===================== */
+function drawInside(){
+  const svg = document.getElementById('inside');
+  const art = el('g', {opacity: .8}, svg);
+  const base = {stroke: INK, strokeWidth: 3, roughness: 1.1, bowing: 1.1};
+  const P = pen(svg, art, base);
+  // long lines fade out before the text column on the right
+  const R = pen(svg, el('g', {mask: 'url(#inFade)'}, art), base);
+  // mlýnice stairs + bed: source coords mirrored so the flight rises from bottom right to top left
+  const M = pen(svg, el('g', {transform: 'translate(2140 0) scale(-1 1)'}, art), base);
+  const thin = {strokeWidth: 1.8, roughness: 1.3};
+  const hair = {strokeWidth: 1.3, roughness: 1.6, opacity: .6};
+  const hatch = (g, a, c) => ({stroke: 'none', fill: c || INK, fillStyle: 'hachure', hachureGap: g, fillWeight: 1.2, hachureAngle: a, roughness: 1.4});
+
+  // --- studio: left part of the roof, skylight, light falling on the amp
+  const yc = x => 210 + (920 - x)*.604;
+  R.line(-40, yc(-40), 830, yc(830), {strokeWidth: 3.4});
+  R.line(-40, yc(-40)+40, 410, yc(410)+40, thin);
+  R.line(652, yc(652)+40, 830, yc(830)+40, thin);
+  [60,180,300,740].forEach(x => R.line(x, yc(x)+4, x-14, yc(x)+36, hair));
+  P.poly([[420,yc(420)-6],[650,yc(650)-6],[640,yc(640)+46],[410,yc(410)+46]], {strokeWidth: 2.6});
+  P.line(450, yc(450)+10, 610, yc(610)+10, hair);
+  [[520,330,510,270],[585,292,578,232],[455,366,440,306]].forEach(([a,b,c,d]) => P.line(a,b,c,d, {stroke: BRASS, strokeWidth: 2.2}));
+  const beam = [[414,yc(414)+44],[644,yc(644)+44],[614,1040],[398,1040]];
+  P.poly(beam, Object.assign(hatch(15, 3, BRASS), {opacity: .7}));
+  for (let i = 0; i < 16; i++){
+    const t = rnd(), s = rnd();
+    const x = lerp(lerp(beam[0][0],beam[1][0],s), lerp(beam[3][0],beam[2][0],s), t);
+    const y = lerp(lerp(beam[0][1],beam[1][1],s), 1040, t);
+    P.ell(x, y, 5, 5, {stroke: BRASS, strokeWidth: 1.4, roughness: .6});
+  }
+
+  // amp stack
+  P.rect(390,1040,230,104, {strokeWidth: 3});
+  P.rect(400,1102,210,30, thin);
+  for (let x = 420; x <= 590; x += 34) P.ell(x,1117,13,13, {strokeWidth: 1.6, roughness: .8});
+  P.path('M426 1078 c 9 -20 18 7 27 -5 s 13 13 23 0 s 14 9 23 -2 s 9 11 20 0 s 11 7 21 -4', {strokeWidth: 1.8, roughness: .8});
+  P.arc(505,1040,84,30, Math.PI, Math.PI*2, thin);
+  P.rect(382,1146,246,314, {strokeWidth: 3});
+  P.rect(400,1164,210,276, {strokeWidth: 1.8, fill: INK, fillStyle: 'cross-hatch', hachureGap: 17, fillWeight: .8, roughness: 1});
+  P.rect(410,1174,54,16, {strokeWidth: 1.4, fill: '#fff', fillStyle: 'solid'});
+  P.ell(410,1464,16,16, thin); P.ell(600,1464,16,16, thin);
+
+  // guitar on a stand
+  const gx = -970;
+  P.path(`M${1690+gx} 1436 C${1630+gx} 1436 ${1615+gx} 1402 ${1618+gx} 1372 C${1620+gx} 1347 ${1635+gx} 1332 ${1636+gx} 1315 C${1637+gx} 1297 ${1622+gx} 1287 ${1628+gx} 1262 C${1634+gx} 1237 ${1660+gx} 1229 ${1678+gx} 1233 L${1702+gx} 1233 C${1720+gx} 1229 ${1746+gx} 1237 ${1752+gx} 1262 C${1758+gx} 1287 ${1743+gx} 1297 ${1744+gx} 1315 C${1745+gx} 1332 ${1760+gx} 1347 ${1762+gx} 1372 C${1765+gx} 1402 ${1750+gx} 1436 ${1690+gx} 1436 Z`, {strokeWidth: 3, fill: INK, fillStyle: 'hachure', hachureGap: 12, fillWeight: .7, hachureAngle: -35});
+  P.rect(1679+gx,958,22,276, {strokeWidth: 2.4, fill: '#fff', fillStyle: 'solid'});
+  P.path(`M${1676+gx} 960 L${1670+gx} 878 Q${1690+gx} 868 ${1710+gx} 878 L${1704+gx} 960 Z`, {strokeWidth: 2.4});
+  [896,918,940].forEach(y => { P.line(1668+gx,y,1656+gx,y, thin); P.line(1712+gx,y,1724+gx,y, thin); });
+  P.rect(1670+gx,1288,40,16, {strokeWidth: 1.8, fill: '#fff', fillStyle: 'solid'});
+  P.rect(1670+gx,1338,40,16, {strokeWidth: 1.8, fill: '#fff', fillStyle: 'solid'});
+  P.line(1672+gx,1378,1708+gx,1378, {strokeWidth: 2.6});
+  P.line(1686+gx,884,1686+gx,1376, hair); P.line(1694+gx,884,1694+gx,1376, hair);
+  P.line(1648+gx,1470,1672+gx,1418, thin); P.line(1732+gx,1470,1708+gx,1418, thin);
+
+  // railing around the stair opening (left, where the stairs arrive)
+  P.line(40,1212,356,1212, {strokeWidth: 3.2});
+  P.rect(74,1206,20,264, thin);
+  P.rect(338,1206,20,264, thin);
+  for (let x = 128; x < 330; x += 40) P.line(x,1222,x,1466, {strokeWidth: 1.9, roughness: .9});
+
+  // floor = fold (studio floor / mlýnice ceiling)
+  P.line(20,1470,76,1470, {strokeWidth: 3.2});
+  P.line(20,1500,76,1500, thin);
+  R.line(356,1470,960,1470, {strokeWidth: 3.2});
+  R.line(356,1500,960,1500, thin);
+  for (let x = 380; x < 940; x += 70) R.line(x,1474,x+4,1496, hair);
+  P.rect(650,1500,62,82, Object.assign({fill: INK, fillStyle: 'hachure', hachureGap: 9, fillWeight: .9}, thin));
+
+  // --- mlýnice: stairs from bottom right up to the opening (mirrored source coords)
+  const N = 12, x0 = 1330, yb = 2830, rise = (2830-1500)/N, run = 680/N;
+  for (let i = 0; i < N; i++){ const x = x0 + i*run, y = yb - (i+1)*rise; M.lines([[x, y+rise],[x, y],[x+run+8, y]], {strokeWidth: 2.6}); }
+  M.line(1420,2830, 2088,1522, {strokeWidth: 2.8});
+  M.line(x0,2830, 2010,1500, hair);
+  const hr = x => 2420 - (x-1340)*(rise/run);
+  M.line(1336, hr(1336), 1832, hr(1832), {strokeWidth: 3.2});
+  for (let i = 0; i < N; i += 2){
+    const x = x0 + i*run + run*.5, y = yb - (i+1)*rise;
+    if (x > 1820) break;
+    M.line(x, y, x, hr(x), {strokeWidth: 1.8, roughness: .9});
+  }
+
+  // bed tucked under the stairs (pillow on the left)
+  M.rect(1652,2764,400,60, {strokeWidth: 2.6});
+  M.line(1662,2824,1662,2830, thin); M.line(2042,2824,2042,2830, thin);
+  M.rect(1660,2722,384,44, thin);
+  M.ell(1990,2704,98,40, {strokeWidth: 2.2});
+  M.path('M1660 2718 Q1720 2690 1790 2704 T1920 2700 L1940 2712 L1946 2776 L1660 2776 Z', {strokeWidth: 2.2, fill: INK, fillStyle: 'hachure', hachureGap: 13, fillWeight: .7, hachureAngle: -30});
+
+  // pendant lamp above the stairs, right
+  P.line(681,1582,681,1800, thin);
+  P.path('M643 1800 L719 1800 L743 1852 L619 1852 Z', {strokeWidth: 2.4, fill: INK, fillStyle: 'hachure', hachureGap: 10, fillWeight: .8, hachureAngle: 70});
+  P.ell(681,1866,22,22, {stroke: BRASS, strokeWidth: 2});
+  [[639,1890,611,1930],[681,1896,681,1944],[723,1890,751,1930]].forEach(([a,b,c,d]) => P.line(a,b,c,d, {stroke: BRASS, strokeWidth: 1.8}));
+
+  // mlýnice floor
+  R.line(0,2830,960,2830, {strokeWidth: 3.2});
+  R.poly([[0,2836],[960,2836],[960,2876],[0,2876]], hatch(14, -45));
+}
+
+drawMill(); drawSeal(); drawInside();
+// řez se kreslí jednou (horní půlka v panelu 2) a klonuje se do panelu 3
+document.getElementById('inside3').appendChild(document.querySelector('#inside > g').cloneNode(true));
+// barvy kresby podle vzhledu (denní / noční) přes CSS proměnné
+document.querySelectorAll('.vc svg [stroke], .vc svg [fill]').forEach((n)=>{
+  const map={[INK]:'var(--sketch)',[BRASS]:'var(--brass)','#1f1a16':'var(--ink)','#fff':'var(--paper)'};
+  const s=n.getAttribute('stroke'),f=n.getAttribute('fill');
+  if(map[s])n.style.stroke=map[s];
+  if(map[f])n.style.fill=map[f];
+});
+document.querySelector('#seal text').style.fontFamily='var(--sans)';
+// posun kresby na titulce podle exportu návrhu (dx −0,6 mm, dy −7,4 mm)
+document.getElementById('millPan').style.transform=`translate(${(-0.6*2000/210).toFixed(2)}px, ${(-7.4*2000/210).toFixed(2)}px)`;
+
+/* ===================== data, ceny, texty ===================== */
 const EMAIL='mlynnapile@gmail.com';
 const VARIANTS=['guitar','band','hours'];
 // ceny (vč. DPH): den s přespáním pro 1–2 osoby, další osoba / den, hodina (min. 3, max. 2 osoby)
@@ -273,83 +770,96 @@ const num=(n)=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
 const money={cs:(n)=>`${num(n)} Kč`,en:(n)=>`$${num(n)}`,de:(n)=>`${num(n)} €`};
 const WORDS={
   cs:{days:(n)=>n===1?'1 den':n<5?`${n} dny`:`${n} dní`,persons:(n)=>n===1?'1 osoba':n<5?`${n} osoby`:`${n} osob`,hours:(n)=>n<5?`${n} hodiny`:`${n} hodin`,
-    title:(k,d,h)=>k==='hours'?`${WORDS.cs.hours(h)} ve studiu`:`${d===1?'Den':WORDS.cs.days(d)} v mlýně pro ${k==='band'?'kapelu':'kytaristu'}`,
-    stay:'s přespáním',noStay:'bez přespání',descStay:'Hlavní studio s přespáním v mlýnici · plná penze',descHours:'Hlavní studio s kompletním vybavením · bez přespání',
-    cDays:'Počet dní',cPersons:'Počet osob',cHours:'Počet hodin',total:'Cena poukazu',from:'od'},
+    stay:'s přespáním',noStay:'bez přespání',cDays:'Počet dní',cPersons:'Počet osob',cHours:'Počet hodin',total:'Cena poukazu',from:'od'},
   en:{days:(n)=>n===1?'1 day':`${n} days`,persons:(n)=>n===1?'1 person':`${n} people`,hours:(n)=>`${n} hours`,
-    title:(k,d,h)=>k==='hours'?`${h} hours in the studio`:`${d===1?'A day':`${d} days`} at the mill for ${k==='band'?'a band':'a guitarist'}`,
-    stay:'with overnight stay',noStay:'no overnight stay',descStay:'Main studio with an overnight stay in the mill room · full board',descHours:'Main studio with full equipment · no overnight stay',
-    cDays:'Days',cPersons:'People',cHours:'Hours',total:'Voucher value',from:'from'},
+    stay:'with overnight stay',noStay:'no overnight stay',cDays:'Days',cPersons:'People',cHours:'Hours',total:'Voucher value',from:'from'},
   de:{days:(n)=>n===1?'1 Tag':`${n} Tage`,persons:(n)=>n===1?'1 Person':`${n} Personen`,hours:(n)=>`${n} Stunden`,
-    title:(k,d,h)=>k==='hours'?`${h} Stunden im Studio`:`${d===1?'Ein Tag':`${d} Tage`} in der Mühle für ${k==='band'?'eine Band':'Gitarristen'}`,
-    stay:'mit Übernachtung',noStay:'ohne Übernachtung',descStay:'Hauptstudio mit Übernachtung im Mühlenraum · Vollpension',descHours:'Hauptstudio mit kompletter Ausstattung · ohne Übernachtung',
-    cDays:'Tage',cPersons:'Personen',cHours:'Stunden',total:'Gutscheinwert',from:'ab'},
+    stay:'mit Übernachtung',noStay:'ohne Übernachtung',cDays:'Tage',cPersons:'Personen',cHours:'Stunden',total:'Gutscheinwert',from:'ab'},
 };
-// aktuální poukaz podle nastavení: [název, krátký popis, cena, nadpis na poukazu, popis na poukazu]
-function current(){
-  const L=state.lang,w=WORDS[L],p=PRICE[L],k=state.variant,t=T[L];
-  if(k==='hours'){
-    const total=state.hours*p.hour;
-    return [t.v[k][0],`${w.hours(state.hours)} · ${w.persons(state.persons)} · ${w.noStay}`,money[L](total),w.title(k,1,state.hours),`${w.descHours} · ${w.persons(state.persons)}`];
-  }
-  const total=state.days*(p.day+Math.max(0,state.persons-2)*p.extra);
-  return [t.v[k][0],`${w.persons(state.persons)} · ${w.days(state.days)} ${w.stay}`,money[L](total),w.title(k,state.days),`${w.descStay} · ${w.persons(state.persons)}`];
-}
+
 const T={
   cs:{home:'/',brand:'Mlýn <em>na Pile</em>',back:'← Zpět na web',kicker:'Dárkový poukaz',title:'Darujte čas <em>v mlýně</em>',
-    lead:'Vyberte poukaz, napište jméno a věnování a hned uvidíte, jak bude vypadat. Platí do 31. 12. 2027, termín podle volného kalendáře.',
-    s1:'Vyberte poukaz',s2:'Pro koho',s3:'Styl poukazu',s4:'Doručení',name:'Jméno obdarovaného',msg:'Věnování',from:'Od koho (nepovinné)',
-    stNight:'Noc',stPaper:'Papír',stMin:'Minimal',dEmail:'PDF e-mailem',dPost:'Poštou',addr:'Doručovací adresa',buyer:'Vaše jméno',
-    order:'Objednat poukaz e-mailem',copy:'Zkopírovat objednávku',prev:'Náhled poukazu',
-    fine:'Po odeslání vám pošleme platební údaje. Po zaplacení dostanete poukaz s unikátním kódem.',
+    lead:'Vyberte poukaz, napište, pro koho je, vzkaz a od koho – hned uvidíte, jak bude vypadat. Platí do 31. 12. 2027, termín podle volného kalendáře.',
+    s1:'Vyberte poukaz',s2:'Pro koho a vzkaz',s3:'Vzhled poukazu',s4:'Doručení',name:'Pro (jméno obdarovaného)',msg:'Vzkaz na titulce',from:'Od (nepovinné)',
+    lookDay:'Denní · světlý',lookNight:'Noční · tmavý',dEmail:'PDF e-mailem',dPost:'Vytištěný poštou',addr:'Doručovací adresa',buyer:'Vaše jméno',
+    order:'Objednat poukaz e-mailem',copy:'Zkopírovat objednávku',prev:'Náhled poukazu',vFront:'Titulka',vOpen:'Uvnitř',vBack:'Zadní strana',
+    hint:'Klikněte na poukaz – otevře se',
+    fine:'Po odeslání vám pošleme platební údaje. Po zaplacení dostanete poukaz s vlastním číslem.',
     sent:'Otevřeli jsme e-mail s objednávkou. Pokud se nic neotevřelo, použijte „Zkopírovat objednávku" a pošlete ji na mlynnapile@gmail.com.',
-    copied:'Zkopírováno ✓',sample:'VZOR',
-    vk:'Dárkový poukaz',vfor:'Pro',code:'Kód',valid:'Platí do',vfrom:'Od',price:'Hodnota',codeLater:'po zaplacení',
-    namePh:'Jirka',msgPh:'Ať ti to v mlýně hraje. Všechno nejlepší!',
+    copied:'Zkopírováno ✓',namePh:'Jirka',fromPh:'např. Andrea a Jindra',msgPh:'Sem napište vzkaz…',
     ex:{guitar:'Jirko, užij si dárek od nás – vyzkoušej studio na mlýně, vymysli nějaký songy a zjisti, jestli to není ten správný prostor na soustředění s tvojí kapelou. Porovnej, jestli je lepší stará kytara, nebo Custom Shop – obojí tam bude nachystáno ;-) Krom super kytar máš k dispozici i bicí a basu a nápady si tam můžeš rovnou nahrát. Užij si to :-)',
        band:'Kluci, tohle je pro vás – celý den ve studiu na mlýně i s přespáním. Zahrajte si, vymyslete nový songy a rovnou si je nahrajte. Bicí, basa, kytary i aparáty jsou nachystané, jídlo a kafe taky. Tak ať to šlape :-)',
        hours:'Na tři hodiny je studio na mlýně jen tvoje – zkus si kytary, zesilovače i bicí, porovnej zvuk a nápady si rovnou nahraj. Užij si to :-)'},
-    v:{guitar:['Pro kytaristu','1 osoba · den s přespáním','12 000 Kč','Den v mlýně pro kytaristu','Hlavní studio s přespáním v mlýnici · plná penze · 1 osoba'],
-       band:['Pro kapelu','4 osoby · den s přespáním','21 400 Kč','Den v mlýně pro kapelu','Hlavní studio s přespáním v mlýnici · plná penze · 4 osoby'],
-       hours:['3 hodiny ve studiu','bez přespání','3 300 Kč','3 hodiny ve studiu','Hlavní studio s kompletním vybavením · bez přespání']},
-    mail:(o)=>[`Dobrý den,`,``,`objednávám dárkový poukaz „${o.v[0]}“ (${o.v[1]}, ${o.v[2]}).`,``,`Jméno obdarovaného: ${o.name}`,`Věnování: ${o.msg||'—'}`,`Od koho: ${o.from||'—'}`,`Styl poukazu: ${o.style}`,`Doručení: ${o.del}`,``,`Prosím o platební údaje.`,``,`Děkuji.`,`S pozdravem,`,o.buyer||'[Vaše jméno]'].join('\n'),
-    subj:(o)=>`Objednávka dárkového poukazu – ${o.v[0]}`,delEmail:'PDF e-mailem',delPost:(a)=>`poštou na adresu: ${a||'—'}`},
+    v:{guitar:['Pro kytaristu','1 osoba · den s přespáním','12 000 Kč'],band:['Pro kapelu','4 osoby · den s přespáním','21 400 Kč'],hours:['3 hodiny ve studiu','bez přespání','3 300 Kč']},
+    mail:(o)=>[`Dobrý den,`,``,`objednávám dárkový poukaz „${o.v[0]}“ (${o.v[1]}, ${o.v[2]}).`,``,`Pro: ${o.name}`,`Vzkaz: ${o.msg||'—'}`,`Od: ${o.from||'—'}`,`Vzhled poukazu: ${o.look}`,`Doručení: ${o.del}`,``,`Prosím o platební údaje.`,``,`Děkuji.`,`S pozdravem,`,o.buyer||'[Vaše jméno]'].join('\n'),
+    subj:(o)=>`Objednávka dárkového poukazu – ${o.v[0]}`,delEmail:'PDF e-mailem',delPost:(a)=>`vytištěný poštou na adresu: ${a||'—'}`},
   en:{home:'/en',brand:'Mill <em>at Pila</em>',back:'← Back to the website',kicker:'Gift voucher',title:'Give time <em>at the mill</em>',
-    lead:'Choose a voucher, add a name and a dedication and see right away how it will look. Valid until 31 Dec 2027, dates by availability.',
-    s1:'Choose a voucher',s2:'Who it’s for',s3:'Voucher style',s4:'Delivery',name:'Recipient’s name',msg:'Dedication',from:'From (optional)',
-    stNight:'Night',stPaper:'Paper',stMin:'Minimal',dEmail:'PDF by e-mail',dPost:'By post',addr:'Delivery address',buyer:'Your name',
-    order:'Order the voucher by e-mail',copy:'Copy the order',prev:'Voucher preview',
-    fine:'After you send the order we’ll reply with payment details. Once paid, you’ll receive the voucher with a unique code.',
+    lead:'Choose a voucher, write who it’s for, a message and who it’s from – and see right away how it will look. Valid until 31 Dec 2027, dates by availability.',
+    s1:'Choose a voucher',s2:'Who it’s for & message',s3:'Voucher look',s4:'Delivery',name:'For (recipient’s name)',msg:'Message on the cover',from:'From (optional)',
+    lookDay:'Day · light',lookNight:'Night · dark',dEmail:'PDF by e-mail',dPost:'Printed, by post',addr:'Delivery address',buyer:'Your name',
+    order:'Order the voucher by e-mail',copy:'Copy the order',prev:'Voucher preview',vFront:'Cover',vOpen:'Inside',vBack:'Back',
+    hint:'Click the voucher to open it',
+    fine:'After you send the order we’ll reply with payment details. Once paid, you’ll receive the voucher with its own number.',
     sent:'We opened an e-mail with your order. If nothing opened, use “Copy the order” and send it to mlynnapile@gmail.com.',
-    copied:'Copied ✓',sample:'SAMPLE',
-    vk:'Gift voucher',vfor:'For',code:'Code',valid:'Valid until',vfrom:'From',price:'Value',codeLater:'after payment',
-    namePh:'Jane Smith',msgPh:'Have a great time at the mill. Happy birthday!',
+    copied:'Copied ✓',namePh:'Jane',fromPh:'e.g. Andrea and Jindra',msgPh:'Write your message here…',
     ex:{guitar:'Enjoy this gift from us – try out the studio at the mill, write some songs and see if it’s the right place to focus with your band. Compare a vintage guitar with a Custom Shop one – both will be ready for you ;-) Besides great guitars there are drums and bass too, and you can record your ideas right away. Have fun :-)',
        band:'This one’s for the whole band – a full day in the studio at the mill, overnight stay included. Jam, write new songs and record them on the spot. Drums, bass, guitars and amps are all set up, food and coffee too. Rock on :-)',
        hours:'For three hours the studio at the mill is all yours – try the guitars, amps and drums, compare sounds and record your ideas right away. Enjoy :-)'},
-    v:{guitar:['For a guitarist','1 person · day with overnight stay','$560','A day at the mill for a guitarist','Main studio with an overnight stay in the mill room · full board · 1 person'],
-       band:['For a band','4 people · day with overnight stay','$1 020','A day at the mill for a band','Main studio with an overnight stay in the mill room · full board · 4 people'],
-       hours:['3 hours in the studio','no overnight stay','$165','3 hours in the studio','Main studio with full equipment · no overnight stay']},
-    mail:(o)=>[`Hello,`,``,`I would like to order the gift voucher “${o.v[0]}” (${o.v[1]}, ${o.v[2]}).`,``,`Recipient’s name: ${o.name}`,`Dedication: ${o.msg||'—'}`,`From: ${o.from||'—'}`,`Voucher style: ${o.style}`,`Delivery: ${o.del}`,``,`Please send me the payment details.`,``,`Thank you.`,`Best regards,`,o.buyer||'[Your name]'].join('\n'),
-    subj:(o)=>`Gift voucher order – ${o.v[0]}`,delEmail:'PDF by e-mail',delPost:(a)=>`by post to: ${a||'—'}`},
+    v:{guitar:['For a guitarist','1 person · day with overnight stay','$560'],band:['For a band','4 people · day with overnight stay','$1 020'],hours:['3 hours in the studio','no overnight stay','$165']},
+    mail:(o)=>[`Hello,`,``,`I would like to order the gift voucher “${o.v[0]}” (${o.v[1]}, ${o.v[2]}).`,``,`For: ${o.name}`,`Message: ${o.msg||'—'}`,`From: ${o.from||'—'}`,`Voucher look: ${o.look}`,`Delivery: ${o.del}`,``,`Please send me the payment details.`,``,`Thank you.`,`Best regards,`,o.buyer||'[Your name]'].join('\n'),
+    subj:(o)=>`Gift voucher order – ${o.v[0]}`,delEmail:'PDF by e-mail',delPost:(a)=>`printed, by post to: ${a||'—'}`},
   de:{home:'/de',brand:'Mühle <em>an der Pila</em>',back:'← Zurück zur Website',kicker:'Gutschein',title:'Zeit in der Mühle <em>verschenken</em>',
-    lead:'Wählen Sie einen Gutschein, schreiben Sie Namen und Widmung und sehen Sie sofort, wie er aussieht. Gültig bis 31.12.2027, Termin nach Verfügbarkeit.',
-    s1:'Gutschein wählen',s2:'Für wen',s3:'Stil',s4:'Zustellung',name:'Name der beschenkten Person',msg:'Widmung',from:'Von (optional)',
-    stNight:'Nacht',stPaper:'Papier',stMin:'Minimal',dEmail:'PDF per E-Mail',dPost:'Per Post',addr:'Lieferadresse',buyer:'Ihr Name',
-    order:'Gutschein per E-Mail bestellen',copy:'Bestellung kopieren',prev:'Vorschau',
-    fine:'Nach dem Absenden schicken wir Ihnen die Zahlungsdaten. Nach der Zahlung erhalten Sie den Gutschein mit einem eindeutigen Code.',
+    lead:'Wählen Sie einen Gutschein, schreiben Sie, für wen er ist, eine Nachricht und von wem – und sehen Sie sofort, wie er aussieht. Gültig bis 31.12.2027, Termin nach Verfügbarkeit.',
+    s1:'Gutschein wählen',s2:'Für wen & Nachricht',s3:'Aussehen',s4:'Zustellung',name:'Für (Name der beschenkten Person)',msg:'Nachricht auf der Titelseite',from:'Von (optional)',
+    lookDay:'Tag · hell',lookNight:'Nacht · dunkel',dEmail:'PDF per E-Mail',dPost:'Gedruckt, per Post',addr:'Lieferadresse',buyer:'Ihr Name',
+    order:'Gutschein per E-Mail bestellen',copy:'Bestellung kopieren',prev:'Vorschau',vFront:'Titel',vOpen:'Innen',vBack:'Rückseite',
+    hint:'Klicken Sie auf den Gutschein, um ihn zu öffnen',
+    fine:'Nach dem Absenden schicken wir Ihnen die Zahlungsdaten. Nach der Zahlung erhalten Sie den Gutschein mit eigener Nummer.',
     sent:'Wir haben eine E-Mail mit Ihrer Bestellung geöffnet. Falls nichts geöffnet wurde, nutzen Sie „Bestellung kopieren" und senden Sie sie an mlynnapile@gmail.com.',
-    copied:'Kopiert ✓',sample:'MUSTER',
-    vk:'Gutschein',vfor:'Für',code:'Code',valid:'Gültig bis',vfrom:'Von',price:'Wert',codeLater:'nach Zahlung',
-    namePh:'Max Mustermann',msgPh:'Viel Spaß in der Mühle. Alles Gute!',
+    copied:'Kopiert ✓',namePh:'Max',fromPh:'z. B. Andrea und Jindra',msgPh:'Schreiben Sie hier Ihre Nachricht…',
     ex:{guitar:'Genieß dein Geschenk – probier das Studio in der Mühle aus, schreib ein paar Songs und finde heraus, ob das der richtige Ort ist, um dich mit deiner Band zu konzentrieren. Vergleich eine Vintage-Gitarre mit einer Custom Shop – beide stehen bereit ;-) Neben tollen Gitarren gibt es auch Schlagzeug und Bass, und deine Ideen kannst du gleich aufnehmen. Viel Spaß :-)',
        band:'Das ist für die ganze Band – ein ganzer Tag im Studio in der Mühle mit Übernachtung. Jammt, schreibt neue Songs und nehmt sie gleich auf. Schlagzeug, Bass, Gitarren und Amps stehen bereit, Essen und Kaffee auch. Rockt los :-)',
        hours:'Drei Stunden gehört das Studio in der Mühle nur dir – probier Gitarren, Amps und Schlagzeug aus, vergleiche den Sound und nimm deine Ideen gleich auf. Viel Spaß :-)'},
-    v:{guitar:['Für Gitarristen','1 Person · Tag mit Übernachtung','510 €','Ein Tag in der Mühle für Gitarristen','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 1 Person'],
-       band:['Für eine Band','4 Personen · Tag mit Übernachtung','910 €','Ein Tag in der Mühle für eine Band','Hauptstudio mit Übernachtung im Mühlenraum · Vollpension · 4 Personen'],
-       hours:['3 Stunden im Studio','ohne Übernachtung','150 €','3 Stunden im Studio','Hauptstudio mit kompletter Ausstattung · ohne Übernachtung']},
-    mail:(o)=>[`Guten Tag,`,``,`ich möchte den Gutschein „${o.v[0]}“ bestellen (${o.v[1]}, ${o.v[2]}).`,``,`Name der beschenkten Person: ${o.name}`,`Widmung: ${o.msg||'—'}`,`Von: ${o.from||'—'}`,`Stil: ${o.style}`,`Zustellung: ${o.del}`,``,`Bitte senden Sie mir die Zahlungsdaten.`,``,`Vielen Dank.`,`Mit freundlichen Grüßen`,o.buyer||'[Ihr Name]'].join('\n'),
-    subj:(o)=>`Gutscheinbestellung – ${o.v[0]}`,delEmail:'PDF per E-Mail',delPost:(a)=>`per Post an: ${a||'—'}`},
+    v:{guitar:['Für Gitarristen','1 Person · Tag mit Übernachtung','510 €'],band:['Für eine Band','4 Personen · Tag mit Übernachtung','910 €'],hours:['3 Stunden im Studio','ohne Übernachtung','150 €']},
+    mail:(o)=>[`Guten Tag,`,``,`ich möchte den Gutschein „${o.v[0]}“ bestellen (${o.v[1]}, ${o.v[2]}).`,``,`Für: ${o.name}`,`Nachricht: ${o.msg||'—'}`,`Von: ${o.from||'—'}`,`Aussehen: ${o.look}`,`Zustellung: ${o.del}`,``,`Bitte senden Sie mir die Zahlungsdaten.`,``,`Vielen Dank.`,`Mit freundlichen Grüßen`,o.buyer||'[Ihr Name]'].join('\n'),
+    subj:(o)=>`Gutscheinbestellung – ${o.v[0]}`,delEmail:'PDF per E-Mail',delPost:(a)=>`gedruckt, per Post an: ${a||'—'}`},
+};
+
+// texty na poukazu (podle návrhu) ve třech jazycích
+const P={
+  cs:{cLabel:'Dárkový poukaz · Mlýn na Pile',titleStay:'Pobyt <em>na mlýně</em>',titleHours:'Čas <em>ve studiu</em>',cSub:'s hromadou aparatury k dispozici',
+    bLabel:'Dárkový poukaz',bNo:'č.',bTitle:'Čas <em>v mlýně</em>',pro:'Pro',od:'Od',optsLabel:'Poukaz na',valid:'Platí do',validDef:'31. 12. 2027',
+    hoursTitle:(h)=>`${WORDS.cs.hours(h)} ve studiu`,
+    how:'<b>Jak poukaz uplatnit</b>Volné termíny naleznete na mlynnapile.cz.<br><span class="c">mlynnapile@gmail.com</span> · <span class="c">+420 724 050 093</span><br>Pila 100 – Mlýn · Trhanov 344 01',
+    sLabel:'Hlavní studio · 64 m²',sTitle:'Studio',
+    sLead:'Hlavní studio se nachází v podkrovní galerii, přímo nad mlýnicí. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník.',
+    sSpec:'<div><dt>Vintage nástroje</dt><dd>60s–80s Fender, Gibson<br>Custom Shop</dd></div><div><dt>Zesilovače a efekty</dt><dd>Butikové efekty, lampové zesilovače Marshall, Mesa&nbsp;Boogie, Ampeg…</dd></div><div><dt>Nahrávání</dt><dd>Možnost nahrávání až 8 stop UA&nbsp;Apollo&nbsp;x8p</dd></div><div><dt>K dispozici</dt><dd>Bicí, baskytary, mikrofony…</dd></div>',
+    pLabel:'Mlýnice · 50 m²',pTitle:'Přespání <em>přímo pod&nbsp;studiem</em>',
+    pLead:'Místo k přespání v bývalé mlýnici s vysokými stropy. Z jedné strany navazuje na zimní zahradu, z druhé vede ven – k velké peci, k rybníku a do vlastní zahrady o rozloze 6&nbsp;500&nbsp;m².',
+    pSpec:'<div><dt>Přespání</dt><dd>V ceně pronájmu studia na 1 a více&nbsp;dní, včetně přístupu do sauny a zimní zahrady.</dd></div><div><dt>Domácí chléb</dt><dd>Součást každého pobytu<br>Snídaně v zimní zahradě</dd></div><div><dt>Dostupnost</dt><dd>Autem 10 min do centra Domažlic, vlakem zastávka přímo na Pile<br>Taxi Teslou&nbsp;X v rámci Domažlicka v&nbsp;ceně</dd></div><div><dt>Zázemí</dt><dd>Parkování v areálu, nabíjení EV + vlastní zdroj energie</dd></div>',
+    seal:'MLÝN NA PILE · PILA U TRHANOVA · DÁRKOVÝ POUKAZ · ',sample:'VZOR',qr:'https://www.mlynnapile.cz'},
+  en:{cLabel:'Gift voucher · Mill at Pila',titleStay:'A stay <em>at the mill</em>',titleHours:'Time <em>in the studio</em>',cSub:'with a pile of gear at your disposal',
+    bLabel:'Gift voucher',bNo:'No.',bTitle:'Time <em>at the mill</em>',pro:'For',od:'From',optsLabel:'Voucher for',valid:'Valid until',validDef:'31 Dec 2027',
+    hoursTitle:(h)=>`${h} hours in the studio`,
+    how:'<b>How to redeem</b>Find available dates at mlynnapile.cz.<br><span class="c">mlynnapile@gmail.com</span> · <span class="c">+420 724 050 093</span><br>Pila 100 – Mlýn · 344 01 Trhanov, Czech Republic',
+    sLabel:'Main studio · 64 m²',sTitle:'Studio',
+    sLead:'The main studio is located in the attic gallery, directly above the mill. Natural light enters through skylights and a large French window with a balcony overlooking the quiet pond.',
+    sSpec:'<div><dt>Vintage instruments</dt><dd>60s–80s Fender, Gibson<br>Custom Shop</dd></div><div><dt>Amps & effects</dt><dd>Boutique effects, tube amps Marshall, Mesa&nbsp;Boogie, Ampeg…</dd></div><div><dt>Recording</dt><dd>Up to 8 tracks at once, UA&nbsp;Apollo&nbsp;x8p</dd></div><div><dt>Also available</dt><dd>Drums, basses, microphones…</dd></div>',
+    pLabel:'Mill room · 50 m²',pTitle:'Sleep <em>right below the&nbsp;studio</em>',
+    pLead:'A place to sleep in the former mill room with high ceilings. On one side it opens onto the winter garden, on the other it leads outside – to the large oven, the pond and our own 6,500&nbsp;m² garden.',
+    pSpec:'<div><dt>Overnight stay</dt><dd>Included with a studio rental of 1 day or more, with access to the sauna and winter garden.</dd></div><div><dt>Homemade bread</dt><dd>Part of every stay<br>Breakfast in the winter garden</dd></div><div><dt>Getting here</dt><dd>10 min by car to Domažlice, train stop right at Pila<br>Tesla&nbsp;X rides around Domažlice included</dd></div><div><dt>Facilities</dt><dd>Parking on site, EV charging + own energy source</dd></div>',
+    seal:'MILL AT PILA · PILA NEAR TRHANOV · GIFT VOUCHER · ',sample:'SAMPLE',qr:'https://www.mlynnapile.cz/en'},
+  de:{cLabel:'Gutschein · Mühle an der Pila',titleStay:'Aufenthalt <em>in der Mühle</em>',titleHours:'Zeit <em>im Studio</em>',cSub:'mit jeder Menge Equipment',
+    bLabel:'Gutschein',bNo:'Nr.',bTitle:'Zeit <em>in der Mühle</em>',pro:'Für',od:'Von',optsLabel:'Gutschein für',valid:'Gültig bis',validDef:'31.12.2027',
+    hoursTitle:(h)=>`${h} Stunden im Studio`,
+    how:'<b>So lösen Sie den Gutschein ein</b>Freie Termine finden Sie auf mlynnapile.cz.<br><span class="c">mlynnapile@gmail.com</span> · <span class="c">+420 724 050 093</span><br>Pila 100 – Mlýn · 344 01 Trhanov, Tschechien',
+    sLabel:'Hauptstudio · 64 m²',sTitle:'Studio',
+    sLead:'Das Hauptstudio befindet sich in der Dachgalerie direkt über der Mühle. Natürliches Licht fällt durch Dachfenster und ein großes französisches Fenster mit Balkon und Blick auf den ruhigen Teich.',
+    sSpec:'<div><dt>Vintage-Instrumente</dt><dd>60er–80er Fender, Gibson<br>Custom Shop</dd></div><div><dt>Amps & Effekte</dt><dd>Boutique-Effekte, Röhrenverstärker Marshall, Mesa&nbsp;Boogie, Ampeg…</dd></div><div><dt>Aufnahme</dt><dd>Bis zu 8 Spuren gleichzeitig, UA&nbsp;Apollo&nbsp;x8p</dd></div><div><dt>Außerdem</dt><dd>Schlagzeug, Bässe, Mikrofone…</dd></div>',
+    pLabel:'Mühlenraum · 50 m²',pTitle:'Schlafen <em>direkt unter dem&nbsp;Studio</em>',
+    pLead:'Ein Schlafplatz im ehemaligen Mühlenraum mit hohen Decken. Auf der einen Seite schließt der Wintergarten an, auf der anderen geht es hinaus – zum großen Ofen, zum Teich und in den eigenen Garten mit 6&nbsp;500&nbsp;m².',
+    pSpec:'<div><dt>Übernachtung</dt><dd>Inklusive bei einer Studiomiete ab 1 Tag, mit Zugang zu Sauna und Wintergarten.</dd></div><div><dt>Hausgemachtes Brot</dt><dd>Teil jedes Aufenthalts<br>Frühstück im Wintergarten</dd></div><div><dt>Anreise</dt><dd>10 Min. mit dem Auto nach Domažlice, Bahnhalt direkt in Pila<br>Tesla-X-Fahrten rund um Domažlice inklusive</dd></div><div><dt>Ausstattung</dt><dd>Parken vor Ort, E-Auto-Laden + eigene Energiequelle</dd></div>',
+    seal:'MÜHLE AN DER PILA · PILA BEI TRHANOV · GUTSCHEIN · ',sample:'MUSTER',qr:'https://www.mlynnapile.cz/de'},
 };
 
 const $=(id)=>document.getElementById(id);
@@ -359,60 +869,85 @@ document.body.classList.toggle('is-admin',isAdmin);
 const state={
   lang:['cs','en','de'].includes(params.get('lang'))?params.get('lang'):'cs',
   variant:VARIANTS.includes(params.get('v'))?params.get('v'):'guitar',
-  style:'night',delivery:'email',days:1,hours:3,
+  delivery:'email',days:1,hours:3,
 };
 state.persons=PRESET[state.variant];
 
-function newCode(){
-  const abc='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let c='';for(let i=0;i<4;i++)c+=abc[Math.floor(Math.random()*abc.length)];
-  $('fCode').value=`MNP-${new Date().getFullYear()}-${c}`;
-}
-function fmtDate(iso){
-  if(!iso)return'';
-  const [y,m,d]=iso.split('-').map(Number);
-  return new Intl.DateTimeFormat({cs:'cs-CZ',en:'en-GB',de:'de-DE'}[state.lang],{day:'numeric',month:'numeric',year:'numeric'}).format(new Date(y,m-1,d));
-}
-function order(){
-  const t=T[state.lang];
-  const styleName={night:t.stNight,paper:t.stPaper,minimal:t.stMin}[state.style];
-  const o={v:current(),name:$('fName').value.trim()||'—',msg:$('fMsg').value.trim(),from:$('fFrom').value.trim(),
-    style:styleName,del:state.delivery==='post'?t.delPost($('fAddr').value.trim().replace(/\n+/g,', ')):t.delEmail,buyer:$('fBuyer').value.trim()};
-  return {subject:t.subj(o),body:t.mail(o)};
+// aktuální poukaz podle nastavení: [název, krátký popis, cena]
+function current(){
+  const L=state.lang,w=WORDS[L],p=PRICE[L],k=state.variant,t=T[L];
+  if(k==='hours')return [P[L].hoursTitle(state.hours),`${w.persons(state.persons)} · ${w.noStay}`,money[L](state.hours*p.hour)];
+  const total=state.days*(p.day+Math.max(0,state.persons-2)*p.extra);
+  return [t.v[k][0],`${w.persons(state.persons)} · ${w.days(state.days)} ${w.stay}`,money[L](total)];
 }
 
-function renderTexts(){
+/* ===================== vzhled: denní / noční ===================== */
+function setMode(m){
+  const mode=m==='night'?'night':'day';
+  document.documentElement.dataset.mode=mode;
+  document.querySelectorAll('#looks button').forEach((b)=>b.classList.toggle('on',b.dataset.m===mode));
+  renderVoucher();
+}
+$('btnMode').addEventListener('click',()=>setMode(document.documentElement.dataset.mode==='night'?'day':'night'));
+$('looks').addEventListener('click',(e)=>{const b=e.target.closest('[data-m]');if(b)setMode(b.dataset.m);});
+
+/* ===================== QR a pečeť podle jazyka ===================== */
+function drawQRFor(url){
+  const svg=$('qr');svg.innerHTML='';
+  const qr=qrcode(0,'M');qr.addData(url);qr.make();
+  const n=qr.getModuleCount();
+  svg.setAttribute('viewBox',`0 0 ${n} ${n}`);svg.setAttribute('shape-rendering','crispEdges');
+  let d='';
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(qr.isDark(r,c))d+=`M${c} ${r}h1v1h-1z`;
+  el('path',{d},svg);
+}
+// čeština: jednopísmenná slova na konci řádku → nezlomitelná mezera
+function nbsp(root){
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  for(let n;(n=w.nextNode());)n.nodeValue=n.nodeValue.replace(/(^|[\s(])([ksvzouaiKSVZOUAI]) /g,'$1$2 ');
+}
+
+/* ===================== texty a údaje na poukazu ===================== */
+let msgTouched=false,validTouched=false;
+function fitMsg(){
+  const m=$('f-vzkaz');let pt=12;m.style.fontSize=pt+'pt';
+  while(m.scrollHeight>m.clientHeight+1&&pt>7){pt-=.25;m.style.fontSize=pt+'pt';}
+}
+function renderPanels(){
+  const L=state.lang,p=P[L],t=T[L],cur=current();
+  document.querySelectorAll('[data-p]').forEach((e)=>{const v=p[e.dataset.p];if(typeof v==='string')e.innerHTML=v;});
+  $('coverTitle').innerHTML=state.variant==='hours'?p.titleHours:p.titleStay;
+  document.querySelectorAll('.opt').forEach((o)=>{
+    const k=o.dataset.typ,on=k===state.variant;
+    o.classList.toggle('on',on);
+    o.querySelector('b').textContent=on?cur[0]:t.v[k][0];
+    o.querySelector('small').textContent=on?cur[1]:t.v[k][1];
+  });
+  document.querySelectorAll('.vc .sample').forEach((s)=>{s.textContent=p.sample;});
+  $('sealText').textContent=p.seal;
+  drawQRFor(p.qr);
+  if(L==='cs')PANEL.forEach(nbsp);
+}
+function renderFields(){
   const t=T[state.lang];
-  document.documentElement.lang=state.lang;
-  document.querySelectorAll('[data-t]').forEach((el)=>{const v=t[el.dataset.t];if(typeof v==='string')el.innerHTML=v;});
-  $('brandTxt').innerHTML=t.brand; $('homeLink').href=t.home; $('backLink').href=`${t.home}#studio`;
-  $('fName').placeholder=t.namePh; $('fMsg').placeholder=t.msgPh;
-  // ukázkové věnování podle varianty (vysvětlí, co se s poukazem dá dělat), dokud ho zákazník nepřepíše
-  if(!msgTouched)$('fMsg').value=t.ex[state.variant];
-  document.querySelectorAll('#langs button').forEach((b)=>b.classList.toggle('on',b.dataset.l===state.lang));
-  $('variants').innerHTML=VARIANTS.map((k)=>{const v=t.v[k];return `<button type="button" class="variant${k===state.variant?' on':''}" data-v="${k}"><b>${v[0]}</b><small>${v[1]}</small><strong><em style="font-size:.7em;font-style:normal">${WORDS[state.lang].from}</em> ${v[2]}</strong></button>`;}).join('');
-  renderConfig();
-  document.title=`${t.kicker} – ${t.brand.replace(/<[^>]+>/g,'')}`;
-}
-function renderVoucher(){
-  const t=T[state.lang], v=current();
-  $('vBrand').innerHTML=t.brand; $('vKicker').textContent=t.vk; $('vFor').textContent=t.vfor; $('vSample').textContent=t.sample;
-  $('lCode').textContent=t.code; $('lValid').textContent=t.valid; $('lFrom').textContent=t.vfrom; $('lPrice').textContent=t.price;
-  const name=$('fName').value.trim()||t.namePh;
-  $('vName').textContent=name; $('vName').classList.toggle('long',name.length>22);
-  $('vTitle').textContent=v[3]; $('vDesc').textContent=v[4]; $('vPrice').textContent=v[2];
-  const msg=$('fMsg').value.trim();
-  $('vMsg').textContent=msg; $('vMsg').classList.toggle('long',msg.length>140&&msg.length<=280); $('vMsg').classList.toggle('xlong',msg.length>280);
-  $('vCode').textContent=isAdmin?$('fCode').value:'— '+t.codeLater;
-  $('vValid').textContent=isAdmin?fmtDate($('fValid').value):fmtDate($('fValid').value);
-  $('vFrom').textContent=$('fFrom').value.trim();
-  $('vFromWrap').style.display=$('fFrom').value.trim()?'':'none';
-  $('vPriceWrap').style.visibility=isAdmin&&$('fPrice').checked?'visible':'hidden';
+  $('f-pro').textContent=$('fName').value.trim();
+  $('f-od').textContent=$('fFrom').value.trim();
+  $('f-vzkaz').textContent=$('fMsg').value.trim();
+  $('f-no').textContent=isAdmin?$('fCode').value.trim():'';
+  if(!validTouched)$('fValid').value=P[state.lang].validDef;
+  $('f-platnost').textContent=$('fValid').value.trim();
   $('msgCount').textContent=`${$('fMsg').value.length}/420`;
-  const o=order();
-  $('btnOrder').href=`mailto:${EMAIL}?subject=${encodeURIComponent(o.subject)}&body=${encodeURIComponent(o.body)}`;
+  fitMsg();
 }
-// nastavení poukazu: dny a osoby (pobyt) nebo hodiny a osoby (po hodinách) + celková cena
+
+/* ===================== formulář ===================== */
+function order(){
+  const t=T[state.lang];
+  const o={v:current(),name:$('fName').value.trim()||'—',msg:$('fMsg').value.trim(),from:$('fFrom').value.trim(),
+    look:document.documentElement.dataset.mode==='night'?t.lookNight:t.lookDay,
+    del:state.delivery==='post'?t.delPost($('fAddr').value.trim().replace(/\n+/g,', ')):t.delEmail,buyer:$('fBuyer').value.trim()};
+  return {subject:t.subj(o),body:t.mail(o)};
+}
 function stepper(key,label,val,[min,max]){
   return `<div class="stepper"><span>${label}</span><div><button type="button" data-k="${key}" data-d="-1"${val<=min?' disabled':''}>−</button><b>${val}</b><button type="button" data-k="${key}" data-d="1"${val>=max?' disabled':''}>+</button></div></div>`;
 }
@@ -423,37 +958,57 @@ function renderConfig(){
     : stepper('days',w.cDays,state.days,LIMITS.days)+stepper('persons',w.cPersons,state.persons,LIMITS.persons))
     +`<div class="total"><span>${w.total}</span><strong>${current()[2]}</strong></div>`;
 }
-function render(){renderTexts();renderVoucher();}
+function renderTexts(){
+  const t=T[state.lang];
+  document.documentElement.lang=state.lang;
+  document.querySelectorAll('[data-t]').forEach((e)=>{const v=t[e.dataset.t];if(typeof v==='string')e.innerHTML=v;});
+  $('brandTxt').innerHTML=t.brand; $('homeLink').href=t.home; $('backLink').href=`${t.home}#studio`;
+  $('fName').placeholder=t.namePh; $('fFrom').placeholder=t.fromPh; $('fMsg').placeholder=t.msgPh;
+  // ukázkový vzkaz podle poukazu (vysvětlí, co se s poukazem dá dělat), dokud ho zákazník nepřepíše
+  if(!msgTouched)$('fMsg').value=t.ex[state.variant];
+  document.querySelectorAll('#langs button').forEach((b)=>b.classList.toggle('on',b.dataset.l===state.lang));
+  $('variants').innerHTML=VARIANTS.map((k)=>{const v=t.v[k];return `<button type="button" class="variant${k===state.variant?' on':''}" data-v="${k}"><b>${v[0]}</b><small>${v[1]}</small><strong><em style="font-size:.7em;font-style:normal">${WORDS[state.lang].from}</em> ${v[2]}</strong></button>`;}).join('');
+  renderConfig();
+  document.title=`${t.kicker} – ${t.brand.replace(/<[^>]+>/g,'')}`;
+}
+function renderVoucher(){
+  renderFields();
+  const o=order();
+  $('btnOrder').href=`mailto:${EMAIL}?subject=${encodeURIComponent(o.subject)}&body=${encodeURIComponent(o.body)}`;
+}
+function renderAll(){renderTexts();renderPanels();renderVoucher();}
 
-// výchozí hodnoty
-newCode();
-$('fValid').value='2027-12-31';
+function newCode(){
+  const abc='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c='';for(let i=0;i<4;i++)c+=abc[Math.floor(Math.random()*abc.length)];
+  $('fCode').value=`MNP-${new Date().getFullYear()}-${c}`;
+}
 
-let msgTouched=false;
 $('fMsg').addEventListener('input',()=>{msgTouched=true;});
-document.addEventListener('input',renderVoucher);
-$('variants').addEventListener('click',(e)=>{const b=e.target.closest('[data-v]');if(!b)return;state.variant=b.dataset.v;state.persons=PRESET[state.variant];render();});
+$('fValid').addEventListener('input',()=>{validTouched=true;});
+document.addEventListener('input',(e)=>{if(e.target.closest('.form'))renderVoucher();});
+$('variants').addEventListener('click',(e)=>{const b=e.target.closest('[data-v]');if(!b)return;state.variant=b.dataset.v;state.persons=PRESET[state.variant];renderAll();});
 $('config').addEventListener('click',(e)=>{
   const b=e.target.closest('[data-k]');if(!b)return;
   const k=b.dataset.k,lim=k==='persons'?(state.variant==='hours'?LIMITS.hourPersons:LIMITS.persons):LIMITS[k];
   state[k]=Math.min(lim[1],Math.max(lim[0],state[k]+Number(b.dataset.d)));
-  renderConfig();renderVoucher();
+  renderConfig();renderPanels();renderVoucher();
 });
-$('langs').addEventListener('click',(e)=>{const b=e.target.closest('[data-l]');if(!b)return;state.lang=b.dataset.l;render();});
-$('styles').addEventListener('click',(e)=>{
-  const b=e.target.closest('[data-s]');if(!b)return;state.style=b.dataset.s;
-  document.querySelectorAll('#styles button').forEach((x)=>x.classList.toggle('on',x===b));
-  $('voucher').classList.remove('s-paper','s-minimal');
-  if(state.style!=='night')$('voucher').classList.add(`s-${state.style}`);
-  renderVoucher();
-});
+$('langs').addEventListener('click',(e)=>{const b=e.target.closest('[data-l]');if(!b)return;state.lang=b.dataset.l;renderAll();});
 $('delivery').addEventListener('click',(e)=>{
   const b=e.target.closest('[data-d]');if(!b)return;state.delivery=b.dataset.d;
   document.querySelectorAll('#delivery button').forEach((x)=>x.classList.toggle('on',x===b));
   $('postWrap').hidden=state.delivery!=='post';
   renderVoucher();
 });
-$('btnOrder').addEventListener('click',()=>{$('sent').classList.add('on');});
+$('btnOrder').addEventListener('click',(e)=>{
+  $('sent').classList.add('on');
+  // ve vrstvě přes web (iframe) prohlížeč mailto blokuje → otevřít přes hlavní okno
+  if(window.parent!==window){
+    e.preventDefault();
+    try{window.top.location.href=$('btnOrder').href;}catch(err){window.open($('btnOrder').href,'_blank');}
+  }
+});
 $('btnCopy').addEventListener('click',async()=>{
   const o=order();
   try{await navigator.clipboard.writeText(`${o.subject}\n\n${o.body}`);}catch(e){}
@@ -461,18 +1016,85 @@ $('btnCopy').addEventListener('click',async()=>{
 });
 $('btnCode').addEventListener('click',()=>{newCode();renderVoucher();});
 $('btnPrint').addEventListener('click',()=>window.print());
-$('btnPdf').addEventListener('click',async()=>{
-  const btn=$('btnPdf');btn.disabled=true;btn.textContent='Připravuji…';
-  try{
-    await document.fonts.ready;
-    const canvas=await html2canvas($('voucher'),{scale:3,backgroundColor:null,useCORS:true});
-    const pdf=new jspdf.jsPDF({orientation:'landscape',unit:'mm',format:'a5'});
-    pdf.addImage(canvas.toDataURL('image/jpeg',.95),'JPEG',0,0,210,148);
-    const who=($('fName').value||'poukaz').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/gi,'-').replace(/^-|-$/g,'');
-    pdf.save(`poukaz-${who||'mlyn'}-${$('fCode').value}.pdf`);
-  }finally{btn.disabled=false;btn.textContent='Stáhnout PDF';}
+
+/* ===================== panely → 3D karta / tisk ===================== */
+const PANEL=[0,1,2,3].map((i)=>$('panel'+i));
+if(!isAdmin)PANEL.forEach((p)=>{const s=document.createElement('div');s.className='sample';p.appendChild(s);});
+function panelsToCard(){PANEL.forEach((p,i)=>$('face'+i).prepend(p));}
+function panelsToPrint(){PANEL.forEach((p,i)=>$('slot'+i).appendChild(p));}
+panelsToCard();
+window.addEventListener('beforeprint',()=>{panelsToPrint();fitMsg();});
+window.addEventListener('afterprint',()=>{panelsToCard();fitMsg();render();});
+
+/* ===================== 3D karta: otevírání a otáčení (z návrhu) ===================== */
+const stage=$('stage');
+const MM=96/25.4,W=210*MM,H=148.5*MM;
+let angle=0,turn=0,intro=1;
+const tilt={x:0,y:0,tx:0,ty:0},anim={};
+const ease=(u)=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
+const easeOut=(u)=>1-Math.pow(1-u,3);
+function render(){
+  const p=angle/180,sw=stage.clientWidth,sh=stage.clientHeight-40;
+  const kc=Math.min(sw*.86/W,sh*.82/H),ko=Math.min(sw*.9/W,sh*.94/(2*H));
+  const k=lerp(kc,ko,p),y=-(H*k/2)*(1-p);
+  const tp=turn/180;
+  const lift=Math.sin(p*Math.PI)*26+Math.sin(tp*Math.PI)*40;
+  const rx=tilt.y+Math.sin(tp*Math.PI)*5+(1-intro)*18;
+  const ry=turn+tilt.x;
+  $('rig').style.transform=`translateY(${(y+(1-intro)*70).toFixed(1)}px) translateZ(${lift.toFixed(1)}px) scale(${k.toFixed(4)}) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+  $('scene').style.opacity=intro.toFixed(3);
+  $('frontLeaf').style.transform=`rotateX(${angle}deg) translateZ(1mm)`;
+  const s=Math.sin(angle*Math.PI/180);
+  $('shade1').style.opacity=(s*.32).toFixed(3);
+  $('shade2').style.opacity=(s*.28).toFixed(3);
+  $('shade3').style.opacity=((1-p)*.55).toFixed(3);
+  const g=$('ground');
+  g.style.opacity=(Math.max(.25,1-lift/70)*intro).toFixed(2);
+  g.style.transform=`translateY(${(y+(H-8*MM)*k+(1-intro)*70).toFixed(1)}px) scale(${(k*(1+lift/300)*(1-.25*Math.abs(Math.sin(tp*Math.PI)))).toFixed(4)}, ${(k*(1+lift/160)).toFixed(4)})`;
+  const view=turn>90?'back':angle>90?'open':'front';
+  document.querySelectorAll('#views button').forEach((b)=>b.classList.toggle('on',b.dataset.view===view));
+}
+function tween(name,from,to,ms,set,fn=ease){
+  cancelAnimationFrame(anim[name]);
+  const t0=performance.now();
+  const step=(now)=>{
+    const u=Math.min(1,(now-t0)/ms);
+    set(from+(to-from)*fn(u));
+    if(u<1)anim[name]=requestAnimationFrame(step);else anim[name]=0;
+    render();
+  };
+  anim[name]=requestAnimationFrame(step);
+}
+const openTo=(a)=>tween('a',angle,a,1150,(v)=>{angle=v;});
+const turnTo=(t)=>tween('t',turn,t,1000,(v)=>{turn=v;});
+function setView(v){
+  if(v==='front'){if(turn>0)turnTo(0);if(angle>0)openTo(0);}
+  if(v==='open'){if(turn>0)turnTo(0);openTo(180);}
+  if(v==='back'){if(angle>0)openTo(0);turnTo(180);}
+}
+$('views').addEventListener('click',(e)=>{const b=e.target.closest('[data-view]');if(b)setView(b.dataset.view);});
+$('card').addEventListener('click',()=>{if(turn>90)turnTo(0);else openTo(angle>90?0:180);});
+// jemná paralaxa při pohybu myší
+let tiltRaf=0;
+function tiltLoop(){
+  cancelAnimationFrame(tiltRaf);
+  const step=()=>{
+    tilt.x+=(tilt.tx-tilt.x)*.09;tilt.y+=(tilt.ty-tilt.y)*.09;render();
+    if(Math.abs(tilt.tx-tilt.x)+Math.abs(tilt.ty-tilt.y)>.01)tiltRaf=requestAnimationFrame(step);
+  };
+  tiltRaf=requestAnimationFrame(step);
+}
+stage.addEventListener('pointermove',(ev)=>{
+  if(ev.pointerType==='touch')return;
+  const r=stage.getBoundingClientRect();
+  tilt.tx=((ev.clientX-r.left)/r.width-.5)*8;
+  tilt.ty=-((ev.clientY-r.top)/r.height-.5)*6;
+  tiltLoop();
 });
-// zavření: zpět na web (na sekci Studio), z webu přes historii prohlížeče
+stage.addEventListener('pointerleave',()=>{tilt.tx=tilt.ty=0;tiltLoop();});
+new ResizeObserver(render).observe(stage);
+
+/* ===================== zavření ===================== */
 function closeEditor(){
   // otevřeno jako vrstva přes web → jen ji zavřít
   if(params.has('embed')&&window.parent!==window){window.parent.postMessage({type:'gift-close'},location.origin);return;}
@@ -485,7 +1107,13 @@ $('btnClose').addEventListener('click',closeEditor);
 $('backLink').addEventListener('click',(e)=>{if(params.has('embed')&&window.parent!==window){e.preventDefault();closeEditor();}});
 $('homeLink').addEventListener('click',(e)=>{if(params.has('embed')&&window.parent!==window){e.preventDefault();closeEditor();}});
 document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName||''))closeEditor();});
-render();
+
+/* ===================== start ===================== */
+newCode();
+setMode(params.get('mode')==='night'?'night':'day');   // výchozí je denní (světlý)
+renderAll();
+intro=0;tween('i',0,1,1000,(v)=>{intro=v;},easeOut);
+if(document.fonts)document.fonts.ready.then(()=>{fitMsg();render();});
 </script>
 </body>
 </html>
