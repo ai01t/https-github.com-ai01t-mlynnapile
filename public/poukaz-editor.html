@@ -45,7 +45,20 @@ a{color:inherit;}
 .iconbtn{width:40px;height:40px;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:50%;background:none;color:var(--text);font-size:1.3rem;line-height:1;cursor:pointer;transition:border-color .2s,color .2s;}
 .iconbtn:hover{border-color:var(--gold);color:var(--gold-ink);}
 .iconbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
-html[data-mode="day"] .ico-sun,html[data-mode="night"] .ico-moon{display:none;}
+/* ikona den/noc stejná jako v hlavním menu: ukazuje aktuální režim, při přepnutí se rozzáří / zhoupne */
+.mode-icon{display:none;width:16px;height:16px;line-height:0;}
+.mode-icon svg{display:block;width:16px;height:16px;overflow:visible;stroke-width:1.8;}
+html[data-mode="day"] .mode-icon-sun,html[data-mode="night"] .mode-icon-moon{display:inline-block;}
+.btn-mode.mode-anim-day,.btn-mode.mode-anim-night{color:var(--gold);}
+.btn-mode.mode-anim-day .mode-icon-sun svg{transform-origin:50% 50%;animation:modeSunBurst 2.6s cubic-bezier(.22,.61,.36,1);}
+.btn-mode.mode-anim-day .mode-icon-sun path{transform-box:view-box;transform-origin:12px 12px;animation:modeSunRays .65s ease-in-out 4;}
+@keyframes modeSunBurst{0%{transform:scale(1) rotate(0);filter:none;}22%{transform:scale(1.6) rotate(50deg);filter:drop-shadow(0 0 5px rgba(244,204,120,.95));}60%{transform:scale(1.4) rotate(120deg);filter:drop-shadow(0 0 9px rgba(244,204,120,.75));}100%{transform:scale(1) rotate(180deg);filter:none;}}
+@keyframes modeSunRays{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.32);opacity:.55;}}
+.btn-mode.mode-anim-night .mode-icon-moon svg{transform-origin:50% 8%;animation:modeMoonSwing 2.8s ease-in-out;}
+.btn-mode.mode-anim-night .mode-icon-moon path:nth-child(2){transform-box:view-box;transform-origin:18.3px 6.2px;animation:modeStarTwinkle .7s ease-in-out .35s 3;}
+@keyframes modeMoonSwing{0%{transform:rotate(0) scale(1);filter:none;}14%{transform:rotate(-24deg) scale(1.4);filter:drop-shadow(0 0 6px rgba(176,198,255,.9));}34%{transform:rotate(17deg) scale(1.4);}54%{transform:rotate(-10deg) scale(1.32);filter:drop-shadow(0 0 8px rgba(176,198,255,.7));}74%{transform:rotate(5deg) scale(1.16);}100%{transform:rotate(0) scale(1);filter:none;}}
+@keyframes modeStarTwinkle{0%,100%{opacity:1;transform:scale(1);}45%{opacity:.1;transform:scale(.4);}70%{opacity:1;transform:scale(2.1);}}
+@media(prefers-reduced-motion:reduce){.btn-mode .mode-icon svg,.btn-mode .mode-icon path{animation:none !important;}}
 .langs{display:flex;gap:4px;}
 .langs button{padding:6px 9px;border:1px solid transparent;background:none;color:var(--muted);font:inherit;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;}
 .langs button.on{border-color:var(--line);color:var(--gold-ink);}
@@ -152,7 +165,7 @@ html[data-mode="night"] .face::after{opacity:.45;mix-blend-mode:screen;}
 .vc .cover .sub{margin:4.2mm auto 0;font:italic 400 14.5pt/1.2 var(--serif);color:var(--ink-soft);text-align:center;transform:translateY(-.5mm);}
 .vc .cover-msg{display:flex;position:absolute;left:97mm;right:16mm;top:62mm;bottom:15mm;flex-direction:column;justify-content:center;}
 .vc .cover-msg-inner{position:relative;padding:.5mm 0 .5mm 8mm;}
-.vc .msg{position:relative;max-height:58mm;overflow:hidden;padding:0 1mm;font:italic 400 12pt/1.36 var(--serif);color:var(--ink);white-space:pre-wrap;}
+.vc .msg{position:relative;text-align:center;max-height:58mm;overflow:hidden;padding:0 1mm;font:italic 400 12pt/1.36 var(--serif);color:var(--ink);white-space:pre-wrap;}
 /* 0 · zadní strana */
 .vc .back{padding:15mm 16mm 13mm;display:flex;flex-direction:column;justify-content:space-between;}
 .vc .back-head{display:flex;justify-content:space-between;align-items:flex-start;}
@@ -235,9 +248,9 @@ body.is-admin .vc .sample{display:none;}
   <div class="langs" id="langs">
     <button type="button" data-l="cs">CZ</button><button type="button" data-l="en">EN</button><button type="button" data-l="de">DE</button>
   </div>
-  <button type="button" class="iconbtn" id="btnMode" aria-label="Den / noc">
-    <svg class="ico-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
-    <svg class="ico-moon" viewBox="0 0 24 24"><path d="M20.5 14.2A8.5 8.5 0 0 1 9.8 3.5a8.5 8.5 0 1 0 10.7 10.7z"/></svg>
+  <button type="button" class="iconbtn btn-mode" id="btnMode" aria-label="Den / noc">
+    <span class="mode-icon mode-icon-sun" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"></circle><path d="M12 2.5v3"></path><path d="M12 18.5v3"></path><path d="M2.5 12h3"></path><path d="M18.5 12h3"></path><path d="M5.2 5.2l2.1 2.1"></path><path d="M16.7 16.7l2.1 2.1"></path><path d="M18.8 5.2l-2.1 2.1"></path><path d="M7.3 16.7l-2.1 2.1"></path></svg></span>
+    <span class="mode-icon mode-icon-moon" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M20.5 13.2A8.5 8.5 0 1 1 10.8 3.5a7 7 0 1 0 9.7 9.7Z"></path><path fill="currentColor" d="M18.3 4.2l.6 1.4 1.4.6-1.4.6-.6 1.4-.6-1.4-1.4-.6 1.4-.6z"></path></svg></span>
   </button>
   <button type="button" class="iconbtn" id="btnClose" aria-label="Zavřít">×</button>
 </header>
@@ -867,7 +880,8 @@ const params=new URLSearchParams(location.search);
 const isAdmin=params.has('admin');
 document.body.classList.toggle('is-admin',isAdmin);
 const state={
-  lang:['cs','en','de'].includes(params.get('lang'))?params.get('lang'):'cs',
+  // jazyk: ?lang=…, jinak podle adresy (/en/gift, /de/gift), jinak čeština
+  lang:['cs','en','de'].includes(params.get('lang'))?params.get('lang'):(location.pathname.match(/^\/(en|de)\//)||[])[1]||'cs',
   variant:VARIANTS.includes(params.get('v'))?params.get('v'):'guitar',
   delivery:'email',days:1,hours:3,
 };
@@ -888,8 +902,14 @@ function setMode(m){
   document.querySelectorAll('#looks button').forEach((b)=>b.classList.toggle('on',b.dataset.m===mode));
   renderVoucher();
 }
-$('btnMode').addEventListener('click',()=>setMode(document.documentElement.dataset.mode==='night'?'day':'night'));
-$('looks').addEventListener('click',(e)=>{const b=e.target.closest('[data-m]');if(b)setMode(b.dataset.m);});
+let modeAnimT=0;
+function animateModeIcon(mode){
+  const b=$('btnMode');b.classList.remove('mode-anim-day','mode-anim-night');void b.offsetWidth;
+  b.classList.add(mode==='night'?'mode-anim-night':'mode-anim-day');
+  clearTimeout(modeAnimT);modeAnimT=setTimeout(()=>b.classList.remove('mode-anim-day','mode-anim-night'),3000);
+}
+$('btnMode').addEventListener('click',()=>{const m=document.documentElement.dataset.mode==='night'?'day':'night';setMode(m);animateModeIcon(m);});
+$('looks').addEventListener('click',(e)=>{const b=e.target.closest('[data-m]');if(b){setMode(b.dataset.m);animateModeIcon(b.dataset.m);}});
 
 /* ===================== QR a pečeť podle jazyka ===================== */
 function drawQRFor(url){

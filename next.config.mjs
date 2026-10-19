@@ -54,6 +54,10 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        // dárkové poukazy: vlastní adresa mlynnapile.cz/gift (+ /en/gift, /de/gift)
+        { source: "/gift", destination: "/poukaz-editor.html" },
+        { source: "/en/gift", destination: "/poukaz-editor.html?lang=en" },
+        { source: "/de/gift", destination: "/poukaz-editor.html?lang=de" },
         // Route the homepage locales to the restored static snapshot.
         {
           source: "/",
