@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="cs" data-mode="day">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Dárkový poukaz – Mlýn na Pile</title>
+<meta property="og:title" content="Dárkový poukaz – Mlýn na Pile">
+<meta property="og:description" content="Máte dárek: čas ve studiu na mlýně. Otevřete poukaz.">
+<meta property="og:image" content="https://www.mlynnapile.cz/images/gift/mlyn-od-rybnika-og.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<style>
+/* Online dárkový poukaz Mlýn na Pile – ve stejném kresleném stylu jako tištěná karta.
+   Kresba: mlýn od rybníka perem (rough.js) podle fotky, vodorovná hladina i dům. Animace ve stylu
+   filmu „Muž, který sázel stromy": čáry se jemně „vaří", hladina plyne, stromy se houpou ve větru,
+   kachna pluje, ptáci letí, mrak se sune a z komína stoupá kouř. ?d=<data z editoru>, a=0 statický, s=1 VZOR. */
+:root{
+  --ink:#1f1a16; --ink-soft:#4b4038; --brass:#a8844f; --sketch:#4a3c30; --paper:#ffffff; --hair:#cfc4b4; --wash:1;
+  --display:'Cormorant Garamond',serif; --serif:'Cormorant Garamond',serif; --sans:Manrope,sans-serif;
+}
+html[data-mode="night"]{--ink:#efe8dc; --ink-soft:#b9ae9f; --brass:#c8a96e; --sketch:#cbbd9f; --paper:#141217; --hair:#3e3833; --wash:.55;}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.6;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+html[data-mode="night"] body::after{opacity:.35;mix-blend-mode:screen;}
+
+.wrap{max-width:1280px;margin:0 auto;padding:calc(22px + env(safe-area-inset-top)) clamp(18px,4vw,56px) calc(40px + env(safe-area-inset-bottom));}
+.head{display:flex;align-items:center;justify-content:space-between;}
+.wordmark{font:400 1.35rem/1 var(--display);letter-spacing:.01em;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:10px;}
+.wordmark svg{width:24px;color:var(--brass);}
+.wordmark em{font-style:italic;font-weight:300;}
+.label{font:600 .6rem/1.2 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--brass);}
+
+/* titulka: nadpis nahoře na středu, kresba vlevo, vzkaz vpravo (jako tištěná karta) */
+.title{text-align:center;margin-top:clamp(20px,5vh,52px);}
+.title h1{margin:14px 0 0;font:300 clamp(2.8rem,7vw,5.6rem)/.92 var(--display);letter-spacing:-.01em;}
+.title h1 em{font-style:normal;}
+.title .sub{margin:14px 0 0;font:italic 400 clamp(1.05rem,2.1vw,1.45rem)/1.25 var(--serif);color:var(--ink-soft);}
+.cover{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:clamp(18px,3vw,48px);align-items:center;margin-top:clamp(10px,3vh,34px);}
+.art{width:100%;height:auto;display:block;overflow:visible;}
+.msgcol{text-align:center;padding:10px 0;}
+.msgcol .pro{font:italic 400 1.05rem/1 var(--serif);color:var(--ink-soft);}
+.msgcol .name{margin:6px 0 0;font:300 clamp(2rem,3.6vw,2.8rem)/1 var(--display);}
+.msgcol .msg{margin:18px 0 0;font:italic 400 clamp(1.08rem,1.7vw,1.3rem)/1.45 var(--serif);white-space:pre-line;}
+.msgcol .from{margin:16px 0 0;font:italic 400 1.05rem/1.3 var(--serif);color:var(--ink-soft);}
+.msgcol .from b{font-style:normal;font-weight:400;color:var(--ink);}
+
+/* zadní strana pod titulkou */
+.back{margin-top:clamp(36px,7vh,80px);padding-top:clamp(26px,4vh,40px);border-top:1px solid var(--hair);}
+.back-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;}
+.back h3{margin:10px 0 0;font:300 clamp(2rem,4vw,2.8rem)/1 var(--display);}
+.back h3 em{font-style:italic;}
+.back .no b{display:inline-block;min-width:120px;margin-left:8px;padding:0 4px 2px;border-bottom:1px dotted var(--brass);font:600 .72rem/1.4 var(--sans);letter-spacing:.1em;color:var(--ink);}
+#seal{width:96px;height:96px;flex:none;}
+.back-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(20px,5vw,64px);margin-top:28px;}
+.f{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;font-size:1.25rem;}
+.f > span:first-child{font:italic 400 1em/1 var(--serif);color:var(--ink-soft);min-width:60px;}
+.f .field{flex:1;min-height:30px;border-bottom:1px dotted var(--ink-soft);font:400 1em/1.3 var(--serif);padding:0 4px;}
+.opts .label{margin-bottom:12px;}
+.opt{display:grid;grid-template-columns:22px 1fr;column-gap:10px;margin-bottom:12px;font-size:.86rem;}
+.opt .box{grid-row:span 2;width:14px;height:14px;margin-top:2px;border:1px solid var(--ink-soft);position:relative;}
+.opt.on .box::before,.opt.on .box::after{content:'';position:absolute;left:50%;top:50%;width:1.5px;height:20px;background:var(--ink);transform:translate(-50%,-50%) rotate(45deg);}
+.opt.on .box::after{transform:translate(-50%,-50%) rotate(-45deg);}
+.opt b{font-weight:500;}
+.opt small{font-size:.76rem;color:var(--ink-soft);}
+.opts .f{margin:16px 0 0;font-size:1.15rem;}
+.back-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-top:22px;padding-top:16px;border-top:1px solid var(--hair);}
+.how{font-size:.8rem;line-height:1.7;color:var(--ink-soft);}
+.how b{display:block;font:italic 400 1.35rem/1.3 var(--serif);color:var(--ink);margin-bottom:2px;}
+.how a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--hair);}
+.cta{flex:none;padding:13px 20px;border:1px solid var(--brass);color:var(--brass);text-decoration:none;font:600 .64rem/1 var(--sans);letter-spacing:.18em;text-transform:uppercase;transition:background .2s,color .2s;}
+.cta:hover{background:var(--brass);color:var(--paper);}
+
+.motion{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;padding:9px 15px;border:1px solid var(--hair);border-radius:999px;background:color-mix(in srgb,var(--paper) 85%,transparent);color:var(--ink-soft);font:600 .58rem/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}
+.motion:hover{color:var(--ink);border-color:var(--brass);}
+.sample{position:fixed;left:50%;top:50%;z-index:25;transform:translate(-50%,-50%) rotate(-18deg);font:300 clamp(4rem,14vw,10rem)/1 var(--display);letter-spacing:.3em;color:var(--brass);opacity:.1;pointer-events:none;white-space:nowrap;}
+
+/* nástup textů */
+.rv{opacity:0;transform:translateY(10px);transition:opacity 1.6s ease,transform 1.6s cubic-bezier(.22,1,.36,1);}
+.rv.in{opacity:1;transform:none;}
+body.static .rv{opacity:1;transform:none;transition:none;}
+
+
+@media (max-width:820px){
+  .cover{grid-template-columns:1fr;}
+  .back-grid{grid-template-columns:1fr;}
+  .back-foot{flex-direction:column;align-items:flex-start;}
+  #seal{width:72px;height:72px;}
+}
+@media (prefers-reduced-motion:reduce){.rv{transition:none;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <a class="wordmark" id="brand" href="/" target="_blank" rel="noopener"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#wheel"/></svg><span id="brandTxt"></span></a>
+    <span class="label" id="kick"></span>
+  </header>
+
+  <section class="title rv" id="rvTitle">
+    <div class="label" id="tLbl"></div>
+    <h1 id="tTitle"></h1>
+    <p class="sub" id="tSub"></p>
+  </section>
+
+  <section class="cover">
+    <svg class="art" id="art" viewBox="0 0 2000 1300" preserveAspectRatio="xMidYMid meet" aria-label="Mlýn na Pile od rybníka – kresba">
+      <defs>
+        <!-- měkké okraje celé kresby (jako vinětace ve skicáku) -->
+        <radialGradient id="gFade" cx=".5" cy=".55" r=".62"><stop offset="0" stop-color="#fff"/><stop offset=".7" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+        <mask id="mFade" maskUnits="userSpaceOnUse" x="-100" y="-100" width="2200" height="1500"><rect x="-100" y="-100" width="2200" height="1500" fill="url(#gFade)"/></mask>
+        <mask id="mReflect" maskUnits="userSpaceOnUse" x="0" y="1000" width="2000" height="300"><rect x="0" y="1000" width="2000" height="300" fill="#fff"/><g id="reflStripes" fill="#000"></g></mask>
+      </defs>
+      <g mask="url(#mFade)"><g id="ink" style="opacity:.86"></g></g>
+    </svg>
+    <div class="msgcol rv" id="rvMsg">
+      <div class="pro" id="lPro"></div>
+      <div class="name" id="vTo"></div>
+      <p class="msg" id="vMsg"></p>
+      <p class="from" id="vFromWrap"><span id="lFrom"></span> <b id="vFrom"></b></p>
+    </div>
+  </section>
+
+  <section class="back">
+    <div class="back-head">
+      <div>
+        <div class="label no"><span id="bLabel"></span> <span id="bNoLbl"></span><b id="vNo"></b></div>
+        <h3 id="bTitle"></h3>
+      </div>
+      <svg id="seal" viewBox="0 0 300 300" aria-hidden="true"></svg>
+    </div>
+    <div class="back-grid">
+      <div>
+        <div class="f"><span id="fPro"></span><span class="field" id="vTo2"></span></div>
+        <div class="f"><span id="fOd"></span><span class="field" id="vFrom2"></span></div>
+      </div>
+      <div class="opts">
+        <div class="label" id="optsLbl"></div>
+        <div class="opt" data-typ="guitar"><i class="box"></i><b></b><small></small></div>
+        <div class="opt" data-typ="band"><i class="box"></i><b></b><small></small></div>
+        <div class="opt" data-typ="hours"><i class="box"></i><b></b><small></small></div>
+        <div class="f"><span id="fValid"></span><span class="field" id="vValid"></span></div>
+      </div>
+    </div>
+    <div class="back-foot">
+      <div class="how" id="how"></div>
+      <a class="cta" id="cta" href="/#studio" target="_blank" rel="noopener"></a>
+    </div>
+  </section>
+</div>
+
+<button type="button" class="motion" id="btnMotion"></button>
+<div class="sample" id="sample" hidden></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="wheel" stroke="currentColor" fill="none">
+      <line x1="76.79" y1="61.10" x2="87.88" y2="65.69" stroke-width="8"/><line x1="61.10" y1="76.79" x2="65.69" y2="87.88" stroke-width="8"/><line x1="38.90" y1="76.79" x2="34.31" y2="87.88" stroke-width="8"/><line x1="23.21" y1="61.10" x2="12.12" y2="65.69" stroke-width="8"/><line x1="23.21" y1="38.90" x2="12.12" y2="34.31" stroke-width="8"/><line x1="38.90" y1="23.21" x2="34.31" y2="12.12" stroke-width="8"/><line x1="61.10" y1="23.21" x2="65.69" y2="12.12" stroke-width="8"/><line x1="76.79" y1="38.90" x2="87.88" y2="34.31" stroke-width="8"/>
+      <line x1="79" y1="50" x2="21" y2="50" stroke-width="4.2"/><line x1="70.51" y1="70.51" x2="29.49" y2="29.49" stroke-width="4.2"/><line x1="50" y1="79" x2="50" y2="21" stroke-width="4.2"/><line x1="29.49" y1="70.51" x2="70.51" y2="29.49" stroke-width="4.2"/>
+      <circle cx="50" cy="50" r="29" stroke-width="6.5"/>
+      <circle cx="50" cy="50" r="8.5" fill="currentColor" stroke="none"/>
+    </g>
+  </defs>
+</svg>
+
+<script>
+/* ===================== texty a data ===================== */
+const L10N={
+  cs:{brand:'Mlýn <em>na Pile</em>',kick:'Dárkový poukaz',lbl:'Dárkový poukaz · Mlýn na Pile',titleStay:'Pobyt <em>na mlýně</em>',titleHours:'Čas <em>ve studiu</em>',
+    sub:'s hromadou aparatury k dispozici',pro:'Pro',from:'Od',bLabel:'Dárkový poukaz',bNo:'č.',bTitle:'Čas <em>v mlýně</em>',opts:'Poukaz na',valid:'Platí do',
+    v:{guitar:['Pro kytaristu','1 osoba · den s přespáním'],band:['Pro kapelu','4 osoby · den s přespáním'],hours:['3 hodiny ve studiu','bez přespání']},
+    how:'<b>Jak poukaz uplatnit</b>Volné termíny naleznete na <a href="/#studio" target="_blank" rel="noopener">mlynnapile.cz</a>.<br><a href="mailto:mlynnapile@gmail.com">mlynnapile@gmail.com</a> · <a href="tel:+420724050093">+420 724 050 093</a><br>Pila 100 – Mlýn · Trhanov 344 01',
+    cta:'Vybrat termín ↗',home:'/',pause:'❚❚ Zastavit pohyb',play:'▶ Rozpohybovat',sample:'VZOR',aria:'Mlýn na Pile od rybníka – kresba'},
+  en:{brand:'Mill <em>at Pila</em>',kick:'Gift voucher',lbl:'Gift voucher · Mill at Pila',titleStay:'A stay <em>at the mill</em>',titleHours:'Time <em>in the studio</em>',
+    sub:'with a pile of gear at your disposal',pro:'For',from:'From',bLabel:'Gift voucher',bNo:'No.',bTitle:'Time <em>at the mill</em>',opts:'Voucher for',valid:'Valid until',
+    v:{guitar:['For a guitarist','1 person · day with overnight stay'],band:['For a band','4 people · day with overnight stay'],hours:['3 hours in the studio','no overnight stay']},
+    how:'<b>How to redeem</b>Find available dates at <a href="/en#studio" target="_blank" rel="noopener">mlynnapile.cz</a>.<br><a href="mailto:mlynnapile@gmail.com">mlynnapile@gmail.com</a> · <a href="tel:+420724050093">+420 724 050 093</a><br>Pila 100 – Mlýn · 344 01 Trhanov, Czech Republic',
+    cta:'Choose a date ↗',home:'/en',pause:'❚❚ Pause motion',play:'▶ Play motion',sample:'SAMPLE',aria:'The Mill at Pila seen from the pond – drawing'},
+  de:{brand:'Mühle <em>an der Pila</em>',kick:'Gutschein',lbl:'Gutschein · Mühle an der Pila',titleStay:'Aufenthalt <em>in der Mühle</em>',titleHours:'Zeit <em>im Studio</em>',
+    sub:'mit jeder Menge Equipment',pro:'Für',from:'Von',bLabel:'Gutschein',bNo:'Nr.',bTitle:'Zeit <em>in der Mühle</em>',opts:'Gutschein für',valid:'Gültig bis',
+    v:{guitar:['Für Gitarristen','1 Person · Tag mit Übernachtung'],band:['Für eine Band','4 Personen · Tag mit Übernachtung'],hours:['3 Stunden im Studio','ohne Übernachtung']},
+    how:'<b>So lösen Sie den Gutschein ein</b>Freie Termine finden Sie auf <a href="/de#studio" target="_blank" rel="noopener">mlynnapile.cz</a>.<br><a href="mailto:mlynnapile@gmail.com">mlynnapile@gmail.com</a> · <a href="tel:+420724050093">+420 724 050 093</a><br>Pila 100 – Mlýn · 344 01 Trhanov, Tschechien',
+    cta:'Termin wählen ↗',home:'/de',pause:'❚❚ Bewegung anhalten',play:'▶ Bewegung starten',sample:'MUSTER',aria:'Die Mühle an der Pila vom Teich aus – Zeichnung'},
+};
+const SEAL={cs:'MLÝN NA PILE · PILA U TRHANOVA · DÁRKOVÝ POUKAZ · ',en:'MILL AT PILA · PILA NEAR TRHANOV · GIFT VOUCHER · ',de:'MÜHLE AN DER PILA · PILA BEI TRHANOV · GUTSCHEIN · '};
+const Q=new URLSearchParams(location.search);
+function decode(s){try{const b=s.replace(/-/g,'+').replace(/_/g,'/');return JSON.parse(decodeURIComponent(escape(atob(b))));}catch(e){return null;}}
+let D=Object.assign({l:'cs',v:'guitar',t:'',f:'',m:'',w:'',x:'',no:'',val:'31. 12. 2027',a:1,s:0,md:'day'},decode(Q.get('d')||'')||{});
+if(Q.has('a'))D.a=Q.get('a')==='0'?0:1;
+if(Q.has('s'))D.s=Q.get('s')==='1'?1:0;
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=(id)=>document.getElementById(id);
+const nb=(s)=>D.l==='cs'?String(s).replace(/(^|[\s(])([ksvzouaiKSVZOUAI]) /g,'$1$2 '):s;
+
+function render(){
+  const T=L10N[D.l]||L10N.cs;
+  document.documentElement.lang=D.l in L10N?D.l:'cs';
+  document.documentElement.dataset.mode=D.md==='night'?'night':'day';
+  $('brandTxt').innerHTML=T.brand; $('brand').href=T.home; $('kick').textContent=T.kick;
+  $('tLbl').textContent=T.lbl; $('tTitle').innerHTML=D.v==='hours'?T.titleHours:T.titleStay; $('tSub').textContent=T.sub;
+  $('art').setAttribute('aria-label',T.aria);
+  $('lPro').textContent=T.pro; $('vTo').textContent=D.t||''; $('vTo').hidden=!D.t; $('lPro').hidden=!D.t;
+  $('vMsg').textContent=nb(D.m||''); $('vMsg').hidden=!D.m;
+  $('lFrom').textContent=T.from; $('vFrom').textContent=D.f||''; $('vFromWrap').hidden=!D.f;
+  $('bLabel').textContent=T.bLabel; $('bNoLbl').textContent=T.bNo; $('vNo').textContent=D.no||''; $('bTitle').innerHTML=T.bTitle;
+  $('fPro').textContent=T.pro; $('vTo2').textContent=D.t||''; $('fOd').textContent=T.from; $('vFrom2').textContent=D.f||'';
+  $('optsLbl').textContent=T.opts; $('fValid').textContent=T.valid; $('vValid').textContent=D.val||'';
+  document.querySelectorAll('.opt').forEach((o)=>{
+    const k=o.dataset.typ,on=k===D.v;o.classList.toggle('on',on);
+    o.querySelector('b').textContent=on&&D.w?D.w:T.v[k][0];
+    o.querySelector('small').textContent=on&&D.x?D.x:T.v[k][1];
+  });
+  $('how').innerHTML=T.how; $('cta').textContent=T.cta; $('cta').href=`${T.home}#studio`;
+  $('sample').hidden=!D.s; $('sample').textContent=T.sample;
+  const st=$('sealText');if(st)st.textContent=SEAL[D.l]||SEAL.cs;
+  $('btnMotion').textContent=animated?T.pause:T.play; $('btnMotion').hidden=reduce;
+  document.title=`${T.kick} – ${T.brand.replace(/<[^>]+>/g,'')}`;
+}
+
+/* ===================== kresba: mlýn od rybníka (stejné pero jako tištěná karta) =====================
+   Živá kresba ve stylu „Muže, který sázel stromy": každá vrstva je nakreslená třikrát trochu jinak
+   a kresby se střídají (čáry se „vaří" jako ručně překreslená políčka), k tomu plynulý pohyb –
+   hladina plyne, stromy se houpou ve větru, kachna pluje s brázdou, ptáci letí, mrak se sune,
+   z komína stoupá kouř a celý obraz se zlehka nadechuje. Statická verze = první kresba bez pohybu. */
+const NS='http://www.w3.org/2000/svg';
+const INK='#4a3c30',BRASS='#a8844f';
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+const ART=document.getElementById('art');
+const RC=rough.svg(ART);
+const BASE={stroke:INK,strokeWidth:2.7,roughness:1.6,bowing:1.8};
+const THIN={strokeWidth:1.7,roughness:1.5},HAIR={strokeWidth:1.2,roughness:1.8,opacity:.6};
+const HATCH=(gap,ang,op)=>({stroke:'none',fill:INK,fillStyle:'hachure',hachureGap:gap,fillWeight:1.05,hachureAngle:ang,roughness:1.4,opacity:op});
+function pen(group,seed){
+  let s=seed;
+  const o=(x)=>Object.assign({seed:++s},BASE,x||{});
+  const add=(n,x)=>{if(x&&x.opacity!=null)n.setAttribute('opacity',x.opacity);group.appendChild(n);return n;};
+  return {
+    line:(a,b,c,d,x)=>add(RC.line(a,b,c,d,o(x)),x),
+    rect:(a,b,w,h,x)=>add(RC.rectangle(a,b,w,h,o(x)),x),
+    poly:(p,x)=>add(RC.polygon(p,o(x)),x),
+    lines:(p,x)=>add(RC.linearPath(p,o(x)),x),
+    curve:(p,x)=>add(RC.curve(p,o(x)),x),
+    path:(d,x)=>add(RC.path(d,o(x)),x),
+    ell:(cx,cy,w,h,x)=>add(RC.ellipse(cx,cy,w,h,o(x)),x),
+  };
+}
+// vroubkovaná koruna jako na tištěné kartě (úhly ve stupních, 90 = dolů)
+function crown(P,r,cx,cy,rx,ry,n,a0,a1,x){
+  let d='';
+  for(let i=0;i<=n;i++){
+    const a=(a0+(a1-a0)*i/n)*Math.PI/180,j=.88+r()*.2;
+    const px=cx+Math.cos(a)*rx*j,py=cy+Math.sin(a)*ry*j;
+    if(!i){d=`M${px.toFixed(1)} ${py.toFixed(1)}`;continue;}
+    const am=(a0+(a1-a0)*(i-.5)/n)*Math.PI/180;
+    d+=` Q${(cx+Math.cos(am)*rx*1.28).toFixed(1)} ${(cy+Math.sin(am)*ry*1.28).toFixed(1)} ${px.toFixed(1)} ${py.toFixed(1)}`;
+  }
+  return P.path(d,x);
+}
+// vrstva = několik variant téže kresby (střídají se → živá, „vařící se" čára)
+const LAYERS=[];
+function layer(parent,name,frames,build,opts){
+  const root=el('g',{id:name},parent);
+  const list=[];
+  for(let f=0;f<frames;f++){
+    const g=el('g',{},root);
+    build(pen(g,1000*(f+1)+name.length*37),mulberry32(1653+name.length*101),f);
+    if(f)g.style.display='none';
+    list.push(g);
+  }
+  const L=Object.assign({root,frames:list,cur:0,rate:opts&&opts.rate||1},opts||{});
+  LAYERS.push(L);return L;
+}
+const SHORE=1012;
+const ridgeY=(x)=>338-x*.06+Math.sin(x*.005)*12;
+
+function buildScene(){
+  const cam=el('g',{id:'cam'},document.getElementById('ink'));
+  const back=el('g',{},cam);
+
+  // mrak a ptáci (pohybují se po obloze)
+  const cloud=layer(back,'cloud',3,(P)=>{
+    P.path('M1330 230 q 8 -44 58 -38 q 22 -48 84 -34 q 40 -36 90 0 q 50 -6 56 38 q 38 14 16 42 l -290 4 q -38 -4 -14 -12 z',{strokeWidth:1.6,roughness:1.6,opacity:.55});
+    P.path('M820 150 q 6 -30 40 -26 q 16 -32 58 -22 q 30 -22 62 2 q 26 0 28 26 l -184 2 q -20 -2 -4 -8 z',{strokeWidth:1.3,roughness:1.6,opacity:.35});
+  });
+  cloud.move=(t)=>`translate(${(Math.sin(t*.018)*120).toFixed(1)} 0)`;
+
+  // kopce s lesem a louka s kvetoucími stromky
+  layer(back,'hills',3,(P,r)=>{
+    const ridge=[];for(let x=-40;x<=2040;x+=60)ridge.push([x,ridgeY(x)]);
+    P.curve(ridge,{strokeWidth:2});
+    for(let x=-10;x<2010;x+=18+r()*12){const y=ridgeY(x),h=12+r()*20;P.path(`M${(x-6).toFixed(1)} ${(y+4).toFixed(1)} L${x.toFixed(1)} ${(y-h).toFixed(1)} L${(x+6).toFixed(1)} ${(y+4).toFixed(1)}`,{strokeWidth:1.1,roughness:1.1,opacity:.6});}
+    P.poly(ridge.concat([[2040,450],[-40,490]]),HATCH(19,82,.22));
+    P.curve([[-40,548],[400,535],[900,526],[1400,516],[2040,504]],THIN);
+    for(let x=30;x<1180;x+=90+r()*60)crown(P,r,x,626,40+r()*24,26+r()*12,8,180,360,{strokeWidth:1.3,roughness:1.2,opacity:.45});
+  });
+
+  // stromy, které se houpou ve větru (otáčí se kolem paty kmene)
+  const spruce=layer(back,'spruce',3,(P)=>{
+    const sp=[[300,420]];for(let i=1;i<=10;i++){const y=420+i*55,hw=16+i*14;sp.push([300+hw,y+18],[300+hw*.55,y]);}
+    const spL=sp.map(([x,y])=>[600-x,y]).reverse();
+    P.lines(sp.concat([[300,990]]),{strokeWidth:2.1});P.lines(spL,{strokeWidth:2.1});
+    P.poly(sp.concat(spL),HATCH(10,-62,.45));
+    P.line(300,960,300,1008,THIN);
+  });
+  spruce.sway={x:300,y:1008,amp:.55,f:.55,ph:0};
+  // koruna kvetoucího stromu (za domem), houpe se nejvíc
+  const crownL=layer(back,'bcrown',3,(P,r)=>{
+    crown(P,r,560,600,236,128,14,0,360,{strokeWidth:1.9});
+    crown(P,r,520,616,150,84,10,180,360,{strokeWidth:1.2,opacity:.5});
+    for(let i=0;i<70;i++){const a=r()*6.28,q=Math.sqrt(r());P.ell(560+Math.cos(a)*204*q,600+Math.sin(a)*110*q,6+r()*5,5+r()*4,{strokeWidth:1,roughness:.9,opacity:.5});}
+  });
+  crownL.sway={x:556,y:900,amp:1.1,f:.7,ph:.6};
+
+  // budova vpravo za stromem
+  layer(back,'right',3,(P)=>{
+    P.poly([[1150,884],[1250,700],[1760,688],[2040,866],[2040,1010],[1150,1010]],{stroke:'none',fill:'#fff',fillStyle:'solid',roughness:.6});
+    P.line(1250,702,1760,690,{strokeWidth:2.6});P.line(1760,690,2040,868,{strokeWidth:2.8});P.line(1250,702,1150,882,{strokeWidth:2.6});
+    P.line(1150,884,2040,872,{strokeWidth:2.2});
+    P.poly([[1252,706],[1758,694],[2030,866],[1156,878]],HATCH(14,-6,.3));
+    for(let y=724;y<872;y+=28)P.line(1250-(y-702)*.5+30,y,1760+(y-690)*1.1-30,y,{strokeWidth:1,roughness:1.6,opacity:.4});
+    P.rect(1400,904,124,74,THIN);P.line(1462,906,1462,976,HAIR);P.rect(1690,898,96,74,THIN);
+    P.line(1880,876,1880,1006,THIN);
+  });
+
+  // kvetoucí strom před domem
+  const blossom=layer(back,'blossom',3,(P,r)=>{
+    P.path('M548 1004 C 552 930 540 880 556 820 M554 880 C 600 840 640 830 690 790 M552 860 C 500 830 470 800 430 760',{strokeWidth:2});
+  });
+  blossom.sway={x:552,y:1004,amp:.9,f:.7,ph:.6};
+
+  // hlavní dům se štítem, balkonem, schody a mlýnským kamenem
+  layer(back,'house',3,(P)=>{
+    P.poly([[146,884],[440,596],[470,638],[1010,638],[1312,902],[1312,1010],[150,1010]],{stroke:'none',fill:'#fff',fillStyle:'solid',roughness:.6});
+    // dlouhá střecha s taškami
+    P.line(470,640,1010,640,{strokeWidth:2.8});P.line(1010,640,1310,902,{strokeWidth:3});
+    P.poly([[470,642],[1008,642],[1300,898],[700,898]],HATCH(13,-8,.38));
+    for(let y=668;y<898;y+=26)P.line(470+(y-640)*.9+20,y,1010+(y-640)*1.14-12,y,{strokeWidth:1,roughness:1.6,opacity:.5});
+    P.rect(690,590,36,52,{strokeWidth:2.2});P.line(684,590,732,590,{strokeWidth:2.6});
+    // štít
+    P.line(440,598,146,884,{strokeWidth:3.3});P.line(440,598,734,884,{strokeWidth:3.3});
+    P.line(440,622,176,880,THIN);P.line(440,622,704,880,THIN);
+    P.poly([[440,600],[146,884],[176,884],[440,624]],HATCH(8,-45,.5));
+    P.poly([[440,600],[734,884],[704,884],[440,624]],HATCH(8,45,.5));
+    P.line(228,880,228,1008,{strokeWidth:2.4});P.line(684,880,684,1008,{strokeWidth:2.4});
+    // okno a dveře na balkon
+    P.rect(306,748,206,106,{strokeWidth:2.6});
+    P.rect(316,756,62,92,THIN);P.rect(388,756,52,98,THIN);P.rect(450,756,52,92,THIN);
+    [326,340,354,462,476,490].forEach((x)=>P.line(x,760,x+1,844,{strokeWidth:1,roughness:1.6,opacity:.45}));
+    // balkon
+    P.line(262,856,650,856,{strokeWidth:2.8});P.line(262,914,650,914,{strokeWidth:3});P.line(262,922,650,922,THIN);
+    for(let x=276;x<648;x+=17)P.line(x,858,x,912,{strokeWidth:1.6,roughness:.8});
+    P.rect(292,922,14,86,THIN);P.rect(612,922,14,86,THIN);
+    P.line(306,964,346,922,THIN);P.line(612,964,572,922,THIN);
+    // schody
+    P.line(176,1008,292,918,{strokeWidth:2.4});P.line(198,1008,306,924,{strokeWidth:2.4});
+    for(let i=1;i<7;i++){const t=i/7;P.line(176+116*t,1008-90*t,198+108*t,1008-84*t,{strokeWidth:1.4});}
+    P.line(196,950,292,872,THIN);
+    // nižší křídlo s mlýnským kamenem a dveřmi
+    P.line(700,902,1312,902,{strokeWidth:2.4});P.line(704,912,1306,912,THIN);
+    P.ell(800,958,74,70,{strokeWidth:2.6,fill:INK,fillStyle:'hachure',hachureGap:9,fillWeight:.8,hachureAngle:62});
+    P.ell(800,958,48,45,HAIR);P.ell(799,957,20,19,{strokeWidth:2.2,fill:'#fff',fillStyle:'solid'});
+    P.rect(1012,932,60,76,THIN);P.poly([[1012,932],[1072,932],[1072,1008],[1012,1008]],HATCH(8,60,.4));
+    P.rect(900,952,36,32,THIN);
+    [[420,960],[1150,950],[960,930]].forEach(([x,y])=>P.path(`M${x} ${y} q 14 -12 28 -2 q 10 8 22 2`,HAIR));
+    // tmavý kraj budovy vlevo
+    P.line(-40,690,130,830,{strokeWidth:2.8});P.line(70,810,70,1006,THIN);
+    P.poly([[-40,696],[126,832],[126,1006],[-40,1006]],HATCH(11,58,.5));
+  });
+
+  const bare=layer(back,'bare',3,(P,r)=>{
+    P.path('M1172 1010 C 1176 900 1166 780 1170 640 C 1172 560 1162 480 1158 420',{strokeWidth:3});
+    P.path('M1196 1010 C 1194 900 1190 780 1188 650 C 1186 570 1176 500 1170 430',{strokeWidth:2.3});
+    const branch=(x,y,ang,len,w,d)=>{
+      if(d<=0||len<14)return;
+      const x2=x+Math.cos(ang)*len,y2=y+Math.sin(ang)*len,mx=(x+x2)/2+(r()-.5)*24,my=(y+y2)/2+(r()-.5)*24;
+      P.path(`M${x.toFixed(1)} ${y.toFixed(1)} Q${mx.toFixed(1)} ${my.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`,{strokeWidth:w,roughness:1,opacity:d<3?.7:1});
+      branch(x2,y2,ang-.15-r()*.4,len*(.62+r()*.16),w*.72,d-1);
+      branch(x2,y2,ang+.15+r()*.4,len*(.62+r()*.16),w*.72,d-1);
+    };
+    [[1172,560,-2.1,150],[1176,640,-1.0,170],[1166,470,-1.7,120],[1180,720,-.6,150],[1168,500,-2.6,130]].forEach(([x,y,a,l])=>branch(x,y,a,l,2.1,6));
+  });
+  bare.sway={x:1184,y:1010,amp:.35,f:.42,ph:1.3};
+
+  // elektrické vedení, břeh, keře a tráva
+  layer(back,'shore',3,(P,r)=>{
+    P.curve([[-40,782],[700,808],[1400,812],[2040,796]],{strokeWidth:1,roughness:.8,opacity:.55});
+    P.line(-40,SHORE,2040,SHORE+4,{strokeWidth:2.2});
+    P.line(-40,SHORE+14,2040,SHORE+18,HAIR);
+    for(let x=1240;x<2020;x+=70+r()*40)crown(P,r,x,1000,40+r()*30,26+r()*16,8,180,360,{strokeWidth:1.5,opacity:.7});
+    for(let i=0;i<40;i++){const x=r()*1220,y=SHORE-r()*4,s=.7+r()*.8,n=3+Math.floor(r()*3);
+      for(let k=0;k<n;k++){const c=k-(n-1)/2,h=(14+r()*10)*s;P.path(`M${(x+c*4*s).toFixed(1)} ${y.toFixed(1)} q ${(c*2*s).toFixed(1)} ${(-h*.6).toFixed(1)} ${(c*8*s).toFixed(1)} ${(-h).toFixed(1)}`,{strokeWidth:1.15,roughness:.6,opacity:.55});}}
+  });
+
+  // odraz domu a stromů v rozbité hladině
+  const refl=el('g',{mask:'url(#mReflect)',opacity:.3},cam);
+  const ry=(y)=>SHORE+(SHORE-y)*.46;
+  const reflL=layer(refl,'reflect',3,(P)=>{
+    P.line(440,ry(598),146,ry(884),{strokeWidth:2});P.line(440,ry(598),734,ry(884),{strokeWidth:2});
+    P.line(228,SHORE,228,ry(880),{strokeWidth:2});P.line(684,SHORE,684,ry(880),{strokeWidth:2});
+    P.line(262,ry(856),650,ry(856),{strokeWidth:2});P.line(262,ry(914),650,ry(914),{strokeWidth:2});
+    P.line(470,ry(640),1010,ry(640),{strokeWidth:1.6});P.line(1010,ry(640),1310,ry(902),{strokeWidth:1.6});
+    P.line(300,SHORE,300,ry(420),{strokeWidth:1.6});P.line(1180,SHORE,1176,ry(560),{strokeWidth:1.6});
+    P.ell(560,ry(745),300,120,{strokeWidth:1.2,opacity:.6});
+  });
+  reflL.move=(t)=>`translate(${(Math.sin(t*.9)*4).toFixed(1)} 0)`;
+  const stripes=document.getElementById('reflStripes');const sr=mulberry32(77);
+  for(let y=SHORE+6;y<1300;y+=9+sr()*7)el('rect',{x:0,y:y.toFixed(1),width:2000,height:(2+sr()*3).toFixed(1)},stripes);
+
+  // hladina: šest kreseb s posunutými vlnkami → voda pomalu plyne
+  const water=layer(cam,'water',6,(P,r,f)=>{
+    let row=0;
+    for(let y=SHORE+22;y<1298;y+=10+(y-SHORE)*.06){
+      const depth=(y-SHORE)/290,shift=f*(10+depth*22)*(row%2?1:-.6);
+      for(let x=-120+r()*80;x<2080;){const l=(60+r()*180)*(1+depth*.8);P.line(x+shift,y,x+shift+l,y,{strokeWidth:1.4,roughness:.8,bowing:.4,opacity:.3+r()*.4});x+=l+40+r()*130;}
+      row++;
+    }
+  },{rate:.62});
+
+  // kachna s brázdou – pomalu pluje přes rybník
+  const duckWrap=el('g',{},cam);
+  const duck=layer(duckWrap,'duck',3,(P)=>{
+    P.ell(0,0,54,18,{strokeWidth:2});P.ell(-28,-13,14,13,{strokeWidth:1.8});P.line(-36,-12,-46,-9,{strokeWidth:1.6});
+    P.path('M-6 -6 q 14 -6 26 2',{strokeWidth:1.2,opacity:.6});
+    P.line(28,-4,300,-18,{strokeWidth:1.2,roughness:.7,opacity:.55});P.line(28,6,300,22,{strokeWidth:1.2,roughness:.7,opacity:.55});
+    P.line(70,0,420,0,{strokeWidth:1,roughness:.7,opacity:.3});
+    P.ell(0,8,90,10,{strokeWidth:1,roughness:.9,opacity:.35});
+  });
+  duck.move=(t)=>{
+    const T=70,u=((t+28)%T)/T,x=1900-u*1700;
+    duckWrap.setAttribute('opacity',Math.min(1,Math.min(u,1-u)*10).toFixed(2));
+    return `translate(${x.toFixed(1)} ${(1150+Math.sin(t*1.6)*2.2).toFixed(1)})`;
+  };
+  duck.still=`translate(566 1150)`;
+
+  // ptáci – mávají křídly a přelétají nad kopci
+  [[0,250,34],[9,215,30],[17,290,40]].forEach(([del,y,T],i)=>{
+    const wrap=el('g',{},cam);
+    const b=layer(wrap,'bird'+i,2,(P,r,f)=>{
+      if(!f)P.path('M-26 0 q 13 -16 26 0 q 13 -16 26 0',{strokeWidth:1.6,roughness:.9});
+      else P.path('M-26 -6 q 13 10 26 6 q 13 4 26 -6',{strokeWidth:1.6,roughness:.9});
+    },{rate:2.2});
+    b.move=(t)=>{const u=((t+del)%T)/T,x=-120+u*2260;wrap.setAttribute('opacity',Math.min(1,Math.min(u,1-u)*8).toFixed(2));return `translate(${x.toFixed(1)} ${(y+Math.sin(u*9+i)*24).toFixed(1)}) scale(${.8+i*.15})`;};
+    b.still=`translate(${[420,500,1560][i]} ${[200,172,250][i]}) scale(${.8+i*.15})`;
+  });
+
+  // kouř z komína – obláčky čar stoupají, rostou a mizí
+  const smoke=el('g',{id:'smoke'},cam);
+  const puffs=[];
+  for(let i=0;i<5;i++){
+    const w=el('g',{},smoke);
+    layer(w,'puff'+i,3,(P)=>{P.path('M0 0 c -10 -14 8 -26 -2 -40 c -8 -12 10 -22 2 -34',{strokeWidth:1.3,roughness:1.1,opacity:.6});});
+    puffs.push(w);
+  }
+  smoke.tick=(t)=>puffs.forEach((w,i)=>{
+    const u=((t*.16+i/puffs.length)%1);
+    w.setAttribute('transform',`translate(${(708+u*60+Math.sin(t+i)*6).toFixed(1)} ${(586-u*170).toFixed(1)}) scale(${(.6+u*1.4).toFixed(2)})`);
+    w.setAttribute('opacity',(Math.sin(u*Math.PI)*.8).toFixed(2));
+  });
+  smoke.still=()=>puffs.forEach((w,i)=>{const u=i/puffs.length;w.setAttribute('transform',`translate(${(708+u*60).toFixed(1)} ${(586-u*170).toFixed(1)}) scale(${(.6+u*1.4).toFixed(2)})`);w.setAttribute('opacity',(Math.sin(u*Math.PI)*.7).toFixed(2));});
+
+  // okvětní lístky – pár kousků unáší vítr z kvetoucího stromu
+  const petals=el('g',{id:'petals'},cam);
+  const pr=mulberry32(9);
+  const pl=[];for(let i=0;i<9;i++){const g=el('g',{},petals);pen(g,9100+i*7).ell(0,0,7,4,{strokeWidth:1,roughness:.6,opacity:.6});pl.push({g,ph:pr()*10,sp:.6+pr()*.6,x0:420+pr()*260,y0:660+pr()*140});}
+  petals.tick=(t)=>pl.forEach((p)=>{
+    const u=((t*.035*p.sp+p.ph/10)%1);
+    const x=p.x0+u*520+Math.sin(t*1.1+p.ph)*26,y=p.y0+u*(SHORE-p.y0+40)+Math.sin(t*2+p.ph)*8;
+    p.g.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${((t*60*p.sp)%360).toFixed(0)})`);
+    p.g.setAttribute('opacity',(Math.sin(u*Math.PI)*.8).toFixed(2));
+  });
+
+  // barvy kresby podle vzhledu (den / noc)
+  ART.querySelectorAll('[stroke],[fill]').forEach((n)=>{
+    if(n.closest('defs'))return;
+    if(n.getAttribute('stroke')===INK)n.style.stroke='var(--sketch)';
+    if(n.getAttribute('fill')===INK)n.style.fill='var(--sketch)';
+    if(n.getAttribute('fill')==='#fff')n.style.fill='var(--paper)';
+  });
+  return {cam,smoke,petals};
+}
+
+
+function drawSeal(){
+  const svg=$('seal'),g=el('g',{},svg),rc=rough.svg(svg);let sd=500;
+  const o=(x)=>Object.assign({seed:++sd,stroke:BRASS,strokeWidth:3,roughness:1.1,bowing:1},x||{});
+  const add=(n)=>{g.appendChild(n);return n;};
+  add(rc.ellipse(150,150,282,282,o({strokeWidth:3.4})));add(rc.ellipse(150,150,214,214,o({strokeWidth:2})));
+  add(rc.ellipse(150,150,150,146,o({strokeWidth:3.2})));add(rc.ellipse(150,150,40,40,o({strokeWidth:3})));
+  for(let i=0;i<10;i++){const a=i/10*Math.PI*2,a2=a+.5;add(rc.line(150+Math.cos(a)*24,150+Math.sin(a)*24,150+Math.cos(a2)*72,150+Math.sin(a2)*70,o({strokeWidth:1.8,roughness:1})));}
+  el('path',{id:'sealCircle',d:'M150 150 m-116 0 a116 116 0 1 1 232 0 a116 116 0 1 1 -232 0',fill:'none'},svg);
+  const t=el('text',{'font-family':'Manrope, sans-serif','font-weight':600,'font-size':18,'letter-spacing':2},svg);t.style.fill='var(--brass)';
+  el('textPath',{href:'#sealCircle',textLength:716,lengthAdjust:'spacing',id:'sealText'},t);
+  svg.querySelectorAll('[stroke]').forEach((n)=>{if(n.getAttribute('stroke')===BRASS)n.style.stroke='var(--brass)';});
+}
+
+/* ===================== pohyb ===================== */
+let SCN=null,raf=0,animated=false,t0=0,lastBoil=0;
+function applyStill(){
+  LAYERS.forEach((L)=>{L.frames.forEach((g,i)=>g.style.display=i?'none':'');L.cur=0;
+    if(L.sway)L.root.removeAttribute('transform');
+    if(L.still)L.root.parentNode.setAttribute('transform',L.still),L.root.parentNode.setAttribute('opacity',1);
+    else if(L.move)L.root.removeAttribute('transform');});
+  SCN.smoke.still();SCN.petals.setAttribute('opacity',0);SCN.cam.removeAttribute('transform');
+}
+function frame(now){
+  const t=(now-t0)/1000;
+  // „vaření" čar: 8 kreseb za sekundu (jako ručně kreslený film), voda a ptáci svým tempem
+  if(now-lastBoil>125){
+    lastBoil=now;
+    LAYERS.forEach((L)=>{L.acc=(L.acc||0)+L.rate;if(L.acc<1)return;L.acc-=1;
+      L.frames[L.cur].style.display='none';L.cur=(L.cur+1)%L.frames.length;L.frames[L.cur].style.display='';});
+  }
+  LAYERS.forEach((L)=>{
+    if(L.sway){const s=L.sway,a=s.amp*Math.sin(t*s.f+s.ph)+s.amp*.35*Math.sin(t*s.f*2.3+s.ph);L.root.setAttribute('transform',`rotate(${a.toFixed(3)} ${s.x} ${s.y})`);}
+    if(L.move){const tr=L.move(t);if(L.still)L.root.parentNode.setAttribute('transform',tr);else L.root.setAttribute('transform',tr);}
+  });
+  SCN.smoke.tick(t);SCN.petals.setAttribute('opacity',1);SCN.petals.tick(t);
+  // obraz se zlehka nadechuje (velmi pomalý nájezd kamery)
+  const z=1+.018*Math.sin(t*.07);SCN.cam.setAttribute('transform',`translate(1000 700) scale(${z.toFixed(4)}) translate(-1000 -700)`);
+  raf=requestAnimationFrame(frame);
+}
+function setAnimated(on){
+  animated=on&&!reduce;
+  const T=L10N[D.l]||L10N.cs;$('btnMotion').textContent=animated?T.pause:T.play;
+  cancelAnimationFrame(raf);raf=0;
+  if(animated){t0=performance.now();lastBoil=0;raf=requestAnimationFrame(frame);}
+  else applyStill();
+}
+$('btnMotion').addEventListener('click',()=>setAnimated(!animated));
+document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;}else if(animated&&!raf)raf=requestAnimationFrame(frame);});
+// živé úpravy z editoru (náhled v iframu)
+window.addEventListener('message',(e)=>{
+  if(e.origin!==location.origin||!e.data||e.data.type!=='gift-online-data')return;
+  const prevA=D.a;D=Object.assign(D,e.data.data);render();
+  if(prevA!==D.a)setAnimated(!!D.a);
+});
+
+SCN=buildScene();drawSeal();render();
+document.querySelectorAll('.rv').forEach((r,i)=>setTimeout(()=>r.classList.add('in'),reduce?0:300+i*900));
+setAnimated(!!D.a);
+</script>
+</body>
+</html>

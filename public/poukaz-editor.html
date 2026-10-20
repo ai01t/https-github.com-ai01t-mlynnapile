@@ -101,8 +101,29 @@ textarea{min-height:70px;resize:vertical;}
 input:focus,textarea:focus{outline:none;border-color:var(--gold);}
 .count{float:right;font-size:.6rem;}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.delivery{display:flex;gap:8px;}
-.delivery button{flex:1;padding:10px;border:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:.72rem;cursor:pointer;}
+.delivery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.delivery button{display:flex;flex-direction:column;gap:3px;padding:11px 10px;border:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:.72rem;text-align:left;cursor:pointer;}
+.delivery button b{font-weight:500;color:var(--text);}
+.delivery button small{font-size:.6rem;line-height:1.35;color:var(--muted);}
+.online-opts{margin-top:10px;padding:12px 14px;border:1px solid var(--line);background:rgba(176,141,87,.06);}
+.anim-check{display:flex;gap:11px;align-items:flex-start;margin:0;cursor:pointer;color:var(--text);font-size:.78rem;}
+.anim-check input{position:absolute;opacity:0;width:1px;height:1px;}
+.anim-check .tick{flex:none;width:20px;height:20px;margin-top:1px;border:1px solid var(--gold);display:grid;place-items:center;transition:background .2s;}
+.anim-check .tick::after{content:'';width:10px;height:5px;margin-top:-3px;border-left:2px solid var(--btn-ink);border-bottom:2px solid var(--btn-ink);transform:rotate(-45deg);opacity:0;transition:opacity .2s;}
+.anim-check input:checked + .tick{background:var(--gold);}
+.anim-check input:checked + .tick::after{opacity:1;}
+.anim-check input:focus-visible + .tick{outline:2px solid var(--gold);outline-offset:2px;}
+.anim-check b{display:block;font-weight:500;}
+.anim-check small{display:block;margin-top:3px;font-size:.66rem;line-height:1.5;color:var(--muted);}
+.linkbtn{margin:10px 0 0 31px;padding:0;border:0;background:none;color:var(--gold-ink);font:inherit;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;}
+.linkbtn:hover{text-decoration:underline;}
+.online-frame{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2;background:#0b0a0d;}
+.formats{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line);border-radius:999px;}
+.formats button{padding:8px 15px;border:0;border-radius:999px;background:none;color:var(--muted);font:inherit;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .25s,color .25s;}
+.formats button.on{background:var(--gold);color:var(--btn-ink);}
+.views{display:flex;justify-content:center;width:max-content;margin:0 auto 10px;}
+.formats [data-f="online"] span::before{content:'';display:inline-block;width:6px;height:6px;margin-right:6px;border-radius:50%;background:var(--gold);vertical-align:1px;animation:livePulse 1.8s ease-in-out infinite;}
+@keyframes livePulse{50%{opacity:.25;}}
 .delivery button.on{border-color:var(--gold);color:var(--gold-ink);background:rgba(176,141,87,.1);}
 .admin{display:none;margin-top:26px;padding:16px;border:1px dashed rgba(176,141,87,.5);}
 body.is-admin .admin{display:block;}
@@ -163,7 +184,7 @@ html[data-mode="night"] .face::after{opacity:.45;mix-blend-mode:screen;}
 .vc .cover h1{margin:5mm auto 0;font:300 47pt/.9 var(--display);letter-spacing:-.01em;color:var(--ink);white-space:nowrap;transform:translateY(-.5mm);}
 .vc .cover h1 em{font-style:normal;}
 .vc .cover .sub{margin:4.2mm auto 0;font:italic 400 14.5pt/1.2 var(--serif);color:var(--ink-soft);text-align:center;transform:translateY(-.5mm);}
-.vc .cover-msg{display:flex;position:absolute;left:97mm;right:16mm;top:62mm;bottom:15mm;flex-direction:column;justify-content:center;}
+.vc .cover-msg{display:flex;position:absolute;left:97mm;right:16mm;top:44mm;bottom:12mm;flex-direction:column;justify-content:center;}
 .vc .cover-msg-inner{position:relative;padding:.5mm 0 .5mm 8mm;}
 .vc .msg{position:relative;text-align:center;max-height:58mm;overflow:hidden;padding:0 1mm;font:italic 400 12pt/1.36 var(--serif);color:var(--ink);white-space:pre-wrap;}
 /* 0 · zadní strana */
@@ -230,6 +251,7 @@ body.is-admin .vc .sample{display:none;}
 }
 
 @media (max-width:960px){
+  .delivery{grid-template-columns:1fr;}
   .wrap{grid-template-columns:1fr;}
   .preview{position:static;order:-1;}
   .stage{height:min(112vw,540px);min-height:300px;}
@@ -290,8 +312,13 @@ body.is-admin .vc .sample{display:none;}
     <div class="step">
       <div class="step-t"><i>4</i><span data-t="s4"></span></div>
       <div class="delivery" id="delivery">
-        <button type="button" data-d="email" class="on" data-t="dEmail"></button>
-        <button type="button" data-d="post" data-t="dPost"></button>
+        <button type="button" data-d="email" class="on"><b data-t="dEmail"></b><small data-t="dEmailSub"></small></button>
+        <button type="button" data-d="post"><b data-t="dPost"></b><small data-t="dPostSub"></small></button>
+      </div>
+      <div class="online-opts" id="onlineWrap">
+        <label class="anim-check"><input type="checkbox" id="fAnim" checked><span class="tick" aria-hidden="true"></span><span><b data-t="animLabel"></b><small data-t="animHint"></small></span></label>
+        <button type="button" class="linkbtn" id="btnOnlinePrev" data-t="onlinePrev"></button>
+        <p class="fine" style="margin:10px 0 0 31px" data-t="onlineNote"></p>
       </div>
       <div id="postWrap" hidden>
         <label for="fAddr" data-t="addr"></label>
@@ -319,6 +346,12 @@ body.is-admin .vc .sample{display:none;}
         <button type="button" class="cta" id="btnPrint">Tisk / uložit PDF (A4, přeložit napůl)</button>
         <button type="button" class="cta ghost" id="btnCode">Nové číslo</button>
       </div>
+      <label for="fLink">Odkaz na online poukaz (k odeslání po zaplacení)</label>
+      <input id="fLink" readonly>
+      <div class="actions" style="grid-template-columns:1fr 1fr;margin-top:8px">
+        <button type="button" class="cta ghost" id="btnLinkCopy">Zkopírovat odkaz</button>
+        <a class="cta ghost" id="btnLinkOpen" href="#" target="_blank" rel="noopener">Otevřít</a>
+      </div>
       <p class="fine">V tiskovém okně zvolte „Uložit jako PDF", velikost A4, okraje žádné. Strana 1 = titulka a zadní strana, strana 2 = vnitřek.</p>
     </div>
   </section>
@@ -326,13 +359,18 @@ body.is-admin .vc .sample{display:none;}
   <aside class="preview">
     <div class="preview-t">
       <span data-t="prev"></span>
-      <div class="views" id="views">
-        <button type="button" data-view="front" class="on" data-t="vFront"></button>
-        <button type="button" data-view="open" data-t="vOpen"></button>
-        <button type="button" data-view="back" data-t="vBack"></button>
+      <div class="formats" id="formats" role="tablist">
+        <button type="button" data-f="print" class="on" data-t="fPrint"></button>
+        <button type="button" data-f="online"><span data-t="fOnline"></span></button>
       </div>
     </div>
+    <div class="views" id="views">
+      <button type="button" data-view="front" class="on" data-t="vFront"></button>
+      <button type="button" data-view="open" data-t="vOpen"></button>
+      <button type="button" data-view="back" data-t="vBack"></button>
+    </div>
     <div class="stage vc" id="stage">
+      <iframe class="online-frame" id="onlineFrame" title="Online poukaz" hidden></iframe>
       <div class="scene" id="scene">
         <div class="ground" id="ground"></div>
         <div class="rig" id="rig">
@@ -348,7 +386,6 @@ body.is-admin .vc .sample{display:none;}
           </div>
         </div>
       </div>
-      <div class="stage-hint" data-t="hint"></div>
     </div>
   </aside>
 </div>
@@ -794,7 +831,7 @@ const T={
   cs:{home:'/',brand:'Mlýn <em>na Pile</em>',back:'← Zpět na web',kicker:'Dárkový poukaz',title:'Darujte čas <em>v mlýně</em>',
     lead:'Vyberte poukaz, napište, pro koho je, vzkaz a od koho – hned uvidíte, jak bude vypadat. Platí do 31. 12. 2027, termín podle volného kalendáře.',
     s1:'Vyberte poukaz',s2:'Pro koho a vzkaz',s3:'Vzhled poukazu',s4:'Doručení',name:'Pro (jméno obdarovaného)',msg:'Vzkaz na titulce',from:'Od (nepovinné)',
-    lookDay:'Denní · světlý',lookNight:'Noční · tmavý',dEmail:'PDF e-mailem',dPost:'Vytištěný poštou',addr:'Doručovací adresa',buyer:'Vaše jméno',
+    lookDay:'Denní · světlý',lookNight:'Noční · tmavý',dEmail:'PDF e-mailem',dPost:'Vytištěný poštou',fPrint:'Tisk / PDF',fOnline:'Online',onlineNote:'Online poukaz je odkaz, který po zaplacení pošleme vám a vy ho přepošlete obdarovanému – e-mailem, WhatsAppem, kamkoli.',dEmailSub:'k vytištění doma',dPostSub:'na pěkném papíře',animLabel:'Animovaný',animHint:'Kresba mlýna ožije: hladina plyne, stromy se houpou ve větru, kachna pluje, ptáci letí a z komína stoupá kouř. Bez fajfky pošleme klidnou statickou kresbu.',onlinePrev:'Prohlédnout online poukaz ↗',vOnline:'Online',delOnline:(a)=>`online poukaz – odkaz (${a?'animovaný':'statický'})`,addr:'Doručovací adresa',buyer:'Vaše jméno',
     order:'Objednat poukaz e-mailem',copy:'Zkopírovat objednávku',prev:'Náhled poukazu',vFront:'Titulka',vOpen:'Uvnitř',vBack:'Zadní strana',
     hint:'Klikněte na poukaz – otevře se',
     fine:'Po odeslání vám pošleme platební údaje. Po zaplacení dostanete poukaz s vlastním číslem.',
@@ -809,7 +846,7 @@ const T={
   en:{home:'/en',brand:'Mill <em>at Pila</em>',back:'← Back to the website',kicker:'Gift voucher',title:'Give time <em>at the mill</em>',
     lead:'Choose a voucher, write who it’s for, a message and who it’s from – and see right away how it will look. Valid until 31 Dec 2027, dates by availability.',
     s1:'Choose a voucher',s2:'Who it’s for & message',s3:'Voucher look',s4:'Delivery',name:'For (recipient’s name)',msg:'Message on the cover',from:'From (optional)',
-    lookDay:'Day · light',lookNight:'Night · dark',dEmail:'PDF by e-mail',dPost:'Printed, by post',addr:'Delivery address',buyer:'Your name',
+    lookDay:'Day · light',lookNight:'Night · dark',dEmail:'PDF by e-mail',dPost:'Printed, by post',fPrint:'Print / PDF',fOnline:'Online',onlineNote:'The online voucher is a link we send you after payment – forward it to the recipient by e-mail, WhatsApp, anywhere.',dEmailSub:'to print at home',dPostSub:'on fine paper',animLabel:'Animated',animHint:'The drawing of the mill comes alive: the water flows, trees sway in the wind, the duck swims, birds fly and smoke rises from the chimney. Untick for a calm static drawing.',onlinePrev:'Preview the online voucher ↗',vOnline:'Online',delOnline:(a)=>`online voucher – link (${a?'animated':'static'})`,addr:'Delivery address',buyer:'Your name',
     order:'Order the voucher by e-mail',copy:'Copy the order',prev:'Voucher preview',vFront:'Cover',vOpen:'Inside',vBack:'Back',
     hint:'Click the voucher to open it',
     fine:'After you send the order we’ll reply with payment details. Once paid, you’ll receive the voucher with its own number.',
@@ -824,7 +861,7 @@ const T={
   de:{home:'/de',brand:'Mühle <em>an der Pila</em>',back:'← Zurück zur Website',kicker:'Gutschein',title:'Zeit in der Mühle <em>verschenken</em>',
     lead:'Wählen Sie einen Gutschein, schreiben Sie, für wen er ist, eine Nachricht und von wem – und sehen Sie sofort, wie er aussieht. Gültig bis 31.12.2027, Termin nach Verfügbarkeit.',
     s1:'Gutschein wählen',s2:'Für wen & Nachricht',s3:'Aussehen',s4:'Zustellung',name:'Für (Name der beschenkten Person)',msg:'Nachricht auf der Titelseite',from:'Von (optional)',
-    lookDay:'Tag · hell',lookNight:'Nacht · dunkel',dEmail:'PDF per E-Mail',dPost:'Gedruckt, per Post',addr:'Lieferadresse',buyer:'Ihr Name',
+    lookDay:'Tag · hell',lookNight:'Nacht · dunkel',dEmail:'PDF per E-Mail',dPost:'Gedruckt, per Post',fPrint:'Druck / PDF',fOnline:'Online',onlineNote:'Der Online-Gutschein ist ein Link, den wir Ihnen nach der Zahlung schicken – leiten Sie ihn per E-Mail, WhatsApp oder wohin Sie möchten weiter.',dEmailSub:'zum Ausdrucken',dPostSub:'auf schönem Papier',animLabel:'Animiert',animHint:'Die Zeichnung der Mühle wird lebendig: das Wasser fließt, Bäume wiegen sich im Wind, die Ente schwimmt, Vögel fliegen und aus dem Schornstein steigt Rauch. Ohne Haken senden wir eine ruhige, statische Zeichnung.',onlinePrev:'Online-Gutschein ansehen ↗',vOnline:'Online',delOnline:(a)=>`Online-Gutschein – Link (${a?'animiert':'statisch'})`,addr:'Lieferadresse',buyer:'Ihr Name',
     order:'Gutschein per E-Mail bestellen',copy:'Bestellung kopieren',prev:'Vorschau',vFront:'Titel',vOpen:'Innen',vBack:'Rückseite',
     hint:'Klicken Sie auf den Gutschein, um ihn zu öffnen',
     fine:'Nach dem Absenden schicken wir Ihnen die Zahlungsdaten. Nach der Zahlung erhalten Sie den Gutschein mit eigener Nummer.',
@@ -883,7 +920,7 @@ const state={
   // jazyk: ?lang=…, jinak podle adresy (/en/gift, /de/gift), jinak čeština
   lang:['cs','en','de'].includes(params.get('lang'))?params.get('lang'):(location.pathname.match(/^\/(en|de)\//)||[])[1]||'cs',
   variant:VARIANTS.includes(params.get('v'))?params.get('v'):'guitar',
-  delivery:'email',days:1,hours:3,
+  format:params.get('f')==='online'?'online':'print',delivery:'email',days:1,hours:3,
 };
 state.persons=PRESET[state.variant];
 
@@ -965,7 +1002,7 @@ function order(){
   const t=T[state.lang];
   const o={v:current(),name:$('fName').value.trim()||'—',msg:$('fMsg').value.trim(),from:$('fFrom').value.trim(),
     look:document.documentElement.dataset.mode==='night'?t.lookNight:t.lookDay,
-    del:state.delivery==='post'?t.delPost($('fAddr').value.trim().replace(/\n+/g,', ')):t.delEmail,buyer:$('fBuyer').value.trim()};
+    del:state.format==='online'?t.delOnline($('fAnim').checked):state.delivery==='post'?t.delPost($('fAddr').value.trim().replace(/\n+/g,', ')):t.delEmail,buyer:$('fBuyer').value.trim()};
   return {subject:t.subj(o),body:t.mail(o)};
 }
 function stepper(key,label,val,[min,max]){
@@ -991,8 +1028,26 @@ function renderTexts(){
   renderConfig();
   document.title=`${t.kicker} – ${t.brand.replace(/<[^>]+>/g,'')}`;
 }
+/* ===================== online poukaz (odkaz s animací) ===================== */
+function onlineData(sample){
+  const cur=current();
+  return {l:state.lang,v:state.variant,t:$('fName').value.trim(),f:$('fFrom').value.trim(),m:$('fMsg').value.trim(),w:cur[0],x:cur[1],
+    no:isAdmin?$('fCode').value.trim():'',val:$('fValid').value.trim(),a:$('fAnim').checked?1:0,s:sample?1:0,md:document.documentElement.dataset.mode==='night'?'night':'day'};
+}
+function onlineUrl(sample){
+  const json=JSON.stringify(onlineData(sample));
+  const d=btoa(unescape(encodeURIComponent(json))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return `${location.origin}/gift/online?d=${d}`;
+}
+let onlineActive=false;
+function syncOnline(){
+  const fr=$('onlineFrame');
+  if(fr.src&&fr.contentWindow)try{fr.contentWindow.postMessage({type:'gift-online-data',data:onlineData(!isAdmin)},location.origin);}catch(e){}
+  if(isAdmin){const u=onlineUrl(false);$('fLink').value=u;$('btnLinkOpen').href=u;}
+}
 function renderVoucher(){
   renderFields();
+  syncOnline();
   const o=order();
   $('btnOrder').href=`mailto:${EMAIL}?subject=${encodeURIComponent(o.subject)}&body=${encodeURIComponent(o.body)}`;
 }
@@ -1018,9 +1073,22 @@ $('langs').addEventListener('click',(e)=>{const b=e.target.closest('[data-l]');i
 $('delivery').addEventListener('click',(e)=>{
   const b=e.target.closest('[data-d]');if(!b)return;state.delivery=b.dataset.d;
   document.querySelectorAll('#delivery button').forEach((x)=>x.classList.toggle('on',x===b));
-  $('postWrap').hidden=state.delivery!=='post';
+  syncDelivery();
   renderVoucher();
 });
+function syncDelivery(){
+  const online=state.format==='online';
+  document.querySelectorAll('#formats button').forEach((b)=>b.classList.toggle('on',b.dataset.f===state.format));
+  $('delivery').hidden=online;
+  $('postWrap').hidden=online||state.delivery!=='post';
+  $('onlineWrap').hidden=!online;
+  $('views').hidden=online;
+  if(online!==onlineActive)showOnline(online);
+}
+$('formats').addEventListener('click',(e)=>{const b=e.target.closest('[data-f]');if(!b)return;state.format=b.dataset.f;syncDelivery();renderVoucher();});
+$('fAnim').addEventListener('change',renderVoucher);
+$('btnOnlinePrev').addEventListener('click',()=>window.open(onlineUrl(!isAdmin),'_blank','noopener'));
+$('btnLinkCopy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('fLink').value);}catch(e){}const b=$('btnLinkCopy');b.textContent='Zkopírováno ✓';setTimeout(()=>{b.textContent='Zkopírovat odkaz';},1800);});
 $('btnOrder').addEventListener('click',(e)=>{
   $('sent').classList.add('on');
   // ve vrstvě přes web (iframe) prohlížeč mailto blokuje → otevřít přes hlavní okno
@@ -1087,6 +1155,13 @@ function tween(name,from,to,ms,set,fn=ease){
 }
 const openTo=(a)=>tween('a',angle,a,1150,(v)=>{angle=v;});
 const turnTo=(t)=>tween('t',turn,t,1000,(v)=>{turn=v;});
+function showOnline(on){
+  onlineActive=on;
+  const fr=$('onlineFrame');
+  if(on&&!fr.src)fr.src=onlineUrl(!isAdmin);
+  fr.hidden=!on;$('scene').hidden=on;
+  render();
+}
 function setView(v){
   if(v==='front'){if(turn>0)turnTo(0);if(angle>0)openTo(0);}
   if(v==='open'){if(turn>0)turnTo(0);openTo(180);}
@@ -1131,6 +1206,7 @@ document.addEventListener('keydown',(e)=>{if(e.key==='Escape'&&!/INPUT|TEXTAREA|
 /* ===================== start ===================== */
 newCode();
 setMode(params.get('mode')==='night'?'night':'day');   // výchozí je denní (světlý)
+syncDelivery();
 renderAll();
 intro=0;tween('i',0,1,1000,(v)=>{intro=v;},easeOut);
 if(document.fonts)document.fonts.ready.then(()=>{fitMsg();render();});

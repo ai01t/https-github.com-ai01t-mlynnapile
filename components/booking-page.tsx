@@ -1447,7 +1447,12 @@ export default function BookingPage({ locale }: { locale: Locale }) {
   const embedded = searchParams.get("embed") === "1"
   // Kompaktní kalendář pro konkrétní místnost (panel v sekci Studio na hlavní stránce).
   const roomParam = searchParams.get("room")
-  const studioRoom: StudioRoom | null = embedded && (roomParam === "main" || roomParam === "control") ? roomParam : null
+  // hlavní stránka kalendář načítá dopředu na pozadí a místnost pak jen přepne zprávou (bez nového načtení)
+  const [roomOverride, setRoomOverride] = useState<StudioRoom | null>(null)
+  const urlRoom: StudioRoom | null = roomParam === "main" || roomParam === "control" ? roomParam : null
+  const studioRoom: StudioRoom | null = embedded ? roomOverride ?? urlRoom : null
+  // dokud je panel na stránce schovaný, videa v kalendáři nehrají (šetří data i výkon)
+  const [parentHidden, setParentHidden] = useState(searchParams.get("preload") === "1")
   // Je-li vedle kalendáře vidět karta s cenou (panel na počítači), cena se tu neopakuje.
   const [cardVisible, setCardVisible] = useState(false)
   useEffect(() => {
@@ -1455,6 +1460,18 @@ export default function BookingPage({ locale }: { locale: Locale }) {
     const onMessage = (event: MessageEvent) => {
       if (event.source !== window.parent || event.origin !== window.location.origin) return
       if (event.data?.type === "studio-card-visible") setCardVisible(Boolean(event.data.visible))
+      if (event.data?.type === "studio-visible") setParentHidden(!event.data.visible)
+      if (
+        event.data?.type === "studio-set-room" &&
+        (event.data.room === "main" || event.data.room === "control") &&
+        event.data.room !== studioRoom
+      ) {
+        setRoomOverride(event.data.room)
+        setModalOpen(false)
+        setStudioMode("stay")
+        setHourlyDay(null)
+        setSelection({ arrivalMonthIndex: null, arrivalDay: null, departureMonthIndex: null, departureDay: null })
+      }
     }
     window.addEventListener("message", onMessage)
     // rodič odpoví, jestli je karta vidět (load event mohl proběhnout dřív)
@@ -2147,7 +2164,7 @@ export default function BookingPage({ locale }: { locale: Locale }) {
         )}
       >
         <div className={cx(styles.studioMedia, activeMonth.nightClip && styles.cardMediaNight)} aria-hidden="true">
-          {!paused && activeMonth.localVideoSrc ? (
+          {!(paused || parentHidden) && activeMonth.localVideoSrc ? (
             <SeamlessLoopVideo
               key={activeMonth.localVideoSrc}
               className={styles.cardLocalVideo}
@@ -2156,10 +2173,10 @@ export default function BookingPage({ locale }: { locale: Locale }) {
               playbackRate={BOOKING_VIDEO_PLAYBACK_RATE}
             />
           ) : null}
-          {(paused || !activeMonth.localVideoSrc) && activeMonth.localPosterSrc ? (
+          {(paused || parentHidden || !activeMonth.localVideoSrc) && activeMonth.localPosterSrc ? (
             <div className={styles.cardLocalPoster} style={{ backgroundImage: `url("${activeMonth.localPosterSrc}")` }} />
           ) : null}
-          {!paused && !activeMonth.localVideoSrc && activeMonth.youtubeId ? (
+          {!(paused || parentHidden) && !activeMonth.localVideoSrc && activeMonth.youtubeId ? (
             <FadingYoutube key={activeMonth.youtubeId} videoId={activeMonth.youtubeId} className={styles.cardVideo} />
           ) : null}
         </div>
