@@ -460,12 +460,11 @@ const CATS=[{id:"ky",label:"Kytary",icon:"🎸",subgroups:[
   {label:"Nástrojové kabely",items:["Mogami Platinum", "Monster Studio Pro 2000", "Evidence Audio The Lyric HG"]}
 ]},
 {id:"drums",label:"Bicí",icon:"🥁",items:["Mapex Saturn V MH Exotic (Bicí souprava)", "Tama S.L.P. LST148 Big Black Steel (Snare 14\"×8\")", "Zildjian K Sweet Hi-Hat 14\"", "Zildjian K Custom Hybrid Crash 18\"", "Sabian AAX Heavy Ride 20\"", "Istanbul Mehmet China 16\"", "Meinl Mb8 Splash 10\"", "DW 9000 Series Air Lift (Sedačka)", "REMO blány", "Evans blána (Snare)"]},
+{id:"audioproc",label:"Studio & Software",icon:"🎚️",apolloItem:{name:"Universal Audio Apollo X8P Gen 2 Studio+",subTabs:[{id:"tech",label:"Technické detaily"},{id:"io",label:"Vstupy & výstupy"},{id:"plugins",label:"Pluginy & Unison"}]},items:["Logic Pro X", "Final Cut Pro X", "Affinity", "Pixelmator Pro", "Motion", "Compressor", "MainStage"],accordion:true},
 {id:"mic",label:"Mikrofony",icon:"🎙️",subgroups:[
   {label:"Mikrofony",items:["Shure SM 7 B", "Shure Beta 58", "SHURE SM57", "Sennheiser e 906", "AKG D5"]},
   {label:"Kabeláž",items:["Mogami Platinum", "D'Addario American Stage XLR Microphone/Powered Speaker Cable"]}
 ]},
-{id:"sw",label:"Studio & Software",icon:"💻",items:["Logic Pro X", "Final Cut Pro X", "Affinity", "Pixelmator Pro", "Motion", "Compressor", "MainStage"]},
-{id:"audioproc",label:"Audio & Processing",icon:"🎚️",apolloItem:{name:"Universal Audio Apollo X8P Gen 2 Studio+",subTabs:[{id:"tech",label:"Technické detaily"},{id:"io",label:"Vstupy & výstupy"},{id:"plugins",label:"Pluginy & Unison"}]},items:[],accordion:true},
 {id:"monav",label:"Monitoring & A/V",icon:"🎧",subgroups:[
   {label:"Monitoring",items:["Mackie Thump15A (1300W) x2", "Cromo 10+ (400W) 1x", "K&M stojany", "Beyerdynamic DT-770 Pro 250 Ohm", "KRK KNS-8402", "Bezdrátové systémy Shure GLXD16+", "Dunlop Joe Perry Boneyard Slide - Medium Long"]},
   {label:"A/V",items:["Apple Pro XDR 6K monitor pro color-accurate editing", "DJI Gimbal stabilizátor pro smooth camera movements", "Projektor pro screening a presentations", "Lighting equipment pro professional video shoots", "Reflektory Varytec LED Studio 150 2900K"]}
@@ -615,7 +614,7 @@ function build(){
     if(cat.apolloItem&&cat.accordion){
       const audioHdr=document.createElement('div');
       audioHdr.className='sub-hdr';
-      audioHdr.textContent='Audio';
+      audioHdr.textContent='Universal Audio';
       sec.appendChild(audioHdr);
       const ai=cat.apolloItem;
       const mainRow=document.createElement('div');
@@ -658,6 +657,21 @@ function build(){
         catDiv.appendChild(body);
         sec.appendChild(catDiv);
       });
+      // software (Logic, Final Cut…) pod pluginy
+      if(cat.items&&cat.items.length){
+        const swHdr=document.createElement('div');
+        swHdr.className='sub-hdr';
+        swHdr.textContent='Software';
+        sec.appendChild(swHdr);
+        cat.items.forEach(name=>{
+          const row=document.createElement('div');
+          row.className='row';
+          row.dataset.n=name;
+          row.innerHTML=rowMarkup(name);
+          row.onclick=()=>show(name,cat.label,true);
+          sec.appendChild(row);
+        });
+      }
     } else if(cat.accordion){
       // Render UAD accordion
       UAD_PLUGIN_CATS.forEach((uc,uidx)=>{
