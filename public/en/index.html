@@ -371,6 +371,13 @@ body.pause-active section .content{filter:brightness(1.14);}
   justify-content:center;
 }
 .studio-main-panel .sec-title{margin-bottom:32px;}
+/* Studio: vedle nadpisu „Váš čas patří hudbě." */
+.studio-head{display:flex;align-items:flex-end;justify-content:space-between;gap:clamp(24px,4vw,64px);margin-bottom:32px;}
+.studio-main-panel .studio-head .sec-title{margin-bottom:0;flex:none;}
+.studio-lead{max-width:470px;padding-bottom:8px;}
+.studio-lead-title{margin:0 0 8px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.45rem;line-height:1.2;color:var(--gold);}
+.studio-lead-text{margin:0;font-size:.8rem;line-height:1.75;color:rgba(240,235,226,.66);}
+@media(max-width:960px){.studio-head{flex-direction:column;align-items:flex-start;gap:14px;margin-bottom:22px;}.studio-lead-title{font-size:1.2rem;}.studio-lead-text{font-size:.76rem;line-height:1.6;}}
 .studio-intro{max-width:540px;font-size:.9rem;line-height:1.85;color:rgba(240,235,226,.62);margin-top:0;margin-bottom:44px;}
 .rooms-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:64px;}
 .room-card{background:rgba(7,6,10,.8);padding:40px 32px;transition:background .35s;display:flex;flex-direction:column;}
@@ -1305,8 +1312,9 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
     <div>
       <div class="big-n"><span class="bn-year">1653</span><span class="bn-eq"><span class="cs">Vybavení</span><span class="en">Equipment</span><span class="de">Ausstattung</span></span></div>
       <h2 class="sec-title rev">Pila <span class="alias-small">alias</span> <em>Šnajberk</em></h2>
-      <p class="place-intro en rev rev-d1">Three unique spaces for your creativity. From the main studio through the mill studio to the control room.</p>
-      <p class="place-intro de rev rev-d1">Drei einzigartige Räume für eure Kreativität. Vom Hauptstudio über das Mühlenstudio bis zum Regieraum.</p>
+      <p class="place-intro cs rev rev-d1">Hlavní studio se nachází v podkrovní galerii, přímo nad mlýnicí. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník.</p>
+      <p class="place-intro en rev rev-d1">The main studio is located in the attic gallery, directly above the mill. Natural light enters through skylights and a large French window with a balcony overlooking the quiet pond.</p>
+      <p class="place-intro de rev rev-d1">Das Hauptstudio befindet sich in der Dachgalerie direkt über der Mühle. Natürliches Licht fällt durch Dachfenster und ein großes französisches Fenster mit Balkon und Blick auf den ruhigen Teich.</p>
       <div class="values-block rev rev-d3">
         <ul class="val-list">
           <li><span class="cs">Vintage nástroje — 60s–80s Fender, Gibson</span><span class="en">Vintage instruments — 60s–80s Fender, Gibson</span><span class="de">Vintage-Instrumente — 60er–80er Fender, Gibson</span></li>
@@ -1351,9 +1359,15 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
     <div class="studio-panel studio-main-panel">
       <div class="content">
         <span class="sec-label cs">Unikátní prostory</span><span class="sec-label en">Unique spaces</span><span class="sec-label de">Einzigartige Räume</span>
+        <div class="studio-head">
         <h2 class="sec-title"><span class="cs">Studio, zázemí<br><em>a klid</em></span><span class="en">Studio, comfort<br><em>and calm</em></span><span class="de">Studio, Komfort<br><em>und Ruhe</em></span></h2>
-        <p class="studio-intro en">Record upstairs, sleep downstairs, with the winter garden in between. Instruments are regularly serviced and ready for use.</p>
-        <p class="studio-intro de">Oben aufnehmen, unten schlafen, dazwischen der Wintergarten. Die Instrumente werden regelmäßig gewartet und sind jederzeit einsatzbereit.</p>
+        <div class="studio-lead">
+          <p class="studio-lead-title"><span class="cs">Váš čas patří hudbě.</span><span class="en">Your time belongs to music.</span><span class="de">Ihre Zeit gehört der Musik.</span></p>
+          <p class="studio-lead-text cs">Cena zahrnuje studio, přespání, plnou penzi, kávu, nápoje a využití sauny i zimní zahrady. Nemusíte řešit restaurace, nákupy ani každodenní logistiku. Soustřeďte se na tvorbu, odpočiňte si v přírodě a využijte společný čas naplno.</p>
+          <p class="studio-lead-text en">The price includes the studio, overnight stay, full board, coffee, drinks and use of the sauna and winter garden. No need to deal with restaurants, shopping or everyday logistics. Focus on creating, rest in nature and make the most of your time together.</p>
+          <p class="studio-lead-text de">Im Preis enthalten sind Studio, Übernachtung, Vollpension, Kaffee, Getränke sowie die Nutzung von Sauna und Wintergarten. Restaurants, Einkäufe und Alltagslogistik sind nicht Ihre Sorge. Konzentrieren Sie sich aufs Schaffen, erholen Sie sich in der Natur und nutzen Sie die gemeinsame Zeit voll aus.</p>
+        </div>
+        </div>
         <div class="rooms-grid">
           <div class="room-card">
             <div class="room-head">
@@ -1403,9 +1417,6 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
                 <li><a href="/de/chleba">Unser frisches Sauerteigbrot</a></li>
               </ul>
             </div>
-            <p class="room-text cs">Hlavní studio se nachází v podkrovní galerii, přímo nad mlýnicí. Přirozené světlo sem proniká střešními okny a velkým francouzským oknem s balkonem, odkud se otevírá výhled na klidný rybník.</p>
-            <p class="room-text en">The main studio is located in the attic gallery, directly above the mill. Natural light enters through skylights and a large French window with a balcony overlooking the quiet pond.</p>
-            <p class="room-text de">Das Hauptstudio befindet sich in der Dachgalerie direkt über der Mühle. Natürliches Licht fällt durch Dachfenster und ein großes französisches Fenster mit Balkon und Blick auf den ruhigen Teich.</p>
             <p class="room-price room-price-main"><strong class="cs">12 000 Kč</strong><strong class="en">$560</strong><strong class="de">510 €</strong> <span class="cs">/ den s přespáním ·</span><span class="en">/ day with overnight stay ·</span><span class="de">/ Tag mit Übernachtung ·</span> <strong class="cs">1 100 Kč</strong><strong class="en">$55</strong><strong class="de">50 €</strong> <span class="cs">/ hodina · vč. DPH</span><span class="en">/ hour · VAT incl.</span><span class="de">/ Stunde · inkl. MwSt.</span></p>
             <div class="room-video-wrap">
               <div class="room-video-frame" data-room-video="/videos/bg/O431B93W9UY.mp4?v=20260309c" style="background-image:url('/videos/bg/O431B93W9UY.jpg?v=20260309c')"></div>
