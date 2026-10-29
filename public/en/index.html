@@ -387,6 +387,7 @@ body.pause-active section .content{filter:brightness(1.14);}
 /* Hlavička karty: název a velikost vlevo, Booking vpravo (videa pak končí v jedné rovině). */
 .room-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:20px;}
 .room-head-text{min-width:0;}
+.room-list{margin:14px 0 0;}
 .room-text{font-size:.79rem;line-height:1.78;color:rgba(240,235,226,.5);}
 .room-video-wrap{margin-top:auto;padding-top:20px;}
 .room-video-frame{position:relative;aspect-ratio:16 / 9;border:1px solid var(--border);background:#000;overflow:hidden;}
@@ -399,7 +400,7 @@ body.pause-active section .content{filter:brightness(1.14);}
 /* Booking místnosti: zvolená karta zůstane, panel s kalendářem vyjede přes zbylé dvě. */
 .rooms-grid{position:relative;}
 .room-book{flex-shrink:0;}
-.room-price{margin:14px 0 0;font-size:.62rem;letter-spacing:.08em;color:rgba(240,235,226,.6);}
+.room-price{display:none;margin:14px 0 0;font-size:.62rem;letter-spacing:.08em;color:rgba(240,235,226,.6);}
 .room-price strong{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:400;color:var(--gold);letter-spacing:0;}
 .room-incl{margin:8px 0 0;font-size:.6rem;letter-spacing:.16em;line-height:1.5;text-transform:uppercase;color:rgba(240,235,226,.6);}
 /* Při otevřeném bookingu hlavního studia nahradí video karty text o vybavení v ceně. */
@@ -419,6 +420,7 @@ body.pause-active section .content{filter:brightness(1.14);}
 .room-book-info img{display:block;width:100%;aspect-ratio:16 / 9;object-fit:cover;object-position:50% 68%;border:1px solid var(--border);}
 .rooms-grid.booking-main .room-card:first-child .room-text{display:none;}
 .rooms-grid.booking-main .room-card:first-child .room-package{display:block;}
+.rooms-grid.booking-main .room-card:first-child .room-list{display:none;}
 /* Studio po hodinách (přepínač v kalendáři): bez přespání, penze a sauny,
    s hodinovou cenou; místo fotky snídaně zase video studia. */
 .pkg-when-hourly{display:none;}
@@ -446,6 +448,7 @@ body.pause-active section .content{filter:brightness(1.14);}
 .room-book .btn-secondary.room-book-main.on{background:transparent;color:var(--gold);}
 .room-book .btn-secondary.room-book-main.on::after{content:"";}
 .rooms-grid.booking-main .room-price-main{display:none;}
+.rooms-grid.booking-control .room-card:nth-child(3) .room-price{display:block;}
 .room-book .btn-secondary:disabled:hover{border-color:var(--border);color:rgba(240,235,226,.7);}
 .studio-booking-panel{position:absolute;top:0;bottom:0;left:calc((100% - 2px) / 3);right:0;z-index:6;overflow:hidden;visibility:hidden;pointer-events:none;transition:visibility 0s linear .55s;}
 .studio-booking-panel[data-room="control"]{left:0;right:calc((100% - 2px) / 3);}
@@ -1119,7 +1122,8 @@ body.de .de{display:revert;}
 .gift-item:hover{border-color:var(--gold);background:rgba(176,141,87,.08);}
 .gift-name{font-size:.72rem;letter-spacing:.06em;}
 .gift-meta{font-size:.58rem;color:rgba(240,235,226,.55);}
-.gift-item strong{margin-top:4px;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--gold);}
+.gift-item.revealed strong{display:block;}
+.gift-item strong{display:none;margin-top:4px;font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--gold);}
 @media(max-width:960px){.gift-bar{grid-template-columns:1fr;gap:14px}.gift-items{grid-template-columns:repeat(2,1fr)}}
 body :is(.gift-bar.en,.gift-bar.de){display:none;}
 body.en .gift-bar.en,body.de .gift-bar.de{display:grid;}
@@ -1377,6 +1381,33 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
               </div>
               <div class="room-book"><button type="button" class="btn-secondary room-book-main" data-studio-booking="main" aria-expanded="false"><span class="cs">Booking</span><span class="en">Booking</span><span class="de">Booking</span></button></div>
             </div>
+            <ul class="pkg-incl room-list cs">
+              <li><a href="/jidlo">Plná penze</a>, káva a nápoje</li>
+              <li>Kompletní <a class="section-jump" href="#equipment">vybavení</a> – vše zapojené a připravené, včetně podpory</li>
+              <li>Nahrávání až 8 stop současně (Apollo x8p)</li>
+              <li>Přespání pod studiem v bývalé mlýnici, případně i pokoj navíc</li>
+              <li>Sauna · Zimní zahrada</li>
+              <li>Svezení Teslou ze mlýna po Domažlicku a zpět</li>
+              <li><a href="/chleba">Náš čerstvý kváskový chléb</a></li>
+            </ul>
+            <ul class="pkg-incl room-list en">
+              <li><a href="/jidlo">Full board</a>, coffee and drinks</li>
+              <li>Full <a class="section-jump" href="#equipment">equipment</a> – everything wired and ready, with support</li>
+              <li>Record up to 8 tracks at once (Apollo x8p)</li>
+              <li>Overnight stay below the studio in the former mill room, an extra room on request</li>
+              <li>Sauna · Winter garden</li>
+              <li>Tesla rides from the mill around the Domažlice area and back</li>
+              <li><a href="/en/chleba">Our fresh sourdough bread</a></li>
+            </ul>
+            <ul class="pkg-incl room-list de">
+              <li><a href="/jidlo">Vollpension</a>, Kaffee und Getränke</li>
+              <li>Komplette <a class="section-jump" href="#equipment">Ausstattung</a> – alles verkabelt und bereit, inklusive Betreuung</li>
+              <li>Aufnahme von bis zu 8 Spuren gleichzeitig (Apollo x8p)</li>
+              <li>Übernachtung unter dem Studio im ehemaligen Mühlenraum, auf Wunsch ein zusätzliches Zimmer</li>
+              <li>Sauna · Wintergarten</li>
+              <li>Fahrten mit dem Tesla von der Mühle rund um Domažlice und zurück</li>
+              <li><a href="/de/chleba">Unser frisches Sauerteigbrot</a></li>
+            </ul>
             <div class="room-package">
               <div class="pkg-when-stay">
               <div class="pkg-price-line"><strong class="cs">12 000 Kč</strong><strong class="en">$560</strong><strong class="de">510 €</strong><span class="cs">den s přespáním · 1–2 osoby · vč. DPH</span><span class="en">day with overnight stay · 1–2 people · VAT incl.</span><span class="de">Tag mit Übernachtung · 1–2 Personen · inkl. MwSt.</span></div>
@@ -3954,6 +3985,7 @@ document.getElementById('nightTourBtn')?.addEventListener('click',()=>{
   document.addEventListener('click',(e)=>{
     const a=e.target.closest('a.gift-item');
     if(!a||e.metaKey||e.ctrlKey||e.shiftKey)return;
+    a.classList.add('revealed');
     e.preventDefault();
     if(overlay)return;
     overlay=document.createElement('div');
