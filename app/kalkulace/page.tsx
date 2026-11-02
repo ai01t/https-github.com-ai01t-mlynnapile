@@ -556,6 +556,22 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     if (invoiceView?.id === invoice.id) setInvoiceView(next.find((item) => item.id === invoice.id));
   };
 
+  // Číslo faktury jde přepsat ručně – řada ho jen navrhuje. Hlídáme prázdnou
+  // hodnotu a duplicitu, protože číslo slouží i jako variabilní symbol platby.
+  const renumberInvoice = (invoice, value) => {
+    const number = String(value).trim();
+    const next = invoices.map((item) => (item.id === invoice.id ? { ...item, number } : item));
+    persistInvoices(next);
+    if (invoiceView?.id === invoice.id) setInvoiceView(next.find((item) => item.id === invoice.id));
+  };
+
+  const invoiceNumberIssue = (invoice) => {
+    const number = String(invoice.number ?? "").trim();
+    if (!number) return "Faktura musí mít číslo – slouží jako variabilní symbol.";
+    if (invoices.some((item) => item.id !== invoice.id && String(item.number ?? "").trim() === number)) return "Tohle číslo už nese jiná faktura.";
+    return "";
+  };
+
   const deleteInvoice = (invoice) => {
     if (!window.confirm(`Smazat fakturu č. ${invoice.number}?`)) return;
     persistInvoices(invoices.filter((item) => item.id !== invoice.id));
@@ -1321,6 +1337,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
         <InvoicesModal
           invoices={invoices}
           onView={(invoice) => setInvoiceView(invoice)}
+          onRenumber={renumberInvoice}
+          numberIssue={invoiceNumberIssue}
           onPaid={toggleInvoicePaid}
           onDelete={deleteInvoice}
           onNew={() => {
@@ -1866,7 +1884,7 @@ function QuotesModal({ quotes, currentId, onLoad, onDuplicate, onDelete, onStatu
 
 // ---------- seznam faktur ----------
 
-function InvoicesModal({ invoices, onView, onPaid, onDelete, onNew, close }) {
+function InvoicesModal({ invoices, onView, onRenumber, numberIssue, onPaid, onDelete, onNew, close }) {
   const overdue = (invoice) => !invoice.paid && invoice.dueDate < todayIso();
   return (
     <Modal
@@ -1890,11 +1908,21 @@ function InvoicesModal({ invoices, onView, onPaid, onDelete, onNew, close }) {
         </div>
       )}
       <div className="space-y-2">
-        {invoices.map((invoice) => (
+        {invoices.map((invoice) => {
+          const issue = numberIssue?.(invoice) ?? "";
+          return (
           <div key={invoice.id} className="flex flex-wrap items-center gap-3 rounded-[var(--radius-sm)] border border-[var(--line)] p-3">
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="font-black">č. {invoice.number}</span>
+                <span className="text-sm font-black text-[var(--muted)]">č.</span>
+                <input
+                  value={invoice.number ?? ""}
+                  onChange={(event) => onRenumber?.(invoice, event.target.value)}
+                  title={issue || "Číslo faktury – klikni a přepiš. Slouží i jako variabilní symbol."}
+                  className={`w-[11ch] rounded-[var(--radius-sm)] border bg-[var(--card)] px-1.5 py-0.5 text-sm font-black tabular-nums outline-none ${
+                    issue ? "border-red-400 text-red-700" : "border-transparent hover:border-[var(--line)] focus:border-[var(--brand)]"
+                  }`}
+                />
                 <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${invoice.paid ? "bg-emerald-100 text-emerald-800" : overdue(invoice) ? "bg-red-100 text-red-800" : "bg-amber-100 text-amber-800"}`}>
                   {invoice.paid ? "Zaplaceno" : overdue(invoice) ? "Po splatnosti" : "Čeká na platbu"}
                 </span>
@@ -1916,8 +1944,10 @@ function InvoicesModal({ invoices, onView, onPaid, onDelete, onNew, close }) {
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
+            {issue && <div className="w-full text-xs font-bold text-red-700">{issue}</div>}
           </div>
-        ))}
+          );
+        })}
       </div>
     </Modal>
   );
