@@ -4,7 +4,7 @@
 // Vytvoří kótovaný nákres stěn (SVG – čitelný okem, text v něm je strojově čitelný)
 // a strukturovaný popis v Markdownu s kompletními rozměry.
 
-import { f2, inferOtherOpening, n, openingKind, outerOpening, revealArea, scopeText, wallArcs, wallGaps, wallStats } from "./core";
+import { f2, inferOtherOpening, n, openingKind, outerOpening, planArea, revealArea, scopeText, wallArcs, wallGaps, wallStats } from "./core";
 
 const esc = (value: any) => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -360,12 +360,6 @@ ${body}
 // ---------- strojově i lidsky čitelný popis ----------
 
 // Plocha půdorysu z obrysu (Gaussova formule), v m².
-const planArea = (points: any[]) =>
-  Math.abs(points.reduce((sum: number, p: any, i: number) => {
-    const q = points[(i + 1) % points.length];
-    return sum + (n(p.x) * n(q.y) - n(q.x) * n(p.y));
-  }, 0)) / 2 / 10000;
-
 const planPerimeter = (points: any[]) =>
   points.reduce((sum: number, p: any, i: number) => {
     const q = points[(i + 1) % points.length];

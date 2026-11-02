@@ -32,6 +32,8 @@ import {
   clamp,
   czAccountToIban,
   czk,
+  czkExact,
+  round2,
   dateCz,
   defaultCompany,
   defaultCustomer,
@@ -41,12 +43,19 @@ import {
   defaultWorks,
   f2,
   fetchAres,
+  fixCeilingAreas,
+  fixDoubleMaterialReserve,
+  hasRounding,
   inferOtherOpening,
   n,
   normalizeOpening,
   openingDefaults,
   openingKind,
+  pct,
+  planArea,
   QUOTE_STATUSES,
+  roundMoney,
+  vsFromNumber,
   scopeText,
   statusInfo,
   storage,
@@ -132,20 +141,21 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     const presets = storage.loadPresets();
     const saved = storage.loadAutosave();
     if (saved) {
-      const loadedRooms = roomsFromData(saved);
+      const loadedRooms = fixCeilingAreas(roomsFromData(saved));
       setRooms(loadedRooms);
       setActiveRoomId(loadedRooms.some((room) => room.id === saved.activeRoomId) ? saved.activeRoomId : loadedRooms[0].id);
       setWorks(saved.works ?? presets.works);
       setGlobalRows(saved.globalRows ?? presets.globalRows);
-      setMaterials(saved.materials ?? presets.materials);
-      setSettings(saved.settings ?? presets.settings);
+      const savedMaterials = saved.materials ?? presets.materials;
+      setMaterials(savedMaterials);
+      setSettings(fixDoubleMaterialReserve(saved.settings ?? presets.settings, savedMaterials));
       setCustomer(saved.customer ?? defaultCustomer);
       setMeta(saved.meta ?? emptyMeta);
     } else {
       setWorks(presets.works);
       setGlobalRows(presets.globalRows);
       setMaterials(presets.materials);
-      setSettings(presets.settings);
+      setSettings(fixDoubleMaterialReserve(presets.settings, presets.materials));
     }
     setQuotes(storage.loadQuotes());
     setInvoices(storage.loadInvoices());
@@ -240,27 +250,41 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
   const addCeiling = () => {
     let width = 400;
     let depth = 300;
+    // Opsaný obdélník jde do náhledu, ale účtuje se skutečná plocha půdorysu –
+    // u místnosti do L je obdélník větší než podlaha.
+    let fixedArea = 0;
     const points = activeRoom?.plan?.points;
     if (points?.length >= 3) {
       const xs = points.map((p) => p.x);
       const ys = points.map((p) => p.y);
       width = Math.round(Math.max(...xs) - Math.min(...xs));
       depth = Math.round(Math.max(...ys) - Math.min(...ys));
+      const real = planArea(points);
+      // u pravoúhlé místnosti obojí vychází stejně, pak si plochu nedržíme
+      if (real > 0 && Math.abs(real - (width / 100) * (depth / 100)) > 0.005) fixedArea = real;
     } else if (walls.length >= 2) {
       width = Math.max(1, Math.round(n(walls[0].width))) || 400;
       depth = Math.max(1, Math.round(n(walls[1].width))) || 300;
     }
-    const ceiling = { id: uid(), name: "Strop", ceiling: true, width, height: depth, scope: "visual", openings: [], workIds: ["malba"] };
+    const ceiling = { id: uid(), name: "Strop", ceiling: true, width, height: depth, fixedArea, scope: "visual", openings: [], workIds: ["malba"] };
     setWalls((prev) => [...prev, ceiling]);
     selectWall(ceiling.id);
   };
 
   // Potvrzení řešíme vlastním dialogem – nativní confirm prohlížeče potlačují
-  // (Chrome po pár dialozích nabídne „nezobrazovat další“) a mazání pak tiše selže.
-  const [roomToDelete, setRoomToDelete] = useState<any>(null);
+  // (Chrome po pár dialozích nabídne „nezobrazovat další“) a akce pak tiše selže.
+  const [confirmAsk, setConfirmAsk] = useState<any>(null);
+
+  const askDeleteRoom = (room) =>
+    setConfirmAsk({
+      title: `Smazat místnost „${room.name}“?`,
+      text: `${room.walls.length} stěn. Přesune se do koše — odtud ji lze do ${TRASH_TTL_DAYS} dnů obnovit.`,
+      label: "Smazat do koše",
+      danger: true,
+      action: () => deleteRoom(room),
+    });
 
   const deleteRoom = (room) => {
-    setRoomToDelete(null);
     persistTrash([{ room, deletedAt: new Date().toISOString() }, ...trash]);
     setRooms((prev) => {
       const rest = prev.filter((item) => item.id !== room.id);
@@ -380,19 +404,32 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     persistQuotes([copy, ...quotes]);
   };
 
-  const deleteQuote = (quote) => {
-    if (!window.confirm(`Smazat nabídku „${quote.name}“?`)) return;
-    persistQuotes(quotes.filter((item) => item.id !== quote.id));
-    if (meta.id === quote.id) setMeta((prev) => ({ ...prev, id: null }));
-  };
+  const deleteQuote = (quote) =>
+    setConfirmAsk({
+      title: `Smazat nabídku „${quote.name}“?`,
+      text: "Tohle už nejde vrátit. Vystavené faktury zůstanou.",
+      label: "Smazat nabídku",
+      danger: true,
+      action: () => {
+        persistQuotes(quotes.filter((item) => item.id !== quote.id));
+        if (meta.id === quote.id) setMeta((prev) => ({ ...prev, id: null }));
+      },
+    });
 
   const setQuoteStatus = (quote, status) => {
     persistQuotes(quotes.map((item) => (item.id === quote.id ? { ...item, status } : item)));
     if (meta.id === quote.id) setMeta((prev) => ({ ...prev, status }));
   };
 
-  const newQuote = () => {
-    if (!window.confirm("Začít novou prázdnou nabídku? Rozpracované hodnoty se přepíší (uložené nabídky zůstávají).")) return;
+  const newQuote = () =>
+    setConfirmAsk({
+      title: "Začít novou prázdnou nabídku?",
+      text: "Rozpracované hodnoty se přepíší. Uložené nabídky zůstávají.",
+      label: "Začít novou",
+      action: () => startNewQuote(),
+    });
+
+  const startNewQuote = () => {
     const presets = storage.loadPresets();
     const freshRooms = JSON.parse(JSON.stringify(defaultRooms));
     setRooms(freshRooms);
@@ -485,9 +522,17 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
 
   // „Vyhotovit fakturu“ z lišty dokumentu: uloží aktuální stav nabídky a rovnou z ní vystaví fakturu
   const invoiceFromCurrent = () => {
-    const existing = meta.id ? quotes.find((quote) => quote.id === meta.id) : null;
     const confirmName = meta.name?.trim() || customer.name?.trim() || "aktuální nabídka";
-    if (!window.confirm(`Vyhotovit fakturu z nabídky „${confirmName}“?\n\nNabídka se uloží a označí jako fakturovaná.`)) return;
+    setConfirmAsk({
+      title: `Vyhotovit fakturu z nabídky „${confirmName}“?`,
+      text: "Nabídka se uloží a označí jako fakturovaná.",
+      label: "Vyhotovit fakturu",
+      action: () => issueInvoiceFromCurrent(),
+    });
+  };
+
+  const issueInvoiceFromCurrent = () => {
+    const existing = meta.id ? quotes.find((quote) => quote.id === meta.id) : null;
     const id = meta.id ?? uid();
     const number = existing?.number ?? meta.number ?? storage.nextQuoteNumber();
     const name = meta.name?.trim() || (customer.name?.trim() ? `${number}_${customer.name.trim()}` : `${number}_${dateCz(todayIso())}`);
@@ -533,7 +578,9 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     const existing = manualDoc?.initial?.id ? quotes.find((quote) => quote.id === manualDoc.initial.id) : null;
     const id = existing?.id ?? uid();
     const number = existing?.number ?? storage.nextQuoteNumber();
-    const total = items.reduce((sum, row) => sum + n(row.qty) * n(row.price), 0);
+    // řádky zůstávají přesné, zaokrouhlí se teprve celek (a zbytek dostane vlastní řádek)
+    const rows = manualDocRows(items);
+    const total = rows.reduce((sum, row) => sum + row.total, 0);
     const quote = {
       id,
       number,
@@ -541,7 +588,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       customer: docCustomer,
       status: existing?.status ?? "draft",
       manual: true,
-      items,
+      items: rows,
       createdAt: existing?.createdAt ?? new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       validUntil: validUntil || addDaysIso(company.validityDays),
@@ -557,14 +604,15 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     // číslo z formuláře: pokud autor nechal návrh řady, zabereme ho (posune
     // čítač), vlastní číslo řadu nechá být
     const typed = String(number ?? "").trim();
+    const rows = manualDocRows(items);
     const invoice = {
       id: uid(),
       number: !typed || typed === storage.peekInvoiceNumber() ? storage.nextInvoiceNumber() : typed,
       quoteId: null,
       quoteName: "",
       customer: docCustomer,
-      items: items.map((row) => ({ name: row.name, unit: row.unit || "kpl", qty: n(row.qty), price: n(row.price), total: n(row.qty) * n(row.price) })),
-      total: items.reduce((sum, row) => sum + n(row.qty) * n(row.price), 0),
+      items: rows,
+      total: rows.reduce((sum, row) => sum + row.total, 0),
       issueDate,
       supplyDate,
       dueDate,
@@ -602,14 +650,25 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     return "";
   };
 
-  const deleteInvoice = (invoice) => {
-    if (!window.confirm(`Smazat fakturu č. ${invoice.number}?`)) return;
-    persistInvoices(invoices.filter((item) => item.id !== invoice.id));
-  };
+  const deleteInvoice = (invoice) =>
+    setConfirmAsk({
+      title: `Smazat fakturu č. ${invoice.number}?`,
+      text: "Vystavený doklad by měl v řadě zůstat — mazej jen omylem vystavené faktury.",
+      label: "Smazat fakturu",
+      danger: true,
+      action: () => persistInvoices(invoices.filter((item) => item.id !== invoice.id)),
+    });
 
   // ---------- stěny ----------
 
-  const updateWall = (wallId, patch) => setWalls((prev) => prev.map((wall) => (wall.id === wallId ? { ...wall, ...patch } : wall)));
+  // Ruční přepsání rozměru má přednost před plochou z půdorysu, jinak by se
+  // u stropu zadaná šířka × hloubka nikde neprojevila.
+  const updateWall = (wallId, patch) =>
+    setWalls((prev) =>
+      prev.map((wall) =>
+        wall.id === wallId ? { ...wall, ...patch, ...("width" in patch || "height" in patch ? { fixedArea: 0 } : {}) } : wall,
+      ),
+    );
   const updateOpening = (wallId, openingId, patch) =>
     setWalls((prev) =>
       prev.map((wall) =>
@@ -886,7 +945,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                     <span className="rounded-full bg-[var(--bg)] px-1.5 text-[10px] font-bold text-[var(--muted)]">{room.walls.length}</span>
                     <button
                       type="button"
-                      onClick={() => setRoomToDelete(room)}
+                      onClick={() => askDeleteRoom(room)}
                       title="Smazat místnost (přesune se do koše)"
                       className="grid h-6 w-6 place-items-center rounded-full text-[var(--muted)] transition hover:bg-red-50 hover:text-red-600"
                     >
@@ -1063,8 +1122,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                           </button>
                         </div>
                         <Field label="Stěna" value={wall.name} onChange={(value) => updateWall(wall.id, { name: value })} />
-                        <Field label="Šířka (cm)" value={wall.width} onChange={(value) => updateWall(wall.id, { width: value })} right />
-                        <Field label={wall.ceiling ? "Hloubka (cm)" : "Výška (cm)"} value={wall.height} onChange={(value) => updateWall(wall.id, { height: value })} right />
+                        <Field label="Šířka (cm)" value={wall.width} onChange={(value) => updateWall(wall.id, { width: value })} right nonNegative />
+                        <Field label={wall.ceiling ? "Hloubka (cm)" : "Výška (cm)"} value={wall.height} onChange={(value) => updateWall(wall.id, { height: value })} right nonNegative />
                         <div>
                           <Label>Rozsah</Label>
                           <select className="h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-2" value={wall.scope} onChange={(event) => updateWall(wall.id, { scope: event.target.value })}>
@@ -1077,6 +1136,12 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                           <div className="font-black">{f2(stats.clean)} m²</div>
                         </div>
                       </div>
+
+                      {stats.openings > stats.gross && (
+                        <div className="mt-2 rounded-[var(--radius-sm)] border border-red-300 bg-red-50 px-3 py-2 text-xs font-bold leading-5 text-red-800">
+                          Otvory ({f2(stats.openings)} m²) jsou větší než celá stěna ({f2(stats.gross)} m²) — zkontroluj rozměry, plocha se počítá jako nula.
+                        </div>
+                      )}
 
                       <div className="mt-2 rounded-[var(--radius-sm)] bg-[var(--bg-soft)] p-2">
                         <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
@@ -1299,12 +1364,15 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
             <Card>
               <h2 className="mb-3 border-l-4 border-[var(--brand)] pl-2 text-lg font-black">Nastavení a sazby</h2>
               <div className="grid gap-2 sm:grid-cols-2">
-                <Field label="Rezerva práce %" value={settings.laborReservePercent} onChange={(value) => setSettings((prev) => ({ ...prev, laborReservePercent: value }))} right />
-                <Field label="Rezerva materiálu %" value={settings.materialReservePercent} onChange={(value) => setSettings((prev) => ({ ...prev, materialReservePercent: value }))} right />
-                <Field label="Km jedna cesta" value={settings.kmOneWay} onChange={(value) => setSettings((prev) => ({ ...prev, kmOneWay: value }))} right />
-                <Field label="Počet návštěv" value={settings.visits} onChange={(value) => setSettings((prev) => ({ ...prev, visits: value }))} right />
-                <Field label="Cena za km" value={settings.kmPrice} onChange={(value) => setSettings((prev) => ({ ...prev, kmPrice: value }))} right />
+                <Field label="Rezerva práce %" value={settings.laborReservePercent} onChange={(value) => setSettings((prev) => ({ ...prev, laborReservePercent: value }))} right nonNegative />
+                <Field label="Cenová rezerva materiálu %" value={settings.materialReservePercent} onChange={(value) => setSettings((prev) => ({ ...prev, materialReservePercent: value }))} right nonNegative />
+                <Field label="Km jedna cesta" value={settings.kmOneWay} onChange={(value) => setSettings((prev) => ({ ...prev, kmOneWay: value }))} right nonNegative />
+                <Field label="Počet návštěv" value={settings.visits} onChange={(value) => setSettings((prev) => ({ ...prev, visits: value }))} right nonNegative />
+                <Field label="Cena za km" value={settings.kmPrice} onChange={(value) => setSettings((prev) => ({ ...prev, kmPrice: value }))} right nonNegative />
               </div>
+              <p className="mt-2 text-xs leading-5 text-[var(--muted)]">
+                Množství materiálu už nese prořez (15 % u každé položky), cenová rezerva je navíc pro případ zdražení — proto startuje na nule.
+              </p>
             </Card>
 
             <Card>
@@ -1337,7 +1405,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
               <h2 className="mb-2 border-l-4 border-[var(--brand)] pl-2 text-lg font-black">Součet</h2>
               <SummaryRow label="Rezerva práce" value={calc.laborReserve} />
               <SummaryRow label="Materiál mezisoučet" value={calc.materialBaseTotal} />
-              <SummaryRow label="Materiálová rezerva" value={calc.materialReserve} />
+              <SummaryRow label="Cenová rezerva materiálu" value={calc.materialReserve} />
               <SummaryRow label={`Doprava (${f2(calc.transportKm)} km)`} value={calc.transportTotal} />
               <div className="mt-3 rounded-[var(--radius)] bg-[var(--brand)] p-3 text-right text-white shadow-md">
                 <div className="text-xs uppercase tracking-wide opacity-80">Celkem bez DPH</div>
@@ -1445,27 +1513,31 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           close={() => setAiOpen(false)}
         />
       )}
-      {roomToDelete && (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" onClick={() => setRoomToDelete(null)}>
+      {confirmAsk && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4" onClick={() => setConfirmAsk(null)}>
           <div className="w-full max-w-sm rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] p-5 shadow-xl" onClick={(event) => event.stopPropagation()}>
-            <h3 className="text-base font-black">Smazat místnost „{roomToDelete.name}"?</h3>
-            <p className="mt-1.5 text-sm text-[var(--muted)]">
-              {roomToDelete.walls.length} stěn. Přesune se do koše — odtud ji lze do {TRASH_TTL_DAYS} dnů obnovit.
-            </p>
+            <h3 className="text-base font-black">{confirmAsk.title}</h3>
+            {confirmAsk.text && <p className="mt-1.5 text-sm text-[var(--muted)]">{confirmAsk.text}</p>}
             <div className="mt-4 flex justify-end gap-2">
               <button
                 type="button"
-                onClick={() => setRoomToDelete(null)}
+                onClick={() => setConfirmAsk(null)}
                 className="rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--card)] px-3 py-2 text-sm font-bold hover:bg-[var(--bg-soft)]"
               >
                 Zrušit
               </button>
               <button
                 type="button"
-                onClick={() => deleteRoom(roomToDelete)}
-                className="rounded-[var(--radius-sm)] bg-red-600 px-3 py-2 text-sm font-bold text-white hover:bg-red-700"
+                onClick={() => {
+                  const run = confirmAsk.action;
+                  setConfirmAsk(null);
+                  run?.();
+                }}
+                className={`rounded-[var(--radius-sm)] px-3 py-2 text-sm font-bold text-white ${
+                  confirmAsk.danger ? "bg-red-600 hover:bg-red-700" : "bg-[var(--brand)] hover:bg-[var(--brand-dark)]"
+                }`}
               >
-                Smazat do koše
+                {confirmAsk.label ?? "Potvrdit"}
               </button>
             </div>
           </div>
@@ -1476,10 +1548,15 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
         <TrashModal
           trash={trash}
           onRestore={restoreRoom}
-          onPurge={(entry) => {
-            if (!window.confirm(`Trvale smazat místnost „${entry.room.name}“? Tohle už nejde vrátit.`)) return;
-            persistTrash(trash.filter((item) => item !== entry));
-          }}
+          onPurge={(entry) =>
+            setConfirmAsk({
+              title: `Trvale smazat místnost „${entry.room.name}“?`,
+              text: "Z koše se už nedá obnovit.",
+              label: "Trvale smazat",
+              danger: true,
+              action: () => persistTrash(trash.filter((item) => item !== entry)),
+            })
+          }
           close={() => setTrashOpen(false)}
         />
       )}
@@ -1814,14 +1891,15 @@ function Label({ children }) {
   return <div className="mb-1 text-[11px] font-bold uppercase text-[var(--muted)]">{children}</div>;
 }
 
-function Field({ label, value, onChange, right = false, placeholder }) {
+function Field({ label, value, onChange, right = false, placeholder, nonNegative = false }) {
   return (
     <label className="block">
       <Label>{label}</Label>
       <input
         value={value}
         placeholder={placeholder}
-        onChange={(event) => onChange(event.target.value)}
+        // u rozměrů a sazeb nemá minus smysl – záporná plocha ani rezerva neexistuje
+        onChange={(event) => onChange(nonNegative ? event.target.value.replace(/-/g, "") : event.target.value)}
         className={`h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-3 ${right ? "text-right" : ""}`}
       />
     </label>
@@ -2018,7 +2096,8 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
   const [blankPrint, setBlankPrint] = useState(false);
 
   const filled = items.filter((row) => String(row.name).trim() || n(row.price) > 0);
-  const total = filled.reduce((sum, row) => sum + n(row.qty) * n(row.price), 0);
+  const docRows = manualDocRows(filled);
+  const total = docRows.reduce((sum, row) => sum + row.total, 0);
   const setItem = (id, patch) => setItems((prev) => prev.map((row) => (row.id === id ? { ...row, ...patch } : row)));
 
   const loadAres = async () => {
@@ -2037,6 +2116,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
     if (isQuote) return "";
     const value = String(number).trim();
     if (!value) return "Faktura musí mít číslo – slouží jako variabilní symbol.";
+    if (!vsFromNumber(value)) return "Číslo musí mít aspoň jednu číslici – dělá se z něj variabilní symbol platby.";
     if (numberTaken?.(value)) return "Tohle číslo už nese jiná faktura.";
     return "";
   })();
@@ -2092,7 +2172,13 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
                 numberIssue ? "border-red-400 text-red-700" : "border-[var(--line)]"
               }`}
             />
-            {numberIssue && <div className="mt-1 text-right text-[11px] font-bold leading-4 text-red-700">{numberIssue}</div>}
+            {numberIssue ? (
+              <div className="mt-1 text-right text-[11px] font-bold leading-4 text-red-700">{numberIssue}</div>
+            ) : (
+              vsFromNumber(number) !== String(number).trim() && (
+                <div className="mt-1 text-right text-[11px] font-bold leading-4 text-amber-700">Variabilní symbol platby bude {vsFromNumber(number)}</div>
+              )
+            )}
           </label>
         )}
       </div>
@@ -2164,7 +2250,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
               <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-center text-sm" value={row.unit} onChange={(event) => setItem(row.id, { unit: event.target.value })} />
               <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-right text-sm" value={row.qty} onChange={(event) => setItem(row.id, { qty: event.target.value })} />
               <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-right text-sm" placeholder="0" value={row.price} onChange={(event) => setItem(row.id, { price: event.target.value })} />
-              <div className="rounded-[var(--radius-sm)] bg-[var(--bg-soft)] px-2 py-2 text-right text-sm font-bold">{czk(n(row.qty) * n(row.price))}</div>
+              <div className="rounded-[var(--radius-sm)] bg-[var(--bg-soft)] px-2 py-2 text-right text-sm font-bold">{czkExact(n(row.qty) * n(row.price))}</div>
               <button type="button" onClick={() => setItems((prev) => (prev.length > 1 ? prev.filter((item) => item.id !== row.id) : prev))} className="grid h-9 place-items-center rounded-[var(--radius-sm)] text-[var(--muted)] hover:bg-[var(--bg)]">
                 <Trash2 className="h-4 w-4" />
               </button>
@@ -2207,7 +2293,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
           }
         >
           <div data-print-root style={DOC_STYLE}>
-            <ManualQuoteDoc number={initial?.number} customer={customer} items={filled} total={total} validUntil={validUntil} company={company} />
+            <ManualQuoteDoc number={initial?.number} customer={customer} items={docRows} total={total} validUntil={validUntil} company={company} />
           </div>
         </Modal>
       )}
@@ -2425,8 +2511,8 @@ function ManualQuoteDoc({ number, customer, items, total, validUntil, company })
                 <Td>{row.name}</Td>
                 <Td center>{row.unit}</Td>
                 <Td right>{f2(row.qty)}</Td>
-                <Td right>{czk(row.price)}</Td>
-                <Td right strong>{czk(n(row.qty) * n(row.price))}</Td>
+                <Td right>{czkExact(row.price)}</Td>
+                <Td right strong>{czkExact(n(row.qty) * n(row.price))}</Td>
               </tr>
             ))}
           </tbody>
@@ -2447,6 +2533,23 @@ function ManualQuoteDoc({ number, customer, items, total, validUntil, company })
       </section>
     </div>
   );
+}
+
+// Řádky ručního dokladu: přesné násobky a na konci zbytek do celých Kč, aby
+// součet položek dal přesně fakturovanou částku (a tu částku nese i QR).
+function manualDocRows(items) {
+  const rows = items.map((row) => ({
+    id: row.id,
+    name: row.name,
+    unit: row.unit || "kpl",
+    qty: round2(row.qty),
+    price: n(row.price),
+    total: round2(round2(row.qty) * n(row.price)),
+  }));
+  const raw = round2(rows.reduce((sum, row) => sum + row.total, 0));
+  const rounding = round2(roundMoney(raw) - raw);
+  if (hasRounding(rounding)) rows.push({ id: "rounding", name: "Zaokrouhlení na celé Kč", unit: "kpl", qty: 1, price: rounding, total: rounding });
+  return rows;
 }
 
 // ---------- faktura – tisková podoba ----------
@@ -2528,7 +2631,8 @@ function InvoiceModal({ invoice, company, close }) {
           <DataCell label="Číslo účtu" value={supplier.account || "—"} />
           <DataCell label="IBAN" value={(supplier.account && czAccountToIban(supplier.account)) || "—"} />
           <DataCell label="Banka" value={supplier.bank || "—"} />
-          <DataCell label="Variabilní symbol" value={invoice.number} strong />
+          {/* tiskneme přesně to, co nese QR platba – banka bere jen číslice */}
+          <DataCell label="Variabilní symbol" value={vsFromNumber(invoice.number) || "—"} strong />
         </div>
 
         <section className="mt-6">
@@ -2549,8 +2653,8 @@ function InvoiceModal({ invoice, company, close }) {
                   <Td>{item.name}</Td>
                   <Td center>{item.unit}</Td>
                   <Td right>{f2(item.qty)}</Td>
-                  <Td right>{czk(item.price)}</Td>
-                  <Td right strong>{czk(item.total)}</Td>
+                  <Td right>{czkExact(item.price)}</Td>
+                  <Td right strong>{czkExact(item.total)}</Td>
                 </tr>
               ))}
             </tbody>
@@ -2907,11 +3011,11 @@ function Preview({ calc, settings, customer, meta, company }) {
           </thead>
           <tbody>
             {calc.workRows.map((row) => <BudgetRow key={row.id} row={row} />)}
-            <BudgetRow row={{ name: `Rezerva na práci a časovou náročnost ${f2(settings.laborReservePercent)}%`, unit: "kpl", qty: 1, price: calc.laborReserve, total: calc.laborReserve }} className="bg-blue-50" />
+            {calc.laborReserve !== 0 && <BudgetRow row={{ name: `Rezerva na práci a časovou náročnost ${pct(settings.laborReservePercent)}%`, unit: "kpl", qty: 1, price: calc.laborReserve, total: calc.laborReserve }} className="bg-blue-50" />}
             {calc.materialRows.map((row) => <BudgetRow key={row.id} row={row} className="bg-amber-50/50" />)}
-            <BudgetRow row={{ name: `Cenová rezerva na materiál ${f2(settings.materialReservePercent)}%`, unit: "kpl", qty: 1, price: calc.materialReserve, total: calc.materialReserve }} className="bg-amber-50" />
-            <BudgetRow row={{ name: `Doprava - ${settings.visits}× tam a zpět`, unit: "km", qty: calc.transportKm, price: settings.kmPrice, total: calc.transportTotal }} className="bg-[var(--bg)]" />
-            {calc.rounding !== 0 && <BudgetRow row={{ name: "Zaokrouhlení na celé Kč", unit: "kpl", qty: 1, price: calc.rounding, total: calc.rounding }} className="bg-[var(--bg-soft)]" />}
+            {calc.materialReserve !== 0 && <BudgetRow row={{ name: `Cenová rezerva na materiál ${pct(settings.materialReservePercent)}%`, unit: "kpl", qty: 1, price: calc.materialReserve, total: calc.materialReserve }} className="bg-amber-50" />}
+            {calc.transportTotal !== 0 && <BudgetRow row={{ name: `Doprava - ${calc.visits}× tam a zpět`, unit: "km", qty: calc.transportKm, price: settings.kmPrice, total: calc.transportTotal }} className="bg-[var(--bg)]" />}
+            {hasRounding(calc.rounding) && <BudgetRow row={{ name: "Zaokrouhlení na celé Kč", unit: "kpl", qty: 1, price: calc.rounding, total: calc.rounding }} className="bg-[var(--bg-soft)]" />}
           </tbody>
         </Table>
       </Section>
@@ -2923,7 +3027,7 @@ function Preview({ calc, settings, customer, meta, company }) {
         </div>
         <div>
           <h2 className="mb-2 text-sm font-bold uppercase text-[var(--text-soft)]">Rekapitulace</h2>
-          <SimpleTable rows={[["Rezerva práce", czk(calc.laborReserve)], ["Materiál mezisoučet", czk(calc.materialBaseTotal)], ["Materiál celkem", czk(calc.materialBaseTotal + calc.materialReserve)], ...(calc.rounding !== 0 ? [["Zaokrouhlení", czk(calc.rounding)]] : []), ["DPH", "Neplátce DPH"], ["Celkem", czk(calc.subtotal)]]} />
+          <SimpleTable rows={[["Rezerva práce", czk(calc.laborReserve)], ["Materiál mezisoučet", czk(calc.materialBaseTotal)], ["Materiál celkem", czk(calc.materialBaseTotal + calc.materialReserve)], ...(hasRounding(calc.rounding) ? [["Zaokrouhlení", czkExact(calc.rounding)]] : []), ["DPH", "Neplátce DPH"], ["Celkem", czk(calc.subtotal)]]} />
         </div>
       </section>
 
@@ -2953,8 +3057,8 @@ function BudgetRow({ row, className = "" }) {
       <Td strong={className !== ""}>{row.name}</Td>
       <Td center>{row.unit}</Td>
       <Td right>{f2(row.qty)}</Td>
-      <Td right>{czk(row.price)}</Td>
-      <Td right strong>{czk(row.total)}</Td>
+      <Td right>{czkExact(row.price)}</Td>
+      <Td right strong>{czkExact(row.total)}</Td>
     </tr>
   );
 }

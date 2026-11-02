@@ -178,6 +178,26 @@ const splitOpeningCounts = (rooms: any[]) =>
     }),
   }));
 
+// Strop zakreslený dřív nesl plochu opsaného obdélníku – u místnosti do L je
+// větší než podlaha. Doplníme mu skutečnou plochu z půdorysu; u pravoúhlých
+// místností obojí vychází stejně, tam se nic nemění. Ruční přepsání rozměru
+// plochu z půdorysu zruší (viz updateWall).
+export const fixCeilingAreas = (rooms: any[]) =>
+  (rooms ?? []).map((room: any) => {
+    const points = room?.plan?.points;
+    if (!(points?.length >= 3)) return room;
+    const real = planArea(points);
+    if (!(real > 0)) return room;
+    return {
+      ...room,
+      walls: (room.walls ?? []).map((wall: any) =>
+        wall.ceiling && !(n(wall.fixedArea) > 0) && Math.abs(real - areaCm(wall.width, wall.height)) > 0.005
+          ? { ...wall, fixedArea: real }
+          : wall,
+      ),
+    };
+  });
+
 export const roomsFromData = (data: any) => {
   if (data?.rooms?.length) return splitOpeningCounts(data.rooms);
   if (data?.walls?.length) return splitOpeningCounts([{ id: "room-1", name: "Místnost 1", walls: data.walls }]);
@@ -194,7 +214,16 @@ export const defaultMaterials = [
   { id: "brusivo", name: "Brusivo, pytle, spotřební materiál", source: "fixed", unit: "kpl", qty: 1, price: 800, on: true },
 ];
 
-export const defaultSettings = { materialReservePercent: 15, laborReservePercent: 15, kmOneWay: 25, visits: 2, kmPrice: 18 };
+// Prořez materiálu (15 % u každé položky) je už v množství – cenová rezerva proto
+// startuje na 0, jinak by se stejných 15 % počítalo dvakrát (1,15 × 1,15).
+export const defaultSettings = { materialReservePercent: 0, laborReservePercent: 15, kmOneWay: 25, visits: 2, kmPrice: 18 };
+// Jednorázové srovnání starých dat: cenová rezerva 15 % sedávala na materiálu,
+// který už prořez obsahuje v množství. Nastavení proto jednou srovnáme na 0.
+export const fixDoubleMaterialReserve = (settings: any, materials: any[]) =>
+  n(settings?.materialReservePercent) === 15 && (materials ?? []).some((item: any) => n(item?.reserve) > 0)
+    ? { ...settings, materialReservePercent: 0 }
+    : settings;
+
 export const defaultCustomer = { name: "", address: "", ico: "", phone: "", email: "" };
 
 // Barvy stěn ve 3D náhledu – sdílené s přepínačem Interiér / Fasáda,
@@ -217,14 +246,28 @@ export const statusInfo = (id: string) => QUOTE_STATUSES.find((s) => s.id === id
 
 export const uid = () => `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 export const n = (value: any) => {
-  const parsed = Number(String(value ?? "").replace(",", "."));
+  // mezery (i nezlomitelná z kopírování) jsou oddělovač tisíců – nesmí dělat nulu
+  const parsed = Number(String(value ?? "").replace(/[\s\u00a0]/g, "").replace(",", "."));
   return Number.isFinite(parsed) ? parsed : 0;
 };
-export const areaCm = (width: any, height: any, count: any = 1) => (n(width) / 100) * (n(height) / 100) * Math.max(0, n(count || 1));
+export const areaCm = (width: any, height: any, count: any = 1) => (Math.max(0, n(width)) / 100) * (Math.max(0, n(height)) / 100) * Math.max(0, n(count || 1));
 export const f2 = (value: any) => n(value).toFixed(2);
 export const roundMoney = (value: any) => Math.round(n(value));
-export const roundUpToPack = (qty: number, pack: any) => (pack ? Math.ceil(qty / pack) * pack : qty);
+export const roundUpToPack = (qty: number, pack: any) => (n(pack) > 0 ? Math.ceil(qty / n(pack)) * n(pack) : qty);
 export const czk = (value: any) => new Intl.NumberFormat("cs-CZ", { style: "currency", currency: "CZK", maximumFractionDigits: 0 }).format(n(value));
+// Jednotkové ceny a řádky tiskneme přesně, zaokrouhluje se teprve celková částka:
+// haléře se ukážou jen když tam opravdu jsou, aby šlo množství × cena přenásobit.
+export const czkExact = (value: any) => {
+  const amount = n(value);
+  const decimals = Math.abs(amount % 1) >= 0.005 ? 2 : 0;
+  return new Intl.NumberFormat("cs-CZ", { style: "currency", currency: "CZK", minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(amount);
+};
+// množství i řádky držíme na haléřích, aby sečtení vytištěných čísel dalo celek
+export const round2 = (value: any) => Math.round(n(value) * 100) / 100;
+// u materiálu se zaokrouhluje nahoru – chybět nesmí
+export const ceil2 = (value: any) => Math.ceil(n(value) * 100) / 100;
+// zbytek po zaokrouhlení celku; pod půl haléře to není rozdíl, jen šum floatů
+export const hasRounding = (value: any) => Math.abs(n(value)) >= 0.005;
 export const clamp = (value: any, min: number, max: number) => Math.min(Math.max(n(value), min), Math.max(min, max));
 export const dateCz = (iso: any) => (iso ? new Date(iso).toLocaleDateString("cs-CZ") : "—");
 // lokální datum (ne UTC), jinak večer/ráno ujíždí o den
@@ -301,10 +344,19 @@ export function wallGaps(wall: any) {
   return arcs.slice(1).map((arc: any, index: number) => ({ id: arc.id, from: arcs[index].to, to: arc.from, width: Math.max(0, arc.from - arcs[index].to) }));
 }
 
+/** Plocha půdorysu z jeho vrcholů (Gaussova formule), cm → m². */
+export const planArea = (points: any[]) =>
+  Math.abs((points ?? []).reduce((sum: number, p: any, i: number) => {
+    const q = points[(i + 1) % points.length];
+    return sum + (n(p.x) * n(q.y) - n(q.x) * n(p.y));
+  }, 0)) / 2 / 10000;
+
 export function wallStats(wall: any) {
   // klenby na horní hraně stěny plochu zvětšují
   const arcs = wallArcs(wall).reduce((sum: number, arc: any) => sum + archArea(arc.span, arc.rise), 0);
-  const gross = areaCm(wall.width, wall.height) + arcs;
+  // strop zakreslený z půdorysu nese jeho skutečnou plochu – místnost do L
+  // se do šířka × hloubka nevejde (ruční přepsání rozměru plochu zase uvolní)
+  const gross = n(wall.fixedArea) > 0 ? n(wall.fixedArea) : areaCm(wall.width, wall.height) + arcs;
   const openings = wall.openings.reduce(
     (sum: number, opening: any) =>
       // obloukové nadpraží otvor zvětšuje
@@ -423,14 +475,14 @@ export function buildCalculation({ walls, works, globalRows, materials, settings
         id: `${wall.id}-${work.id}`,
         name: `${wall.name}: ${work.name}`,
         unit: work.unit,
-        qty: stats.clean,
+        qty: round2(stats.clean),
         price: work.price,
-        total: stats.clean * n(work.price),
+        total: round2(round2(stats.clean) * n(work.price)),
         laborReserveBase: true,
       }));
   });
 
-  const laborRows = globalRows.filter((row: any) => row.on).map((row: any) => ({ ...row, total: n(row.qty) * n(row.price) }));
+  const laborRows = globalRows.filter((row: any) => row.on).map((row: any) => ({ ...row, qty: round2(row.qty), total: round2(round2(row.qty) * n(row.price)) }));
   const workRows = [...wallRows, ...laborRows];
   const plasterArea = walls.filter((wall: any) => wall.workIds.includes("perlinka")).reduce((sum: number, wall: any) => sum + wallStats(wall).clean, 0);
   const paintArea = walls.filter((wall: any) => wall.workIds.includes("malba")).reduce((sum: number, wall: any) => sum + wallStats(wall).clean, 0);
@@ -440,24 +492,23 @@ export function buildCalculation({ walls, works, globalRows, materials, settings
     .map((material: any) => {
       const baseQty =
         material.source === "plaster" ? plasterArea * n(material.cons) : material.source === "paint" ? paintArea * n(material.cons) : n(material.qty);
-      const qty = roundUpToPack(baseQty * (1 + n(material.reserve) / 100), material.pack);
-      return { id: `mat-${material.id}`, name: `Materiál: ${material.name}`, unit: material.unit, qty, price: n(material.price), total: qty * n(material.price) };
+      // prořez je součást množství – do názvu ho píšeme, ať není skrytý
+      const waste = Math.max(0, n(material.reserve));
+      const qty = roundUpToPack(ceil2(Math.max(0, baseQty) * (1 + waste / 100)), material.pack);
+      const name = `Materiál: ${material.name}${waste ? ` (vč. ${+waste.toFixed(2)} % prořezu)` : ""}`;
+      return { id: `mat-${material.id}`, name, unit: material.unit, qty, price: n(material.price), total: round2(qty * n(material.price)) };
     });
 
   const materialBaseTotal = materialRows.reduce((sum: number, row: any) => sum + row.total, 0);
-  const materialReserve = (materialBaseTotal * n(settings.materialReservePercent)) / 100;
+  const materialReserve = round2((materialBaseTotal * Math.max(0, n(settings.materialReservePercent))) / 100);
   const laborReserveBase = workRows.filter((row: any) => row.laborReserveBase).reduce((sum: number, row: any) => sum + row.total, 0);
-  const laborReserve = (laborReserveBase * n(settings.laborReservePercent)) / 100;
-  const transportKm = n(settings.kmOneWay) * 2 * Math.max(1, n(settings.visits));
-  const transportTotal = transportKm * n(settings.kmPrice);
-  const rawSubtotal = workRows.reduce((sum: number, row: any) => sum + row.total, 0) + laborReserve + materialBaseTotal + materialReserve + transportTotal;
+  const laborReserve = round2((laborReserveBase * Math.max(0, n(settings.laborReservePercent))) / 100);
+  // 0 návštěv = žádná doprava; dřív se účtovala jedna cesta, i když řádek psal 0×
+  const visits = Math.max(0, Math.round(n(settings.visits)));
+  const transportKm = Math.max(0, n(settings.kmOneWay)) * 2 * visits;
+  const transportTotal = round2(transportKm * Math.max(0, n(settings.kmPrice)));
+  const rawSubtotal = round2(workRows.reduce((sum: number, row: any) => sum + row.total, 0) + laborReserve + materialBaseTotal + materialReserve + transportTotal);
   const subtotal = roundMoney(rawSubtotal);
-  const printedRowsTotal =
-    workRows.reduce((sum: number, row: any) => sum + roundMoney(row.total), 0) +
-    roundMoney(laborReserve) +
-    materialRows.reduce((sum: number, row: any) => sum + roundMoney(row.total), 0) +
-    roundMoney(materialReserve) +
-    roundMoney(transportTotal);
 
   return {
     wallRows: walls.map((wall: any) => ({ ...wall, stats: wallStats(wall) })),
@@ -466,22 +517,28 @@ export function buildCalculation({ walls, works, globalRows, materials, settings
     materialBaseTotal,
     materialReserve,
     laborReserve,
+    visits,
     transportKm,
     transportTotal,
     subtotal,
-    rounding: subtotal - printedRowsTotal,
+    // řádky jdou na doklad přesně, zaokrouhlí se teprve celková částka
+    rounding: round2(subtotal - rawSubtotal),
   };
 }
+
+// procenta do názvu řádku: 15, ne 15.00
+export const pct = (value: any) => String(+n(value).toFixed(2));
 
 // Zploštění kalkulace do řádků faktury (stejné pořadí jako tiskový rozpočet).
 export function buildInvoiceItems(calc: any, settings: any) {
   const items: any[] = [];
   calc.workRows.forEach((row: any) => items.push({ name: row.name, unit: row.unit, qty: n(row.qty), price: n(row.price), total: n(row.total) }));
-  items.push({ name: `Rezerva na práci a časovou náročnost ${f2(settings.laborReservePercent)}%`, unit: "kpl", qty: 1, price: calc.laborReserve, total: calc.laborReserve });
+  // nulové řádky (vypnutá rezerva, žádná doprava) na doklad nepatří
+  if (calc.laborReserve) items.push({ name: `Rezerva na práci a časovou náročnost ${pct(settings.laborReservePercent)}%`, unit: "kpl", qty: 1, price: calc.laborReserve, total: calc.laborReserve });
   calc.materialRows.forEach((row: any) => items.push({ name: row.name, unit: row.unit, qty: n(row.qty), price: n(row.price), total: n(row.total) }));
-  items.push({ name: `Cenová rezerva na materiál ${f2(settings.materialReservePercent)}%`, unit: "kpl", qty: 1, price: calc.materialReserve, total: calc.materialReserve });
-  items.push({ name: `Doprava - ${settings.visits}× tam a zpět`, unit: "km", qty: calc.transportKm, price: n(settings.kmPrice), total: calc.transportTotal });
-  if (calc.rounding !== 0) items.push({ name: "Zaokrouhlení na celé Kč", unit: "kpl", qty: 1, price: calc.rounding, total: calc.rounding });
+  if (calc.materialReserve) items.push({ name: `Cenová rezerva na materiál ${pct(settings.materialReservePercent)}%`, unit: "kpl", qty: 1, price: calc.materialReserve, total: calc.materialReserve });
+  if (calc.transportTotal) items.push({ name: `Doprava - ${calc.visits}× tam a zpět`, unit: "km", qty: calc.transportKm, price: n(settings.kmPrice), total: calc.transportTotal });
+  if (hasRounding(calc.rounding)) items.push({ name: "Zaokrouhlení na celé Kč", unit: "kpl", qty: 1, price: calc.rounding, total: calc.rounding });
   return items;
 }
 
@@ -810,11 +867,16 @@ const stripDiacritics = (text: string) =>
     .replace(/[^a-zA-Z0-9 .,-]/g, "")
     .toUpperCase();
 
+// Variabilní symbol z čísla dokladu – do banky jdou jen číslice, max 10.
+// Tiskneme přesně tuhle hodnotu, ať papír a QR platí za jedno.
+export const vsFromNumber = (value: any) => String(value ?? "").replace(/\D/g, "").slice(0, 10);
+
 export function buildSpayd({ account, amount, vs, message, dueDate }: any): string | null {
   const iban = czAccountToIban(account);
   if (!iban) return null;
   const parts = [`SPD*1.0`, `ACC:${iban}`, `AM:${n(amount).toFixed(2)}`, `CC:CZK`];
-  if (vs) parts.push(`X-VS:${String(vs).replace(/\D/g, "").slice(0, 10)}`);
+  const symbol = vsFromNumber(vs);
+  if (symbol) parts.push(`X-VS:${symbol}`);
   if (message) parts.push(`MSG:${stripDiacritics(message).slice(0, 60)}`);
   if (dueDate) parts.push(`DT:${String(dueDate).replace(/-/g, "").slice(0, 8)}`);
   return parts.join("*");
