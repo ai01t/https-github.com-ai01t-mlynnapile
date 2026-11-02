@@ -54,9 +54,11 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        // dárkové poukazy: vlastní adresa mlynnapile.cz/gift (+ /en/gift, /de/gift)
+        // dárkové poukazy: mlynnapile.cz/gift (EN), /gift/cz (CS), /gift/de (DE); staré /en/gift, /de/gift zůstávají
         { source: "/gift/online", destination: "/gift-online.html" },
         { source: "/gift", destination: "/poukaz-editor.html" },
+        { source: "/gift/cz", destination: "/poukaz-editor.html" },
+        { source: "/gift/de", destination: "/poukaz-editor.html" },
         { source: "/jidlo", destination: "/jidlo/index.html" },
         { source: "/en/gift", destination: "/poukaz-editor.html?lang=en" },
         { source: "/de/gift", destination: "/poukaz-editor.html?lang=de" },

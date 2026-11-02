@@ -69,6 +69,8 @@
     'Bicí': { en: 'Drums', de: 'Schlagzeug' },
     'Mikrofony': { en: 'Microphones', de: 'Mikrofone' },
     'Kabeláž': { en: 'Cabling', de: 'Verkabelung' },
+    'Kabely': { en: 'Cables', de: 'Kabel' },
+    'Bezdrátové systémy': { en: 'Wireless systems', de: 'Drahtlossysteme' },
     'Audio & Processing': { en: 'Audio & Processing', de: 'Audio & Processing' },
     'Technické detaily': { en: 'Technical details', de: 'Technische Details' },
     'Vstupy & výstupy': { en: 'Inputs & outputs', de: 'Ein- & Ausgänge' },

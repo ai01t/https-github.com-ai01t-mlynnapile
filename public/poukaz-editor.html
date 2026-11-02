@@ -917,8 +917,8 @@ const params=new URLSearchParams(location.search);
 const isAdmin=params.has('admin');
 document.body.classList.toggle('is-admin',isAdmin);
 const state={
-  // jazyk: ?lang=…, jinak podle adresy (/en/gift, /de/gift), jinak čeština
-  lang:['cs','en','de'].includes(params.get('lang'))?params.get('lang'):(location.pathname.match(/^\/(en|de)\//)||[])[1]||'cs',
+  // jazyk: ?lang=…, jinak podle adresy (/gift = EN, /gift/cz = CS, /gift/de = DE, /en/gift, /de/gift), jinak čeština
+  lang:['cs','en','de'].includes(params.get('lang'))?params.get('lang'):(location.pathname==='/gift'?'en':location.pathname==='/gift/cz'?'cs':location.pathname==='/gift/de'?'de':(location.pathname.match(/^\/(en|de)\//)||[])[1])||'cs',
   variant:VARIANTS.includes(params.get('v'))?params.get('v'):'guitar',
   format:params.get('f')==='online'?'online':'print',delivery:'email',days:1,hours:3,
 };
