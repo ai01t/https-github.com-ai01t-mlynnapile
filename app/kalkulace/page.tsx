@@ -2196,7 +2196,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
         <Modal
           close={
             <>
-              <Button variant="outline" onClick={() => window.print()}>
+              <Button variant="outline" onClick={printDocument}>
                 <Printer className="h-4 w-4" />
                 Tisk
               </Button>
@@ -2216,7 +2216,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
         <Modal
           close={
             <>
-              <Button variant="outline" onClick={() => window.print()}>
+              <Button variant="outline" onClick={printDocument}>
                 <Printer className="h-4 w-4" />
                 Tisk
               </Button>
@@ -2465,7 +2465,7 @@ function InvoiceModal({ invoice, company, close }) {
     <Modal
       close={
         <>
-          <Button variant="outline" onClick={() => window.print()}>
+          <Button variant="outline" onClick={printDocument}>
             <Printer className="h-4 w-4" />
             Tisk
           </Button>
@@ -2815,7 +2815,7 @@ function PreviewModal({ calc, settings, customer, meta, company, close }) {
     <Modal
       close={
         <>
-          <Button variant="outline" onClick={() => window.print()}>
+          <Button variant="outline" onClick={printDocument}>
             <Printer className="h-4 w-4" />
             Tisk
           </Button>
@@ -2972,6 +2972,48 @@ function SimpleTable({ rows }) {
       </tbody>
     </Table>
   );
+}
+
+// Tiskneme z odděleného iframu, který má vlastní <title>. Jméno tiskové úlohy
+// (a tedy i přednastavený název PDF) se bere z titulku dokumentu, který se
+// tiskne – v hlavním okně ho určuje hostitelská aplikace, tady my.
+function printDocument() {
+  const root = document.querySelector("[data-print-root]");
+  if (!root) {
+    window.print();
+    return;
+  }
+  const heading = (root.querySelector("[data-doc-title]") ?? root.querySelector("h1"))?.textContent?.trim() || "Dokument";
+  const number = root.querySelector("[data-doc-number]")?.textContent?.trim();
+  const title = [heading, number].filter(Boolean).join(" ");
+  const styles = [...document.querySelectorAll('link[rel="stylesheet"], style')].map((node) => node.outerHTML).join("");
+  const frame = document.createElement("iframe");
+  frame.setAttribute("aria-hidden", "true");
+  frame.style.cssText = "position:fixed;right:0;bottom:0;width:210mm;height:297mm;border:0;opacity:0;pointer-events:none";
+  document.body.appendChild(frame);
+  const doc = frame.contentDocument;
+  if (!doc) {
+    frame.remove();
+    window.print();
+    return;
+  }
+  doc.open();
+  doc.write(
+    `<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>${title}</title>${styles}` +
+      `<style>@page{size:A4 portrait;margin:10mm}html,body{margin:0;padding:0;background:#fff}` +
+      `[data-print-root]{width:100%!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}` +
+      `[data-print-root] tr,[data-print-root] section,[data-print-root] header,[data-print-root] footer{break-inside:avoid}</style>` +
+      `</head><body>${root.outerHTML}</body></html>`,
+  );
+  doc.close();
+  const run = () => {
+    frame.contentWindow?.focus();
+    frame.contentWindow?.print();
+    window.setTimeout(() => frame.remove(), 1000);
+  };
+  // počkáme na dotažení stylů a obrázků, jinak by se vytisklo neostylované
+  if (doc.readyState === "complete") window.setTimeout(run, 300);
+  else frame.onload = () => window.setTimeout(run, 300);
 }
 
 function Th({ children, right = false }) {
