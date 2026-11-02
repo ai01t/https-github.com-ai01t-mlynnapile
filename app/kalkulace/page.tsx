@@ -1972,6 +1972,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
   const [dueDate, setDueDate] = useState(addDaysIso(company.dueDays));
   const [aresBusy, setAresBusy] = useState(false);
   const [printView, setPrintView] = useState(false);
+  const [blankPrint, setBlankPrint] = useState(false);
 
   const filled = items.filter((row) => String(row.name).trim() || n(row.price) > 0);
   const total = filled.reduce((sum, row) => sum + n(row.qty) * n(row.price), 0);
@@ -2014,10 +2015,15 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
       wide
       close={
         <>
-          {isQuote && (
+          {isQuote ? (
             <Button variant="outline" onClick={() => setPrintView(true)}>
               <Printer className="h-4 w-4" />
               Náhled tisku
+            </Button>
+          ) : (
+            <Button variant="outline" onClick={() => setBlankPrint(true)} title="Vytiskne prázdný formulář faktury A4 k ručnímu vypsání">
+              <Printer className="h-4 w-4" />
+              Prázdná faktura A4
             </Button>
           )}
           <Button variant="outline" onClick={close}>
@@ -2026,10 +2032,28 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
         </>
       }
     >
-      <h1 className="mb-1 border-l-4 border-[var(--brand)] pl-2 text-xl font-black">
-        {initial ? "Úprava" : "Nová"} {isQuote ? "nabídka" : "faktura"} — ruční zadání
-      </h1>
-      <p className="mb-4 text-sm text-[var(--muted)]">Řádky vyplníš sám — hodí se pro práce mimo kalkulačku (hodinovka, materiál, doprava…).</p>
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h1 className="mb-1 border-l-4 border-[var(--brand)] pl-2 text-xl font-black">
+            {initial ? "Úprava" : "Nová"} {isQuote ? "nabídka" : "faktura"} — ruční zadání
+          </h1>
+          <p className="text-sm text-[var(--muted)]">Řádky vyplníš sám — hodí se pro práce mimo kalkulačku (hodinovka, materiál, doprava…).</p>
+        </div>
+        {!isQuote && (
+          <label className="block w-44 shrink-0">
+            <Label>Číslo faktury</Label>
+            <input
+              value={number}
+              onChange={(event) => setNumber(event.target.value)}
+              title={numberIssue || "Řada číslo jen navrhuje – klidně přepiš. Slouží i jako variabilní symbol."}
+              className={`h-10 w-full rounded-[var(--radius-sm)] border px-2 text-right text-lg font-black tabular-nums ${
+                numberIssue ? "border-red-400 text-red-700" : "border-[var(--line)]"
+              }`}
+            />
+            {numberIssue && <div className="mt-1 text-right text-[11px] font-bold leading-4 text-red-700">{numberIssue}</div>}
+          </label>
+        )}
+      </div>
 
       {isQuote && !initial && (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-sm)] border border-[var(--line)] bg-[var(--bg-soft)] p-3">
@@ -2067,18 +2091,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
             <input type="date" value={validUntil} onChange={(event) => setValidUntil(event.target.value)} className="h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-3" />
           </label>
         ) : (
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <label className="block">
-              <Label>Číslo faktury</Label>
-              <input
-                value={number}
-                onChange={(event) => setNumber(event.target.value)}
-                title={numberIssue || "Řada číslo jen navrhuje – klidně přepiš. Slouží i jako variabilní symbol."}
-                className={`h-10 w-full rounded-[var(--radius-sm)] border px-2 text-sm font-bold tabular-nums ${
-                  numberIssue ? "border-red-400 text-red-700" : "border-[var(--line)]"
-                }`}
-              />
-            </label>
+          <div className="grid grid-cols-3 gap-2">
             {[
               ["Vystavení", issueDate, setIssueDate],
               ["DUZP", supplyDate, setSupplyDate],
@@ -2089,7 +2102,6 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
                 <input type="date" value={value} onChange={(event) => setter(event.target.value)} className="h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-sm" />
               </label>
             ))}
-            {numberIssue && <div className="col-span-2 text-xs font-bold text-red-700 sm:col-span-4">{numberIssue}</div>}
           </div>
         )}
       </div>
@@ -2157,7 +2169,155 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
           </div>
         </Modal>
       )}
+
+      {blankPrint && (
+        <Modal
+          close={
+            <>
+              <Button variant="outline" onClick={() => window.print()}>
+                <Printer className="h-4 w-4" />
+                Tisk
+              </Button>
+              <Button variant="outline" onClick={() => setBlankPrint(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </>
+          }
+        >
+          <p className="mb-3 text-sm text-[var(--muted)] print:hidden">
+            Prázdný formulář na A4 — dodavatel a platební údaje jsou předtištěné, zbytek vypíšeš perem. Tiskni na výšku, měřítko 100 %.
+          </p>
+          <div data-print-root style={DOC_STYLE}>
+            <BlankInvoiceDoc company={company} />
+          </div>
+        </Modal>
+      )}
     </Modal>
+  );
+}
+
+// Prázdný formulář faktury na A4 – předtištěný dodavatel a platební údaje,
+// ostatní pole zůstávají jako linky k ručnímu vypsání.
+function BlankInvoiceDoc({ company }) {
+  const Line = ({ label, width = "100%" }: any) => (
+    <div className="mt-3" style={{ width }}>
+      <div className="h-5 border-b border-[var(--muted)]" />
+      <div className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-[var(--muted)]">{label}</div>
+    </div>
+  );
+  const BlankCell = ({ label }: any) => (
+    <div className="bg-[var(--card)] px-3 pb-1 pt-2">
+      <div className="text-[9px] font-bold uppercase tracking-wide text-[var(--muted)]">{label}</div>
+      <div className="mt-3 h-4 border-b border-dotted border-[var(--muted)]" />
+    </div>
+  );
+  return (
+    <div>
+      <header className="flex items-start justify-between gap-4">
+        <Logo logo={company.logo} name={company.name} subtitle={company.subtitle} markClass="h-16" titleClass="text-2xl" />
+        <div className="w-56 text-right">
+          <h1 className="text-3xl font-black uppercase leading-none tracking-tight" style={{ color: BRAND }}>Faktura</h1>
+          <div className="mt-1 text-sm font-semibold uppercase tracking-wide text-[var(--muted)]">Daňový doklad č.</div>
+          <div className="mt-2 h-6 border-b-2 border-[var(--muted)]" />
+        </div>
+      </header>
+      <div className="mt-3 h-1 rounded-full" style={{ backgroundColor: BRAND }} />
+
+      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+        <PartyBlock
+          label="Dodavatel"
+          name={company.name || "— vyplň v administraci"}
+          rows={[
+            [company.address, false],
+            [company.ico && ["IČO", company.ico], false],
+            [company.dic && ["DIČ", company.dic], false],
+            [company.phone && ["Tel.", company.phone], false],
+            [company.email && ["E-mail", company.email], false],
+            [company.web && ["Web", company.web], false],
+          ]}
+          note={
+            <>
+              {company.register}
+              <br />
+              <b className="text-[var(--text-soft)]">{company.vatNote}</b>
+            </>
+          }
+        />
+        <div className="rounded-[var(--radius)] border border-[var(--line)] p-4">
+          <div className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: BRAND }}>Odběratel</div>
+          <Line label="Jméno / firma" />
+          <Line label="Ulice a číslo" />
+          <Line label="PSČ a město" />
+          <div className="flex gap-3">
+            <Line label="IČO" width="50%" />
+            <Line label="DIČ" width="50%" />
+          </div>
+          <Line label="Telefon / e-mail" />
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-px overflow-hidden rounded-[var(--radius)] border border-[var(--line)] bg-[var(--line)] text-sm sm:grid-cols-4">
+        <BlankCell label="Datum vystavení" />
+        <BlankCell label="Datum usk. plnění (DUZP)" />
+        <BlankCell label="Datum splatnosti" />
+        <DataCell label="Forma úhrady" value="Převodem" />
+        <DataCell label="Číslo účtu" value={company.account || "—"} />
+        <DataCell label="IBAN" value={(company.account && czAccountToIban(company.account)) || "—"} />
+        <DataCell label="Banka" value={company.bank || "—"} />
+        <BlankCell label="Variabilní symbol" />
+      </div>
+
+      <section className="mt-6">
+        <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-[var(--text-soft)]">Fakturujeme Vám</h2>
+        <table className="w-full border-collapse text-xs">
+          <thead>
+            <tr className="bg-[var(--bg)]">
+              <Th>Položka</Th>
+              <Th>MJ</Th>
+              <Th right>Množství</Th>
+              <Th right>Cena/MJ</Th>
+              <Th right>Celkem</Th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: 12 }).map((_, index) => (
+              <tr key={index}>
+                <Td>&nbsp;</Td>
+                <Td center>&nbsp;</Td>
+                <Td right>&nbsp;</Td>
+                <Td right>&nbsp;</Td>
+                <Td right>&nbsp;</Td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="mt-5 flex flex-wrap items-end justify-between gap-6">
+        <div className="max-w-[300px] text-xs leading-6 text-[var(--muted)]">
+          Zaplaťte prosím do data splatnosti pod variabilním symbolem uvedeným výše.
+          <div className="mt-2 h-5 border-b border-dotted border-[var(--muted)]" />
+          <div className="mt-0.5 text-[9px] font-bold uppercase tracking-wide">Poznámka</div>
+        </div>
+        <div className="w-60 rounded-[var(--radius)] border-2 p-4 text-right" style={{ borderColor: BRAND }}>
+          <div className="text-xs font-bold uppercase tracking-wide" style={{ color: BRAND }}>Celkem k úhradě</div>
+          <div className="mt-3 h-8 border-b-2 border-[var(--muted)]" />
+          <div className="mt-1 text-[10px] text-[var(--muted)]">Neplátce DPH – cena je konečná</div>
+        </div>
+      </section>
+
+      <section className="mt-8 flex items-end justify-between gap-6">
+        <div className="w-56">
+          <div className="h-6 border-b border-[var(--muted)]" />
+          <div className="mt-1 text-center text-[11px] text-[var(--muted)]">Vystavil</div>
+        </div>
+        <div className="w-56 border-t border-[var(--muted)] pt-1 text-center text-[11px] text-[var(--muted)]">Razítko a podpis</div>
+      </section>
+
+      <footer className="mt-6 border-t-2 pt-2 text-center text-[10px] text-[var(--muted)]" style={{ borderColor: BRAND }}>
+        {[company.name, company.ico && `IČO ${company.ico}`, company.address, company.phone, company.email, company.web].filter(Boolean).join(" · ")} — {company.register} {company.vatNote}
+      </footer>
+    </div>
   );
 }
 
