@@ -526,10 +526,13 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
   };
 
   // vystavení ručně psané faktury (bez vazby na nabídku)
-  const createManualInvoice = ({ customer: docCustomer, items, issueDate, supplyDate, dueDate }) => {
+  const createManualInvoice = ({ customer: docCustomer, items, issueDate, supplyDate, dueDate, number }) => {
+    // číslo z formuláře: pokud autor nechal návrh řady, zabereme ho (posune
+    // čítač), vlastní číslo řadu nechá být
+    const typed = String(number ?? "").trim();
     const invoice = {
       id: uid(),
-      number: storage.nextInvoiceNumber(),
+      number: !typed || typed === storage.peekInvoiceNumber() ? storage.nextInvoiceNumber() : typed,
       quoteId: null,
       quoteName: "",
       customer: docCustomer,
@@ -1353,6 +1356,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           kind={manualDoc.kind}
           initial={manualDoc.initial}
           company={company}
+          numberTaken={(value) => invoices.some((item) => String(item.number ?? "").trim() === String(value).trim())}
           onSubmit={(payload) => (manualDoc.kind === "quote" ? saveManualQuote(payload) : createManualInvoice(payload))}
           onSwitchToCalculator={() => {
             setManualDoc(null);
@@ -1957,8 +1961,9 @@ function InvoicesModal({ invoices, onView, onRenumber, numberIssue, onPaid, onDe
 
 const emptyRow = () => ({ id: uid(), name: "", unit: "kpl", qty: 1, price: "" });
 
-function ManualDocModal({ kind, initial, company, onSubmit, onSwitchToCalculator, close }) {
+function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitchToCalculator, close }) {
   const isQuote = kind === "quote";
+  const [number, setNumber] = useState(() => (kind === "quote" ? "" : storage.peekInvoiceNumber()));
   const [customer, setCustomer] = useState(initial?.customer ?? defaultCustomer);
   const [items, setItems] = useState(initial?.items?.length ? initial.items : [emptyRow(), emptyRow(), emptyRow()]);
   const [validUntil, setValidUntil] = useState(initial?.validUntil ?? addDaysIso(company.validityDays));
@@ -1984,12 +1989,24 @@ function ManualDocModal({ kind, initial, company, onSubmit, onSwitchToCalculator
     }
   };
 
+  const numberIssue = (() => {
+    if (isQuote) return "";
+    const value = String(number).trim();
+    if (!value) return "Faktura musí mít číslo – slouží jako variabilní symbol.";
+    if (numberTaken?.(value)) return "Tohle číslo už nese jiná faktura.";
+    return "";
+  })();
+
   const submit = () => {
     if (filled.length === 0) {
       window.alert("Vyplň alespoň jeden řádek (název nebo cenu).");
       return;
     }
-    onSubmit({ customer, items: filled, validUntil, issueDate, supplyDate, dueDate });
+    if (numberIssue) {
+      window.alert(numberIssue);
+      return;
+    }
+    onSubmit({ customer, items: filled, validUntil, issueDate, supplyDate, dueDate, number });
   };
 
   return (
@@ -2050,7 +2067,18 @@ function ManualDocModal({ kind, initial, company, onSubmit, onSwitchToCalculator
             <input type="date" value={validUntil} onChange={(event) => setValidUntil(event.target.value)} className="h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-3" />
           </label>
         ) : (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <label className="block">
+              <Label>Číslo faktury</Label>
+              <input
+                value={number}
+                onChange={(event) => setNumber(event.target.value)}
+                title={numberIssue || "Řada číslo jen navrhuje – klidně přepiš. Slouží i jako variabilní symbol."}
+                className={`h-10 w-full rounded-[var(--radius-sm)] border px-2 text-sm font-bold tabular-nums ${
+                  numberIssue ? "border-red-400 text-red-700" : "border-[var(--line)]"
+                }`}
+              />
+            </label>
             {[
               ["Vystavení", issueDate, setIssueDate],
               ["DUZP", supplyDate, setSupplyDate],
@@ -2061,6 +2089,7 @@ function ManualDocModal({ kind, initial, company, onSubmit, onSwitchToCalculator
                 <input type="date" value={value} onChange={(event) => setter(event.target.value)} className="h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-sm" />
               </label>
             ))}
+            {numberIssue && <div className="col-span-2 text-xs font-bold text-red-700 sm:col-span-4">{numberIssue}</div>}
           </div>
         )}
       </div>

@@ -730,6 +730,14 @@ export const storage = {
     window.localStorage.removeItem(storageNs + KEYS.companySettings);
     window.localStorage.removeItem(storageNs + KEYS.design);
   },
+  // návrh dalšího čísla bez zabrání – pro předvyplnění formuláře, který se
+  // nemusí odeslat (jinak by čísla v řadě chyběla)
+  peekInvoiceNumber: () => {
+    const year = new Date().getFullYear();
+    const seq = read(KEYS.invoiceSeq, { year, seq: 0 });
+    const next = seq.year === year ? seq.seq + 1 : 1;
+    return `${year}${String(next).padStart(3, "0")}`;
+  },
   nextInvoiceNumber: () => {
     const year = new Date().getFullYear();
     const seq = read(KEYS.invoiceSeq, { year, seq: 0 });
