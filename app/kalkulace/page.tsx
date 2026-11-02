@@ -178,40 +178,26 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     };
   }, [design.fontScale]);
 
-  // Před tiskem dokument přepneme na šířku tiskové plochy A4 (190 mm) a pokud
-  // je vyšší než stránka, zmenšíme ho zoomem, aby vyšel na jednu stranu.
-  // Měříme v milimetrech – stejná jednotka na obrazovce i v tisku.
+  // Název dokumentu určuje i jméno PDF, které tiskárna nabídne („Faktura
+  // 2026003.pdf" místo názvu webu). Po tisku vracíme původní titulek.
   useEffect(() => {
-    const PAGE_W_MM = 190;
-    const PAGE_H_MM = 277;
-    const fit = () => {
+    const original = document.title;
+    const rename = () => {
       const root = document.querySelector("[data-print-root]");
       if (!root) return;
-      root.style.removeProperty("zoom");
-      root.style.setProperty("width", `${PAGE_W_MM}mm`, "important");
-      const rect = root.getBoundingClientRect();
-      const maxHeight = (rect.width * PAGE_H_MM) / PAGE_W_MM;
-      const scale = Math.min(1, maxHeight / rect.height);
-      // Zmenšujeme jen to, co stránku přetéká o kousek. Dlouhý dokument
-      // (nabídka s mnoha položkami) se radši zalomí na víc stran, než aby byl
-      // nečitelně zmenšený.
-      if (scale < 1 && scale >= 0.8) {
-        const safe = Math.floor(scale * 100) / 100;
-        root.style.setProperty("width", `${PAGE_W_MM / safe}mm`, "important");
-        root.style.setProperty("zoom", String(safe));
-      }
+      const heading = (root.querySelector("[data-doc-title]") ?? root.querySelector("h1"))?.textContent?.trim() || "Dokument";
+      const number = root.querySelector("[data-doc-number]")?.textContent?.trim();
+      document.title = [heading, number].filter(Boolean).join(" ");
     };
-    const reset = () => {
-      const root = document.querySelector("[data-print-root]");
-      if (!root) return;
-      root.style.removeProperty("zoom");
-      root.style.removeProperty("width");
+    const restore = () => {
+      document.title = original;
     };
-    window.addEventListener("beforeprint", fit);
-    window.addEventListener("afterprint", reset);
+    window.addEventListener("beforeprint", rename);
+    window.addEventListener("afterprint", restore);
     return () => {
-      window.removeEventListener("beforeprint", fit);
-      window.removeEventListener("afterprint", reset);
+      window.removeEventListener("beforeprint", rename);
+      window.removeEventListener("afterprint", restore);
+      restore();
     };
   }, []);
 
@@ -2249,7 +2235,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
 // ostatní pole zůstávají jako linky k ručnímu vypsání.
 function BlankInvoiceDoc({ company }) {
   const Line = ({ label, width = "100%" }: any) => (
-    <div className="mt-2.5" style={{ width }}>
+    <div className="mt-2" style={{ width }}>
       <div className="h-5 border-b border-[var(--muted)]" />
       <div className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-[var(--muted)]">{label}</div>
     </div>
@@ -2263,7 +2249,7 @@ function BlankInvoiceDoc({ company }) {
   return (
     <div>
       <header className="flex items-start justify-between gap-4">
-        <Logo logo={company.logo} name={company.name} subtitle={company.subtitle} markClass="h-16" titleClass="text-2xl" />
+        <Logo logo={company.logo} name={company.name} subtitle={company.subtitle} markClass="h-14" titleClass="text-2xl" />
         <div className="w-56 text-right">
           <h1 className="text-3xl font-black uppercase leading-none tracking-tight" style={{ color: BRAND }}>Faktura</h1>
           <div className="mt-1 text-sm font-semibold uppercase tracking-wide text-[var(--muted)]">Daňový doklad č.</div>
@@ -2316,7 +2302,7 @@ function BlankInvoiceDoc({ company }) {
         <BlankCell label="Variabilní symbol" />
       </div>
 
-      <section className="mt-5">
+      <section className="mt-4">
         <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-[var(--text-soft)]">Fakturujeme Vám</h2>
         <table className="w-full border-collapse text-xs">
           <thead>
@@ -2329,33 +2315,31 @@ function BlankInvoiceDoc({ company }) {
             </tr>
           </thead>
           <tbody>
-            {Array.from({ length: 10 }).map((_, index) => (
-              <tr key={index}>
-                <Td>&nbsp;</Td>
-                <Td center>&nbsp;</Td>
-                <Td right>&nbsp;</Td>
-                <Td right>&nbsp;</Td>
-                <Td right>&nbsp;</Td>
+            {Array.from({ length: 9 }).map((_, index) => (
+              <tr key={index} style={{ height: "6mm" }}>
+                {Array.from({ length: 5 }).map((__, cell) => (
+                  <td key={cell} className="border border-[var(--line)] p-0">&nbsp;</td>
+                ))}
               </tr>
             ))}
           </tbody>
         </table>
       </section>
 
-      <section className="mt-5 flex flex-wrap items-end justify-between gap-6">
+      <section className="mt-4 flex flex-wrap items-end justify-between gap-6">
         <div className="max-w-[300px] text-xs leading-6 text-[var(--muted)]">
           Zaplaťte prosím do data splatnosti pod variabilním symbolem uvedeným výše.
           <div className="mt-2 h-5 border-b border-dotted border-[var(--muted)]" />
           <div className="mt-0.5 text-[9px] font-bold uppercase tracking-wide">Poznámka</div>
         </div>
-        <div className="w-60 rounded-[var(--radius)] border-2 p-4 text-right" style={{ borderColor: BRAND }}>
+        <div className="w-60 rounded-[var(--radius)] border-2 p-3 text-right" style={{ borderColor: BRAND }}>
           <div className="text-xs font-bold uppercase tracking-wide" style={{ color: BRAND }}>Celkem k úhradě</div>
           <div className="mt-3 h-8 border-b-2 border-[var(--muted)]" />
           <div className="mt-1 text-[10px] text-[var(--muted)]">Neplátce DPH – cena je konečná</div>
         </div>
       </section>
 
-      <section className="mt-6 flex items-end justify-between gap-6">
+      <section className="mt-5 flex items-end justify-between gap-6">
         <div className="w-56">
           <div className="h-6 border-b border-[var(--muted)]" />
           <div className="mt-1 text-center text-[11px] text-[var(--muted)]">Vystavil</div>
@@ -2363,7 +2347,7 @@ function BlankInvoiceDoc({ company }) {
         <div className="w-56 border-t border-[var(--muted)] pt-1 text-center text-[11px] text-[var(--muted)]">Razítko a podpis</div>
       </section>
 
-      <footer className="mt-5 border-t-2 pt-2 text-center text-[10px] text-[var(--muted)]" style={{ borderColor: BRAND }}>
+      <footer className="mt-4 border-t-2 pt-2 text-center text-[10px] text-[var(--muted)]" style={{ borderColor: BRAND }}>
         {[company.name, company.ico && `IČO ${company.ico}`, company.address, company.phone, company.email, company.web].filter(Boolean).join(" · ")} — {company.register} {company.vatNote}
       </footer>
     </div>
@@ -2378,7 +2362,7 @@ function ManualQuoteDoc({ number, customer, items, total, validUntil, company })
         <Logo logo={company.logo} name={company.name} subtitle={company.subtitle} markClass="h-16" titleClass="text-2xl" />
         <div className="text-right">
           <h1 className="text-3xl font-black uppercase leading-none tracking-tight" style={{ color: BRAND }}>Cenová nabídka</h1>
-          {number && <div className="mt-1 text-xl font-black tabular-nums">{number}</div>}
+          {number && <div data-doc-number className="mt-1 text-xl font-black tabular-nums">{number}</div>}
         </div>
       </header>
       <div className="mt-3 h-1 rounded-full" style={{ backgroundColor: BRAND }} />
@@ -2493,7 +2477,7 @@ function InvoiceModal({ invoice, company, close }) {
           <div className="text-right">
             <h1 className="text-3xl font-black uppercase leading-none tracking-tight" style={{ color: BRAND }}>Faktura</h1>
             <div className="mt-1 text-sm font-semibold uppercase tracking-wide text-[var(--muted)]">Daňový doklad č.</div>
-            <div className="text-2xl font-black tabular-nums">{invoice.number}</div>
+            <div data-doc-number className="text-2xl font-black tabular-nums">{invoice.number}</div>
           </div>
         </header>
         <div className="mt-3 h-1 rounded-full" style={{ backgroundColor: BRAND }} />
@@ -2858,7 +2842,7 @@ function Preview({ calc, settings, customer, meta, company }) {
           </div>
         </div>
         <div className="text-right">
-          <div className="text-xl font-black uppercase tracking-tight" style={{ color: BRAND }}>Cenová nabídka</div>
+          <div data-doc-title className="text-xl font-black uppercase tracking-tight" style={{ color: BRAND }}>Cenová nabídka</div>
           <div className="text-xs font-semibold uppercase text-[var(--muted)]">Kalkulace oprav omítek</div>
           {meta?.name && <div className="mt-1 font-bold">{meta.name}</div>}
           <div className="mt-1 text-sm text-[var(--text-soft)]">Datum: {new Date().toLocaleDateString("cs-CZ")}</div>
