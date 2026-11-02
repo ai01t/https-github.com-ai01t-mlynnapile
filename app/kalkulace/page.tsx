@@ -2090,7 +2090,6 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
           <h1 className="mb-1 border-l-4 border-[var(--brand)] pl-2 text-xl font-black">
             {initial ? "Úprava" : "Nová"} {isQuote ? "nabídka" : "faktura"} — ruční zadání
           </h1>
-          <p className="text-sm text-[var(--muted)]">Řádky vyplníš sám — hodí se pro práce mimo kalkulačku (hodinovka, materiál, doprava…).</p>
         </div>
         {!isQuote && (
           <label className="block w-44 shrink-0">
