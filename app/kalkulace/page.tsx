@@ -178,6 +178,43 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     };
   }, [design.fontScale]);
 
+  // Před tiskem dokument přepneme na šířku tiskové plochy A4 (190 mm) a pokud
+  // je vyšší než stránka, zmenšíme ho zoomem, aby vyšel na jednu stranu.
+  // Měříme v milimetrech – stejná jednotka na obrazovce i v tisku.
+  useEffect(() => {
+    const PAGE_W_MM = 190;
+    const PAGE_H_MM = 277;
+    const fit = () => {
+      const root = document.querySelector("[data-print-root]");
+      if (!root) return;
+      root.style.removeProperty("zoom");
+      root.style.setProperty("width", `${PAGE_W_MM}mm`, "important");
+      const rect = root.getBoundingClientRect();
+      const maxHeight = (rect.width * PAGE_H_MM) / PAGE_W_MM;
+      const scale = Math.min(1, maxHeight / rect.height);
+      // Zmenšujeme jen to, co stránku přetéká o kousek. Dlouhý dokument
+      // (nabídka s mnoha položkami) se radši zalomí na víc stran, než aby byl
+      // nečitelně zmenšený.
+      if (scale < 1 && scale >= 0.8) {
+        const safe = Math.floor(scale * 100) / 100;
+        root.style.setProperty("width", `${PAGE_W_MM / safe}mm`, "important");
+        root.style.setProperty("zoom", String(safe));
+      }
+    };
+    const reset = () => {
+      const root = document.querySelector("[data-print-root]");
+      if (!root) return;
+      root.style.removeProperty("zoom");
+      root.style.removeProperty("width");
+    };
+    window.addEventListener("beforeprint", fit);
+    window.addEventListener("afterprint", reset);
+    return () => {
+      window.removeEventListener("beforeprint", fit);
+      window.removeEventListener("afterprint", reset);
+    };
+  }, []);
+
   // auto-ukládání rozpracované kalkulace
   useEffect(() => {
     if (!loaded) return;
@@ -672,10 +709,26 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       <style
         dangerouslySetInnerHTML={{
           __html: `
+        @page { size: A4 portrait; margin: 10mm; }
         @media print {
-          body * { visibility: hidden; }
-          [data-print-root], [data-print-root] * { visibility: visible; }
-          [data-print-root] { position: absolute; left: 0; top: 0; width: 100%; }
+          /* Skryjeme vše kromě tiskové části a jejích rodičů. display:none (ne
+             visibility) – jinak skryté bloky dál zabírají výšku a tisk vyjede
+             na osm prázdných stránek navíc. */
+          body *:not(:has([data-print-root])):not([data-print-root]):not([data-print-root] *) { display: none !important; }
+          html, body { height: auto !important; margin: 0 !important; padding: 0 !important; background: #fff !important; }
+          body *:has([data-print-root]) {
+            display: block !important;
+            position: static !important;
+            inset: auto !important;
+            overflow: visible !important;
+            width: auto !important; max-width: none !important;
+            height: auto !important; max-height: none !important;
+            margin: 0 !important; padding: 0 !important;
+            border: 0 !important; border-radius: 0 !important;
+            background: #fff !important; box-shadow: none !important; transform: none !important;
+          }
+          [data-print-root] { margin: 0 auto !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          [data-print-root] tr, [data-print-root] section, [data-print-root] header, [data-print-root] footer { break-inside: avoid; }
         }
         ${SPACING_CSS}
       `,
@@ -2184,9 +2237,6 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
             </>
           }
         >
-          <p className="mb-3 text-sm text-[var(--muted)] print:hidden">
-            Prázdný formulář na A4 — dodavatel a platební údaje jsou předtištěné, zbytek vypíšeš perem. Tiskni na výšku, měřítko 100 %.
-          </p>
           <div data-print-root style={DOC_STYLE}>
             <BlankInvoiceDoc company={company} />
           </div>
@@ -2200,7 +2250,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
 // ostatní pole zůstávají jako linky k ručnímu vypsání.
 function BlankInvoiceDoc({ company }) {
   const Line = ({ label, width = "100%" }: any) => (
-    <div className="mt-3" style={{ width }}>
+    <div className="mt-2.5" style={{ width }}>
       <div className="h-5 border-b border-[var(--muted)]" />
       <div className="mt-0.5 text-[9px] font-bold uppercase tracking-wide text-[var(--muted)]">{label}</div>
     </div>
@@ -2223,7 +2273,7 @@ function BlankInvoiceDoc({ company }) {
       </header>
       <div className="mt-3 h-1 rounded-full" style={{ backgroundColor: BRAND }} />
 
-      <div className="mt-5 grid gap-5 sm:grid-cols-2">
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <PartyBlock
           label="Dodavatel"
           name={company.name || "— vyplň v administraci"}
@@ -2267,7 +2317,7 @@ function BlankInvoiceDoc({ company }) {
         <BlankCell label="Variabilní symbol" />
       </div>
 
-      <section className="mt-6">
+      <section className="mt-5">
         <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-[var(--text-soft)]">Fakturujeme Vám</h2>
         <table className="w-full border-collapse text-xs">
           <thead>
@@ -2280,7 +2330,7 @@ function BlankInvoiceDoc({ company }) {
             </tr>
           </thead>
           <tbody>
-            {Array.from({ length: 12 }).map((_, index) => (
+            {Array.from({ length: 10 }).map((_, index) => (
               <tr key={index}>
                 <Td>&nbsp;</Td>
                 <Td center>&nbsp;</Td>
@@ -2306,7 +2356,7 @@ function BlankInvoiceDoc({ company }) {
         </div>
       </section>
 
-      <section className="mt-8 flex items-end justify-between gap-6">
+      <section className="mt-6 flex items-end justify-between gap-6">
         <div className="w-56">
           <div className="h-6 border-b border-[var(--muted)]" />
           <div className="mt-1 text-center text-[11px] text-[var(--muted)]">Vystavil</div>
@@ -2314,7 +2364,7 @@ function BlankInvoiceDoc({ company }) {
         <div className="w-56 border-t border-[var(--muted)] pt-1 text-center text-[11px] text-[var(--muted)]">Razítko a podpis</div>
       </section>
 
-      <footer className="mt-6 border-t-2 pt-2 text-center text-[10px] text-[var(--muted)]" style={{ borderColor: BRAND }}>
+      <footer className="mt-5 border-t-2 pt-2 text-center text-[10px] text-[var(--muted)]" style={{ borderColor: BRAND }}>
         {[company.name, company.ico && `IČO ${company.ico}`, company.address, company.phone, company.email, company.web].filter(Boolean).join(" · ")} — {company.register} {company.vatNote}
       </footer>
     </div>
