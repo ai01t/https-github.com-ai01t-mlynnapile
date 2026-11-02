@@ -13,6 +13,16 @@ export const COMPANY_PRESETS: Record<string, Record<string, any>> = {
     register: "Fyzická osoba zapsaná v živnostenském rejstříku.",
     vatNote: "Nejsem plátce DPH.",
     web: "fenchak.cz",
+    phone: "+420 775 237 325",
+    email: "fenchak1903@gmail.com",
     logo: FENCHAK_LOGO_URL,
   },
 }
+
+// Jménem se dá na instanci dostat i bez pamatování IČO: /jindra/bac/fenchak.
+// Alias míří na stejný profil i stejné úložiště jako číselná adresa.
+export const COMPANY_ALIASES: Record<string, string> = {
+  fenchak: "21693021",
+}
+
+export const resolveCompanyKey = (slug: string) => COMPANY_ALIASES[slug.toLowerCase()] ?? slug

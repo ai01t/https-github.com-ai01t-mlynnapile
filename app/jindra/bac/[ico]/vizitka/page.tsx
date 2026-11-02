@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { resolveCompanyKey } from "@/app/kalkulace/presets"
 
 // Veřejná vizitka podnikatele (varianta 3 — sdílený profil bez přihlášení).
 // Přímý přístup např. /jindra/bac/21693021
@@ -25,6 +26,8 @@ const PROFILES: Record<string, Profile> = {
     name: "Yurii Fenchak",
     trade: "Zednické a stavební práce",
     address: "č.p. 6, 345 32 Česká Kubice",
+    phone: "+420 775 237 325",
+    email: "fenchak1903@gmail.com",
     web: "fenchak.cz",
     vat: false,
     logo: "fenchak",
@@ -56,7 +59,7 @@ async function aresLookup(ico: string): Promise<Profile | null> {
 }
 
 export async function generateMetadata({ params }: { params: { ico: string } }): Promise<Metadata> {
-  const p = PROFILES[params.ico]
+  const p = PROFILES[resolveCompanyKey(params.ico)]
   return {
     title: p ? `${p.name} — vizitka` : `Profil ${params.ico}`,
     robots: { index: false, follow: false },
@@ -143,7 +146,8 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 }
 
 export default async function BusinessCard({ params }: { params: { ico: string } }) {
-  const profile = PROFILES[params.ico] ?? (await aresLookup(params.ico))
+  const key = resolveCompanyKey(params.ico)
+  const profile = PROFILES[key] ?? (await aresLookup(key))
 
   if (!profile) {
     return (
@@ -151,7 +155,7 @@ export default async function BusinessCard({ params }: { params: { ico: string }
         <div style={{ ...card, padding: "48px 34px", textAlign: "center" }}>
           <h1 style={{ fontSize: "1.3rem", fontWeight: 800 }}>Profil nenalezen</h1>
           <p style={{ marginTop: "10px", color: "#8a837a", fontSize: ".9rem" }}>
-            Pro IČO <b>{params.ico}</b> zatím není vytvořená vizitka.
+            Pro IČO <b>{key}</b> zatím není vytvořená vizitka.
           </p>
           <Link href="/jindra/bac" style={{ ...backLink, display: "inline-block", marginTop: "20px" }}>
             ← Zpět do konfigurátoru
