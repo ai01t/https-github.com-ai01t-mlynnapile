@@ -179,25 +179,29 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
   }, [design.fontScale]);
 
   // Název dokumentu určuje i jméno PDF, které tiskárna nabídne („Faktura
-  // 2026003.pdf" místo názvu webu). Po tisku vracíme původní titulek.
+  // 2026003.pdf" místo názvu webu). Titulek měníme hned, jakmile se otevře
+  // náhled – některé prohlížeče si jméno souboru berou už při otevření
+  // dialogu, ne až na beforeprint. Po zavření náhledu ho vracíme.
   useEffect(() => {
     const original = document.title;
     const rename = () => {
       const root = document.querySelector("[data-print-root]");
-      if (!root) return;
+      if (!root) {
+        document.title = original;
+        return;
+      }
       const heading = (root.querySelector("[data-doc-title]") ?? root.querySelector("h1"))?.textContent?.trim() || "Dokument";
       const number = root.querySelector("[data-doc-number]")?.textContent?.trim();
       document.title = [heading, number].filter(Boolean).join(" ");
     };
-    const restore = () => {
-      document.title = original;
-    };
+    const observer = new MutationObserver(rename);
+    observer.observe(document.body, { childList: true, subtree: true });
     window.addEventListener("beforeprint", rename);
-    window.addEventListener("afterprint", restore);
+    rename();
     return () => {
+      observer.disconnect();
       window.removeEventListener("beforeprint", rename);
-      window.removeEventListener("afterprint", restore);
-      restore();
+      document.title = original;
     };
   }, []);
 
