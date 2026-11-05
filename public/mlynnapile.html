@@ -836,6 +836,22 @@ body.en .night-tour{display:inline-flex;}
 .night-tour:hover{color:var(--gold-light);}
 .night-tour svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.8;fill:none;animation:nightTourBob 1.8s ease-in-out infinite;}
 @keyframes nightTourBob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+/* PŘEDĚL mezi koly: po kontaktu oznámí další režim, ať nekonečný scroll nevypadá jako chyba */
+#modebreak{justify-content:center;text-align:center;background:radial-gradient(ellipse 90% 70% at 50% 45%,#120d08 0%,#07060a 70%);}
+#modebreak[data-mode="night"]{background:radial-gradient(ellipse 90% 70% at 50% 45%,#0c0d14 0%,#000 70%);}
+.mb-inner{display:flex;flex-direction:column;align-items:center;gap:22px;padding:0 24px;max-width:760px;}
+.mb-icon svg{width:46px;height:46px;stroke:var(--gold);stroke-width:1.2;fill:none;display:block;}
+.mb-kicker{font-size:.62rem;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);}
+.mb-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2.4rem,6vw,5.2rem);line-height:.95;color:var(--cream);}
+.mb-text{font-size:.9rem;line-height:1.7;color:rgba(240,235,226,.62);max-width:460px;}
+.mb-down{margin-top:18px;display:inline-flex;flex-direction:column;align-items:center;gap:10px;border:0;background:none;font:inherit;font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);cursor:pointer;}
+.mb-down:hover{color:var(--gold-light);}
+.mb-down svg{width:26px;height:26px;stroke:currentColor;stroke-width:1.4;fill:none;animation:nightTourBob 1.8s ease-in-out infinite;}
+.mb-to-day{display:none;}
+#modebreak[data-mode="night"] .mb-to-night{display:none;}
+#modebreak[data-mode="night"] .mb-to-day{display:contents;}
+.mb-to-night{display:contents;}
+@media(prefers-reduced-motion:reduce){.mb-down svg{animation:none;}}
 .ft-link{color:inherit;text-decoration:none;transition:color .2s;}
 .ft-link:hover{color:var(--gold-light);}
 .ft-mark{font-family:'Cormorant Garamond',serif;font-size:.85rem;color:rgba(176,141,87,.3);letter-spacing:.08em;}
@@ -1660,6 +1676,24 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
   <span class="ft-copy"><span class="cs">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="en">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span><span class="de">© 2026 | Design &amp; Development: <a href="/jindra" class="ft-link">Ing. Jindřich Traxmandl</a></span></span>
   <button type="button" class="night-tour en" id="nightTourBtn">Take a tour in night mode <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
 </footer>
+</section>
+
+<section id="modebreak" aria-label="Night / day mode">
+  <div class="mb-inner">
+    <div class="mb-to-night">
+      <span class="mb-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg></span>
+      <span class="mb-kicker"><span class="cs">Konec denní prohlídky</span><span class="en">End of the day tour</span><span class="de">Ende der Tagestour</span></span>
+      <h2 class="mb-title"><span class="cs">Projděte web<br>v nočním režimu</span><span class="en">Explore the site<br>in night mode</span><span class="de">Die Website<br>im Nachtmodus</span></h2>
+      <p class="mb-text"><span class="cs">Stránka pokračuje dál – stejný mlýn, stejné studio, jen po setmění.</span><span class="en">The page keeps going – the same mill, the same studio, just after dark.</span><span class="de">Die Seite geht weiter – dieselbe Mühle, dasselbe Studio, nur nach Einbruch der Dunkelheit.</span></p>
+    </div>
+    <div class="mb-to-day">
+      <span class="mb-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg></span>
+      <span class="mb-kicker"><span class="cs">Konec noční prohlídky</span><span class="en">End of the night tour</span><span class="de">Ende der Nachttour</span></span>
+      <h2 class="mb-title"><span class="cs">Zpátky<br>do denního světla</span><span class="en">Back<br>to daylight</span><span class="de">Zurück<br>ins Tageslicht</span></h2>
+      <p class="mb-text"><span class="cs">Stránka pokračuje znovu od začátku, tentokrát ve dne.</span><span class="en">The page starts over, this time in daylight.</span><span class="de">Die Seite beginnt von vorn, diesmal bei Tag.</span></p>
+    </div>
+    <button type="button" class="mb-down" id="modeBreakDown"><span class="cs">Sjeďte dolů</span><span class="en">Scroll down</span><span class="de">Nach unten scrollen</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></button>
+  </div>
 </section>
 
 
@@ -3912,6 +3946,10 @@ window.addEventListener('load',()=>{
     clearTimeout(flagTimer);
     flagTimer=setTimeout(()=>modeBtn.classList.remove('mode-anim-day','mode-anim-night'),3000);
   }
+  // předěl ukazuje režim svého kola (ne aktuální), aby se text při odjezdu nepřepnul
+  const modeBreak=document.getElementById('modebreak');
+  function markBreak(){if(modeBreak)modeBreak.dataset.mode=modeForLap(lap.get(modeBreak)||0);}
+  markBreak();
   function setFiller(h){
     fillerH=Math.max(0,h);
     filler.style.height=fillerH+'px';
@@ -3949,6 +3987,7 @@ window.addEventListener('load',()=>{
       }
       break;
     }
+    markBreak();
     const target=modeForLap(lap.get(currentSection())||0);
     if(target!==visualMode){
       visualMode=target;
@@ -3965,6 +4004,7 @@ window.addEventListener('load',()=>{
   if(modeBtn)modeBtn.addEventListener('click',()=>{
     const n=lap.get(currentSection())||0;
     baseNight=(visualMode==='night')!==(n%2===1);
+    markBreak();
     showFlag(visualMode);
   });
   let pending=false;
@@ -4000,6 +4040,12 @@ window.addEventListener('load',()=>{
   sync();
 })();
 
+/* PŘEDĚL: šipka sjede na další kolo (o obrazovku níž) */
+document.getElementById('modeBreakDown')?.addEventListener('click',()=>{
+  const sec=document.getElementById('modebreak');
+  const top=sec?sec.getBoundingClientRect().bottom:innerHeight;
+  window.scrollBy({top,behavior:'smooth'});
+});
 /* EN „Take a tour in night mode": sjede dál pod kontakt, kde web pokračuje v nočním režimu */
 document.getElementById('nightTourBtn')?.addEventListener('click',()=>{
   window.scrollBy({top:window.innerHeight,behavior:'smooth'});
