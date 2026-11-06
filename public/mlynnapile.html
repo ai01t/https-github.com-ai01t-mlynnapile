@@ -1369,10 +1369,10 @@ section{scroll-snap-align:start;scroll-snap-stop:always;}
 <section id="studio" style="padding:0;">
   <div class="bg-css"></div>
   <div class="bg-video">
-    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/h4IbWPSWMJE.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
-      <source src="/videos/bg/h4IbWPSWMJE.mp4?v=20260309c" type="video/mp4">
+    <video autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="/videos/bg/MczOR3DstPg.jpg?v=20260309c" x-webkit-airplay="deny" disableremoteplayback disablepictureinpicture>
+      <source src="/videos/bg/MczOR3DstPg.mp4?v=20260309c" type="video/mp4">
     </video>
-    <img class="bg-fallback" src="/videos/bg/h4IbWPSWMJE.jpg?v=20260309c" alt="" aria-hidden="true">
+    <img class="bg-fallback" src="/videos/bg/MczOR3DstPg.jpg?v=20260309c" alt="" aria-hidden="true">
   </div>
 
   <!-- horizontal track -->
@@ -2007,7 +2007,7 @@ const BG_VARIANTS={
     night:{horizontal:'bPBM5J8v_aQ',vertical:'M4QkWhz7CDo'}
   },
   studio:{
-    day:{horizontal:'h4IbWPSWMJE',vertical:'h4IbWPSWMJE'},
+    day:{horizontal:'MczOR3DstPg',vertical:'mndh51Ug7zg'},
     night:{horizontal:'h4IbWPSWMJE',vertical:'h4IbWPSWMJE'}
   },
   location:{
@@ -2032,7 +2032,7 @@ const BG_VARIANTS={
   }
 };
 // Vodorovné klipy použité i na výšku (mobil) — ořezávají se jako běžné, ne jako svislé.
-const HORIZONTAL_ONLY_BG_IDS=new Set(['h4IbWPSWMJE']);
+const HORIZONTAL_ONLY_BG_IDS=new Set(['h4IbWPSWMJE','mndh51Ug7zg']);
 const PORTRAIT_BG_ASSET_IDS=new Set(
   Object.values(BG_VARIANTS).flatMap((section)=>[
     section.day?.vertical,
@@ -2673,7 +2673,9 @@ function updateSectionBackgroundVariant(sectionId,force=false){
     try{media.video.load();}catch(e){}
     if(!pauseAllVideos)playBgVideo(media.video);
   }else{
+    // bez load() by si video drželo starý zdroj z HTML (třeba noční klip ve dne)
     media.video.preload='metadata';
+    try{media.video.load();}catch(e){}
   }
 }
 
