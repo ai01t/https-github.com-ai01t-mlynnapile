@@ -30,7 +30,6 @@ import {
   buildInvoiceItems,
   buildSpayd,
   clamp,
-  czAccountToIban,
   czk,
   czkExact,
   round2,
@@ -494,15 +493,11 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
 
   // ---------- faktury ----------
 
-  // Formu úhrady volí autor při vystavení; bankovní spojení zůstává na faktuře vždy.
   const askInvoiceFromQuote = (quote) =>
     setConfirmAsk({
       title: `Vystavit fakturu z nabídky „${quote.name}“?`,
       label: "Vystavit fakturu",
-      choiceLabel: "Forma úhrady",
-      choice: "transfer",
-      choices: PAYMENT_CHOICES,
-      action: (payment) => createInvoiceFromQuote(quote, payment),
+      action: () => createInvoiceFromQuote(quote),
     });
 
   const createInvoiceFromQuote = (quote, payment = "transfer") => {
@@ -542,10 +537,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       title: `Vyhotovit fakturu z nabídky „${confirmName}“?`,
       text: "Nabídka se uloží a označí jako fakturovaná.",
       label: "Vyhotovit fakturu",
-      choiceLabel: "Forma úhrady",
-      choice: "transfer",
-      choices: PAYMENT_CHOICES,
-      action: (payment) => issueInvoiceFromCurrent(payment),
+      action: () => issueInvoiceFromCurrent(),
     });
   };
 
@@ -646,6 +638,13 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     setManualDoc(null);
     setInvoiceView(invoice);
     flash("Faktura vyhotovena ✓");
+  };
+
+  // Forma úhrady se přepíná na samotné faktuře – výchozí je převodem.
+  const setInvoicePayment = (invoice, payment) => {
+    const next = invoices.map((item) => (item.id === invoice.id ? { ...item, payment } : item));
+    persistInvoices(next);
+    if (invoiceView?.id === invoice.id) setInvoiceView(next.find((item) => item.id === invoice.id));
   };
 
   const toggleInvoicePaid = (invoice) => {
@@ -1496,7 +1495,14 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           close={() => setManualDoc(null)}
         />
       )}
-      {invoiceView && <InvoiceModal invoice={invoiceView} company={company} close={() => setInvoiceView(null)} />}
+      {invoiceView && (
+        <InvoiceModal
+          invoice={invoiceView}
+          company={company}
+          onPayment={(payment) => setInvoicePayment(invoiceView, payment)}
+          close={() => setInvoiceView(null)}
+        />
+      )}
       {sketchOpen && activeRoom && (
         <SketchModal
           room={{ ...activeRoom, walls: activeRoom.walls.filter((wall) => !wall.ceiling) }}
@@ -1538,30 +1544,6 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           <div className="w-full max-w-sm rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] p-5 shadow-xl" onClick={(event) => event.stopPropagation()}>
             <h3 className="text-base font-black">{confirmAsk.title}</h3>
             {confirmAsk.text && <p className="mt-1.5 text-sm text-[var(--muted)]">{confirmAsk.text}</p>}
-            {confirmAsk.choices && (
-              <div className="mt-3">
-                <Label>{confirmAsk.choiceLabel}</Label>
-                <div className="flex gap-2">
-                  {confirmAsk.choices.map((option) => (
-                    <button
-                      key={option.value}
-                      type="button"
-                      onClick={() => setConfirmAsk((prev) => ({ ...prev, choice: option.value }))}
-                      className={`h-9 flex-1 rounded-[var(--radius-sm)] border text-sm font-bold ${
-                        confirmAsk.choice === option.value
-                          ? "border-[var(--brand)] bg-[var(--brand)] text-white"
-                          : "border-[var(--line)] bg-[var(--card)] hover:bg-[var(--bg-soft)]"
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-                {isCashPayment(confirmAsk.choice) && (
-                  <div className="mt-1.5 text-[11px] leading-4 text-[var(--muted)]">Bankovní spojení zůstane v hlavičce, QR platba se nevytiskne.</div>
-                )}
-              </div>
-            )}
             <div className="mt-4 flex justify-end gap-2">
               <button
                 type="button"
@@ -1574,9 +1556,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                 type="button"
                 onClick={() => {
                   const run = confirmAsk.action;
-                  const choice = confirmAsk.choice;
                   setConfirmAsk(null);
-                  run?.(choice);
+                  run?.();
                 }}
                 className={`rounded-[var(--radius-sm)] px-3 py-2 text-sm font-bold text-white ${
                   confirmAsk.danger ? "bg-red-600 hover:bg-red-700" : "bg-[var(--brand)] hover:bg-[var(--brand-dark)]"
@@ -2136,7 +2117,6 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
   const [issueDate, setIssueDate] = useState(todayIso());
   const [supplyDate, setSupplyDate] = useState(todayIso());
   const [dueDate, setDueDate] = useState(addDaysIso(company.dueDays));
-  const [payment, setPayment] = useState("transfer");
   const [aresBusy, setAresBusy] = useState(false);
   const [printView, setPrintView] = useState(false);
   const [blankPrint, setBlankPrint] = useState(false);
@@ -2176,7 +2156,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
       window.alert(numberIssue);
       return;
     }
-    onSubmit({ customer, items: filled, validUntil, issueDate, supplyDate, dueDate, number, payment });
+    onSubmit({ customer, items: filled, validUntil, issueDate, supplyDate, dueDate, number });
   };
 
   return (
@@ -2279,29 +2259,6 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
           </div>
         )}
       </div>
-
-      {!isQuote && (
-        <div className="mt-2">
-          <Label>Forma úhrady</Label>
-          <div className="flex flex-wrap items-center gap-2">
-            {PAYMENT_CHOICES.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() => setPayment(option.value)}
-                className={`h-9 w-28 rounded-[var(--radius-sm)] border text-sm font-bold ${
-                  payment === option.value ? "border-[var(--brand)] bg-[var(--brand)] text-white" : "border-[var(--line)] bg-[var(--card)] hover:bg-[var(--bg-soft)]"
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-            <span className="text-[11px] leading-4 text-[var(--muted)]">
-              {isCashPayment(payment) ? "Bankovní spojení zůstane v hlavičce, QR platba se nevytiskne." : "Na faktuře bude QR platba."}
-            </span>
-          </div>
-        </div>
-      )}
 
       <div className="mt-4">
         <div className="grid grid-cols-[minmax(0,1fr)_64px_72px_100px_110px_36px] gap-2 px-1 text-[10px] font-bold uppercase text-[var(--muted)]">
@@ -2429,6 +2386,7 @@ function BlankInvoiceDoc({ company }) {
             [company.email && ["E-mail", company.email], false],
             [company.web && ["Web", company.web], false],
           ]}
+          payment={{ bank: company.bank, account: company.account, vs: "= číslo faktury" }}
           note={
             <>
               {company.register}
@@ -2455,10 +2413,6 @@ function BlankInvoiceDoc({ company }) {
         <BlankCell label="Datum usk. plnění (DUZP)" />
         <BlankCell label="Datum splatnosti" />
         <BlankCell label="Forma úhrady" />
-        <DataCell label="Číslo účtu" value={company.account || "—"} />
-        <DataCell label="IBAN" value={(company.account && czAccountToIban(company.account)) || "—"} />
-        <DataCell label="Banka" value={company.bank || "—"} />
-        <BlankCell label="Variabilní symbol" />
       </div>
 
       <section className="mt-4">
@@ -2623,7 +2577,7 @@ function manualDocRows(items) {
 
 // ---------- faktura – tisková podoba ----------
 
-function InvoiceModal({ invoice, company, close }) {
+function InvoiceModal({ invoice, company, onPayment, close }) {
   // faktura nese snapshot dodavatele z doby vystavení; starší faktury spadnou na aktuální nastavení
   const supplier = { ...company, ...(invoice.supplier ?? {}) };
   // u hotovosti bankovní spojení v hlavičce zůstává, ale QR platbu netiskneme
@@ -2641,6 +2595,22 @@ function InvoiceModal({ invoice, company, close }) {
     <Modal
       close={
         <>
+          {onPayment && (
+            <div className="mr-1 flex items-center gap-1 rounded-[var(--radius-sm)] border border-[var(--line)] p-0.5" title="Forma úhrady na faktuře">
+              {PAYMENT_CHOICES.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => onPayment(option.value)}
+                  className={`h-8 px-3 text-xs font-bold rounded-[var(--radius-sm)] ${
+                    paymentLabel(invoice.payment) === option.label ? "bg-[var(--brand)] text-white" : "text-[var(--text-soft)] hover:bg-[var(--bg-soft)]"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
           <Button variant="outline" onClick={printDocument}>
             <Printer className="h-4 w-4" />
             Tisk
@@ -2674,6 +2644,7 @@ function InvoiceModal({ invoice, company, close }) {
               [supplier.email && ["E-mail", supplier.email], false],
               [supplier.web && ["Web", supplier.web], false],
             ]}
+            payment={{ bank: supplier.bank, account: supplier.account, vs: vsFromNumber(invoice.number) }}
             note={
               <>
                 {supplier.register}
@@ -2701,11 +2672,6 @@ function InvoiceModal({ invoice, company, close }) {
           <DataCell label="Datum usk. plnění (DUZP)" value={dateCz(invoice.supplyDate ?? invoice.issueDate)} />
           <DataCell label="Datum splatnosti" value={dateCz(invoice.dueDate)} strong />
           <DataCell label="Forma úhrady" value={paymentLabel(invoice.payment)} strong={cash} />
-          <DataCell label="Číslo účtu" value={supplier.account || "—"} />
-          <DataCell label="IBAN" value={(supplier.account && czAccountToIban(supplier.account)) || "—"} />
-          <DataCell label="Banka" value={supplier.bank || "—"} />
-          {/* tiskneme přesně to, co nese QR platba – banka bere jen číslice */}
-          <DataCell label="Variabilní symbol" value={vsFromNumber(invoice.number) || "—"} strong />
         </div>
 
         <section className="mt-6">
@@ -2963,7 +2929,7 @@ function TrashModal({ trash, onRestore, onPurge, close }) {
 }
 
 // Blok smluvní strany na faktuře – jméno velké, pod ním jednotlivé údaje na řádcích.
-function PartyBlock({ label, name, rows, note }) {
+function PartyBlock({ label, name, rows, payment, note }) {
   return (
     <div className="rounded-[var(--radius)] border border-[var(--line)] p-4">
       <div className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: BRAND }}>{label}</div>
@@ -2983,6 +2949,20 @@ function PartyBlock({ label, name, rows, note }) {
             ),
           )}
       </div>
+      {payment && (
+        <div className="mt-2.5 border-t border-[var(--line)] pt-2 text-sm">
+          <div className="text-[10px] font-bold uppercase tracking-[0.15em] text-[var(--muted)]">Bankovní spojení</div>
+          <div className="mt-0.5 space-y-0.5">
+            <div className="font-semibold text-[var(--text-soft)]">{payment.bank || "—"}</div>
+            <div className="font-black tabular-nums">{payment.account || "—"}</div>
+            {/* variabilní symbol se dělá z čísla faktury – přepsané číslo přepíše i VS */}
+            <div className="flex gap-1.5">
+              <span className="text-[var(--muted)]">VS</span>
+              <span className="font-black tabular-nums">{payment.vs || "—"}</span>
+            </div>
+          </div>
+        </div>
+      )}
       {note && <div className="mt-2.5 border-t border-[var(--line)] pt-2 text-[11px] leading-4 text-[var(--muted)]">{note}</div>}
     </div>
   );

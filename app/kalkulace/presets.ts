@@ -15,9 +15,9 @@ export const COMPANY_PRESETS: Record<string, Record<string, any>> = {
     web: "fenchak.cz",
     phone: "+420 775 237 325",
     email: "fenchak1903@gmail.com",
-    // bankovní spojení na faktury (kód 0300 = ČSOB)
+    // bankovní spojení na faktury
     account: "311898284/0300",
-    bank: "ČSOB",
+    bank: "Air Bank a.s.",
     logo: FENCHAK_LOGO_URL,
   },
 }
