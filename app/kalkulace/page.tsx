@@ -51,6 +51,9 @@ import {
   normalizeOpening,
   openingDefaults,
   openingKind,
+  paymentLabel,
+  PAYMENT_CHOICES,
+  isCashPayment,
   pct,
   planArea,
   QUOTE_STATUSES,
@@ -491,7 +494,18 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
 
   // ---------- faktury ----------
 
-  const createInvoiceFromQuote = (quote) => {
+  // Formu úhrady volí autor při vystavení; bankovní spojení zůstává na faktuře vždy.
+  const askInvoiceFromQuote = (quote) =>
+    setConfirmAsk({
+      title: `Vystavit fakturu z nabídky „${quote.name}“?`,
+      label: "Vystavit fakturu",
+      choiceLabel: "Forma úhrady",
+      choice: "transfer",
+      choices: PAYMENT_CHOICES,
+      action: (payment) => createInvoiceFromQuote(quote, payment),
+    });
+
+  const createInvoiceFromQuote = (quote, payment = "transfer") => {
     // ruční nabídka přenese své řádky 1:1, kalkulovaná projde výpočtem
     const quoteCalc = quote.manual ? null : buildCalculation(quote.data);
     const invoice = {
@@ -507,6 +521,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       issueDate: todayIso(),
       supplyDate: todayIso(),
       dueDate: addDaysIso(company.dueDays),
+      payment,
       supplier: company,
       paid: false,
       createdAt: new Date().toISOString(),
@@ -527,11 +542,14 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       title: `Vyhotovit fakturu z nabídky „${confirmName}“?`,
       text: "Nabídka se uloží a označí jako fakturovaná.",
       label: "Vyhotovit fakturu",
-      action: () => issueInvoiceFromCurrent(),
+      choiceLabel: "Forma úhrady",
+      choice: "transfer",
+      choices: PAYMENT_CHOICES,
+      action: (payment) => issueInvoiceFromCurrent(payment),
     });
   };
 
-  const issueInvoiceFromCurrent = () => {
+  const issueInvoiceFromCurrent = (payment = "transfer") => {
     const existing = meta.id ? quotes.find((quote) => quote.id === meta.id) : null;
     const id = meta.id ?? uid();
     const number = existing?.number ?? meta.number ?? storage.nextQuoteNumber();
@@ -562,6 +580,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       issueDate: todayIso(),
       supplyDate: todayIso(),
       dueDate: addDaysIso(company.dueDays),
+      payment,
       supplier: company,
       paid: false,
       createdAt: new Date().toISOString(),
@@ -600,7 +619,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
   };
 
   // vystavení ručně psané faktury (bez vazby na nabídku)
-  const createManualInvoice = ({ customer: docCustomer, items, issueDate, supplyDate, dueDate, number }) => {
+  const createManualInvoice = ({ customer: docCustomer, items, issueDate, supplyDate, dueDate, number, payment }) => {
     // číslo z formuláře: pokud autor nechal návrh řady, zabereme ho (posune
     // čítač), vlastní číslo řadu nechá být
     const typed = String(number ?? "").trim();
@@ -616,6 +635,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       issueDate,
       supplyDate,
       dueDate,
+      payment: payment ?? "transfer",
       supplier: company,
       paid: false,
       createdAt: new Date().toISOString(),
@@ -1437,7 +1457,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           onDuplicate={duplicateQuote}
           onDelete={deleteQuote}
           onStatus={setQuoteStatus}
-          onInvoice={createInvoiceFromQuote}
+          onInvoice={askInvoiceFromQuote}
           onExport={exportData}
           onImport={importData}
           onNew={() => {
@@ -1518,6 +1538,30 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
           <div className="w-full max-w-sm rounded-[var(--radius)] border border-[var(--line)] bg-[var(--card)] p-5 shadow-xl" onClick={(event) => event.stopPropagation()}>
             <h3 className="text-base font-black">{confirmAsk.title}</h3>
             {confirmAsk.text && <p className="mt-1.5 text-sm text-[var(--muted)]">{confirmAsk.text}</p>}
+            {confirmAsk.choices && (
+              <div className="mt-3">
+                <Label>{confirmAsk.choiceLabel}</Label>
+                <div className="flex gap-2">
+                  {confirmAsk.choices.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setConfirmAsk((prev) => ({ ...prev, choice: option.value }))}
+                      className={`h-9 flex-1 rounded-[var(--radius-sm)] border text-sm font-bold ${
+                        confirmAsk.choice === option.value
+                          ? "border-[var(--brand)] bg-[var(--brand)] text-white"
+                          : "border-[var(--line)] bg-[var(--card)] hover:bg-[var(--bg-soft)]"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+                {isCashPayment(confirmAsk.choice) && (
+                  <div className="mt-1.5 text-[11px] leading-4 text-[var(--muted)]">Bankovní spojení zůstane v hlavičce, QR platba se nevytiskne.</div>
+                )}
+              </div>
+            )}
             <div className="mt-4 flex justify-end gap-2">
               <button
                 type="button"
@@ -1530,8 +1574,9 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
                 type="button"
                 onClick={() => {
                   const run = confirmAsk.action;
+                  const choice = confirmAsk.choice;
                   setConfirmAsk(null);
-                  run?.();
+                  run?.(choice);
                 }}
                 className={`rounded-[var(--radius-sm)] px-3 py-2 text-sm font-bold text-white ${
                   confirmAsk.danger ? "bg-red-600 hover:bg-red-700" : "bg-[var(--brand)] hover:bg-[var(--brand-dark)]"
@@ -2091,6 +2136,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
   const [issueDate, setIssueDate] = useState(todayIso());
   const [supplyDate, setSupplyDate] = useState(todayIso());
   const [dueDate, setDueDate] = useState(addDaysIso(company.dueDays));
+  const [payment, setPayment] = useState("transfer");
   const [aresBusy, setAresBusy] = useState(false);
   const [printView, setPrintView] = useState(false);
   const [blankPrint, setBlankPrint] = useState(false);
@@ -2130,7 +2176,7 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
       window.alert(numberIssue);
       return;
     }
-    onSubmit({ customer, items: filled, validUntil, issueDate, supplyDate, dueDate, number });
+    onSubmit({ customer, items: filled, validUntil, issueDate, supplyDate, dueDate, number, payment });
   };
 
   return (
@@ -2233,6 +2279,29 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
           </div>
         )}
       </div>
+
+      {!isQuote && (
+        <div className="mt-2">
+          <Label>Forma úhrady</Label>
+          <div className="flex flex-wrap items-center gap-2">
+            {PAYMENT_CHOICES.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => setPayment(option.value)}
+                className={`h-9 w-28 rounded-[var(--radius-sm)] border text-sm font-bold ${
+                  payment === option.value ? "border-[var(--brand)] bg-[var(--brand)] text-white" : "border-[var(--line)] bg-[var(--card)] hover:bg-[var(--bg-soft)]"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+            <span className="text-[11px] leading-4 text-[var(--muted)]">
+              {isCashPayment(payment) ? "Bankovní spojení zůstane v hlavičce, QR platba se nevytiskne." : "Na faktuře bude QR platba."}
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className="mt-4">
         <div className="grid grid-cols-[minmax(0,1fr)_64px_72px_100px_110px_36px] gap-2 px-1 text-[10px] font-bold uppercase text-[var(--muted)]">
@@ -2385,7 +2454,7 @@ function BlankInvoiceDoc({ company }) {
         <BlankCell label="Datum vystavení" />
         <BlankCell label="Datum usk. plnění (DUZP)" />
         <BlankCell label="Datum splatnosti" />
-        <DataCell label="Forma úhrady" value="Převodem" />
+        <BlankCell label="Forma úhrady" />
         <DataCell label="Číslo účtu" value={company.account || "—"} />
         <DataCell label="IBAN" value={(company.account && czAccountToIban(company.account)) || "—"} />
         <DataCell label="Banka" value={company.bank || "—"} />
@@ -2557,13 +2626,17 @@ function manualDocRows(items) {
 function InvoiceModal({ invoice, company, close }) {
   // faktura nese snapshot dodavatele z doby vystavení; starší faktury spadnou na aktuální nastavení
   const supplier = { ...company, ...(invoice.supplier ?? {}) };
-  const spayd = buildSpayd({
-    account: supplier.account,
-    amount: invoice.total,
-    vs: invoice.number,
-    message: `FAKTURA ${invoice.number}`,
-    dueDate: invoice.dueDate,
-  });
+  // u hotovosti bankovní spojení v hlavičce zůstává, ale QR platbu netiskneme
+  const cash = isCashPayment(invoice.payment);
+  const spayd = cash
+    ? null
+    : buildSpayd({
+        account: supplier.account,
+        amount: invoice.total,
+        vs: invoice.number,
+        message: `FAKTURA ${invoice.number}`,
+        dueDate: invoice.dueDate,
+      });
   return (
     <Modal
       close={
@@ -2627,7 +2700,7 @@ function InvoiceModal({ invoice, company, close }) {
           <DataCell label="Datum vystavení" value={dateCz(invoice.issueDate)} />
           <DataCell label="Datum usk. plnění (DUZP)" value={dateCz(invoice.supplyDate ?? invoice.issueDate)} />
           <DataCell label="Datum splatnosti" value={dateCz(invoice.dueDate)} strong />
-          <DataCell label="Forma úhrady" value="Převodem" />
+          <DataCell label="Forma úhrady" value={paymentLabel(invoice.payment)} strong={cash} />
           <DataCell label="Číslo účtu" value={supplier.account || "—"} />
           <DataCell label="IBAN" value={(supplier.account && czAccountToIban(supplier.account)) || "—"} />
           <DataCell label="Banka" value={supplier.bank || "—"} />
@@ -2669,14 +2742,26 @@ function InvoiceModal({ invoice, company, close }) {
                 <div className="mt-1 text-[10px] font-bold uppercase text-[var(--muted)]">QR platba</div>
               </div>
             ) : (
-              <div className="max-w-[220px] rounded-[var(--radius-sm)] border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 print:hidden">
-                QR platba se zobrazí po vyplnění čísla účtu v administraci (tlačítko Admin v horní liště).
-              </div>
+              !cash && (
+                <div className="max-w-[220px] rounded-[var(--radius-sm)] border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 print:hidden">
+                  QR platba se zobrazí po vyplnění čísla účtu v administraci (tlačítko Admin v horní liště).
+                </div>
+              )
             )}
             <div className="text-xs leading-6 text-[var(--muted)]">
-              Zaplaťte prosím do <b className="text-[var(--text)]">{dateCz(invoice.dueDate)}</b>
-              <br />
-              pod variabilním symbolem <b className="text-[var(--text)]">{invoice.number}</b>.
+              {cash ? (
+                <>
+                  Úhrada <b className="text-[var(--text)]">v hotovosti</b> při předání díla, nejpozději {dateCz(invoice.dueDate)}.
+                  <br />
+                  Bankovní spojení uvádíme pro případ platby převodem, variabilní symbol <b className="text-[var(--text)]">{vsFromNumber(invoice.number)}</b>.
+                </>
+              ) : (
+                <>
+                  Zaplaťte prosím do <b className="text-[var(--text)]">{dateCz(invoice.dueDate)}</b>
+                  <br />
+                  pod variabilním symbolem <b className="text-[var(--text)]">{invoice.number}</b>.
+                </>
+              )}
             </div>
           </div>
           <div className="rounded-[var(--radius)] p-4 text-right text-white shadow-md" style={{ backgroundColor: BRAND }}>

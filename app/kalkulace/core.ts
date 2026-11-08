@@ -871,6 +871,15 @@ const stripDiacritics = (text: string) =>
 // Tiskneme přesně tuhle hodnotu, ať papír a QR platí za jedno.
 export const vsFromNumber = (value: any) => String(value ?? "").replace(/\D/g, "").slice(0, 10);
 
+// Forma úhrady faktury. Bankovní spojení se tiskne v obou případech,
+// QR platba jen u převodu – u hotovosti by zvala k druhé platbě.
+export const PAYMENT_CHOICES = [
+  { value: "transfer", label: "Převodem" },
+  { value: "cash", label: "Hotově" },
+];
+export const paymentLabel = (value: any) => PAYMENT_CHOICES.find((item) => item.value === value)?.label ?? "Převodem";
+export const isCashPayment = (value: any) => value === "cash";
+
 export function buildSpayd({ account, amount, vs, message, dueDate }: any): string | null {
   const iban = czAccountToIban(account);
   if (!iban) return null;
