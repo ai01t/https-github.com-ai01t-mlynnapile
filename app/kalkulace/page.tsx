@@ -2968,31 +2968,46 @@ function PartyBlock({ label, name, rows, payment, note }) {
 // Razítko podnikatele – kreslené, ať doklad vypadá orazítkovaně i bez skeneru.
 // Nerovná linka přes feTurbulence dělá dojem otisku gumového razítka.
 function StampMark({ company }) {
-  const ink = "#9f1b1b";
+  // Tmavý razítkový inkoust; nepravidelné okraje i vynechaná místa dělá filtr,
+  // takže otisk nevypadá jako vektorový rámeček.
+  const ink = "#243049";
   return (
-    <svg viewBox="0 0 240 124" className="mx-auto -mb-5 h-[104px] w-56" role="img" aria-label={`Razítko ${company.name || ""}`}>
+    <svg viewBox="0 0 260 132" className="mx-auto -mb-6 block h-auto w-full" role="img" aria-label={`Razítko ${company.name || ""}`}>
       <defs>
-        <filter id="stamp-ink" x="-10%" y="-10%" width="120%" height="120%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" seed="7" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G" />
+        <filter id="stamp-ink" x="-15%" y="-15%" width="130%" height="130%">
+          {/* rozechvění linek – guma nikdy nedosedne rovně */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.62" numOctaves="4" seed="17" result="edge" />
+          <feDisplacementMap in="SourceGraphic" in2="edge" scale="1.4" xChannelSelector="R" yChannelSelector="G" result="shaky" />
+          {/* hrubší šum ukrojí kusy barvy, aby otisk nebyl všude stejně sytý */}
+          <feTurbulence type="fractalNoise" baseFrequency="0.07 0.11" numOctaves="3" seed="5" result="patches" />
+          <feColorMatrix
+            in="patches"
+            type="matrix"
+            values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1.3 0 0 0 -0.18"
+            result="inkMask"
+          />
+          <feComposite in="shaky" in2="inkMask" operator="in" />
         </filter>
       </defs>
-      <g filter="url(#stamp-ink)" opacity="0.78" transform="rotate(-7 120 62)">
-        <g fill="none" stroke={ink}>
-          <rect x="10" y="14" width="220" height="96" rx="10" strokeWidth="3" />
-          <rect x="17" y="21" width="206" height="82" rx="6" strokeWidth="1.1" />
-          <path d="M40 58 H200" strokeWidth="1" />
+      <g filter="url(#stamp-ink)" opacity="0.8" transform="rotate(-5.5 130 66)">
+        <g fill="none" stroke={ink} strokeLinejoin="round">
+          <rect x="9" y="11" width="242" height="110" rx="3" strokeWidth="3.4" />
+          <rect x="15.5" y="17.5" width="229" height="97" rx="1.5" strokeWidth="1" />
         </g>
         <g fill={ink} textAnchor="middle" fontFamily="inherit">
-          <text x="120" y="46" fontSize="16.5" fontWeight="800" letterSpacing="0.6">{company.name || "—"}</text>
-          <text x="120" y="73" fontSize="9" fontWeight="700" letterSpacing="2.2">{(company.subtitle || "").toUpperCase()}</text>
+          <text x="130" y="48" fontSize="18" fontWeight="800" letterSpacing="0.2">{company.name || "—"}</text>
+          <text x="130" y="65" fontSize="8.5" fontWeight="700" letterSpacing="3">{(company.subtitle || "").toUpperCase()}</text>
+          {company.address && (
+            <text x="130" y="84" fontSize="9.5" fontWeight="600" letterSpacing="0.2">{company.address}</text>
+          )}
           {company.ico && (
-            <text x="120" y="86" fontSize="9.5" fontWeight="700" letterSpacing="0.6">IČO {company.ico}</text>
+            <text x="130" y="97" fontSize="10" fontWeight="700" letterSpacing="0.6">IČO {company.ico}</text>
           )}
           {company.phone && (
-            <text x="120" y="97" fontSize="9.5" fontWeight="700" letterSpacing="0.6">{company.phone}</text>
+            <text x="130" y="109" fontSize="9" fontWeight="600" letterSpacing="0.2">{company.phone}</text>
           )}
         </g>
+        <path d="M44 72 H216" stroke={ink} strokeWidth="0.9" fill="none" />
       </g>
     </svg>
   );
@@ -3186,6 +3201,14 @@ function printDocument() {
   const number = root.querySelector("[data-doc-number]")?.textContent?.trim();
   const title = [heading, number].filter(Boolean).join(" ");
   const styles = [...document.querySelectorAll('link[rel="stylesheet"], style')].map((node) => node.outerHTML).join("");
+  // barvy motivu visí na obalu aplikace, do iframu se nepřenesou – bez nich by
+  // var(--brand) nic neznamenalo a rámeček s celkovou částkou by zmizel
+  const themed = root.closest("[data-kalk]") ?? document.documentElement;
+  const computed = window.getComputedStyle(themed);
+  const vars = [...computed]
+    .filter((name) => name.startsWith("--"))
+    .map((name) => `${name}:${computed.getPropertyValue(name)}`)
+    .join(";");
   const frame = document.createElement("iframe");
   frame.setAttribute("aria-hidden", "true");
   frame.style.cssText = "position:fixed;right:0;bottom:0;width:210mm;height:297mm;border:0;opacity:0;pointer-events:none";
@@ -3200,6 +3223,7 @@ function printDocument() {
   doc.write(
     `<!doctype html><html lang="cs"><head><meta charset="utf-8"><title>${title}</title>${styles}` +
       `<style>@page{size:A4 portrait;margin:10mm}html,body{margin:0;padding:0;background:#fff}` +
+      `:root{${vars}}` +
       `[data-print-root]{width:100%!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}` +
       `[data-print-root] tr,[data-print-root] section,[data-print-root] header,[data-print-root] footer{break-inside:avoid}</style>` +
       `</head><body>${root.outerHTML}</body></html>`,
