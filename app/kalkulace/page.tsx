@@ -3223,7 +3223,9 @@ function printDocument() {
       `<style>@page{size:A4 portrait;margin:10mm}html,body{margin:0;padding:0;background:#fff}` +
       `:root{${vars}}` +
       `[data-print-root]{width:100%!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}` +
-      `[data-print-root] tr,[data-print-root] section,[data-print-root] header,[data-print-root] footer{break-inside:avoid}</style>` +
+      `[data-print-root] tr,[data-print-root] section,[data-print-root] header,[data-print-root] footer{break-inside:avoid}` +
+      // stíny se na papíře vykreslí jako šedé obdélníky – na obrazovce pomáhají, v tisku vadí
+      `[data-print-root] *{box-shadow:none!important}</style>` +
       `</head><body>${root.outerHTML}</body></html>`,
   );
   doc.close();
