@@ -22,13 +22,11 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import { QRCodeSVG } from "qrcode.react";
 import {
   addDaysIso,
   areaCm,
   buildCalculation,
   buildInvoiceItems,
-  buildSpayd,
   clamp,
   czk,
   czkExact,
@@ -1943,9 +1941,9 @@ function SummaryRow({ label, value }) {
 
 function Modal({ children, close, wide = false }) {
   return (
-    <div className="fixed inset-0 z-50 overflow-auto bg-neutral-950/60 p-4 print:static print:bg-[var(--card)] print:p-0">
-      <div className={`mx-auto mb-3 flex ${wide ? "max-w-[1100px]" : "max-w-[980px]"} justify-end gap-2 print:hidden`}>{close}</div>
-      <div className={`mx-auto ${wide ? "max-w-[1100px]" : "max-w-[980px]"} bg-[var(--card)] p-6 shadow-2xl print:max-w-none print:p-0 print:shadow-none`}>{children}</div>
+    <div className="fixed inset-0 z-50 overflow-auto bg-neutral-950/60 p-2 sm:p-4 print:static print:bg-[var(--card)] print:p-0">
+      <div className={`mx-auto mb-3 flex ${wide ? "max-w-[1100px]" : "max-w-[980px]"} flex-wrap justify-end gap-2 print:hidden`}>{close}</div>
+      <div className={`mx-auto ${wide ? "max-w-[1100px]" : "max-w-[980px]"} overflow-x-auto bg-[var(--card)] p-3 shadow-2xl sm:p-6 print:max-w-none print:overflow-visible print:p-0 print:shadow-none`}>{children}</div>
     </div>
   );
 }
@@ -2245,15 +2243,15 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
             <input type="date" value={validUntil} onChange={(event) => setValidUntil(event.target.value)} className="h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-3" />
           </label>
         ) : (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             {[
               ["Vystavení", issueDate, setIssueDate],
               ["DUZP", supplyDate, setSupplyDate],
               ["Splatnost", dueDate, setDueDate],
             ].map(([label, value, setter]) => (
-              <label key={label} className="block">
+              <label key={label} className="block min-w-0">
                 <Label>{label}</Label>
-                <input type="date" value={value} onChange={(event) => setter(event.target.value)} className="h-10 w-full rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-sm" />
+                <input type="date" value={value} onChange={(event) => setter(event.target.value)} className="h-10 w-full min-w-0 rounded-[var(--radius-sm)] border border-[var(--line)] px-2 text-sm" />
               </label>
             ))}
           </div>
@@ -2261,7 +2259,8 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
       </div>
 
       <div className="mt-4">
-        <div className="grid grid-cols-[minmax(0,1fr)_64px_72px_100px_110px_36px] gap-2 px-1 text-[10px] font-bold uppercase text-[var(--muted)]">
+        {/* na mobilu je řádek karta pod sebou, od tabletu původní mřížka */}
+        <div className="hidden grid-cols-[minmax(0,1fr)_64px_72px_100px_110px_36px] gap-2 px-1 text-[10px] font-bold uppercase text-[var(--muted)] sm:grid">
           <span>Položka</span>
           <span>MJ</span>
           <span className="text-right">Množství</span>
@@ -2269,17 +2268,34 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
           <span className="text-right">Celkem</span>
           <span />
         </div>
-        <div className="mt-1 space-y-1.5">
+        <div className="mt-1 space-y-2 sm:space-y-1.5">
           {items.map((row) => (
-            <div key={row.id} className="grid grid-cols-[minmax(0,1fr)_64px_72px_100px_110px_36px] items-center gap-2">
-              <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-sm" placeholder="např. Oprava omítky v koupelně" value={row.name} onChange={(event) => setItem(row.id, { name: event.target.value })} />
-              <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-center text-sm" value={row.unit} onChange={(event) => setItem(row.id, { unit: event.target.value })} />
-              <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-right text-sm" value={row.qty} onChange={(event) => setItem(row.id, { qty: event.target.value })} />
-              <input className="rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-right text-sm" placeholder="0" value={row.price} onChange={(event) => setItem(row.id, { price: event.target.value })} />
-              <div className="rounded-[var(--radius-sm)] bg-[var(--bg-soft)] px-2 py-2 text-right text-sm font-bold">{czkExact(n(row.qty) * n(row.price))}</div>
-              <button type="button" onClick={() => setItems((prev) => (prev.length > 1 ? prev.filter((item) => item.id !== row.id) : prev))} className="grid h-9 place-items-center rounded-[var(--radius-sm)] text-[var(--muted)] hover:bg-[var(--bg)]">
-                <Trash2 className="h-4 w-4" />
-              </button>
+            <div
+              key={row.id}
+              className="grid gap-2 rounded-[var(--radius-sm)] border border-[var(--line)] p-2 sm:grid-cols-[minmax(0,1fr)_64px_72px_100px_110px_36px] sm:items-center sm:rounded-none sm:border-0 sm:p-0"
+            >
+              <input className="min-w-0 rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-sm" placeholder="např. Oprava omítky v koupelně" value={row.name} onChange={(event) => setItem(row.id, { name: event.target.value })} />
+              <div className="grid grid-cols-[64px_minmax(0,1fr)_minmax(0,1fr)] gap-2 sm:contents">
+                {/* popisky jen na mobilu – tam chybí hlavička tabulky */}
+                <label className="min-w-0 sm:contents">
+                  <span className="mb-0.5 block text-[10px] font-bold uppercase text-[var(--muted)] sm:hidden">MJ</span>
+                  <input className="w-full min-w-0 rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-center text-sm" value={row.unit} onChange={(event) => setItem(row.id, { unit: event.target.value })} />
+                </label>
+                <label className="min-w-0 sm:contents">
+                  <span className="mb-0.5 block text-[10px] font-bold uppercase text-[var(--muted)] sm:hidden">Množství</span>
+                  <input inputMode="decimal" className="w-full min-w-0 rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-right text-sm" value={row.qty} onChange={(event) => setItem(row.id, { qty: event.target.value })} />
+                </label>
+                <label className="min-w-0 sm:contents">
+                  <span className="mb-0.5 block text-[10px] font-bold uppercase text-[var(--muted)] sm:hidden">Cena/MJ</span>
+                  <input inputMode="decimal" placeholder="0" className="w-full min-w-0 rounded-[var(--radius-sm)] border border-[var(--line)] px-2 py-2 text-right text-sm" value={row.price} onChange={(event) => setItem(row.id, { price: event.target.value })} />
+                </label>
+              </div>
+              <div className="flex items-center gap-2 sm:contents">
+                <div className="min-w-0 flex-1 rounded-[var(--radius-sm)] bg-[var(--bg-soft)] px-2 py-2 text-right text-sm font-bold">{czkExact(n(row.qty) * n(row.price))}</div>
+                <button type="button" title="Smazat řádek" onClick={() => setItems((prev) => (prev.length > 1 ? prev.filter((item) => item.id !== row.id) : prev))} className="grid h-9 w-9 shrink-0 place-items-center rounded-[var(--radius-sm)] text-[var(--muted)] hover:bg-[var(--bg)]">
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -2580,17 +2596,7 @@ function manualDocRows(items) {
 function InvoiceModal({ invoice, company, onPayment, close }) {
   // faktura nese snapshot dodavatele z doby vystavení; starší faktury spadnou na aktuální nastavení
   const supplier = { ...company, ...(invoice.supplier ?? {}) };
-  // u hotovosti bankovní spojení v hlavičce zůstává, ale QR platbu netiskneme
   const cash = isCashPayment(invoice.payment);
-  const spayd = cash
-    ? null
-    : buildSpayd({
-        account: supplier.account,
-        amount: invoice.total,
-        vs: invoice.number,
-        message: `FAKTURA ${invoice.number}`,
-        dueDate: invoice.dueDate,
-      });
   return (
     <Modal
       close={
@@ -2702,24 +2708,12 @@ function InvoiceModal({ invoice, company, onPayment, close }) {
 
         <section className="mt-5 flex flex-wrap items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            {spayd ? (
-              <div className="text-center">
-                <QRCodeSVG value={spayd} size={120} marginSize={2} />
-                <div className="mt-1 text-[10px] font-bold uppercase text-[var(--muted)]">QR platba</div>
-              </div>
-            ) : (
-              !cash && (
-                <div className="max-w-[220px] rounded-[var(--radius-sm)] border border-amber-300 bg-amber-50 p-3 text-xs text-amber-900 print:hidden">
-                  QR platba se zobrazí po vyplnění čísla účtu v administraci (tlačítko Admin v horní liště).
-                </div>
-              )
-            )}
             <div className="text-xs leading-6 text-[var(--muted)]">
               {cash ? (
                 <>
                   Úhrada <b className="text-[var(--text)]">v hotovosti</b> při předání díla, nejpozději {dateCz(invoice.dueDate)}.
                   <br />
-                  Bankovní spojení uvádíme pro případ platby převodem, variabilní symbol <b className="text-[var(--text)]">{vsFromNumber(invoice.number)}</b>.
+                  Bankovní spojení uvádíme pro případ platby převodem.
                 </>
               ) : (
                 <>
@@ -2743,7 +2737,10 @@ function InvoiceModal({ invoice, company, onPayment, close }) {
             <br />
             {[supplier.phone, supplier.email].filter(Boolean).join(" · ")}
           </div>
-          <div className="w-56 border-t border-[var(--muted)] pt-1 text-center text-[11px] text-[var(--muted)]">Razítko a podpis</div>
+          <div className="w-56">
+            <StampMark company={supplier} />
+            <div className="border-t border-[var(--muted)] pt-1 text-center text-[11px] text-[var(--muted)]">Razítko a podpis</div>
+          </div>
         </section>
 
         <footer className="mt-6 border-t-2 pt-2 text-center text-[10px] text-[var(--muted)]" style={{ borderColor: BRAND }}>
@@ -2965,6 +2962,39 @@ function PartyBlock({ label, name, rows, payment, note }) {
       )}
       {note && <div className="mt-2.5 border-t border-[var(--line)] pt-2 text-[11px] leading-4 text-[var(--muted)]">{note}</div>}
     </div>
+  );
+}
+
+// Razítko podnikatele – kreslené, ať doklad vypadá orazítkovaně i bez skeneru.
+// Nerovná linka přes feTurbulence dělá dojem otisku gumového razítka.
+function StampMark({ company }) {
+  const ink = "#9f1b1b";
+  return (
+    <svg viewBox="0 0 240 124" className="mx-auto -mb-5 h-[104px] w-56" role="img" aria-label={`Razítko ${company.name || ""}`}>
+      <defs>
+        <filter id="stamp-ink" x="-10%" y="-10%" width="120%" height="120%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="3" seed="7" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+      <g filter="url(#stamp-ink)" opacity="0.78" transform="rotate(-7 120 62)">
+        <g fill="none" stroke={ink}>
+          <rect x="10" y="14" width="220" height="96" rx="10" strokeWidth="3" />
+          <rect x="17" y="21" width="206" height="82" rx="6" strokeWidth="1.1" />
+          <path d="M40 58 H200" strokeWidth="1" />
+        </g>
+        <g fill={ink} textAnchor="middle" fontFamily="inherit">
+          <text x="120" y="46" fontSize="16.5" fontWeight="800" letterSpacing="0.6">{company.name || "—"}</text>
+          <text x="120" y="73" fontSize="9" fontWeight="700" letterSpacing="2.2">{(company.subtitle || "").toUpperCase()}</text>
+          {company.ico && (
+            <text x="120" y="86" fontSize="9.5" fontWeight="700" letterSpacing="0.6">IČO {company.ico}</text>
+          )}
+          {company.phone && (
+            <text x="120" y="97" fontSize="9.5" fontWeight="700" letterSpacing="0.6">{company.phone}</text>
+          )}
+        </g>
+      </g>
+    </svg>
   );
 }
 
