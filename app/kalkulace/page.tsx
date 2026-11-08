@@ -2712,8 +2712,6 @@ function InvoiceModal({ invoice, company, onPayment, close }) {
               {cash ? (
                 <>
                   Úhrada <b className="text-[var(--text)]">v hotovosti</b> při předání díla, nejpozději {dateCz(invoice.dueDate)}.
-                  <br />
-                  Bankovní spojení uvádíme pro případ platby převodem.
                 </>
               ) : (
                 <>
