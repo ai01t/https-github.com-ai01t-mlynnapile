@@ -565,8 +565,12 @@ function modeToggle() {
 
 function renderHeader() {
   const n = DATA.nav;
-  const links = n.items.map((it, i) =>
-    `<a href="#${esc(it.target)}" data-bind="nav.items.${i}.label">${esc(it.label)}</a>`).join("");
+  const links = n.items.map((it, i) => {
+    // cíl může být id sekce (#kolekce) nebo adresa stránky (poukaz.html, /neco, https://…)
+    const page = /^(https?:|\/|[\w.-]+\.html)/.test(it.target || "");
+    return `<a href="${page ? esc(it.target) : "#" + esc(it.target)}"
+      data-bind="nav.items.${i}.label">${esc(it.label)}</a>`;
+  }).join("");
   return `
   <header class="site-header${n.sticky ? "" : " is-static"}">
     <div class="wrap header-inner" data-align="${esc(n.align === "left" ? "left" : "center")}">

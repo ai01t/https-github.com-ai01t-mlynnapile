@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dárkový poukaz – Keramika Kampanela</title>
+<meta name="description" content="Dárkový poukaz na ručně točenou keramiku. K narozeninám, ke svatbě i do startu podnikání.">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="images/kampanela-logo-square.svg">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#458AC1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="data.js?v=51"></script>
+<style>
+/* Dárkový poukaz Keramika Kampanela – skládaná karta A4 (titulka, vnitřek, zadní strana).
+   Stavba, 3D engine i tisk převzaté z poukazu Mlýna na Pile; obsah, paleta a písma Kampanela.
+   Jen bílá verze. Vzor (kytičky z malby na keramice) se objevuje jemně za kurzorem nad náhledem.
+   Zákazník: vybere poukaz, napíše Pro / vzkaz / Od, vidí kartu se značkou VZOR a objedná e-mailem.
+   Majitel (?admin): číslo poukazu, platnost, tisk na A4 (2 strany, přeložit napůl) = i PDF. */
+
+:root{
+  --bg:#fbfaf8; --panel:#fff; --line:rgba(40,36,30,.14); --text:#1b1a18; --muted:#7c766f;
+  --gold:#458ac1; --gold-ink:#2f6f9e; --field:#fff; --btn-ink:#fff; --stage:#efece6;
+  /* poukaz */
+  --ink:#1b1a18; --ink-soft:#575149; --brass:#458ac1; --paper:#ffffff; --hair:#e0dcd4;
+}
+*{box-sizing:border-box;}
+[hidden]{display:none !important;}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-weight:400;}
+a{color:inherit;}
+
+.top{display:flex;align-items:center;gap:14px;padding:16px clamp(16px,4vw,48px);border-bottom:1px solid var(--line);}
+.top .brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:'Cormorant Garamond',serif;font-size:1.35rem;}
+.top .brand img{width:26px;height:26px;}
+.top .brand em{font-style:normal;color:var(--gold-ink);}
+.top .backlink{margin-left:auto;font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;}
+.top .backlink:hover{color:var(--gold-ink);}
+.iconbtn{width:40px;height:40px;display:inline-grid;place-items:center;border:1px solid var(--line);border-radius:50%;background:none;color:var(--text);font-size:1.3rem;line-height:1;cursor:pointer;transition:border-color .2s,color .2s;}
+.iconbtn:hover{border-color:var(--gold);color:var(--gold-ink);}
+
+.wrap{display:grid;grid-template-columns:minmax(320px,400px) 1fr;gap:clamp(24px,4vw,56px);max-width:1440px;margin:0 auto;padding:clamp(20px,4vw,48px);}
+.intro .kicker{font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);}
+.intro h1{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(2rem,3.4vw,2.8rem);line-height:1.05;margin:8px 0 10px;}
+.intro h1 em{color:var(--gold-ink);}
+.intro p{margin:0 0 6px;font-size:.82rem;line-height:1.6;color:var(--muted);}
+
+.step{margin-top:26px;}
+.step-t{display:flex;align-items:center;gap:10px;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.step-t i{display:inline-grid;place-items:center;width:20px;height:20px;border:1px solid var(--gold);border-radius:50%;font-style:normal;font-size:.6rem;letter-spacing:0;}
+.variants{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.variant{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:border-color .2s,background .2s;}
+.variant:hover{border-color:rgba(69,138,193,.5);}
+.variant.on{border-color:var(--gold);background:rgba(69,138,193,.09);}
+.variant b{font-weight:500;font-size:.8rem;}
+.variant small{font-size:.62rem;line-height:1.35;color:var(--muted);}
+.variant strong{margin-top:4px;font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.2rem;color:var(--gold-ink);}
+.config{display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;padding:14px;border:1px solid var(--line);}
+.stepper span{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.stepper div{display:flex;align-items:center;gap:10px;}
+.stepper button{width:30px;height:30px;border:1px solid var(--line);border-radius:50%;background:none;color:var(--text);font:inherit;font-size:1rem;line-height:1;cursor:pointer;}
+.stepper button:hover:not(:disabled){border-color:var(--gold);color:var(--gold-ink);}
+.stepper button:disabled{opacity:.3;cursor:default;}
+.stepper b{min-width:22px;text-align:center;font-weight:400;font-size:1rem;}
+.stepper input{width:110px;padding:5px 8px;text-align:center;font:inherit;font-size:1rem;background:var(--field);border:1px solid var(--line);color:var(--text);}
+.total{display:flex;align-items:baseline;justify-content:space-between;padding-top:10px;border-top:1px solid var(--line);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+.total strong{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:1.5rem;letter-spacing:0;text-transform:none;color:var(--gold-ink);}
+label{display:block;font-size:.66rem;color:var(--muted);margin:12px 0 5px;}
+input,textarea{width:100%;padding:10px 12px;background:var(--field);border:1px solid var(--line);color:var(--text);font:inherit;font-size:.86rem;}
+textarea{min-height:70px;resize:vertical;}
+#fMsg{min-height:132px;font:italic 400 1.02rem/1.4 'Cormorant Garamond',serif;}
+input:focus,textarea:focus{outline:none;border-color:var(--gold);}
+.count{float:right;font-size:.6rem;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.delivery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+.delivery button{display:flex;flex-direction:column;gap:3px;padding:11px 10px;border:1px solid var(--line);background:none;color:var(--muted);font:inherit;font-size:.72rem;text-align:left;cursor:pointer;}
+.delivery button b{font-weight:500;color:var(--text);}
+.delivery button small{font-size:.6rem;line-height:1.35;color:var(--muted);}
+.delivery button.on{border-color:var(--gold);color:var(--gold-ink);background:rgba(69,138,193,.09);}
+.online-opts{margin-top:10px;padding:12px 14px;border:1px solid var(--line);background:rgba(69,138,193,.05);}
+.online-opts .fine{margin:0;}
+.formats{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line);border-radius:999px;}
+.formats button{padding:8px 15px;border:0;border-radius:999px;background:none;color:var(--muted);font:inherit;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .25s,color .25s;}
+.formats button.on{background:var(--gold);color:var(--btn-ink);}
+.admin{display:none;margin-top:26px;padding:16px;border:1px dashed rgba(69,138,193,.5);}
+body.is-admin .admin{display:block;}
+.actions{display:grid;gap:8px;margin-top:22px;}
+.cta{padding:14px;border:1px solid var(--gold);background:var(--gold);color:var(--btn-ink);font:inherit;font-size:.7rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;transition:background .2s,color .2s;}
+.cta:hover{background:var(--gold-ink);border-color:var(--gold-ink);}
+.cta.ghost{background:none;color:var(--gold-ink);}
+.cta.ghost:hover{background:rgba(69,138,193,.1);}
+.fine{margin-top:10px;font-size:.66rem;line-height:1.6;color:var(--muted);}
+
+/* ── náhled: 3D karta ── */
+.preview{position:sticky;top:20px;align-self:start;}
+.preview-t{display:flex;justify-content:space-between;align-items:center;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.views{display:inline-flex;gap:4px;padding:3px;border:1px solid var(--line);border-radius:999px;justify-content:center;width:max-content;margin:0 auto 10px;}
+.views button{padding:7px 13px;border:0;border-radius:999px;background:none;color:var(--muted);font:inherit;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .25s,color .25s;}
+.views button.on{background:rgba(69,138,193,.14);color:var(--gold-ink);}
+.stage{position:relative;height:min(76vh,760px);min-height:340px;overflow:hidden;user-select:none;-webkit-user-select:none;background:
+  radial-gradient(ellipse 65% 55% at 50% 40%,rgba(255,255,255,.65),rgba(255,255,255,0) 72%),var(--stage);}
+.stage-hint{position:absolute;left:0;right:0;bottom:12px;text-align:center;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);pointer-events:none;}
+.trail{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;}
+.scene{position:absolute;inset:0;perspective:2400px;perspective-origin:50% 42%;}
+.rig{position:absolute;left:50%;top:calc(50% - 10px);width:0;height:0;transform-style:preserve-3d;will-change:transform;}
+.card{position:absolute;left:-105mm;top:0;width:210mm;height:148.5mm;transform-style:preserve-3d;cursor:pointer;}
+.ground{position:absolute;left:50%;top:calc(50% - 10px);width:220mm;margin-left:-110mm;height:22mm;pointer-events:none;transform-origin:50% 0;background:radial-gradient(closest-side,rgba(70,60,45,.28),rgba(70,60,45,0));filter:blur(5px);}
+.leaf{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:50% 0;}
+.face{position:absolute;inset:0;overflow:hidden;background:var(--paper);backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  box-shadow:0 0 0 .2mm rgba(120,110,95,.13),0 1px 2px rgba(60,52,40,.07),0 22px 44px -14px rgba(60,52,40,.28);}
+.face.inside{transform:rotateX(180deg);}
+.face.outer{transform:rotateY(180deg);}
+.face::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:4;opacity:.7;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .42 0 0 0 0 .36 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.shade{position:absolute;inset:0;pointer-events:none;opacity:0;z-index:3;}
+.face.front .shade{background:linear-gradient(to bottom,rgba(40,34,26,.05),rgba(40,34,26,.42));}
+.face.inside .shade{background:linear-gradient(to top,rgba(40,34,26,.38),rgba(40,34,26,.03));}
+.face.inner .shade{background:linear-gradient(to bottom,rgba(40,34,26,.46),rgba(40,34,26,0) 78%);}
+.crease{position:absolute;left:0;right:0;height:8mm;pointer-events:none;z-index:3;}
+.face.inside .crease{bottom:0;background:linear-gradient(to top,rgba(60,52,40,.1),rgba(60,52,40,0));}
+.face.inner .crease{top:0;background:linear-gradient(to bottom,rgba(60,52,40,.12),rgba(60,52,40,0));}
+
+/* ── poukaz: panely 210 × 148,5 mm ── */
+.vc{--display:'Cormorant Garamond',serif;--serif:'Cormorant Garamond',serif;--sans:'Inter',system-ui,sans-serif;}
+.vc .panel{position:absolute;left:0;top:0;width:210mm;height:148.5mm;overflow:hidden;background:var(--paper);color:var(--ink);font-family:var(--sans);}
+.vc .label{font:600 6.6pt/1.2 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--brass);}
+/* 1 · titulka: nahoře „Dárkový poukaz“, nadpis a hodnota přesně uprostřed */
+.vc .cover{padding:12mm 16mm;display:grid;grid-template-rows:1fr auto 1fr;justify-items:center;text-align:center;}
+.vc .cover .label{align-self:start;padding-left:.26em;}   /* vyrovná mezeru za posledním písmenem → optický střed */
+.vc .cover .mid{grid-row:2;width:100%;}
+.vc .cover h1,.vc .back h3{font:300 22pt/1.16 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--ink);text-wrap:balance;}
+.vc .cover h1{margin:0 auto;max-width:165mm;padding-left:.08em;overflow-wrap:anywhere;}
+.vc .value{display:flex;width:max-content;align-items:baseline;gap:3mm;margin:6mm auto 0;padding:2mm 8mm;border-top:.2mm solid var(--hair);border-bottom:.2mm solid var(--hair);}
+.vc .value .vl{font:600 6.6pt/1.2 var(--sans);letter-spacing:.26em;text-transform:uppercase;color:var(--brass);}
+.vc .value b{font:400 19pt/1 var(--display);color:var(--ink);}
+/* 0 · zadní strana */
+.vc .back{padding:15mm 16mm 13mm;display:flex;flex-direction:column;justify-content:space-between;}
+.vc .back-head{display:flex;justify-content:space-between;align-items:flex-start;}
+.vc .back h3{margin:3.5mm 0 0;}
+.vc .back .no{margin-left:2mm;}
+.vc .mark-wrap{margin-top:-3mm;}
+.vc .mark{width:22mm;height:22mm;display:block;}
+.vc .back-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:14mm;font-size:13pt;}
+.vc .back-note{margin:1mm 0 0;text-align:center;font:italic 400 9.5pt/1.4 var(--serif);color:var(--ink-soft);}
+.vc .f{display:flex;align-items:baseline;gap:3mm;margin-bottom:6.4mm;}
+.vc .f > span:first-child{font:italic 400 1em/1 var(--serif);color:var(--ink-soft);min-width:22mm;flex:none;white-space:nowrap;}
+.vc .field{flex:1;min-height:7.5mm;border-bottom:.25mm dotted var(--ink-soft);font:400 1em/1.3 var(--serif);color:var(--ink);padding:0 1mm;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+.vc .field.short{display:inline-block;min-height:0;vertical-align:baseline;padding:0 1mm .4mm;min-width:26mm;font:600 8pt/1.4 var(--sans);letter-spacing:.1em;color:var(--ink);border-color:var(--brass);}
+.vc .back-foot{padding-top:4mm;border-top:.2mm solid var(--hair);display:flex;justify-content:space-between;align-items:flex-end;gap:10mm;}
+.vc .how{font:400 7.6pt/1.6 var(--sans);color:var(--ink-soft);}
+.vc .how b{display:block;font:italic 400 1.58em/1.3 var(--serif);color:var(--ink);margin-bottom:.6mm;}
+.vc .how .c{color:var(--ink);font-weight:500;}
+.vc .qr{flex:none;}
+.vc #qr{width:17mm;height:17mm;display:block;}
+.vc #qr path{fill:#1a1714;}
+/* kampanela.cz přesně na šířku QR kódu (textLength roztáhne mezery mezi písmeny) */
+.vc .qr .cap{display:block;width:17mm;height:2.2mm;margin-top:1.6mm;overflow:visible;}
+.vc .qr .cap text{font-family:var(--sans);font-weight:500;font-size:11.5px;fill:var(--ink-soft);}
+/* 2 + 3 · vnitřek */
+.vc .in{padding:16mm 16mm 12mm;display:flex;align-items:center;}
+.vc .in .col{width:150mm;position:relative;margin-inline:auto;}
+.vc .in h2{margin:2.8mm 0 0;font:300 34pt/1 var(--display);color:var(--ink);}
+.vc .in h2 em{font-style:italic;color:var(--brass);}
+.vc .lead{margin:3.8mm 0 0;font:400 13pt/1.34 var(--serif);color:var(--ink);}
+.vc .spec{display:grid;grid-template-columns:1fr 1fr;gap:4.4mm 7mm;margin:6.4mm 0 0;font-size:8.4pt;}
+.vc .spec dt{font:600 .738em/1.2 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:1mm;}
+.vc .spec dd{margin:0;font:400 1em/1.45 var(--sans);color:var(--ink);}
+/* 2 · horní strana uvnitř: vzkaz (přání + text) přesně uprostřed */
+.vc .in.msgpage{padding:14mm 16mm;}
+.vc .in.msgpage .col{text-align:center;}
+.vc .msg{max-width:132mm;max-height:98mm;margin:0 auto;overflow:hidden;padding:0 1mm;text-align:center;font:italic 400 15pt/1.42 var(--serif);color:var(--ink);white-space:pre-wrap;}
+/* natištěný vzor (jen tiskový/PDF poukaz) – kytičky z malby na keramice */
+.vc .petals{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;}
+body[data-format="online"] .vc .petals{display:none;}
+@media print{ .vc .petals{display:block !important;} }
+
+/* značka VZOR v náhledu pro zákazníka */
+.vc .sample{position:absolute;left:50%;top:50%;z-index:5;transform:translate(-50%,-50%) rotate(-18deg);font:300 64pt/1 var(--display);letter-spacing:.3em;color:var(--brass);opacity:.1;pointer-events:none;white-space:nowrap;}
+body.is-admin .vc .sample{display:none;}
+
+/* ── tisk: 2 × A4, přeložit napůl ── */
+#print{display:none;}
+.sheet{width:210mm;height:297mm;position:relative;overflow:hidden;background:var(--paper);break-after:page;}
+.slot{position:absolute;left:0;width:210mm;height:148.5mm;overflow:hidden;}
+/* pozor: třída .top patří záhlaví stránky (v tisku se skrývá), sloty proto nesou jiné názvy */
+.slot.upper{top:0;} .slot.lower{top:148.5mm;}
+.slot.rot{transform:rotate(180deg);}
+.foldmark{position:absolute;top:148.5mm;width:4mm;border-top:.2mm solid #c3bcb0;}
+.foldmark.l{left:4.5mm;} .foldmark.r{right:4.5mm;}
+@page{size:A4;margin:0;}
+@media print{
+  html,body{background:var(--paper);-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .top,.wrap{display:none !important;}
+  #print{display:block;}
+}
+
+@media (max-width:960px){
+  .delivery{grid-template-columns:1fr;}
+  .wrap{grid-template-columns:1fr;}
+  .preview{position:static;order:-1;}
+  .stage{height:min(112vw,540px);min-height:300px;}
+  .top{gap:10px;}
+  .top .brand{font-size:1.1rem;white-space:nowrap;}
+  .preview-t > span{display:none;}
+  .top .backlink{display:none;}
+}
+@media (prefers-reduced-motion:reduce){ .trail{display:none;} }
+</style>
+</head>
+<body data-format="online">
+<header class="top">
+  <a class="brand" href="index.html"><img src="images/kampanela-logo-square.svg" alt=""><span>Keramika <em>Kampanela</em></span></a>
+  <a class="backlink" href="index.html#kontakt">Zpět na web</a>
+  <a class="iconbtn" href="index.html" aria-label="Zavřít">×</a>
+</header>
+
+<div class="wrap">
+  <section class="form">
+    <div class="intro">
+      <span class="kicker">Dárkový poukaz</span>
+      <h1>Darujte keramiku <em>z naší dílny</em></h1>
+      <p>Vyberte poukaz, napište pro koho je, vzkaz a od koho — hned uvidíte, jak bude vypadat.
+         Platí dva roky.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-t"><i>1</i><span>Vyberte poukaz</span></div>
+      <div class="variants" id="variants"></div>
+      <div class="config" id="config"></div>
+    </div>
+
+    <div class="step">
+      <div class="step-t"><i>2</i><span>Pro koho, nadpis a vzkaz</span></div>
+      <label for="fName">Věnováno (jméno obdarovaného)</label>
+      <input id="fName" maxlength="40" autocomplete="off" placeholder="Anna">
+      <label for="fTitle"><span>Nadpis na titulce</span><span class="count" id="titleCount"></span></label>
+      <input id="fTitle" maxlength="70" autocomplete="off">
+      <label for="fMsg"><span>Vzkaz uvnitř</span><span class="count" id="msgCount"></span></label>
+      <textarea id="fMsg" maxlength="420"></textarea>
+      <label for="fFrom">Od (nepovinné)</label>
+      <input id="fFrom" maxlength="40" autocomplete="off" placeholder="Od Terezy a Honzy">
+    </div>
+
+    <div class="step">
+      <div class="step-t"><i>3</i><span>Doručení</span></div>
+      <div class="delivery" id="delivery" hidden>
+        <button type="button" data-d="email" class="on"><b>PDF e-mailem</b><small>k vytištění doma</small></button>
+        <button type="button" data-d="post"><b>Vytištěný poštou</b><small>na ručním papíře</small></button>
+      </div>
+      <div class="online-opts" id="onlineWrap">
+        <p class="fine">Online poukaz je odkaz, který po zaplacení pošleme vám — a vy ho přepošlete
+          obdarovanému e-mailem nebo přes WhatsApp.</p>
+      </div>
+      <div id="postWrap" hidden>
+        <label for="fAddr">Doručovací adresa</label>
+        <textarea id="fAddr" style="min-height:58px"></textarea>
+      </div>
+      <label for="fBuyer">Vaše jméno</label>
+      <input id="fBuyer" autocomplete="name">
+    </div>
+
+    <div class="actions">
+      <a class="cta" id="btnOrder" href="#" target="_top">Objednat poukaz e-mailem</a>
+      <button type="button" class="cta ghost" id="btnCopy">Zkopírovat objednávku</button>
+    </div>
+    <p class="fine">Po odeslání vám pošleme platební údaje. Po zaplacení dostanete poukaz s vlastním číslem.</p>
+
+    <!-- jen pro majitele: ?admin -->
+    <div class="admin">
+      <div class="step-t" style="margin-bottom:4px"><span>Vydání poukazu (admin)</span></div>
+      <div class="row2">
+        <div><label for="fCode">Číslo poukazu</label><input id="fCode" autocomplete="off"></div>
+        <div><label for="fValid">Platí do</label><input id="fValid" autocomplete="off"></div>
+      </div>
+      <div class="actions">
+        <button type="button" class="cta" id="btnPrint">Tisk / uložit PDF (A4, přeložit napůl)</button>
+        <button type="button" class="cta ghost" id="btnCode">Nové číslo</button>
+      </div>
+      <label for="fLink">Odkaz na náhled poukazu (k odeslání po zaplacení)</label>
+      <input id="fLink" readonly>
+      <div class="actions" style="grid-template-columns:1fr 1fr;margin-top:8px">
+        <button type="button" class="cta ghost" id="btnLinkCopy">Zkopírovat odkaz</button>
+        <a class="cta ghost" id="btnLinkOpen" href="#" target="_blank" rel="noopener">Otevřít</a>
+      </div>
+      <p class="fine">V tiskovém okně zvolte „Uložit jako PDF“, velikost A4, okraje žádné.
+        Strana 1 = zadní strana a titulka, strana 2 = vnitřek.</p>
+    </div>
+  </section>
+
+  <aside class="preview">
+    <div class="preview-t">
+      <span>Náhled poukazu</span>
+      <div class="formats" id="formats" role="tablist">
+        <button type="button" data-f="online" class="on">Online</button>
+        <button type="button" data-f="print">Tisk / PDF</button>
+      </div>
+    </div>
+    <div class="views" id="views">
+      <button type="button" data-view="front" class="on">Titulka</button>
+      <button type="button" data-view="open">Uvnitř</button>
+      <button type="button" data-view="back">Zadní strana</button>
+    </div>
+    <div class="stage vc" id="stage">
+      <div class="scene" id="scene">
+        <div class="ground" id="ground"></div>
+        <div class="rig" id="rig">
+          <div class="card" id="card">
+            <div class="leaf">
+              <div class="face inner" id="face3"><div class="crease"></div><div class="shade" id="shade3"></div></div>
+              <div class="face outer" id="face0"><div class="shade"></div></div>
+            </div>
+            <div class="leaf" id="frontLeaf">
+              <div class="face front" id="face1"><div class="shade" id="shade1"></div></div>
+              <div class="face inside" id="face2"><div class="crease"></div><div class="shade" id="shade2"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <canvas class="trail" id="trail" aria-hidden="true"></canvas>
+      <p class="stage-hint" id="hint">Klepnutím poukaz otevřete</p>
+    </div>
+  </aside>
+</div>
+
+<!-- panely poukazu (do karty, při tisku do listů A4) -->
+<div hidden id="panelStore" class="vc">
+  <section class="panel back" id="panel0">
+    <div class="back-head">
+      <div>
+        <div class="label"><span data-p="bLabel"></span> <span class="no"><span data-p="bNo"></span> <span class="field short" id="f-no"></span></span></div>
+        <h3 data-p="bTitle"></h3>
+      </div>
+      <div class="mark-wrap"><img class="mark" src="images/kampanela-logo-square.svg" alt=""></div>
+    </div>
+    <div class="back-mid">
+      <div class="back-grid">
+        <div class="fields">
+          <div class="f"><span data-p="pro"></span><span class="field" id="f-pro"></span></div>
+          <div class="f"><span data-p="od"></span><span class="field" id="f-od"></span></div>
+        </div>
+        <div class="opts">
+          <div class="f"><span data-p="valid"></span><span class="field" id="f-platnost"></span></div>
+        </div>
+      </div>
+      <p class="back-note" id="backNote"></p>
+    </div>
+    <div class="back-foot">
+      <div class="how" data-p="how"></div>
+      <div class="qr">
+        <svg id="qr" aria-label="QR kód kampanela.cz"></svg>
+        <svg class="cap" viewBox="0 0 100 13" aria-hidden="true"><text x="0" y="10" textLength="100" lengthAdjust="spacing">KAMPANELA.CZ</text></svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel cover" id="panel1">
+    <div class="label" id="coverLabel"></div>
+    <div class="mid">
+      <h1 id="coverTitle"></h1>
+      <p class="value"><span class="vl">Hodnota</span><b id="coverValue"></b></p>
+    </div>
+  </section>
+
+  <section class="panel in msgpage" id="panel2">
+    <div class="col"><div class="msg" id="f-vzkaz"></div></div>
+  </section>
+
+  <section class="panel in" id="panel3">
+    <div class="col">
+      <div class="label" data-p="pLabel"></div>
+      <h2 data-p="pTitle"></h2>
+      <p class="lead" data-p="pLead"></p>
+      <dl class="spec" data-p="pSpec"></dl>
+    </div>
+  </section>
+</div>
+
+<div id="print" class="vc">
+  <div class="sheet"><div class="slot upper rot" id="slot0"></div><div class="slot lower" id="slot1"></div></div>
+  <div class="sheet"><div class="slot upper" id="slot2"></div><div class="slot lower" id="slot3"></div><i class="foldmark l"></i><i class="foldmark r"></i></div>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e}
+const lerp=(a,b,t)=>a+(b-a)*t;
+
+/* ===================== data a texty ===================== */
+const EMAIL='keramika.kampanela@seznam.cz';
+const VARIANTS=['narozeniny','svatba','start','vybaveni'];
+const BASE={narozeniny:1000,svatba:3000,start:15000,vybaveni:50000};
+const AMOUNT_LIMITS=[500,100000],AMOUNT_STEP=500;
+const num=(n)=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');
+const money=(n)=>`${num(n)} Kč`;
+
+const T={
+  v:{
+    narozeniny:{
+      occ:'K narozeninám', head:'Pro radost z každého dne',
+      greet:'Všechno nejlepší!',
+      text:'Vyber si něco krásného z Kampanela Keramiky, co ti bude dělat radost každý den.',
+      note:'Poukaz lze uplatnit na libovolné produkty z nabídky Kampanela Keramika.'
+    },
+    svatba:{
+      occ:'Ke svatbě', head:'Na společnou cestu životem',
+      greet:'',
+      text:'Novomanželům s přáním, ať je váš společný domov plný tepla, lásky a krásných okamžiků. Tento poukaz je malým darem do začátku vašeho společného příběhu.',
+      note:'Poukaz lze uplatnit na libovolné produkty z nabídky Kampanela Keramika.'
+    },
+    start:{
+      occ:'Do startu podnikání', head:'Do startu vašeho projektu',
+      greet:'',
+      text:'Ať se vám daří proměňovat vaše nápady ve skutečnost. S odvahou, radostí a třeba i hrníčkem z dílny Kampanela v ruce. Přejeme vám mnoho úspěchů, krásných momentů a spokojených zákazníků.',
+      note:'Poukaz lze uplatnit na libovolné produkty z nabídky Kampanela Keramika.'
+    },
+    vybaveni:{
+      occ:'Kompletní vybavení', head:'Kompletní vybavení pro váš prostor',
+      greet:'',
+      text:'Dar, který promění vizi ve skutečnost. Tento poukaz otevírá dveře k ucelenému keramickému vybavení vytvořenému přímo pro váš interiér, kavárnu, restauraci nebo domov. Od prvního návrhu až po poslední detail.',
+      note:'Poukaz zahrnuje individuální konzultaci, návrh na míru a výrobu keramického vybavení.'
+    }
+  }
+};
+/* výchozí vzkaz uvnitř = přání + text z nabídky */
+const defMsg=(k)=>{const v=T.v[k];return v.greet?`${v.greet}\n\n${v.text}`:v.text;};
+
+const P={
+  bLabel:'Dárkový poukaz', bNo:'č.', bTitle:'Kampanela Keramika',
+  pro:'Věnováno', od:'Od', valid:'Platí do',
+  validDef:`31. 12. ${new Date().getFullYear()+2}`,
+  qr:'https://kampanela.cz',
+  sample:'VZOR',
+  how:'<b>Jak poukaz uplatnit</b>Napište nebo zavolejte — domluvíme se na tvarech, barvách i termínu.<br><span class="c">keramika.kampanela@seznam.cz</span> · <span class="c">+ 420 777 660 442</span><br>Na hrnčířských trzích a jarmarcích',
+  pLabel:'Kolekce',
+  pTitle:'Z čeho <em>si vybrat</em>',
+  pLead:'Poukaz lze uplatnit na cokoli z kolekce — i na zakázku podle vlastní představy.',
+  pSpec:'<div><dt>Snídaňový a kávový set</dt><dd>Hrnky, podšálky a talíře v jednom dekoru.</dd></div><div><dt>Francouzská máslenka</dt><dd>Máslo zůstává měkké i mimo lednici.</dd></div><div><dt>Prkénko s úchyty</dt><dd>Keramické servírovací prkénko pro sýry i pečivo.</dd></div><div><dt>Na zakázku</dt><dd>Sady na míru a vlastní barvy.</dd></div>'
+};
+
+/* ===================== natištěný vzor na poukazu ===================== */
+/* Stejná kytička jako v animaci, jen tiše a napevno – v okrajích, nikdy pod textem.
+   [x, y, velikost v mm, natočení ve stupních] */
+const PETALS={
+  panel1:[[17,27,6.4,12],[24,41,4.6,-30],[13,53,3.6,54],[192,100,5.6,-14],[187,114,4.2,38],[197,130,3.2,-52]],
+  panel2:[[14,34,5.4,-18],[22,48,3.8,42],[193,108,4.6,24]],
+  panel3:[[195,40,5.2,30],[186,55,3.6,-24],[15,112,4.4,-48]],
+  panel0:[[9,96,4.4,20],[197,47,4.6,16],[194,86,4.2,28],[184,98,3,-34]]
+};
+function flowerSvg(size,rot){
+  const r=12,pet=[0,1,2,3,4].map((k)=>{
+    const a=(-90+k*72)*Math.PI/180;
+    return `<circle cx="${(r+Math.cos(a)*r*.38*2).toFixed(2)}" cy="${(r+Math.sin(a)*r*.38*2).toFixed(2)}" r="${(r*.32).toFixed(2)}"/>`;
+  }).join('');
+  return `<svg width="${size}mm" height="${size}mm" viewBox="0 0 24 24" aria-hidden="true"`
+    +` style="transform:rotate(${rot}deg)">`
+    +`<g fill="#556994">${pet}</g><circle cx="12" cy="12" r="${(r*.44).toFixed(2)}" fill="#d9b668"/></svg>`;
+}
+function drawPetals(){
+  PANEL.forEach((p)=>{
+    const list=PETALS[p.id]||[];
+    const layer=document.createElement('div');
+    layer.className='petals';
+    layer.innerHTML=list.map(([x,y,sz,rot])=>
+      `<span style="position:absolute;left:${x}mm;top:${y}mm;transform:translate(-50%,-50%)">${flowerSvg(sz,rot)}</span>`
+    ).join('');
+    p.prepend(layer);   // pod text
+  });
+}
+
+const $=(id)=>document.getElementById(id);
+const params=new URLSearchParams(location.search);
+const isAdmin=params.has('admin');
+document.body.classList.toggle('is-admin',isAdmin);
+
+const state={
+  variant:VARIANTS.includes(params.get('v'))?params.get('v'):'narozeniny',
+  amount:0, format:params.get('f')==='print'?'print':'online', delivery:'email'
+};
+state.amount=BASE[state.variant];
+
+/* aktuální poukaz: [příležitost, nadpis, cena] */
+function current(){
+  const v=T.v[state.variant];
+  return [v.occ,v.head,money(state.amount)];
+}
+
+/* ===================== QR ===================== */
+function drawQRFor(url){
+  const svg=$('qr');svg.innerHTML='';
+  const qr=qrcode(0,'M');qr.addData(url);qr.make();
+  const n=qr.getModuleCount();
+  svg.setAttribute('viewBox',`0 0 ${n} ${n}`);svg.setAttribute('shape-rendering','crispEdges');
+  let d='';
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(qr.isDark(r,c))d+=`M${c} ${r}h1v1h-1z`;
+  el('path',{d},svg);
+}
+/* čeština: jednopísmenná slova na konci řádku → nezlomitelná mezera */
+function nbsp(root){
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  for(let n;(n=w.nextNode());)n.nodeValue=n.nodeValue.replace(/(^|[\s(])([ksvzouaiKSVZOUAI]) /g,'$1$2 ');
+}
+
+/* ===================== texty a údaje na poukazu ===================== */
+let msgTouched=false,validTouched=false,titleTouched=false;
+function fitMsg(){
+  const m=$('f-vzkaz');let pt=15;m.style.fontSize=pt+'pt';
+  while(m.scrollHeight>m.clientHeight+1&&pt>7){pt-=.25;m.style.fontSize=pt+'pt';}
+}
+function renderPanels(){
+  const v=T.v[state.variant],cur=current();
+  document.querySelectorAll('[data-p]').forEach((e)=>{const t=P[e.dataset.p];if(typeof t==='string')e.innerHTML=t;});
+  $('coverLabel').textContent=`Dárkový poukaz · ${v.occ}`;
+  $('coverValue').textContent=cur[2];
+  $('backNote').textContent=v.note;
+  document.querySelectorAll('.vc .sample').forEach((s)=>{s.textContent=P.sample;});
+  drawQRFor(P.qr);
+  PANEL.forEach(nbsp);
+}
+function renderFields(){
+  $('f-pro').textContent=$('fName').value.trim();
+  $('f-od').textContent=$('fFrom').value.trim();
+  $('f-vzkaz').textContent=$('fMsg').value.trim();nbsp($('f-vzkaz'));
+  $('coverTitle').textContent=$('fTitle').value.trim()||T.v[state.variant].head;nbsp($('coverTitle'));
+  $('titleCount').textContent=`${$('fTitle').value.length}/70`;
+  $('f-no').textContent=isAdmin?$('fCode').value.trim():'';
+  if(!validTouched)$('fValid').value=P.validDef;
+  $('f-platnost').textContent=$('fValid').value.trim();
+  $('msgCount').textContent=`${$('fMsg').value.length}/420`;
+  fitMsg();
+}
+
+/* ===================== formulář ===================== */
+function order(){
+  const cur=current();
+  const del=state.format==='online'
+    ? 'online poukaz (odkaz k přeposlání)'
+    : state.delivery==='post'
+      ? `vytištěný poštou — ${$('fAddr').value.trim().replace(/\n+/g,', ')||'adresa doplněna v odpovědi'}`
+      : 'PDF e-mailem';
+  const body=[
+    'Objednávka dárkového poukazu','',
+    `Varianta: ${cur[0]}`,
+    `Nadpis na titulce: ${$('fTitle').value.trim()||cur[1]}`,
+    `Hodnota: ${cur[2]}`,
+    `Doručení: ${del}`,'',
+    `Věnováno: ${$('fName').value.trim()||'—'}`,
+    `Od: ${$('fFrom').value.trim()||'—'}`,
+    'Vzkaz uvnitř:',$('fMsg').value.trim(),'',
+    `Objednává: ${$('fBuyer').value.trim()||'—'}`
+  ].join('\n');
+  return {subject:`Dárkový poukaz ${cur[2]} — ${cur[0]}`,body};
+}
+function stepper(key,label,val,[min,max]){
+  return `<div class="stepper"><span>${label}</span><div>`
+    +`<button type="button" data-k="${key}" data-d="-1"${val<=min?' disabled':''}>−</button>`
+    +`<input id="fAmount" inputmode="numeric" value="${num(val)}" aria-label="${label}">`
+    +`<button type="button" data-k="${key}" data-d="1"${val>=max?' disabled':''}>+</button></div></div>`;
+}
+function renderConfig(){
+  $('config').innerHTML=stepper('amount','Hodnota poukazu',state.amount,AMOUNT_LIMITS)
+    +`<div class="total"><span>Cena poukazu</span><strong>${current()[2]}</strong></div>`;
+}
+function renderTexts(){
+  if(!msgTouched)$('fMsg').value=defMsg(state.variant);
+  if(!titleTouched)$('fTitle').value=T.v[state.variant].head;
+  $('fTitle').placeholder=T.v[state.variant].head;
+  $('variants').innerHTML=VARIANTS.map((k)=>{
+    const v=T.v[k];
+    return `<button type="button" class="variant${k===state.variant?' on':''}" data-v="${k}">`
+      +`<b>${v.occ}</b><small>${v.head}</small>`
+      +`<strong><em style="font-size:.7em;font-style:normal">od</em> ${money(BASE[k])}</strong></button>`;
+  }).join('');
+  renderConfig();
+}
+
+/* ===================== odkaz na náhled ===================== */
+function shareUrl(){
+  const d={v:state.variant,a:state.amount,t:$('fName').value.trim(),f:$('fFrom').value.trim(),
+    m:$('fMsg').value.trim(),h:$('fTitle').value.trim()!==T.v[state.variant].head?$('fTitle').value.trim():'',
+    no:isAdmin?$('fCode').value.trim():'',val:$('fValid').value.trim()};
+  const b=btoa(unescape(encodeURIComponent(JSON.stringify(d)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return `${location.origin}${location.pathname}?d=${b}`;
+}
+function loadShared(){
+  const d=params.get('d');if(!d)return false;
+  try{
+    const o=JSON.parse(decodeURIComponent(escape(atob(d.replace(/-/g,'+').replace(/_/g,'/')))));
+    if(VARIANTS.includes(o.v))state.variant=o.v;
+    if(o.a)state.amount=+o.a;
+    $('fName').value=o.t||'';$('fFrom').value=o.f||'';
+    if(o.m){$('fMsg').value=o.m;msgTouched=true;}
+    if(o.h){$('fTitle').value=o.h;titleTouched=true;}
+    if(o.no)$('fCode').value=o.no;
+    if(o.val){$('fValid').value=o.val;validTouched=true;}
+    return true;
+  }catch(e){return false}
+}
+function renderVoucher(){
+  renderFields();
+  const o=order();
+  $('btnOrder').href=`mailto:${EMAIL}?subject=${encodeURIComponent(o.subject)}&body=${encodeURIComponent(o.body)}`;
+  const u=shareUrl();$('fLink').value=u;$('btnLinkOpen').href=u;
+}
+function renderAll(){renderTexts();renderPanels();renderVoucher();}
+
+function newCode(){
+  const abc='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let c='';for(let i=0;i<4;i++)c+=abc[Math.floor(Math.random()*abc.length)];
+  $('fCode').value=`KMP-${new Date().getFullYear()}-${c}`;
+}
+
+$('fMsg').addEventListener('input',()=>{msgTouched=true;});
+$('fTitle').addEventListener('input',()=>{titleTouched=true;});
+$('fValid').addEventListener('input',()=>{validTouched=true;});
+document.addEventListener('input',(e)=>{
+  if(e.target.id==='fAmount'){
+    const v=parseInt(e.target.value.replace(/\s/g,''),10);
+    if(!isNaN(v)){state.amount=v;$('config').querySelector('.total strong').textContent=money(v);renderPanels();}
+    renderVoucher();return;
+  }
+  if(e.target.closest('.form'))renderVoucher();
+});
+document.addEventListener('change',(e)=>{
+  if(e.target.id!=='fAmount')return;
+  const v=parseInt(e.target.value.replace(/\s/g,''),10)||AMOUNT_LIMITS[0];
+  state.amount=Math.min(AMOUNT_LIMITS[1],Math.max(AMOUNT_LIMITS[0],Math.round(v/100)*100));
+  renderConfig();renderPanels();renderVoucher();
+});
+$('variants').addEventListener('click',(e)=>{
+  const b=e.target.closest('[data-v]');if(!b)return;
+  state.variant=b.dataset.v;state.amount=BASE[state.variant];
+  renderAll();
+});
+$('config').addEventListener('click',(e)=>{
+  const b=e.target.closest('[data-d]');if(!b)return;
+  const next=state.amount+Number(b.dataset.d)*AMOUNT_STEP;
+  state.amount=Math.min(AMOUNT_LIMITS[1],Math.max(AMOUNT_LIMITS[0],next));
+  renderConfig();renderPanels();renderVoucher();
+});
+$('delivery').addEventListener('click',(e)=>{
+  const b=e.target.closest('[data-d]');if(!b)return;
+  state.delivery=b.dataset.d;syncDelivery();renderVoucher();
+});
+function syncDelivery(){
+  document.querySelectorAll('#delivery button').forEach((b)=>b.classList.toggle('on',b.dataset.d===state.delivery&&state.format!=='online'));
+  $('postWrap').hidden=state.delivery!=='post'||state.format==='online';
+  $('onlineWrap').hidden=state.format!=='online';
+  $('delivery').hidden=state.format==='online';
+  document.querySelectorAll('#formats button').forEach((b)=>b.classList.toggle('on',b.dataset.f===state.format));
+  document.body.dataset.format=state.format;      // animace jen online, natištěný vzor jen u tisku
+  if(window.setTrail)setTrail(state.format==='online');
+}
+$('formats').addEventListener('click',(e)=>{const b=e.target.closest('[data-f]');if(!b)return;state.format=b.dataset.f;syncDelivery();renderVoucher();});
+$('btnPrint').addEventListener('click',()=>window.print());
+$('btnCode').addEventListener('click',()=>{newCode();renderVoucher();});
+$('btnLinkCopy').addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText($('fLink').value);}catch(e){}
+  const b=$('btnLinkCopy');b.textContent='Zkopírováno ✓';setTimeout(()=>{b.textContent='Zkopírovat odkaz';},1800);
+});
+$('btnCopy').addEventListener('click',async()=>{
+  const o=order();
+  try{await navigator.clipboard.writeText(`${o.subject}\n\n${o.body}`);}catch(e){}
+  const b=$('btnCopy');b.textContent='Zkopírováno ✓';setTimeout(()=>{b.textContent='Zkopírovat objednávku';},1800);
+});
+
+/* ===================== panely → 3D karta / tisk ===================== */
+const PANEL=[0,1,2,3].map((i)=>$('panel'+i));
+if(!isAdmin)PANEL.forEach((p)=>{const s=document.createElement('div');s.className='sample';p.appendChild(s);});
+function panelsToCard(){PANEL.forEach((p,i)=>$('face'+i).prepend(p));}
+function panelsToPrint(){PANEL.forEach((p,i)=>$('slot'+i).appendChild(p));}
+drawPetals();
+panelsToCard();
+window.addEventListener('beforeprint',()=>{panelsToPrint();fitMsg();});
+window.addEventListener('afterprint',()=>{panelsToCard();fitMsg();render();});
+
+/* ===================== 3D karta: otevírání a otáčení ===================== */
+const stage=$('stage');
+const MM=96/25.4,W=210*MM,H=148.5*MM;
+let angle=0,turn=0,intro=1;
+const tilt={x:0,y:0,tx:0,ty:0},anim={};
+const ease=(u)=>u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2;
+const easeOut=(u)=>1-Math.pow(1-u,3);
+function render(){
+  const p=angle/180,sw=stage.clientWidth,sh=stage.clientHeight-40;
+  const kc=Math.min(sw*.86/W,sh*.82/H),ko=Math.min(sw*.9/W,sh*.94/(2*H));
+  const k=lerp(kc,ko,p),y=-(H*k/2)*(1-p);
+  const tp=turn/180;
+  const lift=Math.sin(p*Math.PI)*26+Math.sin(tp*Math.PI)*40;
+  const rx=tilt.y+Math.sin(tp*Math.PI)*5+(1-intro)*18;
+  const ry=turn+tilt.x;
+  $('rig').style.transform=`translateY(${(y+(1-intro)*70).toFixed(1)}px) translateZ(${lift.toFixed(1)}px) scale(${k.toFixed(4)}) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+  $('scene').style.opacity=intro.toFixed(3);
+  $('frontLeaf').style.transform=`rotateX(${angle}deg) translateZ(1mm)`;
+  const s=Math.sin(angle*Math.PI/180);
+  $('shade1').style.opacity=(s*.32).toFixed(3);
+  $('shade2').style.opacity=(s*.28).toFixed(3);
+  $('shade3').style.opacity=((1-p)*.55).toFixed(3);
+  const g=$('ground');
+  g.style.opacity=(Math.max(.25,1-lift/70)*intro).toFixed(2);
+  g.style.transform=`translateY(${(y+(H-8*MM)*k+(1-intro)*70).toFixed(1)}px) scale(${(k*(1+lift/300)*(1-.25*Math.abs(Math.sin(tp*Math.PI)))).toFixed(4)}, ${(k*(1+lift/160)).toFixed(4)})`;
+  const view=turn>90?'back':angle>90?'open':'front';
+  document.querySelectorAll('#views button').forEach((b)=>b.classList.toggle('on',b.dataset.view===view));
+  $('hint').textContent=view==='open'?'Klepnutím poukaz zavřete':view==='back'?'Zadní strana poukazu':'Klepnutím poukaz otevřete';
+}
+function tween(name,from,to,ms,set,fn=ease){
+  cancelAnimationFrame(anim[name]);
+  const t0=performance.now();
+  const step=(now)=>{
+    const u=Math.min(1,(now-t0)/ms);
+    set(from+(to-from)*fn(u));
+    if(u<1)anim[name]=requestAnimationFrame(step);else anim[name]=0;
+    render();
+  };
+  anim[name]=requestAnimationFrame(step);
+}
+const openTo=(a)=>tween('a',angle,a,1150,(v)=>{angle=v;});
+const turnTo=(t)=>tween('t',turn,t,1000,(v)=>{turn=v;});
+function setView(v){
+  if(v==='front'){if(turn>0)turnTo(0);if(angle>0)openTo(0);}
+  if(v==='open'){if(turn>0)turnTo(0);openTo(180);}
+  if(v==='back'){if(angle>0)openTo(0);turnTo(180);}
+}
+$('views').addEventListener('click',(e)=>{const b=e.target.closest('[data-view]');if(b)setView(b.dataset.view);});
+$('card').addEventListener('click',()=>{if(turn>90)turnTo(0);else openTo(angle>90?0:180);});
+/* jemná paralaxa při pohybu myší */
+let tiltRaf=0;
+function tiltLoop(){
+  cancelAnimationFrame(tiltRaf);
+  const step=()=>{
+    tilt.x+=(tilt.tx-tilt.x)*.09;tilt.y+=(tilt.ty-tilt.y)*.09;render();
+    if(Math.abs(tilt.tx-tilt.x)+Math.abs(tilt.ty-tilt.y)>.01)tiltRaf=requestAnimationFrame(step);
+  };
+  tiltRaf=requestAnimationFrame(step);
+}
+stage.addEventListener('pointermove',(ev)=>{
+  if(ev.pointerType==='touch')return;
+  const r=stage.getBoundingClientRect();
+  tilt.tx=((ev.clientX-r.left)/r.width-.5)*8;
+  tilt.ty=-((ev.clientY-r.top)/r.height-.5)*6;
+  tiltLoop();
+});
+stage.addEventListener('pointerleave',()=>{tilt.tx=tilt.ty=0;tiltLoop();});
+new ResizeObserver(render).observe(stage);
+
+/* ===================== vzor: kytičky za kurzorem (jen online) =====================
+   Totéž co na úvodní stránce (app.js → initTrail). Nastavení se čte z data.js → trail,
+   takže co se v editoru změní u dekoru, platí i tady. Hodnoty níže jsou jen záloha.   */
+const TRAIL=(typeof DEFAULT_DATA!=='undefined'&&DEFAULT_DATA.trail)||{
+  enabled:true, maxOpacity:0.65, fadeSpeed:0.006, spawnDistance:50, maxParticles:10,
+  size:12, driftSpeed:0.12, rotationSpeed:0.008, glitter:false, glitterOpacity:0.25,
+  blue:'#556994', yellow:'#d9b668'
+};
+(function initTrail(){
+  const canvas=$('trail');
+  if(!canvas||!TRAIL.enabled)return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+
+  const c=TRAIL;
+  const ctx=canvas.getContext('2d');
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  let particles=[],lastX=null,lastY=null,raf=0,on=true;
+
+  function resize(){
+    canvas.width=stage.offsetWidth*dpr;
+    canvas.height=stage.offsetHeight*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  resize();
+  new ResizeObserver(resize).observe(stage);
+
+  function drawFlower(x,y,size,rotation,opacity){
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(rotation);
+    ctx.globalAlpha=Math.max(0,opacity);
+    ctx.fillStyle=c.blue;
+    for(let i=0;i<5;i++){
+      const a=(i*2*Math.PI)/5-Math.PI/2;
+      ctx.beginPath();
+      ctx.arc(Math.cos(a)*size*0.38,Math.sin(a)*size*0.38,size*0.16,0,Math.PI*2);
+      ctx.fill();
+    }
+    ctx.fillStyle=c.yellow;
+    ctx.beginPath();
+    ctx.arc(0,0,size*0.22,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function spawn(x,y,glitter){
+    return {
+      x:x+(glitter?(Math.random()-0.5)*20:0),
+      y:y+(glitter?(Math.random()-0.5)*20:0),
+      glitter,
+      life:glitter?c.glitterOpacity:c.maxOpacity,
+      rotation:Math.random()*Math.PI*2,
+      rotSpeed:(Math.random()-0.5)*c.rotationSpeed,
+      size:glitter?Math.random()*2+1:c.size
+    };
+  }
+
+  function onMove(e){
+    if(!on)return;
+    const r=stage.getBoundingClientRect();
+    const x=e.clientX-r.left,y=e.clientY-r.top;
+    if(lastX===null){lastX=x;lastY=y;return;}
+    if(Math.hypot(x-lastX,y-lastY)>c.spawnDistance&&particles.length<c.maxParticles){
+      particles.push(spawn(x,y,false));
+      if(c.glitter&&Math.random()>0.5)particles.push(spawn(x,y,true));
+      lastX=x;lastY=y;
+      if(!raf)raf=requestAnimationFrame(frame);
+    }
+  }
+  function onLeave(){lastX=lastY=null;}
+
+  function frame(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=particles.length-1;i>=0;i--){
+      const p=particles[i];
+      p.y-=c.driftSpeed;
+      p.rotation+=p.rotSpeed;
+      p.life-=c.fadeSpeed;
+      if(p.life<=0){particles.splice(i,1);continue;}
+      if(p.glitter){
+        ctx.save();ctx.globalAlpha=p.life;ctx.fillStyle=c.yellow;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill();ctx.restore();
+      }else{
+        drawFlower(p.x,p.y,p.size,p.rotation,p.life);
+      }
+    }
+    raf=particles.length?requestAnimationFrame(frame):0;   // bez částic smyčka usne
+  }
+
+  stage.addEventListener('mousemove',onMove);
+  stage.addEventListener('mouseleave',onLeave);
+
+  window.setTrail=(v)=>{
+    on=v;canvas.hidden=!v;
+    if(!v){particles=[];lastX=lastY=null;cancelAnimationFrame(raf);raf=0;ctx.clearRect(0,0,canvas.width,canvas.height);}
+  };
+})();
+
+/* ===================== start ===================== */
+newCode();
+loadShared();
+syncDelivery();
+renderAll();
+intro=0;tween('i',0,1,1000,(v)=>{intro=v;},easeOut);
+if(document.fonts)document.fonts.ready.then(()=>{fitMsg();render();});
+</script>
+</body>
+</html>

@@ -122,6 +122,7 @@ section.tight {
   font-size: var(--nav-size, 12.5px);
   letter-spacing: var(--ls-nav);
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--muted);
   padding: 6px 0;
   position: relative;

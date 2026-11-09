@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------
    Keramika Kampanela — obsah a nastavení webu
-   Naposledy uloženo z editoru: 01.09.2026 12:22
+   Naposledy uloženo z editoru: 09.11.2026 14:39
 ----------------------------------------------------------------*/
 
 const DEFAULT_DATA = {
@@ -88,6 +88,10 @@ const DEFAULT_DATA = {
       {
         "label": "Kontakt",
         "target": "kontakt"
+      },
+      {
+        "label": "Poukaz",
+        "target": "poukaz.html"
       }
     ]
   },
@@ -306,7 +310,7 @@ const DEFAULT_DATA = {
     "show": true,
     "eyebrow": "Vybíráme",
     "reverse": false,
-    "active": 0,
+    "active": 3,
     "items": [
       {
         "title": "Snídaňový / kávový keramický set",
