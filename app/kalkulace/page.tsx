@@ -2632,8 +2632,11 @@ function InvoiceModal({ invoice, company, onPayment, close }) {
           <Logo logo={supplier.logo} name={supplier.name} subtitle={supplier.subtitle} markClass="h-16" titleClass="text-2xl" />
           <div className="text-right">
             <h1 className="text-3xl font-black uppercase leading-none tracking-tight" style={{ color: BRAND }}>Faktura</h1>
-            <div className="mt-1 text-sm font-semibold uppercase tracking-wide text-[var(--muted)]">Daňový doklad č.</div>
-            <div data-doc-number className="text-2xl font-black tabular-nums">{invoice.number}</div>
+            {/* číslo drží řádek s popiskem, ať se v tisku nehoupe pod ním */}
+            <div className="mt-1 flex items-baseline justify-end gap-2 text-sm font-semibold uppercase tracking-wide text-[var(--muted)]">
+              <span>Daňový doklad č.</span>
+              <span data-doc-number className="font-black tabular-nums text-[var(--text)]">{invoice.number}</span>
+            </div>
           </div>
         </header>
         <div className="mt-3 h-1 rounded-full" style={{ backgroundColor: BRAND }} />
