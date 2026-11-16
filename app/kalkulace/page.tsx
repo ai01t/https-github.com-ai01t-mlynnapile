@@ -44,6 +44,7 @@ import {
   fixDoubleMaterialReserve,
   hasRounding,
   inferOtherOpening,
+  isBadNumber,
   n,
   normalizeOpening,
   openingDefaults,
@@ -74,6 +75,14 @@ import { track } from "@/lib/analytics";
 import { buildAiMarkdown, buildDrawingSvg } from "./aiExport";
 import { BRAND, Logo } from "./Logo";
 import { defaultDesign, designStyle, DOC_STYLE, readLogoFile, SPACING_CSS, defaultRooms, flattenRooms, makeRoom, roomsFromData, TRASH_TTL_DAYS, setStorageNamespace, windowPanes, WINDOW_PANE_PRESETS } from "./core";
+
+// Faktura si nese údaje dodavatele z doby vystavení. Nahrané logo (data-URL, stovky kB)
+// do něj nepatří – po pár desítkách faktur by zaplnilo úložiště prohlížeče.
+const supplierSnapshot = (company) => {
+  if (!String(company?.logo ?? "").startsWith("data:")) return company;
+  const { logo, ...rest } = company;
+  return rest;
+};
 
 const emptyMeta = { id: null, number: null, name: "", validUntil: "", status: "draft" };
 
@@ -317,13 +326,16 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     }
   };
 
+  // Plné úložiště prohlížeče zápis odmítne – bez upozornění by doklad po zavření stránky zmizel.
+  const storageFull = (what) =>
+    window.alert(`${what} se nepodařilo uložit – úložiště prohlížeče je plné.\n\nNezavírej stránku: udělej „Export zálohy" (Dokumenty → Nabídky) a smaž staré nabídky, pak akci zopakuj.`);
   const persistQuotes = (next) => {
     setQuotes(next);
-    storage.saveQuotes(next);
+    if (!storage.saveQuotes(next)) storageFull("Nabídky");
   };
   const persistInvoices = (next) => {
     setInvoices(next);
-    storage.saveInvoices(next);
+    if (!storage.saveInvoices(next)) storageFull("Faktury");
   };
 
   const flash = (text) => {
@@ -396,6 +408,8 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
     const copy = {
       ...quote,
       id: uid(),
+      // vlastní číslo z řady – dvě nabídky se stejným číslem by se pletly
+      number: storage.nextQuoteNumber(),
       name: `${quote.name} (kopie)`,
       status: "draft",
       createdAt: new Date().toISOString(),
@@ -480,6 +494,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
         const mergedInvoices = [...incomingInvoices.filter((invoice) => !invoices.some((item) => item.id === invoice.id)), ...invoices];
         persistQuotes(mergedQuotes);
         persistInvoices(mergedInvoices);
+        storage.syncSequences(mergedInvoices, mergedQuotes);
         flash(`Import: +${mergedQuotes.length - quotes.length} nabídek, +${mergedInvoices.length - invoices.length} faktur`);
       } catch {
         window.alert("Soubor se nepodařilo načíst – není to platná záloha JSON.");
@@ -491,12 +506,20 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
 
   // ---------- faktury ----------
 
-  const askInvoiceFromQuote = (quote) =>
+  const askInvoiceFromQuote = (quote) => {
+    const notes = [];
+    const already = invoices.filter((invoice) => invoice.quoteId === quote.id);
+    if (already.length) notes.push(`Pozor: z této nabídky už je faktura č. ${already.map((invoice) => invoice.number).join(", ")}. Vznikne další.`);
+    // faktura se počítá znovu z dat nabídky; starší nabídka může vyjít jinak, než má v seznamu
+    const fresh = quote.manual ? quote.total : buildCalculation(quote.data).subtotal;
+    if (Math.abs(n(fresh) - n(quote.total)) >= 1) notes.push(`Nabídka je uložená na ${czk(quote.total)}, faktura vyjde na ${czk(fresh)} (od uložení se změnil výpočet).`);
     setConfirmAsk({
       title: `Vystavit fakturu z nabídky „${quote.name}“?`,
+      text: notes.join(" ") || undefined,
       label: "Vystavit fakturu",
       action: () => createInvoiceFromQuote(quote),
     });
+  };
 
   const createInvoiceFromQuote = (quote, payment = "transfer") => {
     // ruční nabídka přenese své řádky 1:1, kalkulovaná projde výpočtem
@@ -508,14 +531,14 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       quoteName: quote.name,
       customer: quote.customer ?? defaultCustomer,
       items: quote.manual
-        ? quote.items.map((row) => ({ name: row.name, unit: row.unit || "kpl", qty: n(row.qty), price: n(row.price), total: n(row.qty) * n(row.price) }))
+        ? quote.items.map((row) => ({ name: row.name, unit: row.unit || "kpl", qty: round2(row.qty), price: n(row.price), total: round2(round2(row.qty) * n(row.price)) }))
         : buildInvoiceItems(quoteCalc, quote.data.settings),
       total: quote.manual ? quote.total : quoteCalc.subtotal,
       issueDate: todayIso(),
       supplyDate: todayIso(),
       dueDate: addDaysIso(company.dueDays),
       payment,
-      supplier: company,
+      supplier: supplierSnapshot(company),
       paid: false,
       createdAt: new Date().toISOString(),
     };
@@ -571,7 +594,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       supplyDate: todayIso(),
       dueDate: addDaysIso(company.dueDays),
       payment,
-      supplier: company,
+      supplier: supplierSnapshot(company),
       paid: false,
       createdAt: new Date().toISOString(),
     };
@@ -626,7 +649,7 @@ export default function KalkulacePage({ presetCompany, storageNamespace }: { pre
       supplyDate,
       dueDate,
       payment: payment ?? "transfer",
-      supplier: company,
+      supplier: supplierSnapshot(company),
       paid: false,
       createdAt: new Date().toISOString(),
     };
@@ -2110,7 +2133,10 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
   const isQuote = kind === "quote";
   const [number, setNumber] = useState(() => (kind === "quote" ? "" : storage.peekInvoiceNumber()));
   const [customer, setCustomer] = useState(initial?.customer ?? defaultCustomer);
-  const [items, setItems] = useState(initial?.items?.length ? initial.items : [emptyRow(), emptyRow(), emptyRow()]);
+  const [items, setItems] = useState(() => {
+    const saved = (initial?.items ?? []).filter((row) => row.id !== "rounding");
+    return saved.length ? saved : [emptyRow(), emptyRow(), emptyRow()];
+  });
   const [validUntil, setValidUntil] = useState(initial?.validUntil ?? addDaysIso(company.validityDays));
   const [issueDate, setIssueDate] = useState(todayIso());
   const [supplyDate, setSupplyDate] = useState(todayIso());
@@ -2152,6 +2178,16 @@ function ManualDocModal({ kind, initial, company, numberTaken, onSubmit, onSwitc
     }
     if (numberIssue) {
       window.alert(numberIssue);
+      return;
+    }
+    // „250 Kč" se přečte, ale „dvě" nebo „12x5" by se tiše počítalo jako nula
+    const bad = filled.find((row) => isBadNumber(row.qty) || isBadNumber(row.price));
+    if (bad) {
+      window.alert(`Řádek „${bad.name || "bez názvu"}“ má v množství nebo ceně něco, co není číslo. Oprav to, jinak by se počítal jako nula.`);
+      return;
+    }
+    if (!isQuote && dueDate < issueDate) {
+      window.alert("Splatnost je dřív než datum vystavení – zkontroluj data.");
       return;
     }
     onSubmit({ customer, items: filled, validUntil, issueDate, supplyDate, dueDate, number });
@@ -2577,7 +2613,9 @@ function ManualQuoteDoc({ number, customer, items, total, validUntil, company })
 // Řádky ručního dokladu: přesné násobky a na konci zbytek do celých Kč, aby
 // součet položek dal přesně fakturovanou částku (a tu částku nese i QR).
 function manualDocRows(items) {
-  const rows = items.map((row) => ({
+  // uložený doklad si řádek zaokrouhlení nese s sebou; při úpravě by se sečetl
+  // se starou hodnotou a přibyl by druhý – proto ho ze vstupu vyřazujeme
+  const rows = items.filter((row) => row.id !== "rounding").map((row) => ({
     id: row.id,
     name: row.name,
     unit: row.unit || "kpl",

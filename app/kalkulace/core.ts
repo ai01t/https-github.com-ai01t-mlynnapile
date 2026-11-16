@@ -245,11 +245,25 @@ export const statusInfo = (id: string) => QUOTE_STATUSES.find((s) => s.id === id
 // ---------- pomocné funkce ----------
 
 export const uid = () => `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-export const n = (value: any) => {
+// Čtení čísla tak, jak ho lidé píšou: „3 500", „16,55", „250 Kč", „1.234,50".
+// Co se přečíst nedá, vrací NaN – n() z toho dělá nulu, formuláře se ptají isBadNumber().
+const parseNumber = (value: any) => {
+  if (typeof value === "number") return value;
   // mezery (i nezlomitelná z kopírování) jsou oddělovač tisíců – nesmí dělat nulu
-  const parsed = Number(String(value ?? "").replace(/[\s\u00a0]/g, "").replace(",", "."));
+  let text = String(value ?? "").replace(/[\s\u00a0]/g, "").replace(/(kč|czk|,-|\.-)$/i, "");
+  const comma = text.lastIndexOf(",");
+  const dot = text.lastIndexOf(".");
+  // čárka i tečka naráz: poslední z nich je desetinná, druhá dělí tisíce
+  if (comma >= 0 && dot >= 0) text = comma > dot ? text.replace(/\./g, "").replace(",", ".") : text.replace(/,/g, "");
+  else text = text.replace(",", ".");
+  return Number(text);
+};
+export const n = (value: any) => {
+  const parsed = parseNumber(value);
   return Number.isFinite(parsed) ? parsed : 0;
 };
+// vyplněné pole, které není číslo („dvě", „12x5") – tiše by se počítalo jako nula
+export const isBadNumber = (value: any) => String(value ?? "").trim() !== "" && !Number.isFinite(parseNumber(value));
 export const areaCm = (width: any, height: any, count: any = 1) => (Math.max(0, n(width)) / 100) * (Math.max(0, n(height)) / 100) * Math.max(0, n(count || 1));
 export const f2 = (value: any) => n(value).toFixed(2);
 export const roundMoney = (value: any) => Math.round(n(value));
@@ -730,12 +744,15 @@ const read = (key: string, fallback: any) => {
   }
 };
 
-const write = (key: string, value: any) => {
-  if (typeof window === "undefined") return;
+// Vrací false, když se zápis nepovedl (plné úložiště) – doklady se pak musí ozvat,
+// jinak by faktura po zavření stránky zmizela.
+const write = (key: string, value: any): boolean => {
+  if (typeof window === "undefined") return true;
   try {
     window.localStorage.setItem(storageNs + key, JSON.stringify(value));
+    return true;
   } catch {
-    // plné úložiště – ignorujeme, uživatel má export
+    return false;
   }
 };
 
@@ -794,6 +811,23 @@ export const storage = {
     const seq = read(KEYS.invoiceSeq, { year, seq: 0 });
     const next = seq.year === year ? seq.seq + 1 : 1;
     return `${year}${String(next).padStart(3, "0")}`;
+  },
+  // Po importu zálohy (nový prohlížeč, nový počítač) by řada začala znovu od 001
+  // a vyrobila čísla, která už importované doklady nesou. Čítače proto dotáhneme
+  // na nejvyšší číslo letošního roku, které v datech je.
+  syncSequences: (invoices: any[], quotes: any[]) => {
+    const year = new Date().getFullYear();
+    const top = (list: any[], pattern: RegExp) =>
+      (list ?? []).reduce((max: number, doc: any) => {
+        const match = String(doc?.number ?? "").trim().match(pattern);
+        return match ? Math.max(max, Number(match[1])) : max;
+      }, 0);
+    const bump = (key: string, highest: number) => {
+      const current = read(key, { year, seq: 0 });
+      if (highest > (current.year === year ? current.seq : 0)) write(key, { year, seq: highest });
+    };
+    bump(KEYS.invoiceSeq, top(invoices, new RegExp(`^${year}(\\d{3,6})$`)));
+    bump(KEYS.quoteSeq, top(quotes, new RegExp(`^N${year}(\\d{5,7})$`)));
   },
   nextInvoiceNumber: () => {
     const year = new Date().getFullYear();
