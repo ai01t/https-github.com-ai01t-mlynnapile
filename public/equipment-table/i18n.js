@@ -80,6 +80,7 @@
     'Monitoring': { en: 'Monitoring', de: 'Monitoring' },
     'A/V': { en: 'A/V', de: 'A/V' },
     'Péče o kytaru': { en: 'Guitar care', de: 'Gitarrenpflege' },
+    'Notové stojany': { en: 'Music stands', de: 'Notenständer' },
     'Ostatní': { en: 'Other', de: 'Sonstiges' },
     'Kytarová kosmetika': { en: 'Guitar cosmetics', de: 'Gitarrenkosmetik' },
     'Infrastruktura': { en: 'Infrastructure', de: 'Infrastruktur' },

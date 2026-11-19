@@ -51,6 +51,19 @@ const nextConfig = {
       { source: "/historie/index.html", destination: "/historie", permanent: true },
     ]
   },
+  // Videa a jejich náhledy se v prohlížeči drží 30 dní (adresy mají ?v=verzi,
+  // takže po výměně souboru stačí zvednout verzi). Bez toho se při každé
+  // návštěvě znovu ověřovala na serveru.
+  async headers() {
+    return [
+      {
+        source: "/videos/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" },
+        ],
+      },
+    ]
+  },
   async rewrites() {
     return {
       beforeFiles: [
